@@ -413,8 +413,13 @@ body.touch .tip .hint{display:none}
   .side>.sgrp{order:1}
   .main{display:contents}
   .main>*{order:2;min-width:0}
-  .main>.foot{order:4}
-  .side>.sgrp-links{order:3}
+  .main>.foot{order:5}
+  .side>.sgrp-links{order:4}
+  .side>.code-grp{order:3}
+  .side>.code-grp.empty,#app[data-mode="racials"] .code-grp,#app[data-mode="spellbook"] .code-grp{display:none}
+  .side .share{grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:6px}
+  .side .share input{font-size:12px;padding:5px 7px}
+  .side .share .share-btns button{padding:4px 10px;font-size:12px}
   .classbar{display:flex;flex-wrap:wrap;justify-content:center;overflow:visible;gap:6px;padding:6px}
   .classbar .cls{flex:0 0 calc(20% - 5px);min-width:0;margin:0;padding:5px 2px;align-items:center;transform:none!important}
   .classbar .cls span:not(.ci){font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -423,14 +428,15 @@ body.touch .tip .hint{display:none}
   .race-row{align-items:flex-start}
 }
 @media (max-width:760px){
-  .sb-wrap{zoom:1;padding-right:50px}
+  .sb-wrap{zoom:1;padding-right:0}
+  .sb-wrap .sb-tabs{position:static;display:flex;justify-content:center;gap:12px;padding:12px 0 0;margin:0}
   .sb-page{padding:16px 12px 12px}
   .sb-grid{grid-auto-flow:column;grid-template-rows:repeat(6,minmax(46px,auto));grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}
   .sb-sp{grid-template-columns:36px minmax(0,1fr);gap:7px}
   .sb-sp .slot{width:36px;height:36px}
   .sb-sp .sn{font-size:12px}
   .sb-sp .ss{font-size:11px}
-  .sb-tabs .sb-tab{width:40px;height:40px}
+  .sb-tabs .sb-tab{width:46px;height:46px}
 }
 </style>
 <script>
@@ -465,7 +471,7 @@ document.head.appendChild(t);})();
       <div class="srch-row"><input id="search" type="text" aria-label="Search talents" spellcheck="false"><button type="button" id="searchClear" aria-label="Clear search">×</button></div>
       <div class="srch-info" id="searchInfo" aria-live="polite"></div>
     </div></div>
-    <div class="sgrp"><div class="hdr">Build Code</div>
+    <div class="sgrp code-grp"><div class="hdr">Build Code</div>
     <div class="share">
       <input id="code" type="text" aria-label="Build code" spellcheck="false">
       <div class="share-btns"><button id="copy" type="button">Copy</button><button id="load" type="button">Load</button></div>
@@ -706,7 +712,7 @@ function render(){
   if(cur.legacy){ const tl=cur.all.find(x=>x.name==="Talented"); if(tl && +$("talented").value!==tl.pts){ $("talented").value=tl.pts; try{ localStorage.setItem("fta-talented",tl.pts); }catch(e){} } }
   sideBtns().forEach(b=>b.classList.toggle("has",!!MODEL[b.dataset.key]&&totalSpent(MODEL[b.dataset.key])>0));
   renderOrder();
-  const code=spent?buildCode():""; $("code").value=code;
+  const code=spent?buildCode():""; $("code").value=code; $("code").closest(".sgrp").classList.toggle("empty",!code);
   try{ history.replaceState(null,"","#"+(code||cur.key)); }catch(e){}
   if(tipFor) showTip(tipFor,!canHover);
 }
