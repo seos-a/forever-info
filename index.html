@@ -409,6 +409,19 @@ body.touch .tip .hint{display:none}
 @media (max-width:820px){.critter{display:none!important}}
 @media (prefers-reduced-motion: reduce){.tal{transition:none}.tal:active{transform:none}}
 </style>
+<script>
+window.goatcounter={no_onload:true};
+(function(){var last=null;
+function send(){var g=window.goatcounter; if(!g||!g.count) return;
+  var s=decodeURIComponent(location.hash.slice(1)).split(":")[0]||"home"; if(s===last) return; last=s;
+  g.count({path:"/forever-info/"+s,title:s});}
+window.gcTrack=send;
+var _r=history.replaceState; history.replaceState=function(){var r=_r.apply(this,arguments); setTimeout(send,0); return r;};
+window.addEventListener("hashchange",send);
+var t=document.createElement("script"); t.async=true; t.src="https://gc.zgo.at/count.js";
+t.setAttribute("data-goatcounter","https://seos-a.goatcounter.com/count"); t.onload=send;
+document.head.appendChild(t);})();
+</script>
 </head>
 <body>
 <section class="landing" id="landing" aria-label="Choose a class">
