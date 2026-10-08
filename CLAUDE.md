@@ -44,34 +44,29 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
    - `../web/image-list.txt`: `url|local path` lines for every image the site needs
 
 Because `tc/..` is the repo root, all of these outputs land in the repo root
-(`Forever-Talents*.html`, `web/`). They are not tracked in git. Do not commit them.
+(`Forever-Talents*.html`, `web/`). `.gitignore` excludes them; only `index.html`
+is published.
+
+All text files are read and written as UTF-8 with LF line endings, so the output
+is the same on every OS.
 
 ## Rebuilding the site
 
 On this Windows machine, Python is `py` (`python`/`python3` are Store stubs).
-Run the build in UTF-8 mode, because `build.py` calls `open()` without an
-encoding. Without it, Windows writes cp1252 and corrupts characters such as `·`:
+Elsewhere use `python3`.
 
 ```bash
 cd tc
-py -X utf8 build.py
+py build.py
 cp ../web/index.html ../index.html
-```
-
-On macOS or Linux, `python3 build.py` is fine.
-
-Then clean up the extra outputs so they don't get committed:
-
-```bash
-rm -rf ../web ../Forever-Talents.html ../Forever-Talents-Classic-Style.html
 ```
 
 Check with `git diff --stat`: normally only `index.html` and the source files you
 edited should change. If you add talents or spells with new icons, check
-`web/image-list.txt` (before deleting it) and add any missing images under `images/`.
+`web/image-list.txt` and add any missing images under `images/`.
 
 Sanity check: rebuilding the current, unchanged sources reproduces the committed
-`index.html` byte for byte (apart from line endings, which git normalizes).
+`index.html` byte for byte.
 
 ## Committing
 

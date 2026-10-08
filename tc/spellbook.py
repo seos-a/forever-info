@@ -68,10 +68,10 @@ RKD={}
 DROP={'Aspect of the Falcon','Hammer of the Righteous','Portal of Summoning','Coup de Grace','Enchanted Flare','Lightwell'}
 def build():
     global RK,RKD
-    RK=json.load(open('ranks_raw.json'))
+    RK=json.load(open('ranks_raw.json', encoding='utf-8'))
     import os
-    if os.path.exists('rank_tips.json'): RKD=json.load(open('rank_tips.json'))
-    raw=json.load(open('spells_raw.json')); R=json.load(open('racials.json'))
+    if os.path.exists('rank_tips.json'): RKD=json.load(open('rank_tips.json', encoding='utf-8'))
+    raw=json.load(open('spells_raw.json', encoding='utf-8')); R=json.load(open('racials.json', encoding='utf-8'))
     out={}
     for c,sk in SKILL.items():
         sp=[]
@@ -80,7 +80,7 @@ def build():
             sp.append([n,ic,sk.index(s) if s in sk else 0,lv,rk,clean(d),i,ranks(c,n,d)])
         out[c]={'spells':sp,'general':gen(c)}
     import os
-    out['det']=json.load(open('details.json')) if os.path.exists('details.json') else {}
+    out['det']=json.load(open('details.json', encoding='utf-8')) if os.path.exists('details.json') else {}
     out['priestRacial']=sorted({p[0] for r in R for p in r['priest']})
     return out
 if __name__=='__main__':

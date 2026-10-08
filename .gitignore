@@ -1,0 +1,5 @@
+# build outputs from tc/build.py (only index.html is published)
+/web/
+/Forever-Talents.html
+/Forever-Talents-Classic-Style.html
+__pycache__/

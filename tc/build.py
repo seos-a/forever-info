@@ -41,7 +41,7 @@ OVERRIDES = {
 data = {}
 problems = []
 for key, name, color in CLASSES:
-    trees = json.load(open(f'{key}.json'))
+    trees = json.load(open(f'{key}.json', encoding='utf-8'))
     out_trees = []
     for tr in trees:
         names = {t[3] for t in tr['t']}
@@ -63,7 +63,7 @@ for key, name, color in CLASSES:
     data[key] = {'name': name, 'color': color, 'trees': out_trees}
 
 # Legacy tree (account-wide): gates are points spent in that tree, 16 points total
-L = json.load(open('legacy_raw.json'))
+L = json.load(open('legacy_raw.json', encoding='utf-8'))
 ids = {}
 for tr in L['trees']:
     for n in tr['nodes']: ids[n[0]] = n[1]
@@ -86,13 +86,13 @@ from spellbook import build as _sb
 SBK=_sb()
 blob = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
 for src, dst in (('template.html', '../Forever-Talents.html'), ('template2.html', '../Forever-Talents-Classic-Style.html')):
-    html = open(src).read().replace('/*DATA*/', blob).replace('/*BG*/', BG).replace('/*RACIALS*/', open('racials.json').read()).replace('/*SPELLBOOK*/', json.dumps(SBK, ensure_ascii=False, separators=(',',':')))
-    open(dst, 'w').write(html)
+    html = open(src, encoding='utf-8').read().replace('/*DATA*/', blob).replace('/*BG*/', BG).replace('/*RACIALS*/', open('racials.json', encoding='utf-8').read()).replace('/*SPELLBOOK*/', json.dumps(SBK, ensure_ascii=False, separators=(',',':')))
+    open(dst, 'w', encoding='utf-8', newline='\n').write(html)
 print('written', len(html))
 
 # ---- web package: images served from local folder ----
 import re as _re, os as _os, json as _json
-web=open('../Forever-Talents-Classic-Style.html').read()
+web=open('../Forever-Talents-Classic-Style.html', encoding='utf-8').read()
 web=web.replace('https://wow.zamimg.com/images/wow/icons/large/','images/icons/')
 web=web.replace('https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/','images/backgrounds/')
 web=_re.sub(r'https://wow\.zamimg\.com/modelviewer/classic/webthumbs/npc/\d+/','images/models/',web)
@@ -114,11 +114,11 @@ document.head.appendChild(t);})();
 web=web.replace('</head>',GC+'</head>',1)
 assert 'zamimg' not in web, _re.findall(r'.{40}zamimg.{40}',web)[:3]
 _os.makedirs('../web',exist_ok=True)
-open('../web/index.html','w').write(web)
-A=_json.load(open('assets.json'))
+open('../web/index.html', 'w', encoding='utf-8', newline='\n').write(web)
+A=_json.load(open('assets.json', encoding='utf-8'))
 models=sorted(set(_re.findall(r'images/models/(\d+)\.png',web)))
 lines=[f"https://wow.zamimg.com/images/wow/icons/large/{i}.jpg|images/icons/{i}.jpg" for i in A['icons']]
 lines+=[f"https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/{s}.jpg|images/backgrounds/{s}.jpg" for s in A['specs']]
 lines+=[f"https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/{int(m)&255}/{m}.png|images/models/{m}.png" for m in models]
-open('../web/image-list.txt','w').write("\n".join(lines)+"\n")
+open('../web/image-list.txt', 'w', encoding='utf-8', newline='\n').write("\n".join(lines)+"\n")
 print('web', len(lines))
