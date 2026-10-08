@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forever Talent Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: class bar, then a status strip (current level, points, controls), three talent trees, then details + talent order.
+   Deliberately dark-only: it mirrors the in-game talent frame. */
+:root{
+  --bg:#0f1015; --panel:#181a22; --panel-2:#20232d; --line:#2e3240;
+  --fg:#ecebe6; --muted:#a3a5b3; --gold:#f2c94c; --ok:#3ee14b; --warn:#ff8a65;
+  --cls:#ffffff; /* current class color, set by script */
+  --font:"Open Sans","Segoe UI",Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:18px 40px;display:grid;gap:16px}
+h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;margin:0}
+.sub{color:var(--muted);font-size:.86rem;margin:2px 0 0}
+button,input,select{font:inherit;color:var(--fg)}
+button{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--gold)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+input[type=text],select{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+
+/* Class bar */
+.classbar{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin}
+.cls{flex:0 0 auto;display:grid;justify-items:center;gap:4px;background:none;border:0;padding:4px 6px;border-radius:8px;color:var(--muted);font-size:.8rem;font-weight:600}
+.cls .ci{width:46px;height:46px;border-radius:50%;border:2px solid #0c0c0e;box-shadow:0 0 0 1px #ffffff30,0 2px 6px #000c;overflow:hidden;background:#222;display:grid;place-items:center;color:#ccc;font-size:.9rem}
+.cls .ci img{width:100%;height:100%;object-fit:cover;filter:saturate(.55) brightness(.75);transition:filter .12s}
+.cls:hover .ci img{filter:none}
+.cls:hover{border-color:transparent}
+.cls[aria-pressed="true"]{color:var(--c)}
+.cls[aria-pressed="true"] .ci{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 0 12px var(--c)}
+.cls[aria-pressed="true"] .ci img{filter:none}
+.cls .dot{width:6px;height:6px;border-radius:50%;background:transparent}
+.cls.has .dot{background:var(--c)}
+
+/* Status strip */
+.status{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.lvl{display:flex;align-items:baseline;gap:10px;min-width:150px}
+.lvl .k{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lvl .v{font-size:2rem;font-weight:700;line-height:1;color:var(--cls);font-variant-numeric:tabular-nums}
+.lvl .v.none{color:var(--muted);font-size:1.1rem;font-weight:600}
+.stat{font-variant-numeric:tabular-nums;font-size:.9rem;color:var(--muted)}
+.stat b{color:var(--fg);font-size:1rem}
+.status .grow{flex:1 1 auto}
+.status label{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted)}
+
+.help{color:var(--muted);font-size:.82rem;margin:0}
+
+/* Trees */
+.trees{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:1000px){.trees{grid-template-columns:1fr}}
+.tree{position:relative;border-radius:10px;padding:12px 12px 22px;display:grid;gap:14px;min-width:0;
+  border:1px solid #00000080;box-shadow:0 0 0 1px #ffffff14 inset;
+  background:linear-gradient(180deg,#0b0c1280 0%,#0b0c1226 25%,#0b0c1240 75%,#0b0c12a6 100%),var(--art,none) center/cover no-repeat,#1a1d26}
+.tree-h{display:flex;align-items:center;gap:8px}
+.tree-h .ti{width:26px;height:26px;border-radius:50%;border:1px solid #000;box-shadow:0 0 0 1px #ffffff40;overflow:hidden;flex:0 0 auto}
+.tree-h .ti img{width:100%;height:100%;object-fit:cover}
+.tree-h h2{font-size:1.15rem;font-weight:700;margin:0;color:#fff;text-shadow:0 1px 3px #000}
+.tree-h .pts{margin-left:auto;font-size:.88rem;color:#fff;text-shadow:0 1px 2px #000;font-variant-numeric:tabular-nums}
+.tree-h button{padding:2px 8px;font-size:.78rem;background:#12141bcc;border-color:#ffffff2e}
+.grid{position:relative;display:grid;grid-template-columns:repeat(4,46px);grid-auto-rows:46px;column-gap:26px;row-gap:24px;width:max-content;margin:4px auto 0}
+.grid svg{position:absolute;left:0;top:0;overflow:visible;z-index:0;pointer-events:none}
+.arrow{fill:#9a9a9a;stroke:#111;stroke-width:1.5;stroke-linejoin:round;filter:drop-shadow(0 1px 1px #000)}
+.arrow.met{fill:var(--gold)}
+.cell{width:46px;height:46px}
+.tal{position:relative;z-index:1;width:46px;height:46px;padding:0;border-radius:8px;border:2px solid #0c0c0e;background:#16181f;cursor:pointer;
+  user-select:none;-webkit-user-select:none;display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px #ffffff40,0 2px 5px #000c;transition:transform .08s,box-shadow .12s}
+.tal .mono{font-size:.78rem;color:#bbb}
+.tal .ic{position:absolute;inset:1px;width:calc(100% - 2px);height:calc(100% - 2px);object-fit:cover;border-radius:6px}
+.tal.locked .ic{filter:grayscale(1) brightness(.75)}
+.tal.avail,.tal.part{border-color:#2fbf3a;box-shadow:inset 0 0 0 1px #9dff9d55,0 0 6px #2fbf3a99,0 2px 5px #000c}
+.tal.max{border-color:#e8b923;box-shadow:inset 0 0 0 1px #ffe48055,0 0 7px #e8b92399,0 2px 5px #000c}
+.tal .rk{position:absolute;right:-12px;bottom:-9px;border-radius:5px;background:#000000e0;padding:0 5px;font-size:.8rem;line-height:1.35;font-weight:600;color:#a8a8a8;box-shadow:0 1px 2px #000;font-variant-numeric:tabular-nums}
+.tal.avail .rk,.tal.part .rk{color:var(--ok)}
+.tal.max .rk{color:#f5c518}
+.tal:hover{box-shadow:inset 0 0 0 1px #ffffff80,0 0 8px #ffffff55,0 2px 5px #000c}
+.tal.avail:hover,.tal.part:hover{box-shadow:inset 0 0 0 1px #c8ffc8aa,0 0 10px #2fbf3acc,0 2px 5px #000c}
+.tal.max:hover{box-shadow:inset 0 0 0 1px #fff0b0aa,0 0 10px #e8b923cc,0 2px 5px #000c}
+.tal:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.tal:active{transform:scale(.96)}
+
+/* Lower panels */
+.lower{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+@media (max-width:900px){.lower{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.card h3{font-size:1.1rem;font-weight:700;margin:0 0 4px}
+.eyebrow{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.det-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.det-btns{display:flex;gap:6px;align-items:center}
+.det-btns button{min-width:40px;font-weight:700}
+.det-btns .stat{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+.desc{margin:8px 0;max-width:65ch;white-space:pre-line}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.88rem;margin:8px 0 0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+.req-bad{color:var(--warn)}
+.req-ok{color:var(--ok)}
+ol.order{margin:6px 0 0;padding-left:26px;max-height:320px;overflow:auto;font-size:.88rem;font-variant-numeric:tabular-nums}
+ol.order li span{color:var(--muted);font-size:.8rem}
+.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.share input{flex:1 1 160px;min-width:0;font-size:.82rem}
+.toast{min-height:1.2em;font-size:.8rem;color:var(--ok)}
+
+/* Tooltip */
+.tip{position:fixed;z-index:50;max-width:330px;background:#0b0c12f2;color:#f2f0e8;border:1px solid #6b6f86;border-radius:6px;padding:10px 12px;box-shadow:0 8px 24px #0008;pointer-events:none;font-size:.92rem;line-height:1.35}
+.tip .tn{font-size:1.1rem;font-weight:700;color:#fff}
+.tip .tr{color:#c8c9d6}
+.tip .bad{color:#ff6b5e}
+.tip .td{color:#ffd24a;margin-top:6px;white-space:pre-line}
+.tip .nr{color:#fff;margin-top:10px}
+.tip .nr+.td{margin-top:2px}
+.tip .hint{color:var(--ok);margin-top:6px;font-size:.86rem}
+.tip .hint.rm{color:#ff8f84}
+@media (prefers-reduced-motion: reduce){.tal,.cls .ci img{transition:none}.tal:active{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="title">Forever Talent Calculator</h1>
+    <p class="sub">WoW: Forever beta talent trees for all nine classes, pulled from Wowhead's Forever calculator on Oct 6, 2026.</p>
+  </header>
+
+  <nav class="classbar" id="classbar" aria-label="Class"></nav>
+
+  <section class="status" aria-live="polite">
+    <div class="lvl"><span class="k">Current level</span><span class="v" id="curLevel"></span></div>
+    <div class="stat">Points spent <b id="spent">0</b></div>
+    <div class="stat">Points left <b id="left">51</b></div>
+    <div class="stat">Split <b id="split">0/0/0</b></div>
+    <div class="grow"></div>
+    <label for="talented" title="Legacy perk: each rank starts your talent points one level earlier, still capped at 51">Talented
+
+      <select id="talented"><option value="0">0/5</option><option value="1">1/5</option><option value="2">2/5</option><option value="3">3/5</option><option value="4">4/5</option><option value="5">5/5</option></select>
+
+    </label>
+    <label for="cap">Level cap
+      <select id="cap"><option value="60">60</option><option value="30">30 (beta)</option></select>
+    </label>
+    <button id="resetAll" type="button">Reset class</button>
+  </section>
+  <p class="help">Click a talent to add a point. Right-click or Shift-click removes one. On a phone, tap a talent and use the − and + buttons in the details panel. Descriptions update as you add ranks. A few talents whose rank data Wowhead hasn't filled in show one description for every rank, and a ? marks a number Wowhead hasn't listed yet.</p>
+
+  <div class="trees" id="trees"></div>
+
+  <div class="lower">
+    <section class="card" id="detail"></section>
+    <section class="card">
+      <div class="eyebrow">Build</div>
+      <h3>Talent order</h3>
+      <p class="help" id="orderEmpty">No points spent yet.</p>
+      <ol class="order" id="order"></ol>
+      <div class="share">
+        <input id="code" type="text" aria-label="Build code" spellcheck="false">
+        <button id="copy" type="button">Copy code</button>
+        <button id="load" type="button">Load code</button>
+      </div>
+      <div class="toast" id="toast"></div>
+      <p class="help">The code starts with the class, then one digit per talent for each tree, row by row. Paste one in and press Load code to restore a build.</p>
+    </section>
+  </div>
+  <p class="help">Talent data, icons and tree art come from Wowhead's Forever database, which is still being updated as the beta changes, so check in-game tooltips for exact numbers. Icons and backgrounds load from Wowhead's image server and need an internet connection.</p>
+</div>
+<div class="tip" id="tip" hidden role="tooltip"></div>
+
+<script>
+const DATA = /*DATA*/;
+const IMG = n => `https://wow.zamimg.com/images/wow/icons/large/${n}.jpg`;
+const S=46, PX=72, PY=70, GW=PX*3+S, GH=PY*6+S;
+const $=id=>document.getElementById(id);
+const canHover=window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+// Build model per class; each keeps its own points and order while switching
+const MODEL={};
+for(const [key,cls] of Object.entries(DATA)){
+  if(cls.legacy) continue;
+  const trees=cls.trees.map((tr,ti)=>{
+    const talents=tr.t.map(a=>({tree:ti,r:a[0],c:a[1],max:a[2],name:a[3],icon:a[4],desc:a[5],prereq:a[6],vals:a[7],pts:0}));
+    talents.sort((a,b)=>a.r-b.r||a.c-b.c);
+    return {name:tr.n,spec:tr.s,icon:tr.i,talents};
+  });
+  const all=trees.flatMap(t=>t.talents);
+  all.forEach(t=>{ if(t.prereq){ t.pre=trees[t.tree].talents.find(x=>x.name===t.prereq[0]); t.preNeed=t.prereq[1]; if(!t.pre) t.prereq=null; } });
+  MODEL[key]={key,name:cls.name,color:cls.color,trees,all,order:[]};
+}
+let cur=null, selected=null, tipFor=null;
+// Talented (Legacy perk): each rank starts talent points one level earlier; the total is still capped at 51
+const talented=()=>+$("talented").value;
+const cap=()=>Math.min(51,+$("cap").value-9+talented());
+const levelFor=n=>Math.max(10-talented(),n+9-talented());
+const treeSpent=ti=>cur.trees[ti].talents.reduce((s,t)=>s+t.pts,0);
+const totalSpent=(m=cur)=>m.all.reduce((s,t)=>s+t.pts,0);
+const spentBelow=(ti,row)=>cur.trees[ti].talents.filter(t=>t.r<row).reduce((s,t)=>s+t.pts,0);
+const reqMet=t=>spentBelow(t.tree,t.r)>=t.r*5 && (!t.pre || t.pre.pts>=t.preNeed);
+const canAdd=t=>t.pts<t.max && totalSpent()<cap() && reqMet(t);
+const valid=()=>cur.all.every(t=>t.pts===0||reqMet(t));
+function canRemove(t){ if(!t.pts) return false; t.pts--; const ok=valid(); t.pts++; return ok; }
+function add(t){ if(!canAdd(t)) return false; t.pts++; cur.order.push(t); render(); return true; }
+function remove(t){ if(!canRemove(t)) return false; t.pts--; const i=cur.order.lastIndexOf(t); if(i>=0) cur.order.splice(i,1); render(); return true; }
+const mono=n=>{const w=n.replace(/[:']/g,"").split(/\s+/).filter(Boolean);return w.length===1?w[0].slice(0,2):w.map(x=>x[0]).join("").slice(0,3);};
+// Description for a given rank (1-based); talents without per-rank data show their single description
+const textAt=(t,k)=>t.vals?t.desc.replace("{v}",t.vals[Math.min(Math.max(k,1),t.max)-1]):t.desc;
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+// Class bar
+const bar=$("classbar");
+for(const m of Object.values(MODEL)){
+  const b=document.createElement("button"); b.type="button"; b.className="cls"; b.dataset.key=m.key; b.style.setProperty("--c",m.color);
+  b.innerHTML=`<span class="ci"><span>${m.name.slice(0,2)}</span><img src="${IMG("classicon_"+m.key)}" alt="" onerror="this.remove()"></span><span>${m.name}</span><span class="dot"></span>`;
+  b.querySelector(".ci span").style.position="absolute";
+  b.querySelector(".ci").style.position="relative";
+  b.addEventListener("click",()=>selectClass(m.key));
+  bar.appendChild(b);
+}
+
+function buildTrees(){
+  const host=$("trees"); host.innerHTML="";
+  cur.trees.forEach((tr,ti)=>{
+    const sec=document.createElement("section"); sec.className="tree";
+    sec.style.setProperty("--art",`url("https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/${tr.spec}.jpg")`);
+    sec.innerHTML=`<div class="tree-h"><span class="ti"><img src="${IMG(tr.icon)}" alt="" onerror="this.remove()"></span><h2>${tr.name}</h2><span class="pts" id="tp${ti}">0</span><button type="button" data-reset="${ti}">Reset</button></div><div class="grid"></div>`;
+    host.appendChild(sec);
+    const g=sec.querySelector(".grid"), NS="http://www.w3.org/2000/svg";
+    const svg=document.createElementNS(NS,"svg"); svg.setAttribute("viewBox",`0 0 ${GW} ${GH}`); svg.setAttribute("width",GW); svg.setAttribute("height",GH); svg.setAttribute("aria-hidden","true"); g.appendChild(svg);
+    for(let r=0;r<7;r++)for(let c=0;c<4;c++){
+      const t=tr.talents.find(x=>x.r===r&&x.c===c);
+      const cell=document.createElement("div"); cell.className="cell"; cell.style.gridRow=r+1; cell.style.gridColumn=c+1;
+      if(t){
+        const b=document.createElement("button"); b.type="button"; b.className="tal"; t.el=b;
+        b.innerHTML=`<span class="mono">${mono(t.name)}</span><img class="ic" src="${IMG(t.icon)}" alt="" loading="lazy" onerror="this.remove()"><span class="rk"></span>`;
+        b.addEventListener("click",e=>{ selected=t; if(e.shiftKey) remove(t); else add(t); render(); });
+        b.addEventListener("contextmenu",e=>{ e.preventDefault(); selected=t; remove(t); render(); });
+        b.addEventListener("mouseenter",()=>{ selected=t; renderDetail(); showTip(t); });
+        b.addEventListener("mouseleave",hideTip);
+        b.addEventListener("focus",()=>{ selected=t; renderDetail(); });
+        cell.appendChild(b);
+      }
+      g.appendChild(cell);
+    }
+    // Arrows run from the edge of the prerequisite to the edge of the talent
+    tr.talents.filter(t=>t.pre).forEach(t=>{
+      const p=t.pre, sw=6, hw=16, hl=10, gap=2; let d;
+      if(p.c===t.c){
+        const x=p.c*PX+S/2, y1=p.r*PY+S+gap, y2=t.r*PY-gap, yb=y2-hl;
+        d=`M${x-sw/2},${y1}L${x+sw/2},${y1}L${x+sw/2},${yb}L${x+hw/2},${yb}L${x},${y2}L${x-hw/2},${yb}L${x-sw/2},${yb}Z`;
+      } else if(p.r===t.r){
+        const dir=t.c>p.c?1:-1, y=p.r*PY+S/2, x1=dir>0?p.c*PX+S+gap:p.c*PX-gap, x2=dir>0?t.c*PX-gap:t.c*PX+S+gap, xb=x2-dir*hl;
+        d=`M${x1},${y-sw/2}L${xb},${y-sw/2}L${xb},${y-hw/2}L${x2},${y}L${xb},${y+hw/2}L${xb},${y+sw/2}L${x1},${y+sw/2}Z`;
+      } else { // elbow: across from the side of the prerequisite, then down into the talent
+        const dir=t.c>p.c?1:-1, y=p.r*PY+S/2, x1=dir>0?p.c*PX+S+gap:p.c*PX-gap, x=t.c*PX+S/2, y2=t.r*PY-gap, yb=y2-hl;
+        const xo=x+dir*sw/2, xi=x-dir*sw/2;
+        d=`M${x1},${y-sw/2}L${xo},${y-sw/2}L${xo},${yb}L${x+dir*hw/2},${yb}L${x},${y2}L${x-dir*hw/2},${yb}L${xi},${yb}L${xi},${y+sw/2}L${x1},${y+sw/2}Z`;
+      }
+      const path=document.createElementNS(NS,"path"); path.setAttribute("d",d); path.setAttribute("class","arrow"); t.line=path; svg.appendChild(path);
+    });
+  });
+}
+$("trees").addEventListener("click",e=>{const r=e.target.closest("[data-reset]"); if(!r) return; const ti=+r.dataset.reset; cur.trees[ti].talents.forEach(t=>t.pts=0); cur.order=cur.order.filter(t=>t.tree!==ti); render();});
+
+function selectClass(key){
+  if(!MODEL[key]) return;
+  cur=MODEL[key]; selected=null; hideTip();
+  document.documentElement.style.setProperty("--cls",cur.color);
+  if($("title")) $("title").textContent=`Forever ${cur.name} Talents`;
+  document.title=`Forever ${cur.name} Talents`;
+  bar.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false"));
+  buildTrees(); render();
+}
+
+function tipHTML(t){
+  const tr=cur.trees[t.tree], out=[`<div class="tn">${esc(t.name)}</div><div class="tr">Rank ${t.pts}/${t.max}</div>`];
+  if(t.r>0 && spentBelow(t.tree,t.r)<t.r*5) out.push(`<div class="bad">Requires ${t.r*5} points in ${tr.name} Talents</div>`);
+  if(t.pre && t.pre.pts<t.preNeed) out.push(`<div class="bad">Requires ${t.preNeed} ${t.preNeed===1?"point":"points"} in ${esc(t.pre.name)}</div>`);
+  out.push(`<div class="td">${esc(textAt(t,t.pts||1))}</div>`);
+  if(t.vals && t.pts>0 && t.pts<t.max) out.push(`<div class="nr">Next rank:</div><div class="td">${esc(textAt(t,t.pts+1))}</div>`);
+  if(canAdd(t)) out.push(`<div class="hint">Click to learn</div>`); else if(canRemove(t)) out.push(`<div class="hint rm">Right-click to unlearn</div>`);
+  return out.join("");
+}
+function showTip(t){
+  if(!canHover) return;
+  const tip=$("tip"); tipFor=t; tip.innerHTML=tipHTML(t); tip.hidden=false;
+  const r=t.el.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight;
+  let x=r.right+12; if(x+w>innerWidth-8) x=r.left-w-12; if(x<8) x=8;
+  let y=r.top; if(y+h>innerHeight-8) y=innerHeight-h-8; if(y<8) y=8;
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+function hideTip(){ $("tip").hidden=true; tipFor=null; }
+addEventListener("scroll",hideTip,{passive:true});
+
+function render(){
+  const spent=totalSpent();
+  const lv=$("curLevel");
+  lv.textContent = spent ? `Level ${levelFor(spent)}` : "";
+  $("spent").textContent=spent; $("left").textContent=cap()-spent;
+  $("split").textContent=cur.trees.map((_,i)=>treeSpent(i)).join("/");
+  cur.trees.forEach((_,ti)=>{ $("tp"+ti).textContent=`${treeSpent(ti)} / 51`; });
+  cur.all.forEach(t=>{
+    const b=t.el; b.classList.remove("locked","avail","part","max");
+    if(t.pts===t.max) b.classList.add("max"); else if(t.pts>0) b.classList.add("part"); else if(canAdd(t)) b.classList.add("avail"); else b.classList.add("locked");
+    b.querySelector(".rk").textContent=`${t.pts}/${t.max}`;
+    b.setAttribute("aria-label",`${t.name}, ${t.pts} of ${t.max} points`);
+    if(t.line) t.line.classList.toggle("met",t.pre.pts>=t.preNeed);
+  });
+  bar.querySelectorAll(".cls").forEach(b=>b.classList.toggle("has",totalSpent(MODEL[b.dataset.key])>0));
+  renderDetail(); renderOrder();
+  const code=buildCode(); $("code").value=code;
+  try{ history.replaceState(null,"","#"+code); }catch(e){}
+  if(tipFor) showTip(tipFor);
+}
+function renderDetail(){
+  const d=$("detail"), t=selected;
+  if(!t){ d.innerHTML=`<div class="eyebrow">Details</div><h3>Pick a talent</h3><p class="help">Hover or tap any talent to see what it does and what it requires.</p>`; return; }
+  const tr=cur.trees[t.tree], need=t.r*5, have=spentBelow(t.tree,t.r), reqs=[];
+  if(t.r>0) reqs.push(`<span class="${have>=need?"req-ok":"req-bad"}">${need} points in ${tr.name} (${have} spent)</span>`);
+  if(t.pre) reqs.push(`<span class="${t.pre.pts>=t.preNeed?"req-ok":"req-bad"}">${t.preNeed} ${t.preNeed===1?"point":"points"} in ${esc(t.pre.name)}</span>`);
+  const unlocks=cur.all.filter(x=>x.pre===t).map(x=>esc(x.name));
+  d.innerHTML=`<div class="det-top"><div><div class="eyebrow">${tr.name} · Row ${t.r+1}</div><h3>${esc(t.name)}</h3></div>
+    <div class="det-btns"><button type="button" id="dm" aria-label="Remove a point" ${canRemove(t)?"":"disabled"}>−</button><span class="stat"><b>${t.pts}</b>/${t.max}</span><button type="button" id="dp" aria-label="Add a point" ${canAdd(t)?"":"disabled"}>+</button></div></div>
+    ${t.pts>0&&t.pts<t.max&&t.vals?`<div class="eyebrow" style="margin-top:8px">Rank ${t.pts}</div>`:""}
+    <p class="desc">${esc(textAt(t,t.pts||1))}</p>
+    ${t.vals&&t.pts>0&&t.pts<t.max?`<div class="eyebrow">Next rank</div><p class="desc">${esc(textAt(t,t.pts+1))}</p>`:""}
+    <dl class="kv"><dt>Requires</dt><dd>${reqs.length?reqs.join("<br>"):"Nothing"}</dd>${unlocks.length?`<dt>Unlocks</dt><dd>${unlocks.join(", ")}</dd>`:""}</dl>`;
+  $("dm").onclick=()=>remove(t); $("dp").onclick=()=>add(t);
+}
+function renderOrder(){
+  const ol=$("order"); ol.innerHTML=""; $("orderEmpty").hidden=cur.order.length>0;
+  const n=new Map();
+  cur.order.forEach((t,i)=>{ n.set(t,(n.get(t)||0)+1); const li=document.createElement("li"); li.innerHTML=`${esc(t.name)} ${n.get(t)}/${t.max} <span>level ${levelFor(i+1)}</span>`; ol.appendChild(li); });
+}
+const buildCode=()=>cur.key+":"+cur.trees.map(tr=>tr.talents.map(t=>t.pts).join("").replace(/0+$/,"")).join("-");
+function loadCode(code){
+  const m=(code||"").trim().match(/^([a-z]+):([0-9]*)-([0-9]*)-([0-9]*)$/);
+  if(!m || !MODEL[m[1]]) return false;
+  if(cur!==MODEL[m[1]]) selectClass(m[1]);
+  const parts=[m[2],m[3],m[4]], target=new Map();
+  cur.all.forEach(t=>t.pts=0); cur.order=[];
+  cur.trees.forEach((tr,ti)=>tr.talents.forEach((t,i)=>target.set(t,Math.min(t.max,+(parts[ti][i]||0)))));
+  if([...target.values()].reduce((a,b)=>a+b,0)>cap()) $("cap").value="60";
+  let progress=true;
+  while(progress){ progress=false; for(const t of cur.all){ if(t.pts<target.get(t) && canAdd(t)){ t.pts++; cur.order.push(t); progress=true; } } }
+  render(); return true;
+}
+const trim=()=>{ while(totalSpent()>cap()){ const t=cur.order.pop(); t.pts--; } render(); };
+$("cap").addEventListener("change",trim);
+$("talented").addEventListener("change",()=>{ try{ localStorage.setItem("fta-talented",$("talented").value); }catch(e){} trim(); });
+try{ const v=localStorage.getItem("fta-talented"); if(v) $("talented").value=v; }catch(e){}
+$("resetAll").onclick=()=>{ cur.all.forEach(t=>t.pts=0); cur.order=[]; render(); };
+function toast(msg){ $("toast").textContent=msg; clearTimeout(toast.t); toast.t=setTimeout(()=>{$("toast").textContent="";},2500); }
+$("copy").onclick=async()=>{ const v=$("code").value; try{ await navigator.clipboard.writeText(v); toast("Copied"); }catch(e){ $("code").select(); toast("Selected. Press Ctrl+C to copy."); } };
+$("load").onclick=()=>{ if(loadCode($("code").value)) toast("Build loaded"); else toast("That code doesn't match. It should look like priest:05-0-55002"); };
+
+const h=decodeURIComponent(location.hash.slice(1));
+if(!(h && loadCode(h))) selectClass("priest");
+</script>
+</body>
+</html>

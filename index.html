@@ -305,7 +305,7 @@ body.touch .tip .hint{display:none}
 .sb-grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(6,50px);grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 16px}
 .sb-top{display:flex;justify-content:flex-end;margin:-6px 0 12px}
 .sb-pager{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-weight:700;font-size:13px;color:#1a1008}
-.sb-pager[hidden]{display:none}
+.sb-pager[hidden]{display:flex;visibility:hidden}
 .sb-arrow{width:28px;height:28px;padding:0;border:1px solid #000;border-radius:3px;cursor:pointer;color:#ffd100;font-size:12px;background:linear-gradient(180deg,#5a4220,#2a1a08);box-shadow:inset 0 0 0 1px #c9a24c,0 2px 3px #0008;text-shadow:1px 1px 0 #000}
 .sb-arrow:disabled{opacity:.35;cursor:default}
 .sb-foot{display:flex;justify-content:flex-end;margin-top:14px}
@@ -586,6 +586,25 @@ body.ally #searchClear{background-size:100% 100%,auto!important}
 .order-parch{display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
 .order-parch .order2{align-self:stretch}
 .order-parch{box-sizing:border-box;display:grid;align-content:center}
+
+/* ---- phone fixes ---- */
+@media (max-width:820px){
+  /* faction switch sits in its own row above the logo instead of on top of it */
+  .faction-pick{position:absolute;top:4px;right:6px;padding:0;gap:5px}
+  .site-banner{margin-top:0!important;padding-top:30px}
+  .site-banner .tagline{top:calc(30px + (100% - 30px) * .765)}
+  .faction-pick button{width:22px!important;height:22px!important;border-width:1px!important;border-radius:3px!important}
+  /* stat bar: tidy 2x2 grid of stats, then controls row, then full-width Reset */
+  .status{display:grid!important;grid-template-columns:1fr 1fr;gap:10px 12px;padding:16px 14px;font-size:15px!important}
+  .status .grow{display:none}
+  .status .stat{white-space:nowrap}
+  .status .ctrls{grid-column:1/-1;display:grid!important;grid-template-columns:1fr 1fr;gap:10px 12px;margin:0}
+  .status .ctrls label{justify-content:flex-start;min-width:0}
+  .status .ctrls label select{flex:1;min-width:0}
+  .status .ctrls #resetAll{grid-column:1/-1;width:100%}
+  /* spellbook: every page is the same height */
+  .sb-grid{grid-template-rows:repeat(6,58px)!important;align-items:center}
+}
 </style>
 <script>
 window.goatcounter={no_onload:true};
@@ -1050,7 +1069,7 @@ function renderSpellbook(){
   $("sbRanks").disabled=sbTab===0; $("sbRanksLbl").classList.toggle("off",sbTab===0);
   window.__sbAll=sbEntries(); const pages=Math.max(1,Math.ceil(__sbAll.length/SBPER)); if(sbPage>=pages) sbPage=pages-1;
   window.__sb=__sbAll.slice(sbPage*SBPER,sbPage*SBPER+SBPER);
-  $("sbPageNo").textContent=`Page ${sbPage+1}`; $("sbPrev").disabled=sbPage===0; $("sbNext").disabled=sbPage>=pages-1; $("sbPager").hidden=pages<2;
+  $("sbPageNo").textContent=`Page ${sbPage+1}`; $("sbPrev").disabled=sbPage===0; $("sbNext").disabled=sbPage>=pages-1; $("sbPager").hidden=false; $("sbPager").style.visibility=pages<2?"hidden":"";
   $("sbGrid").innerHTML=__sb.length?__sb.map((e,i)=>`<div class="sb-sp" data-i="${i}" data-q="${esc((e.n+" "+e.d).toLowerCase())}"><span class="slot"><img src="${IMG(e.ic)}" alt="" onerror="this.style.visibility='hidden'"></span><div><div class="sn">${esc(e.n)}</div><div class="ss">${esc(e.sub||"")}</div></div></div>`).join("")
     :`<p class="sb-empty">No spells listed for this tab.</p>`;
   runSearch();
