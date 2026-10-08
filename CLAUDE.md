@@ -1,0 +1,78 @@
+# WoW Forever talent calculator
+
+Static site hosted on GitHub Pages (`seos-a/forever-info`, branch `main`).
+The live page is `index.html` in the repo root. It is a generated, self-contained
+file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
+
+## Layout
+
+- `index.html`: the published site (build output, copied here by hand)
+- `images/`: icons, talent-tree backgrounds and NPC model thumbnails, served
+  next to `index.html` (`images/icons/`, `images/backgrounds/`, `images/models/`)
+- `tc/`: the source folder
+  - `template2.html`: page layout, styling and behavior (this is what the live site uses)
+  - `template.html`: an older layout; still built, but not published
+  - `build.py`: the build script
+  - `ranks.py`, `spellbook.py`: helpers imported by `build.py`
+  - Data:
+    - `<class>.json` (druid, hunter, mage, paladin, priest, rogue, shaman, warlock, warrior): talent trees
+    - `legacy_raw.json`: the account-wide Legacy tree
+    - `racials.json`: racials
+    - `spells_raw.json`, `ranks_raw.json`, `rank_tips.json`, `details.json`: spellbook
+    - `assets.json`: icon and spec lists used to write `image-list.txt`
+  - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
+  - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
+    not read these; they are already inlined in `template2.html` as data URIs.
+    To change one, re-encode it and replace the data URI in the template.
+
+## How the build works
+
+`build.py` must be run from inside `tc/` (it uses relative paths):
+
+1. Loads the class JSON files, fixes Wowhead placeholder values (`fix_desc`),
+   applies the hand `OVERRIDES`, and works out per-rank values (`ranks.per_rank`).
+   It prints `problems: [...]`. This should be `[]`.
+2. Builds the Legacy tree and the spellbook (`spellbook.build()`).
+3. Replaces the placeholders `/*DATA*/`, `/*BG*/`, `/*RACIALS*/` and `/*SPELLBOOK*/` in each template and writes:
+   - `../Forever-Talents.html` (from `template.html`)
+   - `../Forever-Talents-Classic-Style.html` (from `template2.html`)
+4. Turns the Classic-Style page into the web version: Wowhead image URLs
+   (`wow.zamimg.com`) become local `images/...` paths, and the GoatCounter
+   analytics snippet is added before `</head>`. It asserts that no `zamimg` URLs
+   remain, then writes:
+   - `../web/index.html`: the site
+   - `../web/image-list.txt`: `url|local path` lines for every image the site needs
+
+Because `tc/..` is the repo root, all of these outputs land in the repo root
+(`Forever-Talents*.html`, `web/`). They are not tracked in git. Do not commit them.
+
+## Rebuilding the site
+
+On this Windows machine, Python is `py` (`python`/`python3` are Store stubs).
+Run the build in UTF-8 mode, because `build.py` calls `open()` without an
+encoding. Without it, Windows writes cp1252 and corrupts characters such as `·`:
+
+```bash
+cd tc
+py -X utf8 build.py
+cp ../web/index.html ../index.html
+```
+
+On macOS or Linux, `python3 build.py` is fine.
+
+Then clean up the extra outputs so they don't get committed:
+
+```bash
+rm -rf ../web ../Forever-Talents.html ../Forever-Talents-Classic-Style.html
+```
+
+Check with `git diff --stat`: normally only `index.html` and the source files you
+edited should change. If you add talents or spells with new icons, check
+`web/image-list.txt` (before deleting it) and add any missing images under `images/`.
+
+Sanity check: rebuilding the current, unchanged sources reproduces the committed
+`index.html` byte for byte (apart from line endings, which git normalizes).
+
+## Committing
+
+Commit and push straight to `main`. GitHub Pages deploys from there.
