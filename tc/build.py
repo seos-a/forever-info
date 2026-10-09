@@ -16,6 +16,14 @@ CLASSES = [
 def fmt_num(v):
     return str(int(v)) if float(v).is_integer() else str(v)
 
+def clean_html(desc):
+    """Wowhead occasionally leaves HTML in a description (Weaponmaster): a double <br /> starts a new line,
+    a single one is just a line wrap, and tags such as <span> are dropped."""
+    desc = re.sub(r'\s*(<br\s*/?>\s*){2,}', '\n', desc)
+    desc = re.sub(r'\s*<br\s*/?>\s*', ' ', desc)
+    desc = re.sub(r'<[^>]+>', '', desc)
+    return re.sub(r'[ \t]{2,}', ' ', desc)
+
 def fix_desc(desc, ranks):
     """Wowhead sometimes leaves a value as 0 when it lives in another rank field.
     Fill those placeholders with the talent's max-rank value."""
@@ -50,7 +58,7 @@ for key, name, color in CLASSES:
         names = {t[3] for t in tr['t']}
         talents = []
         for r, c, mx, tname, icon, desc, ranks, pre in tr['t']:
-            desc = fix_desc(desc, ranks).strip()
+            desc = fix_desc(clean_html(desc), ranks).strip()
             # values Wowhead doesn't list yet: show "?" instead of a misleading 0
             desc = re.sub(r'(?<![\d.])0 (sec|Mana)', r'? \1', desc)
             desc = desc.replace('(0 /- 3 * - 204)', '?')
