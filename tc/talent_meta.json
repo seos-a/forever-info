@@ -1,0 +1,756 @@
+{
+ "druid": {
+  "Berserk": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Feral Charge": [
+   [
+    [
+     "5 Rage",
+     "8 - 25 yd range"
+    ],
+    [
+     "Instant",
+     "15 sec cooldown"
+    ],
+    [
+     "Instant",
+     "30 sec cooldown"
+    ]
+   ]
+  ],
+  "Insect Swarm": [
+   [
+    [
+     "45 Mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Nature's Swiftness": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Primal Bite": [
+   [
+    [
+     "20 Rage",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Shifting Power": [
+   [
+    [
+     "Instant",
+     "16 sec cooldown"
+    ]
+   ]
+  ],
+  "Swiftmend": [
+   [
+    [
+     "20% of base mana",
+     "40 yd range"
+    ],
+    [
+     "Instant",
+     "15 sec cooldown"
+    ]
+   ]
+  ],
+  "Wild Growth": [
+   [
+    [
+     "550 Mana",
+     "40 yd range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ]
+ },
+ "hunter": {
+  "Bestial Wrath": [
+   [
+    [
+     "12% of base mana",
+     "100 yd range"
+    ],
+    [
+     "Instant",
+     "2 min cooldown"
+    ]
+   ]
+  ],
+  "Counterattack": [
+   [
+    [
+     "30 Mana",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "5 sec cooldown"
+    ]
+   ]
+  ],
+  "Deterrence": [
+   [
+    [
+     "Instant",
+     "5 min cooldown"
+    ]
+   ]
+  ],
+  "Intimidation": [
+   [
+    [
+     "8% of base mana",
+     "100 yd range"
+    ],
+    [
+     "Instant",
+     "1 min cooldown"
+    ]
+   ]
+  ],
+  "Scatter Shot": [
+   [
+    [
+     "8% of base mana",
+     "15 yd range"
+    ]
+   ]
+  ],
+  "Sniper Shot": [
+   [
+    [
+     "365 Mana",
+     "8 - 45 yd range"
+    ],
+    [
+     "4 sec cast",
+     "15 sec cooldown"
+    ]
+   ]
+  ],
+  "Strider Kick": [
+   [
+    [
+     "5.81% of base mana",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "8 sec cooldown"
+    ]
+   ]
+  ],
+  "Summon Hawk": [
+   [
+    [
+     "80 Mana",
+     "35 yd range"
+    ]
+   ]
+  ]
+ },
+ "mage": {
+  "Arcane Blast": [
+   [
+    [
+     "15% of base mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Arcane Power": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Blast Wave": [
+   [
+    [
+     "Instant",
+     "45 sec cooldown"
+    ]
+   ]
+  ],
+  "Cold Snap": [
+   [
+    [
+     "Instant",
+     "10 min cooldown"
+    ]
+   ]
+  ],
+  "Combustion": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Ice Barrier": [
+   [
+    [
+     "Instant",
+     "30 sec cooldown"
+    ]
+   ]
+  ],
+  "Ice Block": [
+   [
+    [
+     "Instant",
+     "5 min cooldown"
+    ]
+   ]
+  ],
+  "Ice Lance": [
+   [
+    [
+     "45 Mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Presence of Mind": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Pyroblast": [
+   [
+    [
+     "125 Mana",
+     "35 yd range"
+    ]
+   ]
+  ]
+ },
+ "paladin": {
+  "Divine Favor": [
+   [
+    [
+     "Instant",
+     "2 min cooldown"
+    ]
+   ]
+  ],
+  "Holy Shield": [
+   [
+    [
+     "Instant",
+     "10 sec cooldown"
+    ]
+   ]
+  ],
+  "Holy Shock": [
+   [
+    [
+     "160 Mana",
+     "20 - 40 yd range"
+    ],
+    [
+     "Instant",
+     "10 sec cooldown"
+    ]
+   ]
+  ],
+  "Light's Vigil": [
+   [
+    [
+     "730 Mana",
+     "20 - 40 yd range"
+    ],
+    [
+     "1.5 sec cast",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Repentance": [
+   [
+    [
+     "60 Mana",
+     "20 yd range"
+    ],
+    [
+     "Instant",
+     "1 min cooldown"
+    ]
+   ]
+  ],
+  "Swift Judgement": [
+   [
+    [
+     "Instant",
+     "1 min cooldown"
+    ]
+   ]
+  ],
+  "Templar's Bulwark": [
+   [
+    [
+     "Instant",
+     "5 min cooldown"
+    ]
+   ]
+  ],
+  "Voice of Truth": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ]
+ },
+ "priest": {
+  "Binding Heal": [
+   [
+    [
+     "155 Mana",
+     "40 yd range"
+    ]
+   ]
+  ],
+  "Inner Focus": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Mind Flay": [
+   [
+    [
+     "45 Mana",
+     "20 yd range"
+    ]
+   ]
+  ],
+  "Penance": [
+   [
+    [
+     "100 Mana",
+     "36 - 40 yd range"
+    ],
+    [
+     "Channeled",
+     "12 sec cooldown"
+    ]
+   ]
+  ],
+  "Power Infusion": [
+   [
+    [
+     "20% of base mana",
+     "30 yd range"
+    ],
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Prayer of Mending": [
+   [
+    [
+     "210 Mana",
+     "40 yd range"
+    ],
+    [
+     "Instant",
+     "10 sec cooldown"
+    ]
+   ]
+  ],
+  "Shadowform": [
+   [
+    [
+     "Instant",
+     "1.5 sec cooldown"
+    ]
+   ]
+  ],
+  "Silence": [
+   [
+    [
+     "225 Mana",
+     "20 yd range"
+    ],
+    [
+     "Instant",
+     "45 sec cooldown"
+    ]
+   ]
+  ],
+  "Vampiric Embrace": [
+   [
+    [
+     "40 Mana",
+     "30 yd range"
+    ],
+    [
+     "Instant",
+     "1 min cooldown"
+    ]
+   ]
+  ]
+ },
+ "rogue": {
+  "Adrenaline Rush": [
+   [
+    [
+     "Instant",
+     "5 min cooldown"
+    ]
+   ]
+  ],
+  "Blade Flurry": [
+   [
+    [
+     "Instant",
+     "2 min cooldown"
+    ]
+   ]
+  ],
+  "Cold Blood": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Ghostly Strike": [
+   [
+    [
+     "40 Energy",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "20 sec cooldown"
+    ]
+   ]
+  ],
+  "Hemorrhage": [
+   [
+    [
+     "35 Energy",
+     "Melee Range"
+    ]
+   ]
+  ],
+  "Mutilate": [
+   [
+    [
+     "60 Energy",
+     "Melee Range"
+    ]
+   ]
+  ],
+  "Premeditation": [
+   [
+    [
+     "Instant",
+     "2 min cooldown"
+    ]
+   ]
+  ],
+  "Preparation": [
+   [
+    [
+     "Instant",
+     "10 min cooldown"
+    ]
+   ]
+  ],
+  "Riposte": [
+   [
+    [
+     "10 Energy",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Venom": [
+   [
+    [
+     "25 Energy / 1 to 5 Combo Points",
+     "100 yd range"
+    ]
+   ]
+  ]
+ },
+ "shaman": {
+  "Lava Burst": [
+   [
+    [
+     "165 Mana",
+     "30 yd range"
+    ],
+    [
+     "2.5 sec cast",
+     "10 sec cooldown"
+    ]
+   ]
+  ],
+  "Mana Tide Totem": [
+   [
+    [
+     "Instant",
+     "5 min cooldown"
+    ]
+   ]
+  ],
+  "Nature's Swiftness": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Rage of the Farseer": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Riptide": [
+   [
+    [
+     "245 Mana",
+     "40 yd range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Stormstrike": [
+   [
+    [
+     "125 Mana",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "8 sec cooldown"
+    ]
+   ]
+  ]
+ },
+ "warlock": {
+  "Amplify Curse": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Bane of Havoc": [
+   [
+    [
+     "5% of base mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Conflagrate": [
+   [
+    [
+     "100 Mana",
+     "30 yd range"
+    ],
+    [
+     "Instant",
+     "10 sec cooldown"
+    ]
+   ]
+  ],
+  "Curse of Exhaustion": [
+   [
+    [
+     "8% of base mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Fel Domination": [
+   [
+    [
+     "Instant",
+     "5 min cooldown"
+    ]
+   ]
+  ],
+  "Incinerate": [
+   [
+    [
+     "205 Mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Shadowburn": [
+   [
+    [
+     "105 Mana",
+     "30 yd range"
+    ],
+    [
+     "Instant",
+     "15 sec cooldown"
+    ]
+   ]
+  ],
+  "Siphon Life": [
+   [
+    [
+     "150 Mana",
+     "30 yd range"
+    ]
+   ]
+  ],
+  "Soul Link": [
+   [
+    [
+     "20% of base mana",
+     "100 yd range"
+    ]
+   ]
+  ],
+  "Wrack": [
+   [
+    [
+     "200 Mana",
+     "30 yd range"
+    ]
+   ]
+  ]
+ },
+ "warrior": {
+  "Bloodthirst": [
+   [
+    [
+     "30 Rage",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Concussion Blow": [
+   [
+    [
+     "10 Rage",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "45 sec cooldown"
+    ]
+   ]
+  ],
+  "Death Wish": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Last Stand": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
+  "Mortal Strike": [
+   [
+    [
+     "30 Rage",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Shield Slam": [
+   [
+    [
+     "20 Rage",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Spearing Strike": [
+   [
+    [
+     "15 Rage",
+     "Melee Range"
+    ],
+    [
+     "Instant",
+     "20 sec cooldown"
+    ]
+   ]
+  ],
+  "Sweeping Strikes": [
+   [
+    [
+     "Instant",
+     "30 sec cooldown"
+    ]
+   ]
+  ]
+ }
+}

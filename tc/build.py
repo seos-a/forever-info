@@ -38,6 +38,9 @@ OVERRIDES = {
     ('rogue', 'Improved Gouge'): ('Increases the duration of your Gouge ability by {v} sec.', ['0.5', '1', '1.5']),
 }
 
+import os
+TMETA = json.load(open('talent_meta.json', encoding='utf-8')) if os.path.exists('talent_meta.json') else {}
+
 data = {}
 problems = []
 for key, name, color in CLASSES:
@@ -61,6 +64,12 @@ for key, name, color in CLASSES:
             problems.append((key, tr['n'], 'duplicate cell'))
         out_trees.append({'n': tr['n'], 's': tr['s'], 'i': tr['i'], 't': talents})
     data[key] = {'name': name, 'color': color, 'trees': out_trees}
+    # cost / range / cast time / cooldown rows per rank for active talents (from talent_meta.py)
+    if TMETA:
+        tnames = {t[3] for tr in out_trees for t in tr['t']}
+        tm = TMETA.get(key, {})
+        problems += [(key, n, 'no talent for meta') for n in tm if n not in tnames]
+        data[key]['tm'] = {n: [rk[:2] for rk in r] for n, r in tm.items() if n in tnames}
 
 # Legacy tree (account-wide): gates are points spent in that tree, 16 points total
 L = json.load(open('legacy_raw.json', encoding='utf-8'))
