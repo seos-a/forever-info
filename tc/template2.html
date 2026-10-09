@@ -1378,12 +1378,12 @@ matchMedia("(max-width:820px)").addEventListener("change",()=>{ if(!$("app").hid
 
 try{ const ob=$("orderHead").closest(".orderbox");
   const fold=c=>{ ob.classList.toggle("collapsed",c); $("orderHead").setAttribute("aria-expanded",String(!c)); };
-  const setOrd=c=>{ fold(c); if(!isPhone()) try{ localStorage.setItem("ordCollapsed",c?"1":"0"); }catch(e){} };
-  let saved=null; try{ saved=localStorage.getItem("ordCollapsed"); }catch(e){}
-  // Folded to start: always on phones, on desktop when the visitor folded it last time or no points are spent yet.
-  // In that last case it opens by itself with the first talent, unless the visitor has opened / closed it by hand.
-  window.ordAuto = !isPhone() && saved!=="1" && !(cur && cur.order.length);
-  if(saved==="1" || isPhone() || window.ordAuto) fold(true);
+  const setOrd=c=>fold(c);   // not remembered between visits
+  try{ localStorage.removeItem("ordCollapsed"); }catch(e){}   // clear the old saved preference
+  // Every visit starts the same way: folded on phones; on desktop folded until the first talent is picked (then it
+  // opens by itself), or open straight away for a build link with points. Opening / folding it by hand stops that.
+  window.ordAuto = !isPhone() && !(cur && cur.order.length);
+  if(isPhone() || window.ordAuto) fold(true);
   window.ordAutoOpen=()=>{ if(window.ordAuto && cur && cur.order.length){ window.ordAuto=false; fold(false); } };
   $("orderHead").addEventListener("click",()=>{ window.ordAuto=false; setOrd(!ob.classList.contains("collapsed")); });
 }catch(e){}
