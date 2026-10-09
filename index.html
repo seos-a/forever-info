@@ -72,9 +72,9 @@ button,input,select{font:inherit}
 .sgrp{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;padding:3px;background:#0d0d0f;border:1px solid #000;border-radius:3px;box-shadow:inset 0 0 0 1px #b8913f66,0 6px 16px #000d,0 0 0 1px #3a2a10}
 .sgrp-links{gap:4px}
 .sgrp .legacy-link{margin-top:0}
-.side{padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0;position:sticky;top:env(safe-area-inset-top,0px)}
+.side{padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
 @media (max-width:820px){.side{position:static}}
-.classbar{display:grid;gap:0;padding:6px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
+.classbar{display:grid;gap:0;padding:8px 10px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
 @media (max-width:820px){.classbar{display:flex;overflow-x:auto;gap:6px;padding-bottom:6px}}
 .cls{display:flex;align-items:center;gap:8px;border:0;padding:4px 8px 4px 5px;margin:2px 0;border-radius:3px;cursor:pointer;text-align:left;
   font-family:var(--font);color:var(--c);font-size:15px;font-weight:700;text-decoration:none;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 2px 2px #000a;
@@ -89,6 +89,8 @@ button,input,select{font:inherit}
 .cls:hover .ci img,.cls[aria-pressed="true"] .ci img{filter:none}
 .cls[aria-pressed="true"]{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#ba8b53,#98703f 55%,#815c33);box-shadow:inset 0 0 0 1px #000,inset 0 0 0 3px var(--c),inset 0 0 0 4px #000a,0 0 0 1px #000,0 0 10px var(--c);transform:translateX(3px)}
 .cls[aria-pressed="true"] .ci{box-shadow:0 0 0 1px var(--c),0 0 6px var(--c)}
+/* sidebar class buttons: lighter Warrior and Shaman so they read on the leather (official colours stay elsewhere) */
+#classbar .cls[data-key="warrior"]{--c:#d7b285!important}#classbar .cls[data-key="shaman"]{--c:#3190ee!important}
 .cls .dot{width:6px;height:6px;border-radius:50%;margin-left:auto;background:transparent;flex:0 0 auto}
 @media (max-width:820px){.cls .dot{margin-left:0}}
 .cls .dot{display:none}
@@ -120,6 +122,7 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3.4vw,2.2re
 .stat{font-variant-numeric:tabular-nums;color:#fff;font-size:1em;font-weight:700;text-shadow:1px 1px 0 #000,0 0 3px #000,0 0 6px #000}
 .stat b{color:#ffd75a;font-size:1.06em;text-shadow:0 1px 0 #000,0 0 4px #000}
 .grow{flex:1 1 auto}
+.status .cap-s{display:none}
 .status label{display:flex;gap:6px;align-items:center;font-size:1em;font-weight:700;color:#fff;text-shadow:1px 1px 0 #000,0 0 3px #000,0 0 6px #000}
 .status select{color:#ffd75a;font-size:1.03em;font-weight:700;text-shadow:0 1px 0 #000,0 0 4px #000}
 .status select option{color:#ffd75a;background:#0c0d0f}
@@ -226,7 +229,7 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .side-parch ol.order{max-height:260px;padding-left:22px;font-size:11px}
 .side-parch ol.order li span{font-size:10px}
 .side .share{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:0;padding:8px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
-.side .share input{width:100%;font-size:11px;font-weight:700;background:#fff7e0;color:#000;border:1px solid #3a2410;border-radius:2px;box-shadow:inset 0 1px 3px #8a5a2499,0 0 0 1px #c9a24c99}
+.side .share input{width:100%;font-size:11px;font-weight:700;background:#fff7e0;color:#3d1a06;border:1px solid #3a2410;border-radius:2px;box-shadow:inset 0 1px 3px #8a5a2499,0 0 0 1px #c9a24c99}
 .share-btns{display:flex;gap:6px}
 .share-btns button{flex:1}
 .side .toast{color:var(--ok-ink);font-size:11px;min-height:0}
@@ -260,7 +263,7 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .legacy-link .ci{margin-left:0}
 .srch{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:8px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
 .srch-row{display:flex;gap:6px;min-width:0}
-.srch-row input{flex:1 1 0;width:0;min-width:0;font-size:12px;font-weight:700;background:#fff7e0;color:#000;border:1px solid #3a2410;border-radius:2px;padding:5px 7px;box-shadow:inset 0 1px 3px #8a5a2499,0 0 0 1px #c9a24c99}
+.srch-row input{flex:1 1 0;width:0;min-width:0;font-size:13px;font-weight:700;background:#fff7e0;color:#3d1a06;border:1px solid #3a2410;border-radius:2px;padding:5px 7px;box-shadow:inset 0 1px 3px #8a5a2499,0 0 0 1px #c9a24c99}
 .srch-row button{flex:0 0 auto;padding:0 10px}
 .srch-info{color:#000;font-weight:600;text-shadow:0 1px 0 #fff4c880;font-size:11px;line-height:1.6}
 .srch-info:empty{display:none}
@@ -271,7 +274,8 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .tree.legacy{background:linear-gradient(180deg,#0b0c1240,#0b0c12a0),var(--art,none) center/cover no-repeat,linear-gradient(180deg,#24262c,#121316)}
 .tree .blurb{order:99;position:absolute;left:12px;right:12px;bottom:9px;margin:0;font-family:var(--font);font-weight:700;font-size:12.5px;line-height:1.3;color:#f1e6c8;text-align:center;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 0 6px #000}
 .tree:has(.blurb){padding-bottom:44px}
-.orderbox{position:relative;padding:0;display:grid;gap:6px}
+/* same frame as the sidebar panels (.sgrp): thin black border, faint gold inner line, dark edge, drop shadow */
+.orderbox{position:relative;display:grid;gap:4px;padding:3px;background:#0d0d0f;border:1px solid #000;border-radius:3px;box-shadow:inset 0 0 0 1px #b8913f66,0 6px 16px #000d,0 0 0 1px #3a2a10}
 .order-parch{padding:10px 12px}
 .order-empty{margin:0;color:#1a0d04;font-size:13px;font-weight:700;text-shadow:0 1px 0 #fff4c880}
 .order2{list-style:none;margin:0;padding:0 4px;display:grid;grid-auto-flow:column;grid-template-rows:repeat(var(--rows,17),auto);grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px}
@@ -423,16 +427,16 @@ body.touch .tip .hint{display:none}
   #racialLink{order:20}
   #spellLink{order:30}
   .side>.code-grp{order:4}
-  #app[data-mode="legacy"] .main>*{order:11}
-  #app[data-mode="legacy"] .side>.code-grp{order:12}
-  #app[data-mode="racials"] #racials{order:21}
-  #app[data-mode="spellbook"] #spellbook{order:31}
+  #app .main>#legPanel{order:11;display:grid;gap:inherit}
+  #app .main>#legPanel[hidden]{display:none}
+  #app .main>#racials{order:21}
+  #app .main>#spellbook{order:31}
   #app[id] .main>.foot{order:99}
   .side>.code-grp.empty,#app[data-mode="racials"] .code-grp,#app[data-mode="spellbook"] .code-grp{display:none}
   .side .share{grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:6px}
   .side .share input{font-size:12px;padding:5px 7px}
   .side .share .share-btns button{padding:4px 10px;font-size:12px}
-  .classbar{display:flex;flex-wrap:wrap;justify-content:center;overflow:visible;gap:6px;padding:6px}
+  .classbar{display:flex;flex-wrap:wrap;justify-content:center;overflow:visible;gap:6px;padding:9px}
   .classbar .cls{flex:0 0 calc(20% - 5px);min-width:0;margin:0;padding:5px 2px;align-items:center;transform:none!important}
   .classbar .cls span:not(.ci){font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .race-group:has(.horde){margin-left:0;padding-left:0;border-left:0;box-shadow:none;margin-top:10px}
@@ -475,7 +479,7 @@ body.touch .tip .hint{display:none}
 .sgrp.collapsed>:not(.hdr){display:none!important}
 
 /* Quick Info gets the same parchment tray as Classes */
-.qlbar{display:grid;gap:0;padding:6px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
+.qlbar{display:grid;gap:0;padding:8px 9px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
 @media (min-width:821px){
   .qlbar .legacy-link{margin:2px 0;padding:4px 8px 4px 5px!important;border:0!important;background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#9a6f41,#7b5630 55%,#684626)!important;box-shadow:inset 0 1px 0 #ffffff33,inset 0 0 0 1px #000,inset 0 0 6px #0003,0 1px 0 #fff3c855!important}
   .qlbar .legacy-link::after{content:none}
@@ -485,6 +489,10 @@ body.touch .tip .hint{display:none}
 @media (max-width:820px){.qlbar{display:contents}}
 /* Lightly tattered parchment: slightly ragged edges + darker aged rim */
 .tatter{box-shadow:inset 0 0 0 1px #f9eccb55,inset 0 0 16px #5a3410a0,0 0 0 1px #000!important}
+/* torn parchment edges: generated by art/torn_edge.py */
+.parch,.tatter{position:relative}
+.parch::after,.tatter::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='7'%3E%3Cpath d='M0,0L0,4.6L6,4.6L10,4.6L16,3.6L19,3.6L22,3.3L28,5.72314L32,4.6L35,3.6L39,4.2L44,3.6L48,4.2L51,4.2L56,4.6L59,3.9L63,3.3L66,3.3L72,3.9L78,3.3L81,3.3L87,4.2L93,3.6L98,3.9L103,4.2L106,3.3L109,4.2L113,3.6L119,3.6L125,3.3L131,3.6L134,4.6L139,5.2157L143,4.6L146,3.6L150,3.3L155,4.2L158,3.6L162,3.9L167,3.6L173,3.6L179,3.6L180,4.6L180,0Z' fill='%239a7442'/%3E%3Cpath d='M0,3.5L6,3.5L10,3.5L16,2.5L19,2.5L22,2.2L28,4.62314L32,3.5L35,2.5L39,3.1L44,2.5L48,3.1L51,3.1L56,3.5L59,2.8L63,2.2L66,2.2L72,2.8L78,2.2L81,2.2L87,3.1L93,2.5L98,2.8L103,3.1L106,2.2L109,3.1L113,2.5L119,2.5L125,2.2L131,2.5L134,3.5L139,4.1157L143,3.5L146,2.5L150,2.2L155,3.1L158,2.5L162,2.8L167,2.5L173,2.5L179,2.5L180,3.5' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M0,4.6L6,4.6L10,4.6L16,3.6L19,3.6L22,3.3L28,5.72314L32,4.6L35,3.6L39,4.2L44,3.6L48,4.2L51,4.2L56,4.6L59,3.9L63,3.3L66,3.3L72,3.9L78,3.3L81,3.3L87,4.2L93,3.6L98,3.9L103,4.2L106,3.3L109,4.2L113,3.6L119,3.6L125,3.3L131,3.6L134,4.6L139,5.2157L143,4.6L146,3.6L150,3.3L155,4.2L158,3.6L162,3.9L167,3.6L173,3.6L179,3.6L180,4.6' fill='none' stroke='%23f7e8c2' stroke-opacity='0.85' stroke-width='.9'/%3E%3C/svg%3E") top left/180px 7px repeat-x,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='7'%3E%3Cpath d='M0,7L0,2.4L6,2.4L10,2.4L16,3.4L19,3.4L22,3.7L28,1.27686L32,2.4L35,3.4L39,2.8L44,3.4L48,2.8L51,2.8L56,2.4L59,3.1L63,3.7L66,3.7L72,3.1L78,3.7L81,3.7L87,2.8L93,3.4L98,3.1L103,2.8L106,3.7L109,2.8L113,3.4L119,3.4L125,3.7L131,3.4L134,2.4L139,1.7843L143,2.4L146,3.4L150,3.7L155,2.8L158,3.4L162,3.1L167,3.4L173,3.4L179,3.4L180,2.4L180,7Z' fill='%239a7442'/%3E%3Cpath d='M0,3.5L6,3.5L10,3.5L16,4.5L19,4.5L22,4.8L28,2.37686L32,3.5L35,4.5L39,3.9L44,4.5L48,3.9L51,3.9L56,3.5L59,4.2L63,4.8L66,4.8L72,4.2L78,4.8L81,4.8L87,3.9L93,4.5L98,4.2L103,3.9L106,4.8L109,3.9L113,4.5L119,4.5L125,4.8L131,4.5L134,3.5L139,2.8843L143,3.5L146,4.5L150,4.8L155,3.9L158,4.5L162,4.2L167,4.5L173,4.5L179,4.5L180,3.5' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M0,2.4L6,2.4L10,2.4L16,3.4L19,3.4L22,3.7L28,1.27686L32,2.4L35,3.4L39,2.8L44,3.4L48,2.8L51,2.8L56,2.4L59,3.1L63,3.7L66,3.7L72,3.1L78,3.7L81,3.7L87,2.8L93,3.4L98,3.1L103,2.8L106,3.7L109,2.8L113,3.4L119,3.4L125,3.7L131,3.4L134,2.4L139,1.7843L143,2.4L146,3.4L150,3.7L155,2.8L158,3.4L162,3.1L167,3.4L173,3.4L179,3.4L180,2.4' fill='none' stroke='%23f7e8c2' stroke-opacity='0.85' stroke-width='.9'/%3E%3C/svg%3E") bottom left/180px 7px repeat-x,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='180'%3E%3Cpath d='M0,0L4.6,0L4.6,6L4.6,10L3.6,16L3.6,19L3.3,22L5.72314,28L4.6,32L3.6,35L4.2,39L3.6,44L4.2,48L4.2,51L4.6,56L3.9,59L3.3,63L3.3,66L3.9,72L3.3,78L3.3,81L4.2,87L3.6,93L3.9,98L4.2,103L3.3,106L4.2,109L3.6,113L3.6,119L3.3,125L3.6,131L4.6,134L5.2157,139L4.6,143L3.6,146L3.3,150L4.2,155L3.6,158L3.9,162L3.6,167L3.6,173L3.6,179L4.6,180L0,180Z' fill='%239a7442'/%3E%3Cpath d='M3.5,0L3.5,6L3.5,10L2.5,16L2.5,19L2.2,22L4.62314,28L3.5,32L2.5,35L3.1,39L2.5,44L3.1,48L3.1,51L3.5,56L2.8,59L2.2,63L2.2,66L2.8,72L2.2,78L2.2,81L3.1,87L2.5,93L2.8,98L3.1,103L2.2,106L3.1,109L2.5,113L2.5,119L2.2,125L2.5,131L3.5,134L4.1157,139L3.5,143L2.5,146L2.2,150L3.1,155L2.5,158L2.8,162L2.5,167L2.5,173L2.5,179L3.5,180' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M4.6,0L4.6,6L4.6,10L3.6,16L3.6,19L3.3,22L5.72314,28L4.6,32L3.6,35L4.2,39L3.6,44L4.2,48L4.2,51L4.6,56L3.9,59L3.3,63L3.3,66L3.9,72L3.3,78L3.3,81L4.2,87L3.6,93L3.9,98L4.2,103L3.3,106L4.2,109L3.6,113L3.6,119L3.3,125L3.6,131L4.6,134L5.2157,139L4.6,143L3.6,146L3.3,150L4.2,155L3.6,158L3.9,162L3.6,167L3.6,173L3.6,179L4.6,180' fill='none' stroke='%23f7e8c2' stroke-opacity='0.85' stroke-width='.9'/%3E%3C/svg%3E") top left/7px 180px repeat-y,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='180'%3E%3Cpath d='M7,0L2.4,0L2.4,6L2.4,10L3.4,16L3.4,19L3.7,22L1.27686,28L2.4,32L3.4,35L2.8,39L3.4,44L2.8,48L2.8,51L2.4,56L3.1,59L3.7,63L3.7,66L3.1,72L3.7,78L3.7,81L2.8,87L3.4,93L3.1,98L2.8,103L3.7,106L2.8,109L3.4,113L3.4,119L3.7,125L3.4,131L2.4,134L1.7843,139L2.4,143L3.4,146L3.7,150L2.8,155L3.4,158L3.1,162L3.4,167L3.4,173L3.4,179L2.4,180L7,180Z' fill='%239a7442'/%3E%3Cpath d='M3.5,0L3.5,6L3.5,10L4.5,16L4.5,19L4.8,22L2.37686,28L3.5,32L4.5,35L3.9,39L4.5,44L3.9,48L3.9,51L3.5,56L4.2,59L4.8,63L4.8,66L4.2,72L4.8,78L4.8,81L3.9,87L4.5,93L4.2,98L3.9,103L4.8,106L3.9,109L4.5,113L4.5,119L4.8,125L4.5,131L3.5,134L2.8843,139L3.5,143L4.5,146L4.8,150L3.9,155L4.5,158L4.2,162L4.5,167L4.5,173L4.5,179L3.5,180' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M2.4,0L2.4,6L2.4,10L3.4,16L3.4,19L3.7,22L1.27686,28L2.4,32L3.4,35L2.8,39L3.4,44L2.8,48L2.8,51L2.4,56L3.1,59L3.7,63L3.7,66L3.1,72L3.7,78L3.7,81L2.8,87L3.4,93L3.1,98L2.8,103L3.7,106L2.8,109L3.4,113L3.4,119L3.7,125L3.4,131L2.4,134L1.7843,139L2.4,143L3.4,146L3.7,150L2.8,155L3.4,158L3.1,162L3.4,167L3.4,173L3.4,179L2.4,180' fill='none' stroke='%23f7e8c2' stroke-opacity='0.85' stroke-width='.9'/%3E%3C/svg%3E") top right/7px 180px repeat-y}
+.order-parch::after,#racials .parch::after,#spellbook .sb-page::after{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='7'%3E%3Cpath d='M0,0L0,4.6L6,4.6L10,4.6L16,3.6L19,3.6L22,3.3L28,5.72314L32,4.6L35,3.6L39,4.2L44,3.6L48,4.2L51,4.2L56,4.6L59,3.9L63,3.3L66,3.3L72,3.9L78,3.3L81,3.3L87,4.2L93,3.6L98,3.9L103,4.2L106,3.3L109,4.2L113,3.6L119,3.6L125,3.3L131,3.6L134,4.6L139,5.2157L143,4.6L146,3.6L150,3.3L155,4.2L158,3.6L162,3.9L167,3.6L173,3.6L179,3.6L180,4.6L180,0Z' fill='%239a7442'/%3E%3Cpath d='M0,3.5L6,3.5L10,3.5L16,2.5L19,2.5L22,2.2L28,4.62314L32,3.5L35,2.5L39,3.1L44,2.5L48,3.1L51,3.1L56,3.5L59,2.8L63,2.2L66,2.2L72,2.8L78,2.2L81,2.2L87,3.1L93,2.5L98,2.8L103,3.1L106,2.2L109,3.1L113,2.5L119,2.5L125,2.2L131,2.5L134,3.5L139,4.1157L143,3.5L146,2.5L150,2.2L155,3.1L158,2.5L162,2.8L167,2.5L173,2.5L179,2.5L180,3.5' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M0,4.6L6,4.6L10,4.6L16,3.6L19,3.6L22,3.3L28,5.72314L32,4.6L35,3.6L39,4.2L44,3.6L48,4.2L51,4.2L56,4.6L59,3.9L63,3.3L66,3.3L72,3.9L78,3.3L81,3.3L87,4.2L93,3.6L98,3.9L103,4.2L106,3.3L109,4.2L113,3.6L119,3.6L125,3.3L131,3.6L134,4.6L139,5.2157L143,4.6L146,3.6L150,3.3L155,4.2L158,3.6L162,3.9L167,3.6L173,3.6L179,3.6L180,4.6' fill='none' stroke='%23f7e8c2' stroke-opacity='0.3' stroke-width='.9'/%3E%3C/svg%3E") top left/180px 7px repeat-x,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='7'%3E%3Cpath d='M0,7L0,2.4L6,2.4L10,2.4L16,3.4L19,3.4L22,3.7L28,1.27686L32,2.4L35,3.4L39,2.8L44,3.4L48,2.8L51,2.8L56,2.4L59,3.1L63,3.7L66,3.7L72,3.1L78,3.7L81,3.7L87,2.8L93,3.4L98,3.1L103,2.8L106,3.7L109,2.8L113,3.4L119,3.4L125,3.7L131,3.4L134,2.4L139,1.7843L143,2.4L146,3.4L150,3.7L155,2.8L158,3.4L162,3.1L167,3.4L173,3.4L179,3.4L180,2.4L180,7Z' fill='%239a7442'/%3E%3Cpath d='M0,3.5L6,3.5L10,3.5L16,4.5L19,4.5L22,4.8L28,2.37686L32,3.5L35,4.5L39,3.9L44,4.5L48,3.9L51,3.9L56,3.5L59,4.2L63,4.8L66,4.8L72,4.2L78,4.8L81,4.8L87,3.9L93,4.5L98,4.2L103,3.9L106,4.8L109,3.9L113,4.5L119,4.5L125,4.8L131,4.5L134,3.5L139,2.8843L143,3.5L146,4.5L150,4.8L155,3.9L158,4.5L162,4.2L167,4.5L173,4.5L179,4.5L180,3.5' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M0,2.4L6,2.4L10,2.4L16,3.4L19,3.4L22,3.7L28,1.27686L32,2.4L35,3.4L39,2.8L44,3.4L48,2.8L51,2.8L56,2.4L59,3.1L63,3.7L66,3.7L72,3.1L78,3.7L81,3.7L87,2.8L93,3.4L98,3.1L103,2.8L106,3.7L109,2.8L113,3.4L119,3.4L125,3.7L131,3.4L134,2.4L139,1.7843L143,2.4L146,3.4L150,3.7L155,2.8L158,3.4L162,3.1L167,3.4L173,3.4L179,3.4L180,2.4' fill='none' stroke='%23f7e8c2' stroke-opacity='0.3' stroke-width='.9'/%3E%3C/svg%3E") bottom left/180px 7px repeat-x,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='180'%3E%3Cpath d='M0,0L4.6,0L4.6,6L4.6,10L3.6,16L3.6,19L3.3,22L5.72314,28L4.6,32L3.6,35L4.2,39L3.6,44L4.2,48L4.2,51L4.6,56L3.9,59L3.3,63L3.3,66L3.9,72L3.3,78L3.3,81L4.2,87L3.6,93L3.9,98L4.2,103L3.3,106L4.2,109L3.6,113L3.6,119L3.3,125L3.6,131L4.6,134L5.2157,139L4.6,143L3.6,146L3.3,150L4.2,155L3.6,158L3.9,162L3.6,167L3.6,173L3.6,179L4.6,180L0,180Z' fill='%239a7442'/%3E%3Cpath d='M3.5,0L3.5,6L3.5,10L2.5,16L2.5,19L2.2,22L4.62314,28L3.5,32L2.5,35L3.1,39L2.5,44L3.1,48L3.1,51L3.5,56L2.8,59L2.2,63L2.2,66L2.8,72L2.2,78L2.2,81L3.1,87L2.5,93L2.8,98L3.1,103L2.2,106L3.1,109L2.5,113L2.5,119L2.2,125L2.5,131L3.5,134L4.1157,139L3.5,143L2.5,146L2.2,150L3.1,155L2.5,158L2.8,162L2.5,167L2.5,173L2.5,179L3.5,180' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M4.6,0L4.6,6L4.6,10L3.6,16L3.6,19L3.3,22L5.72314,28L4.6,32L3.6,35L4.2,39L3.6,44L4.2,48L4.2,51L4.6,56L3.9,59L3.3,63L3.3,66L3.9,72L3.3,78L3.3,81L4.2,87L3.6,93L3.9,98L4.2,103L3.3,106L4.2,109L3.6,113L3.6,119L3.3,125L3.6,131L4.6,134L5.2157,139L4.6,143L3.6,146L3.3,150L4.2,155L3.6,158L3.9,162L3.6,167L3.6,173L3.6,179L4.6,180' fill='none' stroke='%23f7e8c2' stroke-opacity='0.3' stroke-width='.9'/%3E%3C/svg%3E") top left/7px 180px repeat-y,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='180'%3E%3Cpath d='M7,0L2.4,0L2.4,6L2.4,10L3.4,16L3.4,19L3.7,22L1.27686,28L2.4,32L3.4,35L2.8,39L3.4,44L2.8,48L2.8,51L2.4,56L3.1,59L3.7,63L3.7,66L3.1,72L3.7,78L3.7,81L2.8,87L3.4,93L3.1,98L2.8,103L3.7,106L2.8,109L3.4,113L3.4,119L3.7,125L3.4,131L2.4,134L1.7843,139L2.4,143L3.4,146L3.7,150L2.8,155L3.4,158L3.1,162L3.4,167L3.4,173L3.4,179L2.4,180L7,180Z' fill='%239a7442'/%3E%3Cpath d='M3.5,0L3.5,6L3.5,10L4.5,16L4.5,19L4.8,22L2.37686,28L3.5,32L4.5,35L3.9,39L4.5,44L3.9,48L3.9,51L3.5,56L4.2,59L4.8,63L4.8,66L4.2,72L4.8,78L4.8,81L3.9,87L4.5,93L4.2,98L3.9,103L4.8,106L3.9,109L4.5,113L4.5,119L4.8,125L4.5,131L3.5,134L2.8843,139L3.5,143L4.5,146L4.8,150L3.9,155L4.5,158L4.2,162L4.5,167L4.5,173L4.5,179L3.5,180' fill='none' stroke='%232a1404' stroke-opacity='.55' stroke-width='1.6'/%3E%3Cpath d='M2.4,0L2.4,6L2.4,10L3.4,16L3.4,19L3.7,22L1.27686,28L2.4,32L3.4,35L2.8,39L3.4,44L2.8,48L2.8,51L2.4,56L3.1,59L3.7,63L3.7,66L3.1,72L3.7,78L3.7,81L2.8,87L3.4,93L3.1,98L2.8,103L3.7,106L2.8,109L3.4,113L3.4,119L3.7,125L3.4,131L2.4,134L1.7843,139L2.4,143L3.4,146L3.7,150L2.8,155L3.4,158L3.1,162L3.4,167L3.4,173L3.4,179L2.4,180' fill='none' stroke='%23f7e8c2' stroke-opacity='0.3' stroke-width='.9'/%3E%3C/svg%3E") top right/7px 180px repeat-y}
 .status #resetAll{font-size:14px}
 .status button{font-size:.85em}
 .status .ctrls{display:flex;align-items:center;gap:10px 14px;margin-left:auto;flex-wrap:nowrap}
@@ -516,6 +524,8 @@ body.touch .tip .hint{display:none}
 :root{--cur:url(data:image/png;base64,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) 1 1,auto}
 html,body,*{cursor:var(--cur)!important;cursor:-webkit-image-set(url(data:image/png;base64,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) 2x) 1 1,auto!important;cursor:image-set(url(data:image/png;base64,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) 2x) 1 1,auto!important}
 input[type=text],textarea{cursor:text!important}
+/* Search and Build Code text boxes: same height and the same text */
+.srch-row input,.side .share input{height:28px;padding-top:0;padding-bottom:0;font-size:12px!important;font-weight:700;color:#3d1a06}
 
 /* spec name truly centred on its bar, regardless of icon / points width */
 .tree-h{position:relative}
@@ -587,19 +597,23 @@ body.ally .fold-caret,body.ally .ord-tog .ord-caret{background:linear-gradient(1
 
 
 /* search clear button styled like the +/- badges (dark on Horde, red on Alliance) */
-#searchClear{background:linear-gradient(180deg,#4a1410,#2a0806 60%,#170403)!important;border:1px solid #000!important;border-radius:3px!important;
+#searchClear,#codeClear{background:linear-gradient(180deg,#4a1410,#2a0806 60%,#170403)!important;border:1px solid #000!important;border-radius:3px!important;
   box-shadow:inset 0 1px 0 #ffffff40,inset 0 -1px 0 #0006,0 1px 2px #000a!important;color:#ffd75a!important;font-weight:700;text-shadow:0 1px 0 #000}
-#searchClear:hover{filter:brightness(1.2)}
-#searchClear{font-size:0!important;color:transparent!important;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><g transform='translate(9 9.5) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23000' opacity='.6'/></g><g transform='translate(9 9) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23ffd75a'/></g></svg>"),linear-gradient(180deg,#4a1410,#2a0806 60%,#170403)!important;background-size:20px 20px,auto!important;background-position:center!important;background-repeat:no-repeat!important}
-body.ally #searchClear{background-size:20px 20px,auto!important;background-position:center!important;background-repeat:no-repeat!important;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><g transform='translate(9 9.5) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23000' opacity='.6'/></g><g transform='translate(9 9) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23ffd75a'/></g></svg>"),linear-gradient(180deg,#c43a2c,#8a1c14 60%,#62110c)!important}
-#searchClear{margin-right:2px!important;flex:0 0 18px!important;width:18px!important;height:18px!important;min-width:0!important;padding:0!important;align-self:center;background-size:100% 100%,auto!important}
-body.ally #searchClear{background-size:100% 100%,auto!important}
+#searchClear:hover,#codeClear:hover{filter:brightness(1.2)}
+#searchClear,#codeClear{font-size:0!important;color:transparent!important;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><g transform='translate(9 9.5) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23000' opacity='.6'/></g><g transform='translate(9 9) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23ffd75a'/></g></svg>"),linear-gradient(180deg,#4a1410,#2a0806 60%,#170403)!important;background-size:20px 20px,auto!important;background-position:center!important;background-repeat:no-repeat!important}
+body.ally #searchClear,body.ally #codeClear{background-size:20px 20px,auto!important;background-position:center!important;background-repeat:no-repeat!important;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><g transform='translate(9 9.5) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23000' opacity='.6'/></g><g transform='translate(9 9) rotate(45) scale(1.05)'><path d='M-1.5 -5.5h3v4h4v3h-4v4h-3v-4h-4v-3h4z' fill='%23ffd75a'/></g></svg>"),linear-gradient(180deg,#c43a2c,#8a1c14 60%,#62110c)!important}
+#searchClear,#codeClear{margin-right:2px!important;flex:0 0 18px!important;width:18px!important;height:18px!important;min-width:0!important;padding:0!important;align-self:center;background-size:100% 100%,auto!important}
+body.ally #searchClear,body.ally #codeClear{background-size:100% 100%,auto!important}
 .order-parch{display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
 .order-parch .order2{align-self:stretch;justify-self:stretch;width:100%;box-sizing:border-box}
 /* fixed-size number and icon so every line of the order list lines up whatever the name length */
 .order2 .on,.order2 img,.order2 .ork{flex:none}
-/* Alliance theme: talent names in the order list in deep Alliance blue (as dark as the Horde red) */
-body.ally .order2 .onm{color:#123c9c}
+/* Talent Order kept quiet so it doesn't compete with the trees: the darker parchment used on the
+   Racials / Spellbook pages, dark brown text and smaller numbers */
+.order-parch{background:linear-gradient(180deg,#6b4a2366,#4a2f1266),var(--parch-bg);box-shadow:inset 0 0 0 1px #f9eccb33,inset 0 0 36px #3a200acc,inset 0 0 3px #3a2008,0 0 0 1px #000}
+.order2 li{padding:2px 6px 2px 2px;border-radius:2px}
+.order2 .onm{color:#3d1a06;text-shadow:none}
+.order2 .on,.order2 .ork{color:#4a3018;font-size:11.5px}
 /* "Copied" message under the build code: bright WoW green with a black outline so it reads on the dark frame */
 .side .toast{color:#1eff00;font-size:13px;font-weight:700;margin-top:2px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 2px #000}
 .order-parch{box-sizing:border-box;display:grid;align-content:center;justify-content:stretch;grid-template-columns:minmax(0,1fr)}
@@ -611,14 +625,19 @@ body.ally .order2 .onm{color:#123c9c}
   .site-banner{margin-top:0!important;padding-top:30px}
   .site-banner .tagline{top:calc(30px + (100% - 30px) * .765)}
   .faction-pick button{width:22px!important;height:22px!important;border-width:1px!important;border-radius:3px!important}
-  /* stat bar: tidy 2x2 grid of stats, then controls row, then full-width Reset */
-  .status{display:grid!important;grid-template-columns:1fr 1fr;gap:10px 12px;padding:16px 14px;font-size:15px!important}
+  /* stat bar, compact: four stats in one row (small label over the number), then Talented, Level cap and Reset on one line */
+  .status{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 6px;padding:10px 10px;font-size:12.5px!important}
   .status .grow{display:none}
-  .status .stat{white-space:nowrap}
-  .status .ctrls{grid-column:1/-1;display:grid!important;grid-template-columns:1fr 1fr;gap:10px 12px;margin:0}
-  .status .ctrls label{justify-content:flex-start;min-width:0}
-  .status .ctrls label select{flex:1;min-width:0}
-  .status .ctrls #resetAll{grid-column:1/-1;width:100%}
+  .status .stat{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;white-space:normal;font-size:11px;line-height:1.2;min-width:0}
+  .status .stat b{font-size:15px;min-width:0;text-align:center}
+  .status #split{min-width:0}
+  .status .ctrls{grid-column:1/-1;display:flex!important;align-items:center;gap:6px 5px;margin:0;flex-wrap:wrap}
+  .status .ctrls label{gap:4px;white-space:nowrap}
+  .status .ctrls label select{flex:none;font-size:13px}
+  .status .perk{width:18px;height:18px}
+  .status .ctrls #resetAll{margin-left:auto;width:auto;padding:4px 8px;font-size:12.5px;flex:none}
+  .leg-status .ctrls{grid-column:span 2}
+  .status .cap-l{display:none}.status .cap-s{display:inline}
   /* spellbook: every page is the same height */
   .sb-grid{grid-template-rows:repeat(6,58px)!important;align-items:center}
 }
@@ -661,7 +680,7 @@ document.head.appendChild(t);})();
     </div></div>
     <div class="sgrp code-grp"><div class="hdr">Build Code</div>
     <div class="share tatter">
-      <input id="code" type="text" aria-label="Build code" spellcheck="false">
+      <div class="srch-row"><input id="code" type="text" aria-label="Build code" spellcheck="false"><button type="button" id="codeClear" aria-label="Clear build code">×</button></div>
       <div class="share-btns"><button id="copy" type="button">Copy</button><button id="load" type="button">Load</button></div>
       <div class="toast" id="toast"></div>
     </div></div>
@@ -696,6 +715,12 @@ document.head.appendChild(t);})();
       <section class="card wood"><div class="hdr">Priest Racials</div><div class="parch"><div class="glance" id="glance"></div></div></section>
     </section>
 
+    <section class="leg-panel" id="legPanel" hidden>
+      <section class="status wood leg-status"><div class="stat">Legacy points spent <b id="legSpent">0</b></div><div class="stat">Points left <b id="legLeft">16</b></div><div class="grow"></div><div class="ctrls"><button id="legReset" type="button">Reset All</button></div></section>
+      <div class="trees" id="legTrees"></div>
+      <section class="orderbox"><div class="hdr">Legacy Point Order</div><div class="parch order-parch"><p class="order-empty" id="legOrderEmpty">No points spent yet.</p><ol class="order2" id="legOrder"></ol></div></section>
+    </section>
+
     <section class="status wood" aria-live="polite">
       <div class="stat cls-only">Current level <b id="curLevel"></b></div>
       <div class="stat">Points spent <b id="spent">0</b></div>
@@ -705,7 +730,7 @@ document.head.appendChild(t);})();
       <div class="ctrls"><label class="cls-only" for="talented" title="Legacy perk: each rank starts your talent points one level earlier, still capped at 51"><img class="perk" src="images/icons/ability_marksmanship.jpg" alt="" onerror="this.remove()">Talented
         <select id="talented"><option value="0">0/5</option><option value="1">1/5</option><option value="2">2/5</option><option value="3">3/5</option><option value="4">4/5</option><option value="5">5/5</option></select>
       </label>
-      <label class="cls-only" for="cap">Level cap
+      <label class="cls-only" for="cap"><span class="cap-l">Level cap</span><span class="cap-s">Cap</span>
         <select id="cap"><option value="30">30 (beta)</option><option value="60" selected>60</option></select>
       </label>
       <button id="resetAll" type="button">Reset All</button></div>
@@ -751,22 +776,23 @@ for(const [key,cls] of Object.entries(DATA)){
   all.forEach(t=>{ if(t.prereq){ t.pre=trees[t.tree].talents.find(x=>x.name===t.prereq[0]); t.preNeed=t.prereq[1]; if(!t.pre) t.prereq=null; } });
   const rows=Math.max(...all.map(t=>t.r))+1;
   MODEL[key]={key,name:cls.name,color:cls.color,legacy,max:cls.max||51,rows,trees,all,order:[]};
+  all.forEach(t=>t.m=MODEL[key]);
 }
 let cur=null, tipFor=null, lastClass=null;
 // Talented (Legacy perk): each rank starts talent points one level earlier; the total is still capped at 51
 const talented=()=>+$("talented").value;
-const cap=()=>cur.legacy?cur.max:Math.min(51,+$("cap").value-9+talented());
+const cap=(m=cur)=>m.legacy?m.max:Math.min(51,+$("cap").value-9+talented());
 const levelFor=n=>Math.max(10-talented(),n+9-talented());
-const treeSpent=ti=>cur.trees[ti].talents.reduce((s,t)=>s+t.pts,0);
+const treeSpent=(ti,m=cur)=>m.trees[ti].talents.reduce((s,t)=>s+t.pts,0);
 const totalSpent=(m=cur)=>m.all.reduce((s,t)=>s+t.pts,0);
 // Points that count toward a talent's gate: rows above it for class trees, the rest of the tree for Legacy
-const gateSpent=t=>cur.legacy?treeSpent(t.tree)-t.pts:cur.trees[t.tree].talents.filter(x=>x.r<t.r).reduce((s,x)=>s+x.pts,0);
+const gateSpent=t=>t.m.legacy?treeSpent(t.tree,t.m)-t.pts:t.m.trees[t.tree].talents.filter(x=>x.r<t.r).reduce((s,x)=>s+x.pts,0);
 const reqMet=t=>!t.nyi && gateSpent(t)>=t.gate && (!t.pre || t.pre.pts>=t.preNeed);
-const canAdd=t=>t.pts<t.max && totalSpent()<cap() && reqMet(t);
-const valid=()=>cur.all.every(t=>t.pts===0||reqMet(t));
-function canRemove(t){ if(!t.pts) return false; t.pts--; const ok=valid(); t.pts++; return ok; }
-function add(t){ if(!canAdd(t)) return false; t.pts++; cur.order.push(t); render(); return true; }
-function remove(t){ if(!canRemove(t)) return false; t.pts--; const i=cur.order.lastIndexOf(t); if(i>=0) cur.order.splice(i,1); render(); return true; }
+const canAdd=t=>t.pts<t.max && totalSpent(t.m)<cap(t.m) && reqMet(t);
+const valid=(m=cur)=>m.all.every(t=>t.pts===0||reqMet(t));
+function canRemove(t){ if(!t.pts) return false; t.pts--; const ok=valid(t.m); t.pts++; return ok; }
+function add(t){ if(!canAdd(t)) return false; t.pts++; t.m.order.push(t); render(); return true; }
+function remove(t){ if(!canRemove(t)) return false; t.pts--; const i=t.m.order.lastIndexOf(t); if(i>=0) t.m.order.splice(i,1); render(); return true; }
 const mono=n=>{const w=n.replace(/[:']/g,"").split(/\s+/).filter(Boolean);return w.length===1?w[0].slice(0,2):w.map(x=>x[0]).join("").slice(0,3);};
 // Description for a given rank (1-based)
 const clampRank=(t,k)=>Math.min(Math.max(k,1),t.max);
@@ -788,20 +814,30 @@ if(MODEL.legacy){ legBtn.dataset.key="legacy"; legBtn.style.setProperty("--c",MO
 const racBtn=$("racialLink"); racBtn.dataset.key="racials"; racBtn.style.setProperty("--c","#ffd75a");
 const sbBtn=$("spellLink"); sbBtn.dataset.key="spellbook"; sbBtn.style.setProperty("--c","#ffd75a");
 const isPhone=()=>matchMedia("(max-width:820px)").matches;
-[legBtn,racBtn,sbBtn].forEach(b=>{
-  b.addEventListener("click",e=>{ if(isPhone() && b.getAttribute("aria-pressed")==="true"){ e.stopImmediatePropagation(); selectClass(lastClass||"warrior"); b.scrollIntoView({block:"center"}); } },true);
-  b.addEventListener("click",()=>{ if(isPhone()) requestAnimationFrame(()=>b.scrollIntoView({block:"start",behavior:"smooth"})); });
-});
 const sideBtns=()=>[...bar.querySelectorAll(".cls"),legBtn,racBtn,sbBtn];
+// Phones: Legacy Talents, Racial Abilities and Spellbook each open as their own panel directly under
+// their button and stay open alongside the class trees; tapping the button again closes it.
+const PANELS=[[legBtn,"legPanel"],[racBtn,"racials"],[sbBtn,"spellbook"]];
+const syncPanelBtns=()=>PANELS.forEach(([b,id])=>b.setAttribute("aria-pressed",String(!$(id).hidden)));
+function openLegPanel(){ $("legPanel").hidden=false; buildTrees(MODEL.legacy,$("legTrees")); render(); syncPanelBtns(); }
+PANELS.forEach(([b,id])=>b.addEventListener("click",e=>{
+  if(!isPhone()) return;
+  e.stopImmediatePropagation(); hideTip();
+  if(!$(id).hidden){ $(id).hidden=true; if(id==="legPanel") MODEL.legacy.host=null; syncPanelBtns(); return; }
+  if(id==="legPanel") openLegPanel();
+  else if(id==="racials") showRacials(curRace?curRace.key:"human");
+  else showSpellbook(sbClass,sbRace&&sbRace.key);
+  requestAnimationFrame(()=>b.scrollIntoView({block:"start",behavior:"smooth"}));
+},true));
 
-function buildTrees(){
-  const host=$("trees"); host.innerHTML="";
-  const rows=cur.rows, GH=PY*(rows-1)+S;
-  cur.trees.forEach((tr,ti)=>{
-    const sec=document.createElement("section"); sec.className="tree"+(cur.legacy?" legacy":"");
-    if(!cur.legacy) sec.style.setProperty("--art",`url("images/backgrounds/${tr.spec}.jpg")`);
+function buildTrees(m=cur,host=$("trees")){
+  host.innerHTML=""; m.host=host;
+  const rows=m.rows, GH=PY*(rows-1)+S;
+  m.trees.forEach((tr,ti)=>{
+    const sec=document.createElement("section"); sec.className="tree"+(m.legacy?" legacy":"");
+    if(!m.legacy) sec.style.setProperty("--art",`url("images/backgrounds/${tr.spec}.jpg")`);
     else if(tr.art) sec.style.setProperty("--art",`url("${tr.art}")`);
-    sec.innerHTML=`<div class="tree-h"><span class="ti"><img src="${IMG(tr.icon)}" alt="" onerror="this.remove()"></span><h2>${tr.name}</h2><span class="pts" id="tp${ti}">0</span><button type="button" class="undo" data-undo="${ti}" title="Reset ${tr.name}" aria-label="Reset ${tr.name}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>${tr.blurb?`<p class="blurb">${esc(tr.blurb)}</p>`:""}<div class="grid"></div>`;
+    sec.innerHTML=`<div class="tree-h"><span class="ti"><img src="${IMG(tr.icon)}" alt="" onerror="this.remove()"></span><h2>${tr.name}</h2><span class="pts" data-tp="${ti}">0</span><button type="button" class="undo" data-undo="${ti}" title="Reset ${tr.name}" aria-label="Reset ${tr.name}"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>${tr.blurb?`<p class="blurb">${esc(tr.blurb)}</p>`:""}<div class="grid"></div>`;
     host.appendChild(sec);
     const g=sec.querySelector(".grid"), NS="http://www.w3.org/2000/svg";
     const svg=document.createElementNS(NS,"svg"); svg.setAttribute("viewBox",`0 0 ${GW} ${GH}`); svg.setAttribute("width",GW); svg.setAttribute("height",GH); svg.setAttribute("aria-hidden","true"); g.appendChild(svg);
@@ -837,19 +873,24 @@ function buildTrees(){
     });
   });
 }
-// Curved-arrow button: reset that whole tree
-$("trees").addEventListener("click",e=>{const u=e.target.closest("[data-undo]"); if(!u) return; const ti=+u.dataset.undo;
-  cur.trees[ti].talents.forEach(t=>t.pts=0); cur.order=cur.order.filter(t=>t.tree!==ti); render(); });
+// Curved-arrow button: reset that whole tree (in whichever tree set it belongs to)
+const undoTree=(m,e)=>{const u=e.target.closest("[data-undo]"); if(!u) return; const ti=+u.dataset.undo;
+  m.trees[ti].talents.forEach(t=>t.pts=0); m.order=m.order.filter(t=>t.tree!==ti); render(); };
+$("trees").addEventListener("click",e=>undoTree(cur,e));
+$("legTrees").addEventListener("click",e=>undoTree(MODEL.legacy,e));
+$("legReset").onclick=()=>{ const L=MODEL.legacy; L.all.forEach(t=>t.pts=0); L.order=[]; render(); };
 
 function selectClass(key){
   if(!MODEL[key]) return;
+  if(MODEL[key].legacy && isPhone()){ if(!cur||cur.legacy) selectClass(lastClass||"warrior"); openLegPanel(); return; }
   cur=MODEL[key]; hideTip();
   if(!cur.legacy) lastClass=key;
   document.documentElement.style.setProperty("--cls",cur.color);
   document.title=cur.legacy?"Forever Legacy Talents":`Forever ${cur.name} Talents`;
-  $("app").dataset.mode=cur.legacy?"legacy":"class"; $("racials").hidden=true; $("spellbook").hidden=true;
+  $("app").dataset.mode=cur.legacy?"legacy":"class";
   $("resetAll").textContent="Reset All";
-  sideBtns().forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false"));
+  if(isPhone()){ bar.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); syncPanelBtns(); }
+  else { $("racials").hidden=true; $("spellbook").hidden=true; $("legPanel").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); }
   buildTrees(); render(); runSearch();
 }
 
@@ -859,10 +900,10 @@ function metaRows(t,rank){
   return m.map(([l,r])=>`<div class="tx"><span>${esc(l)}</span><span>${esc(r)}</span></div>`).join("");
 }
 function tipHTML(t){
-  const tr=cur.trees[t.tree], out=[`<div class="tn">${esc(t.name)}</div><div class="tr">Rank ${t.pts}/${t.max}</div>`,metaRows(t,t.pts||1)];
+  const m=t.m, tr=m.trees[t.tree], out=[`<div class="tn">${esc(t.name)}</div><div class="tr">Rank ${t.pts}/${t.max}</div>`,metaRows(t,t.pts||1)];
   if(t.nyi) out.push(`<div class="bad">Not yet implemented</div>`);
   else {
-    if(t.gate>0 && gateSpent(t)<t.gate) out.push(`<div class="bad">Requires ${t.gate} ${cur.legacy?"Legacy Points spent in "+tr.name:"points in "+tr.name+" Talents"}</div>`);
+    if(t.gate>0 && gateSpent(t)<t.gate) out.push(`<div class="bad">Requires ${t.gate} ${m.legacy?"Legacy Points spent in "+tr.name:"points in "+tr.name+" Talents"}</div>`);
     if(t.pre && t.pre.pts<t.preNeed) out.push(`<div class="bad">Requires ${t.preNeed} ${t.preNeed===1?"rank":"ranks"} in ${esc(t.pre.name)}</div>`);
   }
   out.push(`<div class="td">${esc(textAt(t,t.pts||1))}</div>`);
@@ -899,32 +940,44 @@ function render(){
   $("curLevel").textContent = cur.legacy ? "" : (spent ? levelFor(spent) : 0);
   $("spent").textContent=spent; $("left").textContent=cap()-spent;
   $("split").textContent=cur.trees.map((_,i)=>treeSpent(i)).join("/");
-  cur.trees.forEach((_,ti)=>{ $("tp"+ti).textContent=`${treeSpent(ti)} / ${cur.max}`; const u=document.querySelector(`[data-undo="${ti}"]`); if(u) u.disabled=!treeSpent(ti); });
-  cur.all.forEach(t=>{
-    const b=t.el; b.classList.remove("locked","avail","part","max");
-    if(t.pts===t.max) b.classList.add("max"); else if(t.pts>0) b.classList.add("part"); else if(canAdd(t)) b.classList.add("avail"); else b.classList.add("locked");
-    b.querySelector(".rk").textContent=`${t.pts}/${t.max}`;
-    b.setAttribute("aria-label",`${t.name}, ${t.pts} of ${t.max} points`);
-    if(t.line) t.line.classList.toggle("met",t.pre.pts>=t.preNeed);
-  });
+  renderTalents(cur);
+  const L=MODEL.legacy;
+  if(L && L!==cur && L.host && !$("legPanel").hidden){
+    renderTalents(L);
+    $("legSpent").textContent=totalSpent(L); $("legLeft").textContent=cap(L)-totalSpent(L);
+    renderOrder(L,$("legOrder"),$("legOrderEmpty"));
+  }
   // Talented in the Legacy tree sets the Talented rank used by the class calculators
-  if(cur.legacy){ const tl=cur.all.find(x=>x.name==="Talented"); if(tl && +$("talented").value!==tl.pts){ $("talented").value=tl.pts; try{ localStorage.setItem("fta-talented",tl.pts); }catch(e){} } }
+  if(L){ const tl=L.all.find(x=>x.name==="Talented");
+    if(tl && (cur.legacy||(L.host && !$("legPanel").hidden)) && +$("talented").value!==tl.pts){ $("talented").value=tl.pts; try{ localStorage.setItem("fta-talented",tl.pts); }catch(e){}
+      if(!cur.legacy){ trim(); return; } } }
   sideBtns().forEach(b=>b.classList.toggle("has",!!MODEL[b.dataset.key]&&totalSpent(MODEL[b.dataset.key])>0));
   renderOrder();
   const code=spent?buildCode():""; $("code").value=code; $("code").closest(".sgrp").classList.toggle("empty",!code);
   try{ history.replaceState(null,"","#"+(code||cur.key)); }catch(e){}
   if(tipFor) showTip(tipFor,!canHover);
 }
+// Talent buttons and tree headers of one tree set
+function renderTalents(m){
+  m.trees.forEach((_,ti)=>{ const p=m.host.querySelector(`[data-tp="${ti}"]`); if(p) p.textContent=`${treeSpent(ti,m)} / ${m.max}`; const u=m.host.querySelector(`[data-undo="${ti}"]`); if(u) u.disabled=!treeSpent(ti,m); });
+  m.all.forEach(t=>{
+    const b=t.el; b.classList.remove("locked","avail","part","max");
+    if(t.pts===t.max) b.classList.add("max"); else if(t.pts>0) b.classList.add("part"); else if(canAdd(t)) b.classList.add("avail"); else b.classList.add("locked");
+    b.querySelector(".rk").textContent=`${t.pts}/${t.max}`;
+    b.setAttribute("aria-label",`${t.name}, ${t.pts} of ${t.max} points`);
+    if(t.line) t.line.classList.toggle("met",t.pre.pts>=t.preNeed);
+  });
+}
 // Talent order under the trees, laid out like Wowhead's: number, small icon, yellow name, rank
-function renderOrder(){
-  const ol=$("order"); ol.innerHTML=""; ol.style.setProperty("--rows",Math.ceil(cap()/3)||1); $("orderEmpty").hidden=cur.order.length>0;
-  $("orderTitle").textContent=cur.legacy?"Legacy Point Order":"Talent Order";
+function renderOrder(m=cur,ol=$("order"),empty=$("orderEmpty")){
+  ol.innerHTML=""; ol.style.setProperty("--rows",Math.ceil(cap(m)/3)||1); empty.hidden=m.order.length>0;
+  if(m===cur) $("orderTitle").textContent=m.legacy?"Legacy Point Order":"Talent Order";
   const n=new Map();
-  cur.order.forEach((t,i)=>{
+  m.order.forEach((t,i)=>{
     n.set(t,(n.get(t)||0)+1);
     const li=document.createElement("li");
-    li.innerHTML=`<span class="on">${cur.legacy?i+1:levelFor(i+1)}</span><img src="${IMG(t.icon)}" alt="" onerror="this.style.visibility='hidden'"><span class="onm">${esc(t.name)}</span><span class="ork">Rank ${n.get(t)}</span>`;
-    li.title=cur.legacy?`Point ${i+1}`:`Level ${levelFor(i+1)}`;
+    li.innerHTML=`<span class="on">${m.legacy?i+1:levelFor(i+1)}</span><img src="${IMG(t.icon)}" alt="" onerror="this.style.visibility='hidden'"><span class="onm">${esc(t.name)}</span><span class="ork">Rank ${n.get(t)}</span>`;
+    li.title=m.legacy?`Point ${i+1}`:`Level ${levelFor(i+1)}`;
     ol.appendChild(li);
   });
 }
@@ -959,19 +1012,21 @@ function runSearch(){
 }
 $("search").addEventListener("input",runSearch);
 $("searchClear").onclick=()=>{ $("search").value=""; runSearch(); $("search").focus(); };
+$("codeClear").onclick=()=>{ $("code").value=""; $("code").focus(); };   // clears the box (e.g. to paste a code); the build itself is untouched
 $("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".srch-jump"); if(!b) return; if(b.dataset.race) showRacials(b.dataset.race); else selectClass(b.dataset.key); });
 
 const buildCode=()=>cur.key+":"+cur.trees.map(tr=>tr.talents.map(t=>t.pts).join("").replace(/0+$/,"")).join("-");
 function loadCode(code){
   const m=(code||"").trim().match(/^([a-z]+):([0-9]*)-([0-9]*)-([0-9]*)$/);
   if(!m || !MODEL[m[1]]) return false;
-  if(cur!==MODEL[m[1]]) selectClass(m[1]);
+  const M=MODEL[m[1]];
+  if(cur!==M) selectClass(m[1]);
   const parts=[m[2],m[3],m[4]], target=new Map();
-  cur.all.forEach(t=>t.pts=0); cur.order=[];
-  cur.trees.forEach((tr,ti)=>tr.talents.forEach((t,i)=>target.set(t,Math.min(t.max,+(parts[ti][i]||0)))));
-  if(!cur.legacy && [...target.values()].reduce((a,b)=>a+b,0)>cap()) $("cap").value="60";
+  M.all.forEach(t=>t.pts=0); M.order=[];
+  M.trees.forEach((tr,ti)=>tr.talents.forEach((t,i)=>target.set(t,Math.min(t.max,+(parts[ti][i]||0)))));
+  if(!M.legacy && [...target.values()].reduce((a,b)=>a+b,0)>cap(M)) $("cap").value="60";
   let progress=true;
-  while(progress){ progress=false; for(const t of cur.all){ if(t.pts<target.get(t) && canAdd(t)){ t.pts++; cur.order.push(t); progress=true; } } }
+  while(progress){ progress=false; for(const t of M.all){ if(t.pts<target.get(t) && canAdd(t)){ t.pts++; M.order.push(t); progress=true; } } }
   render(); return true;
 }
 const trim=()=>{ while(totalSpent()>cap()){ const t=cur.order.pop(); t.pts--; } render(); };
@@ -1025,9 +1080,10 @@ function traitRow(x,priest){
 }
 function showRacials(key){
   const r=RACIALS.find(x=>x.key===key)||RACIALS.find(x=>x.key==="human"); curRace=r; hideTip();
-  $("app").dataset.mode="racials"; $("racials").hidden=false; $("spellbook").hidden=true;
-  document.title=`Forever ${r.name} Racials`;
-  sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===racBtn?"true":"false"));
+  $("racials").hidden=false;
+  if(isPhone()) syncPanelBtns();
+  else { $("app").dataset.mode="racials"; $("spellbook").hidden=true; document.title=`Forever ${r.name} Racials`;
+    sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===racBtn?"true":"false")); }
   raceBtns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.race===r.key?"true":"false"));
   $("raceHead").textContent=`${r.name} Racial Traits`;
   $("raceInfo").innerHTML=`<span class="ri-k">${esc(r.name)} classes:</span>${r.classes.map(c=>`<span class="chip" style="--c:${CLASS_COL[c]||"#ffd75a"}">${c}</span>`).join("")}`;
@@ -1036,7 +1092,7 @@ function showRacials(key){
   document.querySelector(".race-cols").classList.toggle("solo",!PRIEST_CAN(r));
   $("racePriest").innerHTML = r.priest.length ? r.priest.map(x=>traitRow([x[0],x[1],x[2],x[3],""])).join("")
     : `<p class="none-note">${PRIEST_CAN(r)?"No Priest racial spells are listed for this race yet.":`${esc(r.name)} can't be Priests, so there are no Priest racial spells.`}</p>`;
-  try{ history.replaceState(null,"","#racials:"+r.key); }catch(e){}
+  if(!isPhone()){ try{ history.replaceState(null,"","#racials:"+r.key); }catch(e){} }
   runSearch();
 }
 $("glance").innerHTML=RACIALS.filter(r=>r.priest.length).map(r=>`<button type="button" class="gl" data-race="${r.key}"><img class="gr" src="${IMG(r.icon)}" alt="" onerror="this.style.visibility='hidden'"><span class="gn">${esc(r.name)}</span><span class="gs">${r.priest.map((p,i)=>`<span data-i="${i}"><img src="${IMG(p[1])}" alt="" onerror="this.style.visibility='hidden'">${esc(p[0])}</span>`).join("")}</span></button>`).join("");
@@ -1063,8 +1119,9 @@ for(const k of SBORD){ const m=MODEL[k];
   b.addEventListener("click",()=>showSpellbook(k,null)); $("sbClasses").appendChild(b); sbClassBtns.push(b); }
 const racesFor=k=>RACIALS.filter(r=>r.classes.includes(MODEL[k].name));
 function showSpellbook(k,race,tab){
-  hideTip(); $("app").dataset.mode="spellbook"; $("racials").hidden=true; $("spellbook").hidden=false;
-  sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===sbBtn?"true":"false"));
+  hideTip(); $("spellbook").hidden=false;
+  if(isPhone()) syncPanelBtns();
+  else { $("app").dataset.mode="spellbook"; $("racials").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===sbBtn?"true":"false")); }
   sbClass=SB[k]?k:null; sbRace=null;
   if(sbClass){ const rs=racesFor(sbClass); sbRace=rs.find(r=>r.key===race)||null; if(tab!=null) sbTab=tab; else if(!race) sbTab=0; sbPage=0; }
   sbClassBtns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===sbClass?"true":"false"));
@@ -1076,8 +1133,8 @@ function showSpellbook(k,race,tab){
       b.addEventListener("click",()=>showSpellbook(sbClass,r.key,sbTab)); $("sbRaces").appendChild(b); } }
   $("sbPrompt").textContent=!sbClass?"Choose a class to open its spellbook.":!sbRace?`Choose a race for your ${MODEL[sbClass].name}.`:"";
   $("sbWrap").hidden=!(sbClass&&sbRace);
-  document.title=sbClass&&sbRace?`Forever ${sbRace.name} ${MODEL[sbClass].name} Spellbook`:"Forever Spellbook";
-  try{ history.replaceState(null,"","#spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }catch(e){}
+  if(!isPhone()){ document.title=sbClass&&sbRace?`Forever ${sbRace.name} ${MODEL[sbClass].name} Spellbook`:"Forever Spellbook";
+    try{ history.replaceState(null,"","#spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }catch(e){} }
   if(sbClass&&sbRace) renderSpellbook();
 }
 function sbEntries(){
@@ -1154,6 +1211,7 @@ function route(){
 }
 route();
 window.addEventListener("popstate",route);
+matchMedia("(max-width:820px)").addEventListener("change",()=>{ if(!$("app").hidden && cur) selectClass(cur.legacy?(lastClass||"warrior"):cur.key); });
 
 try{ const ob=$("orderHead").closest(".orderbox");
   const setOrd=c=>{ ob.classList.toggle("collapsed",c); $("orderHead").setAttribute("aria-expanded",String(!c)); try{ localStorage.setItem("ordCollapsed",c?"1":"0"); }catch(e){} };
@@ -1203,7 +1261,7 @@ const TAGLINES=[
 document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+40)%360; b.style.setProperty("--tx",`-${x}px -${y}px`); });
 
 /* keep the stat bar on one level line: shrink its text a little if the window is narrow */
-(function(){ const st=document.querySelector(".status"); if(!st) return;
+(function(){ const st=document.querySelector(".main>.status"); if(!st) return;
   const fit=()=>{ st.style.fontSize=""; st.classList.remove("wrap"); if(innerWidth<=820 || !st.offsetWidth) return;
     let fs=16.5, g=0; while(st.scrollWidth>st.clientWidth+1 && fs>12.5 && g++<30){ fs-=0.5; st.style.fontSize=fs+"px"; }
     if(st.scrollWidth>st.clientWidth+1){ st.style.fontSize=""; st.classList.add("wrap"); } };
@@ -1213,9 +1271,9 @@ document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+
 })();
 
 /* line the Build Code box up with the Talent Order bar (desktop only) */
-(function(){ const cg=document.querySelector(".code-grp"), ob=document.querySelector(".orderbox"), fr=$("app"); if(!cg||!ob) return;
+(function(){ const cg=document.querySelector(".code-grp"), ob=$("orderHead").closest(".orderbox"), fr=$("app"); if(!cg||!ob) return;
   let busy=false;
-  const tr=document.querySelector(".trees");
+  const tr=$("trees");
   const groups=[...document.querySelectorAll(".side>.sgrp")].filter(g=>g!==cg);  /* boxes above Build Code */
   const ch=cg.querySelector(".hdr"), oh=$("orderHead");
   let again=false;
@@ -1240,7 +1298,7 @@ document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+
       }
     }
     requestAnimationFrame(()=>{ busy=false; if(again){ again=false; align(); } }); };
-  if(window.ResizeObserver){ const ro=new ResizeObserver(align); [document.querySelector(".trees"),document.querySelector(".status"),...document.querySelectorAll(".side>.sgrp")].forEach(e=>e&&ro.observe(e)); }
+  if(window.ResizeObserver){ const ro=new ResizeObserver(align); [$("trees"),document.querySelector(".main>.status"),...document.querySelectorAll(".side>.sgrp")].forEach(e=>e&&ro.observe(e)); }
   addEventListener("resize",align); document.addEventListener("click",()=>requestAnimationFrame(align));
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(align); align();
 })();
