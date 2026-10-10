@@ -50,7 +50,9 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
    - `../Forever-Talents-Classic-Style.html` (from `template2.html`)
 4. Turns the Classic-Style page into the web version: Wowhead image URLs
    (`wow.zamimg.com`) become local `images/...` paths, and the GoatCounter
-   analytics snippet is added before `</head>`. It asserts that no `zamimg` URLs
+   analytics snippet is added before `</head>`, along with the icon links and the link-preview (Open Graph) tags,
+   which point at `https://foreverinfo.io/`. The preview picture `images/og.jpg` is made by `tc/art/og_image.py`;
+   `favicon.png`, `favicon.ico`, `apple-touch-icon.png`, `robots.txt` and `sitemap.xml` sit in the repo root. It asserts that no `zamimg` URLs
    remain, then writes:
    - `../web/index.html`: the site
    - `../web/image-list.txt`: `url|local path` lines for every image the site needs
