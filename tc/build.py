@@ -57,7 +57,9 @@ for key, name, color in CLASSES:
     for tr in trees:
         names = {t[3] for t in tr['t']}
         talents = []
-        for r, c, mx, tname, icon, desc, ranks, pre in tr['t']:
+        for r, c, mx, tname, icon, desc, ranks, pre, *rest in tr['t']:
+            # per-rank texts from sync_talents.py: shown as they are, so every changing number is right at every rank
+            texts = [clean_html(x).strip() for x in rest[0]] if rest and rest[0] else None
             desc = fix_desc(clean_html(desc), ranks).strip()
             # values Wowhead doesn't list yet: show "?" instead of a misleading 0
             desc = re.sub(r'(?<![\d.])0 (sec|Mana)', r'? \1', desc)
@@ -66,7 +68,8 @@ for key, name, color in CLASSES:
                 problems.append((key, tr['n'], tname, pre))
                 pre = None
             pr = OVERRIDES.get((key, tname)) or per_rank(desc, ranks, mx)
-            talents.append([r, c, mx, tname, icon, pr[0] if pr else desc, pre, pr[1] if pr else None])
+            talents.append([r, c, mx, tname, icon, pr[0] if pr else desc, pre, pr[1] if pr else None]
+                           + ([None, texts] if texts and len(texts) == mx else []))
             cells = [(t[0], t[1]) for t in tr['t']]
         if len(set(cells)) != len(cells):
             problems.append((key, tr['n'], 'duplicate cell'))

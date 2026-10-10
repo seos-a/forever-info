@@ -51,6 +51,7 @@ body{margin:0;color:#e9e4d6;font-family:var(--font);font-size:13px;line-height:1
   background:radial-gradient(1100px 500px at 50% -120px,#1d2a1a 0%,transparent 70%),var(--black)}
 body.has-bg{background:var(--userbg) top center/var(--bgsize,cover) var(--bgrepeat,no-repeat),var(--black)}
 button,input,select{font:inherit}
+html{touch-action:manipulation}   /* no double-tap zoom when tapping talents quickly (pinch-zoom still works) */
 
 .frame,.landing{zoom:.85}
 .frame{max-width:1480px;margin:0 auto;padding-inline:16px;padding-block:18px 40px;display:grid;grid-template-columns:232px minmax(0,1fr);gap:14px;align-items:start}
