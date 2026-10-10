@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>/* iPhone/iPad Safari zooms the page into any text field under 16px when it is tapped; maximum-scale stops that
+   (iOS still lets people pinch-zoom). Only on Apple devices: on Android the same setting would block pinch-zoom. */
+if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1))document.querySelector('meta[name="viewport"]').content="width=device-width, initial-scale=1, maximum-scale=1";</script>
 <title>Forever Talent Calculator</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <style>
@@ -668,6 +671,8 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 .srch-info .sr-hit .sh-n{font-size:13px;color:#ffd100;text-shadow:1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px -1px 0 #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
 .srch-info .sr-hit .sh-s{font-size:11px;color:#f1e2c0;text-shadow:1px 1px 0 #000,0 0 2px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .srch-info .sr-hit:hover,.srch-info .sr-hit:focus-visible{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#aa7d4c,#8a6339 55%,#75512d);box-shadow:inset 0 0 0 1px #000,inset 0 0 0 2px #ffd75a,inset 0 0 0 3px #000a,0 0 0 1px #000,0 0 8px #ffd75a}
+/* results show just the icon and name (no tree line), a size up */
+.srch-info .sr-hit .sh-s{display:none}.srch-info .sr-hit{grid-template-columns:32px minmax(0,1fr);gap:8px;min-height:38px}.srch-info .sr-hit img{width:32px;height:32px}.srch-info .sr-hit .sh-n{font-size:15px;white-space:normal;line-height:1.12;padding:2px 0}   /* long names wrap rather than get cut off in the narrow side bar */
 .srch-info .sr-more{all:unset;box-sizing:border-box;font-size:11.5px;color:#3b2410;padding:1px 0 0 38px;cursor:pointer;text-decoration:underline dotted #3b241080;text-underline-offset:2px}
 .srch-info .sr-more:hover{color:#7a1408;text-decoration-color:#7a1408}
 .tal.sr-hl{outline:2px solid #ffd75a;outline-offset:2px}
@@ -677,7 +682,7 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 /* Build Code only means something on the talent pages */
 #app[data-mode="racials"] .code-grp,#app[data-mode="spellbook"] .code-grp{display:none}
 @media (max-width:820px){
-  .srch-info{padding:7px 8px 8px!important}
+  .srch-info{position:static!important;margin-top:6px;padding:7px 8px 8px!important}   /* phones: results sit in the page and push the trees down instead of covering them */
   .srch-info .sr-n,.srch-info .sr-also{font-size:12px}
   .srch-info .sr-also{margin:6px 0 4px}
   .srch-info .sr-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
@@ -694,7 +699,6 @@ html,body,*{cursor:var(--cur)!important;cursor:-webkit-image-set(url(data:image/
 input[type=text],textarea{cursor:text!important}
 /* Search and Build Code text boxes: same height and the same text */
 .srch-row input,.side .share input{height:28px;padding-top:0;padding-bottom:0;font-size:14px!important;font-weight:700;color:#000}
-@media (max-width:820px){input[type=text],select,.srch-row input,.side .share input{font-size:19px!important}}   /* iPhone Safari zooms the page into any field under 16px when it's tapped; phones draw the page at 85% (.frame zoom), so 19px lands at 16px */
 
 /* spec name truly centred on its bar, regardless of icon / points width */
 .tree-h{position:relative}
@@ -878,7 +882,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
   <nav class="pick" id="pick"></nav>
 </section>
 <div class="frame" id="app" hidden>
-    <img class="critter top-mur2" src="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/215/983.png" data-hw="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/237/1005.png" alt="" onerror="this.remove()"><img class="critter top-mur" src="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/185/441.png" data-hw="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/28/540.png" alt="" onerror="this.remove()"><img class="critter top-gob" src="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/252/7164.png" data-hw="images/models/greenskin_pirate.png" alt="" onerror="this.remove()">
+    <img class="critter top-mur2" src="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/215/983.png" data-hw="images/models/murloc_scimitar.png" alt="" onerror="this.remove()"><img class="critter top-mur" src="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/185/441.png" data-hw="images/models/murloc_spear.png" alt="" onerror="this.remove()"><img class="critter top-gob" src="https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/252/7164.png" data-hw="images/models/greenskin_pirate.png" alt="" onerror="this.remove()">
   <aside class="side" aria-label="Classes">
     <div class="sgrp"><div class="hdr">Classes</div>
     <nav class="classbar tatter" id="classbar" aria-label="Class"></nav></div>
@@ -1245,9 +1249,11 @@ function runSearch(){
   const q=$("search").value.trim().toLowerCase(), info=$("searchInfo");
   if(!cur) return;
   let hits=0;
+  // a result picked from the list: only that talent stays lit until the search text changes
+  const pick=q && srPick && srPick.q===q && cur.all.some(t=>t.el===srPick.el) ? srPick.el : null;
   cur.all.forEach(t=>{
-    const on=!q || talentHit(t,q);
-    t.el.classList.toggle("dim",!!q && !on); t.el.classList.toggle("hit",!!q && on); if(q&&on) hits++;
+    const on=!q || talentHit(t,q), lit=pick ? t.el===pick : on;
+    t.el.classList.toggle("dim",!!q && !lit); t.el.classList.toggle("hit",!!q && lit); if(q&&on) hits++;
   });
   // arrows fade with the talents: they stay bright only when they link two matching talents
   cur.all.forEach(t=>{ if(t.line) t.line.classList.toggle("dim",!!q && (t.el.classList.contains("dim")||t.pre.el.classList.contains("dim"))); });
@@ -1256,10 +1262,10 @@ function runSearch(){
     const elsewhere=Object.values(MODEL).filter(m=>m!==cur).map(m=>[m,m.all.filter(t=>talentHit(t,q)).length]).filter(x=>x[1]);   // same test as this page: name or description
     if(elsewhere.length) other=`<div class="sr-also">Also found in:</div><div class="sr-list">`+elsewhere.map(([m,c],i)=>`<button type="button" class="cls srch-jump" data-key="${m.key}" style="--c:${INK[m.key]||m.color};--tx:-${i*137%360}px -${(i*83+40)%360}px"><span class="ci"><img src="${IMG(m.legacy?"inv_misc_coin_01":"classicon_"+m.key)}" alt="" onerror="this.style.visibility='hidden'"></span><span>${m.name}</span><i>${c}</i></button>`).join("")+`</div>`;
   }
-  info.innerHTML = q ? `<div class="sr-n"><b>${hits}</b> ${hits===1?"match":"matches"} here</div>`+hitList(cur.all.filter(t=>t.el.classList.contains("hit")).map(t=>({el:t.el,icon:IMG(t.icon),name:t.name,sub:cur.trees[t.tree].name,tip:()=>{ $("tip").innerHTML=tipHTML(t); }})))+other : "";
+  info.innerHTML = q ? `<div class="sr-n"><b>${hits}</b> ${hits===1?"match":"matches"} here</div>`+hitList(cur.all.filter(t=>talentHit(t,q)).map(t=>({el:t.el,icon:IMG(t.icon),name:t.name,sub:cur.trees[t.tree].name,tip:()=>{ $("tip").innerHTML=tipHTML(t); }})))+other : "";
 }
 // the matches on this page, listed in the dropdown: hover outlines the spell, click scrolls to it
-let srEls=[], srTips=[], srAll=false;   // srAll: "and N more" was clicked, so list every match until the search changes
+let srEls=[], srTips=[], srAll=false, srPick=null;   // srPick: {el, q}, the result last clicked for this search   // srAll: "and N more" was clicked, so list every match until the search changes
 function hitList(items){ srEls=items.map(x=>x.el); srTips=items.map(x=>x.tip); const max=srAll?Infinity:isPhone()?3:6;
   return items.length?`<div class="sr-hits">`+items.slice(0,max).map((x,i)=>`<button type="button" class="sr-hit" data-h="${i}" style="--tx:-${i*137%360}px -${(i*83+40)%360}px"><img src="${x.icon}" alt="" onerror="this.style.visibility='hidden'"><span><span class="sh-n">${esc(x.name)}</span><span class="sh-s">${esc(x.sub||"")}</span></span></button>`).join("")
     +(items.length>max?`<button type="button" class="sr-more">and ${items.length-max} more</button>`:"")+`</div>`:""; }
@@ -1268,9 +1274,10 @@ $("searchInfo").addEventListener("mouseover",e=>{ const b=e.target.closest(".sr-
   const f=srTips[+b.dataset.h]; if(f){ f(); tipFor=null; placeTip($("searchInfo")); $("tip").style.top=Math.max(8,Math.min(innerHeight-$("tip").getBoundingClientRect().height-8,b.getBoundingClientRect().top))+"px"; } });   // beside the dropdown, so it never covers the other results
 $("searchInfo").addEventListener("mouseout",e=>{ const b=e.target.closest(".sr-hit"); if(b&&!b.contains(e.relatedTarget)){ srHl(null); if(canHover) hideTip(); } });
 $("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".sr-hit"), el=b&&srEls[+b.dataset.h]; if(!el) return;
+  srPick={el,q:$("search").value.trim().toLowerCase()}; runSearch();
   srHl(null); hideTip(); $("searchInfo").classList.add("closed"); el.scrollIntoView({block:"center",behavior:"smooth"});
   el.classList.remove("sr-flash"); void el.offsetWidth; el.classList.add("sr-flash"); setTimeout(()=>el.classList.remove("sr-flash"),1600); });
-$("search").addEventListener("input",()=>{ srAll=false; $("searchInfo").classList.remove("closed"); runSearch(); });
+$("search").addEventListener("input",()=>{ srAll=false; srPick=null; $("searchInfo").classList.remove("closed"); runSearch(); });
 $("searchInfo").addEventListener("click",e=>{ if(e.target.closest(".sr-more")){ srAll=true; runSearch(); } });
 ["focus","click"].forEach(ev=>$("search").addEventListener(ev,()=>$("searchInfo").classList.remove("closed")));
 document.addEventListener("click",e=>{ if(!e.composedPath().some(n=>n.classList&&n.classList.contains("srch"))) $("searchInfo").classList.add("closed"); });
