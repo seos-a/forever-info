@@ -1162,6 +1162,7 @@ function selectClass(key){
   $("resetAll").textContent="Reset All";
   if(isPhone()){ bar.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); syncPanelBtns(); }
   else { $("racials").hidden=true; $("spellbook").hidden=true; $("legPanel").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); }
+  if(!cur.legacy && window.ordReset) window.ordReset();   // Talent Order folds again for the new class, until it has points
   buildTrees(); render(); runSearch();
 }
 
@@ -1583,6 +1584,8 @@ try{ const ob=$("orderHead").closest(".orderbox");
   window.ordAuto = !isPhone() && !(cur && cur.order.length);
   if(isPhone() || window.ordAuto) fold(true);
   window.ordAutoOpen=()=>{ if(window.ordAuto && cur && cur.order.length){ window.ordAuto=false; fold(false); } };
+  // switching class starts over: folded, opening by itself once that class has a point (straight away if it already has)
+  window.ordReset=()=>{ if(isPhone()) return; window.ordAuto=true; fold(true); };
   $("orderHead").addEventListener("click",()=>{ window.ordAuto=false; setOrd(!ob.classList.contains("collapsed")); });
 }catch(e){}
 // Legacy Point Order folds the same way; it starts folded on phones
