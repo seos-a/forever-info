@@ -65,7 +65,7 @@ def ranks(c,name,topdesc):
 RK={}
 RKD={}
 # spellbook tabs that aren't talent trees: [name, icon], in skill-line order after the three trees
-EXTRA_TABS={'hunter':[['Beast Training','ability_hunter_beasttraining']]}   # pet abilities taught at the pet trainer
+EXTRA_TABS={'hunter':[['Beast Training','ability_hunter_beastcall02']]}   # pet abilities taught at the pet trainer
 # Season of Discovery leftovers in Wowhead's Forever data with no trainer source
 DROP={'Aspect of the Falcon','Hammer of the Righteous','Portal of Summoning','Coup de Grace','Enchanted Flare','Lightwell'}
 def build():

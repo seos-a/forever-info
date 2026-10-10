@@ -24,6 +24,21 @@ def clean_html(desc):
     desc = re.sub(r'<[^>]+>', '', desc)
     return re.sub(r'[ \t]{2,}', ' ', desc)
 
+def tidy_formula(desc):
+    """Wowhead sometimes leaves a damage/healing formula in a talent's text. Write it the way the site always has:
+    "[32 / Ferocity: 48 + (Ranged Attack Power * (0.05))]" -> "32 (plus 5% of your Ranged Attack Power)" (the
+    "/ Talent: n" parts are the value with other talents taken), "[(172 + (Healing * 0.429)) * (1 * 1)]" ->
+    "172 (plus about 43% of your bonus healing)"."""
+    desc = re.sub(r'\[(\d+(?:\.\d+)?)(?: / [^\]/:]+: \d+(?:\.\d+)?)+', lambda m: '[' + m.group(1), desc)
+    def pct(x):
+        v = float(x) * 100
+        return (f'about {round(v)}' if abs(v - round(v)) > 0.05 else f'{round(v)}') + '%'
+    desc = re.sub(r'\[\(?(\d+(?:\.\d+)?) \+ \(Healing \* \(?([\d.]+)\)?\)\)?(?: \* \(1 \* 1\))?\]',
+                  lambda m: f'{m.group(1)} (plus {pct(m.group(2))} of your bonus healing)', desc)
+    desc = re.sub(r'\[\(?(\d+(?:\.\d+)?) \+ \(((?:Ranged )?Attack Power|Spell Power|[A-Z][a-z]+ spell power) \* \(?([\d.]+)\)?\)\)?(?: \* \(1 \* 1\))?\]',
+                  lambda m: f'{m.group(1)} (plus {pct(m.group(3))} of your {m.group(2)})', desc)
+    return desc
+
 def fix_desc(desc, ranks):
     """Wowhead sometimes leaves a value as 0 when it lives in another rank field.
     Fill those placeholders with the talent's max-rank value."""
@@ -59,8 +74,8 @@ for key, name, color in CLASSES:
         talents = []
         for r, c, mx, tname, icon, desc, ranks, pre, *rest in tr['t']:
             # per-rank texts from sync_talents.py: shown as they are, so every changing number is right at every rank
-            texts = [clean_html(x).strip() for x in rest[0]] if rest and rest[0] else None
-            desc = fix_desc(clean_html(desc), ranks).strip()
+            texts = [tidy_formula(clean_html(x)).strip() for x in rest[0]] if rest and rest[0] else None
+            desc = fix_desc(tidy_formula(clean_html(desc)), ranks).strip()
             # values Wowhead doesn't list yet: show "?" instead of a misleading 0
             desc = re.sub(r'(?<![\d.])0 (sec|Mana)', r'? \1', desc)
             desc = desc.replace('(0 /- 3 * - 204)', '?')
@@ -137,7 +152,13 @@ _os.makedirs('../web',exist_ok=True)
 open('../web/index.html', 'w', encoding='utf-8', newline='\n').write(web)
 A=_json.load(open('assets.json', encoding='utf-8'))
 models=sorted(set(_re.findall(r'images/models/(\d+)\.png',web)))
-lines=[f"https://wow.zamimg.com/images/wow/icons/large/{i}.jpg|images/icons/{i}.jpg" for i in A['icons']]
+# every icon the data uses (so a new talent, spell or tab from a beta sync gets its icon), plus the hand list in assets.json
+used={tr['i'] for c in data.values() for tr in c['trees']} | {t[4] for c in data.values() for tr in c['trees'] for t in tr['t']}
+used|={s[1] for k,v in SBK.items() if isinstance(v,dict) and 'spells' in v for s in v['spells']+v['general']+v.get('tabs',[])}
+RAC=_json.load(open('racials.json', encoding='utf-8'))
+used|={r['icon'] for r in RAC}|{t[1] for r in RAC for t in r['traits']}|{p[1] for r in RAC for p in r.get('priest',[])}
+icons=list(A['icons'])+sorted(i for i in used if i and i not in set(A['icons']))
+lines=[f"https://wow.zamimg.com/images/wow/icons/large/{i}.jpg|images/icons/{i}.jpg" for i in icons]
 lines+=[f"https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/{s}.jpg|images/backgrounds/{s}.jpg" for s in A['specs']]
 lines+=[f"https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/{int(m)&255}/{m}.png|images/models/{m}.png" for m in models]
 open('../web/image-list.txt', 'w', encoding='utf-8', newline='\n').write("\n".join(lines)+"\n")

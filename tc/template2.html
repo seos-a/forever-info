@@ -1430,7 +1430,8 @@ function showSpellbook(k,race,tab){
   // race picker
   $("sbRaceGroup").hidden=!sbClass; $("sbRaces").innerHTML="";
   if(sbClass){ $("sbRaceLabel").textContent=`${MODEL[sbClass].name} Races`;
-    const order=racesFor(sbClass).slice().sort((a,b)=>(a.faction==="Alliance"?0:1)-(b.faction==="Alliance"?0:1));   // Alliance first
+    // same order as the Racial Abilities page: Alliance mirrored (Skyborne ... Human), then Horde (Orc ... Skyborne)
+    const rs=racesFor(sbClass), order=rs.filter(r=>r.faction==="Alliance").reverse().concat(rs.filter(r=>r.faction!=="Alliance"));
     for(const r of order){ const b=document.createElement("button"); b.type="button"; b.className="rp rp-sq"; b.setAttribute("aria-pressed",sbRace===r?"true":"false");
       // Skyborne can be either faction: a small crest in the portrait's corner tells the two apart
       const both=order.filter(x=>x.name===r.name).length>1, ally=r.faction==="Alliance";
