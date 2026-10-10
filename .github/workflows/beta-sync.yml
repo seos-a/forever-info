@@ -1,0 +1,66 @@
+# Checks Wowhead's WoW Forever data every day and, when talents or spells changed, opens a pull request with the
+# updated site for review. Nothing goes live until that pull request is merged.
+# Run it by hand from the Actions tab ("Beta sync" > "Run workflow").
+name: Beta sync
+
+on:
+  schedule:
+    - cron: '30 14 * * *'        # daily, 14:30 UTC (morning in the US); beta patches land on Thursdays, live ones on Tuesdays
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Pull the beta data and rebuild
+        working-directory: tc
+        run: |
+          set -o pipefail
+          {
+            echo "Changes found in Wowhead's WoW Forever data on $(date -u +%Y-%m-%d). Review, then merge to publish."
+            echo
+            echo '### Talents'
+            echo '```'
+            python sync_talents.py
+            echo '```'
+            echo '### Spells'
+            echo '```'
+            python sync_spells.py
+            echo '```'
+            echo '### Talent cost / range / cast time / cooldown'
+            echo '```'
+            python talent_meta.py | tail -n 1
+            echo '```'
+            echo '### Build'
+            echo '```'
+            python build.py
+            echo '```'
+          } | tee ../sync-report.md
+          cp ../web/index.html ../index.html
+          { echo '### Icons'; echo '```'; python fetch_images.py; echo '```'; } | tee -a ../sync-report.md
+
+      - name: Open a pull request if anything changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: beta-sync
+          delete-branch: true
+          title: 'Beta sync: WoW Forever data changed'
+          body-path: sync-report.md
+          commit-message: |
+            Beta sync: WoW Forever talent and spell data
+
+            Automated by .github/workflows/beta-sync.yml
+          add-paths: |
+            index.html
+            tc/*.json
+            images/**
