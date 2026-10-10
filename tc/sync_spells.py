@@ -19,6 +19,18 @@ import spellbook
 CLASS_IDS = {'1': 'warrior', '2': 'paladin', '3': 'hunter', '4': 'rogue', '5': 'priest', '7': 'shaman', '8': 'mage',
              '9': 'warlock', '11': 'druid'}
 
+# Already reviewed, so not listed under "To check by hand" again.
+# Names in the beta's list that rightly aren't spellbook spells (talents that were changed, merged or removed):
+KNOWN_EXTRA = {'warrior': {'Improved Cleave', 'Improved Overpower', 'Toughness'},
+               'mage': {'Improved Blink', 'Magic Attunement'}}
+# Spells whose first rank comes from a talent, so the beta's trainer list starts later. These are the levels the
+# beta listed when reviewed; if it lists different ones later, the spell is flagged again.
+KNOWN_LEVELS = {('paladin', 'Flash of Light'): [20, 26, 34, 42, 50, 58], ('paladin', 'Righteous Fury'): [16],
+                ('rogue', 'Mutilate'): [40, 50, 60], ('priest', 'Shadow Word: Death'): [32, 40, 48, 56],
+                ('priest', 'Penance'): [40, 50, 60], ('priest', 'Prayer of Mending'): [50, 60],
+                ('shaman', 'Lava Burst'): [50, 60], ('druid', 'Lacerate'): [42, 50, 58],
+                ('druid', 'Swipe'): [16, 24, 34, 44, 54], ('druid', "Tiger's Fury"): [24]}
+
 def desc_of(tip):
     m = re.findall(r'<div class="q">(.*?)</div>', tip, re.S)
     return m[-1].replace('&nbsp;', ' ') if m else None
@@ -84,7 +96,7 @@ def main():
                 s[5] = top[2]; changes.append(f'{cls} {name}: text')
             g = groups.get(cls, {}).get(name, [])
             beta_levels = sorted({e[0] for e in g})
-            if g and beta_levels != sorted(set(levels)):
+            if g and beta_levels != sorted(set(levels)) and KNOWN_LEVELS.get((cls, name)) != beta_levels:
                 check.append(f'{cls} {name}: spellbook levels {levels}, beta lists {beta_levels}')
             # each rank: the beta entry at that level whose wording matches (numbers aside)
             cur = spellbook.ranks(cls, name, s[5]) or []
@@ -105,7 +117,7 @@ def main():
             if tipmap and new != old:
                 rt.setdefault(cls, {})[name] = new
                 changes.append(f'{cls} {name}: per-rank cost / range / cast time / cooldown')
-        extra = sorted(set(groups.get(cls, {})) - known - spellbook.DROP)
+        extra = sorted(set(groups.get(cls, {})) - known - spellbook.DROP - KNOWN_EXTRA.get(cls, set()))
         if extra: check.append(f'{cls}: in the beta but not in the spellbook (some are pet or passive skills): ' + ', '.join(extra))
     save('spells_raw.json', raw, sep_raw)
     save('ranks_raw.json', rk, sep_rk)

@@ -1,5 +1,5 @@
 import json,re
-SKILL={'warrior':[26,256,257],'paladin':[594,267,184],'hunter':[50,163,51],'rogue':[253,38,39],
+SKILL={'warrior':[26,256,257],'paladin':[594,267,184],'hunter':[50,163,51,261],'rogue':[253,38,39],
  'priest':[613,56,78],'shaman':[375,373,374],'mage':[237,8,6],'warlock':[355,354,593],'druid':[574,134,573]}
 def num(x):
     v=float(x); return str(int(round(v))) if abs(v-round(v))<.05 or v>20 else f'{v:.1f}'
@@ -64,6 +64,8 @@ def ranks(c,name,topdesc):
     return r if len(r)>1 else None
 RK={}
 RKD={}
+# spellbook tabs that aren't talent trees: [name, icon], in skill-line order after the three trees
+EXTRA_TABS={'hunter':[['Beast Training','ability_hunter_beasttraining']]}   # pet abilities taught at the pet trainer
 # Season of Discovery leftovers in Wowhead's Forever data with no trainer source
 DROP={'Aspect of the Falcon','Hammer of the Righteous','Portal of Summoning','Coup de Grace','Enchanted Flare','Lightwell'}
 def build():
@@ -78,7 +80,7 @@ def build():
         for n,ic,s,lv,rk,d,i in raw[c]:
             if n in DROP: continue
             sp.append([n,ic,sk.index(s) if s in sk else 0,lv,rk,clean(d),i,ranks(c,n,d)])
-        out[c]={'spells':sp,'general':gen(c)}
+        out[c]={'spells':sp,'general':gen(c),'tabs':EXTRA_TABS.get(c,[])}
     import os
     out['det']=json.load(open('details.json', encoding='utf-8')) if os.path.exists('details.json') else {}
     out['priestRacial']=sorted({p[0] for r in R for p in r['priest']})

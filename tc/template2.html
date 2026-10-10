@@ -1270,13 +1270,22 @@ let srEls=[], srTips=[], srAll=false, srPick=null;   // srPick: {el, q}, the res
 function hitList(items){ srEls=items.map(x=>x.el); srTips=items.map(x=>x.tip); const max=srAll?Infinity:isPhone()?3:6;
   return items.length?`<div class="sr-hits">`+items.slice(0,max).map((x,i)=>`<button type="button" class="sr-hit" data-h="${i}" style="--tx:-${i*137%360}px -${(i*83+40)%360}px"><img src="${x.icon}" alt="" onerror="this.style.visibility='hidden'"><span><span class="sh-n">${esc(x.name)}</span><span class="sh-s">${esc(x.sub||"")}</span></span></button>`).join("")
     +(items.length>max?`<button type="button" class="sr-more">and ${items.length-max} more</button>`:"")+`</div>`:""; }
+// bring a talent's whole tree into view (its header just below the top of the screen); if the tree is taller than
+// the screen, scroll only as far as needed for the talent itself to show
+function scrollToTree(el){
+  const tree=el.closest(".tree"); if(!tree){ el.scrollIntoView({block:"center",behavior:"smooth"}); return; }
+  const t=tree.getBoundingClientRect(), e=el.getBoundingClientRect(), pad=8;
+  let top=scrollY+t.top-pad;
+  if(t.height+2*pad>innerHeight) top=Math.max(top,scrollY+e.bottom-innerHeight+24);
+  scrollTo({top:Math.max(0,top),behavior:"smooth"});
+}
 const srHl=el=>{ document.querySelectorAll(".sr-hl").forEach(x=>x.classList.remove("sr-hl")); if(el) el.classList.add("sr-hl"); };
 $("searchInfo").addEventListener("mouseover",e=>{ const b=e.target.closest(".sr-hit"); if(!b||!canHover) return; srHl(srEls[+b.dataset.h]);
   const f=srTips[+b.dataset.h]; if(f){ f(); tipFor=null; placeTip($("searchInfo")); $("tip").style.top=Math.max(8,Math.min(innerHeight-$("tip").getBoundingClientRect().height-8,b.getBoundingClientRect().top))+"px"; } });   // beside the dropdown, so it never covers the other results
 $("searchInfo").addEventListener("mouseout",e=>{ const b=e.target.closest(".sr-hit"); if(b&&!b.contains(e.relatedTarget)){ srHl(null); if(canHover) hideTip(); } });
 $("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".sr-hit"), el=b&&srEls[+b.dataset.h]; if(!el) return;
   srPick={el,q:$("search").value.trim().toLowerCase()}; runSearch();
-  srHl(null); hideTip(); $("searchInfo").classList.add("closed"); el.scrollIntoView({block:"center",behavior:"smooth"});
+  srHl(null); hideTip(); $("searchInfo").classList.add("closed"); scrollToTree(el);
   el.classList.remove("sr-flash"); void el.offsetWidth; el.classList.add("sr-flash"); setTimeout(()=>el.classList.remove("sr-flash"),1600); });
 $("search").addEventListener("input",()=>{ srAll=false; srPick=null; $("searchInfo").classList.remove("closed"); runSearch(); });
 $("searchInfo").addEventListener("click",e=>{ if(e.target.closest(".sr-more")){ srAll=true; runSearch(); } });
@@ -1436,6 +1445,7 @@ function showSpellbook(k,race,tab){
     try{ history.replaceState(null,"","#spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }catch(e){} }
   if(sbClass&&sbRace) renderSpellbook();
 }
+const sbExtra=()=>(SB[sbClass]&&SB[sbClass].tabs)||[];   // non-tree tabs, e.g. the hunter's Beast Training
 function sbEntries(){
   const c=SB[sbClass], race=sbRace, cname=MODEL[sbClass].name;
   const mine=new Set(race.priest.map(p=>p[0])), others=new Set(SB.priestRacial);
@@ -1447,7 +1457,8 @@ function sbEntries(){
   const list=c.spells.filter(s=>s[2]===sbTab-1 && (!others.has(s[0])||mine.has(s[0])));
   // active talents from this tree (cast time / cooldown known) that aren't already trainable spells
   const have=new Set(list.map(s=>s[0]));
-  const talents=MODEL[sbClass].trees[sbTab-1].talents.filter(t=>t.meta&&!have.has(t.name))
+  const tree=MODEL[sbClass].trees[sbTab-1];   // extra tabs (Beast Training) have no talent tree
+  const talents=(tree?tree.talents:[]).filter(t=>t.meta&&!have.has(t.name))
     .map(t=>({n:t.name,ic:t.icon,sub:"Talent",d:textAt(t,t.max),talent:t}));
   const out=[];
   if(!$("sbRanks").checked) out.push(...list.map(([n,ic,_,lv,rk,d,id])=>({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id})));
@@ -1460,8 +1471,9 @@ function sbEntries(){
 function renderSpellbook(){
   const trees=MODEL[sbClass].trees;
   $("sbTabs").innerHTML=[`<button type="button" class="sb-tab" role="tab" data-t="0" aria-selected="${sbTab===0}" data-name="General"><img src="${IMG("inv_misc_book_09")}" alt="General"></button>`]
-    .concat(trees.map((t,i)=>`<button type="button" class="sb-tab" role="tab" data-t="${i+1}" aria-selected="${sbTab===i+1}" data-name="${esc(t.name)}"><img src="${IMG(t.icon)}" alt="${esc(t.name)}"></button>`)).join("");
-  $("sbHead").textContent=sbTab===0?"General":trees[sbTab-1].name;
+    .concat(trees.map((t,i)=>`<button type="button" class="sb-tab" role="tab" data-t="${i+1}" aria-selected="${sbTab===i+1}" data-name="${esc(t.name)}"><img src="${IMG(t.icon)}" alt="${esc(t.name)}"></button>`))
+    .concat(sbExtra().map(([n,ic],j)=>`<button type="button" class="sb-tab" role="tab" data-t="${trees.length+1+j}" aria-selected="${sbTab===trees.length+1+j}" data-name="${esc(n)}"><img src="${IMG(ic)}" alt="${esc(n)}"></button>`)).join("");
+  $("sbHead").textContent=sbTab===0?"General":sbTab<=trees.length?trees[sbTab-1].name:(sbExtra()[sbTab-1-trees.length]||["General"])[0];
   $("sbRanks").disabled=sbTab===0; $("sbRanksLbl").classList.toggle("off",sbTab===0);
   window.__sbAll=sbEntries(); const pages=Math.max(1,Math.ceil(__sbAll.length/SBPER)); if(sbPage>=pages) sbPage=pages-1;
   window.__sb=__sbAll.slice(sbPage*SBPER,sbPage*SBPER+SBPER);
