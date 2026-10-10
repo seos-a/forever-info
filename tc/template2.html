@@ -218,6 +218,7 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .share input{flex:1 1 160px;min-width:0;font-size:12px;background:#fff7e0;color:var(--ink);border-color:#9a7a3a;box-shadow:inset 0 1px 2px #8a5a2466}
 .toast{min-height:1.2em;font-size:11px;color:var(--ok-ink);font-weight:700}
 .foot{color:#8f8a7c;font-size:11px;margin:0;padding:0 4px;text-align:center}
+.launch{color:#8f8a7c;font-size:11px;margin:0 0 -6px;text-align:center;letter-spacing:.03em;font-variant-numeric:tabular-nums}   /* faint launch countdown above the footer */
 
 /* Tooltip: dark, like the game */
 .tip{position:fixed;z-index:50;max-width:320px;background:#0b0c12f5;color:#fff;border:1px solid #6b6f86;border-radius:6px;padding:9px 11px;box-shadow:0 8px 24px #000a;pointer-events:none;font-family:var(--font);font-size:12px;line-height:1.45;text-shadow:1px 1px 0 #000}
@@ -505,6 +506,13 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 
 .critter.bot-ogre{right:-118px;bottom:-62px;width:250px;z-index:4}
 @media (min-width:821px){.frame{padding-bottom:150px}.foot{padding-inline:150px}}
+/* sticky footer (desktop): the page is always at least one window tall and the footer sits at the bottom of the
+   window, or right after the content when that is taller. 100vh is divided by the frame's .72 zoom. */
+@media (min-width:821px){
+  .frame{padding-bottom:30px;min-height:calc(100vh / .72)}   /* border-box, so this includes the padding */
+  .main{align-self:stretch;display:flex;flex-direction:column}
+  .main>.launch{margin-top:auto}
+}
 /* Wide screens: the talent area sits in the middle of the page and the sidebar hangs off its left side. An empty
    right column as wide as the sidebar (plus the gap) keeps the middle column centered; the goblin (placed against
    the page frame) moves in by the same amount so he stays on the talent area's corner. Narrower screens (where the trees stack) keep the
@@ -533,6 +541,7 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
   #app .main>#racials{order:21}
   #app .main>#spellbook{order:31}
   #app[id] .main>.foot{order:99;font-size:9.5px;line-height:1.3}
+  #app[id] .main>.launch{order:98;font-size:9.5px}
   .side>.code-grp.empty,#app[data-mode="racials"] .code-grp,#app[data-mode="spellbook"] .code-grp{display:none}
   .side .share{grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:6px}
   .side .share input{font-size:12px;padding:5px 7px}
@@ -981,7 +990,8 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
       </div>
     </section>
 
-    <p class="foot">Data reflects the WoW Forever beta and may change between builds. This is a fan-made tool and is not affiliated with, authorized, or endorsed by Blizzard Entertainment.<br>&copy; <span id="cyear">2026</span> Blizzard Entertainment, Inc. World of Warcraft, WoW, and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries. All game assets, icons, and talent tree backgrounds are the copyrighted property of Blizzard Entertainment.</p>
+    <p class="launch" id="launchTimer" hidden></p>
+    <p class="foot">Fan-made project, not affiliated with or endorsed by Blizzard Entertainment. Game art and icons &copy; Blizzard Entertainment.<br>Data reflects the WoW Forever beta and may change between builds.</p>
   </main>
 </div>
 <div class="tip" id="tip" hidden role="tooltip"></div>
@@ -1645,6 +1655,13 @@ document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(align); align();
 })();
 
+/* launch countdown above the footer (WoW Forever launches November 4, 2026, 3:00 PM Pacific); hidden once it's out */
+(function(){ const el=$("launchTimer"); if(!el) return; const T=Date.UTC(2026,10,4,23,0,0);
+  el.title="WoW Forever launches "+new Date(T).toLocaleString([],{dateStyle:"full",timeStyle:"short"});
+  const tick=()=>{ const s=Math.floor((T-Date.now())/1000); if(s<=0){ el.hidden=true; return; }
+    const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60), x=s%60, p=n=>String(n).padStart(2,"0");
+    el.textContent="WoW Forever launches in "+d+"d "+p(h)+"h "+p(m)+"m "+p(x)+"s"; el.hidden=false; setTimeout(tick,1000-Date.now()%1000); };
+  tick(); })();
 /* faction theme toggle (remembered per visitor) */
 /* theme toggle (remembered per visitor): Alliance "a", Horde "h", Hallow's End "w".
    Hallow's End swaps the logo and corner models for their data-hw versions and rings the bell when picked. */
@@ -1659,7 +1676,6 @@ document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+
     try{ localStorage.setItem("theme",f); }catch(e){} };
   let f="h"; try{ f=localStorage.getItem("theme")||"h"; }catch(e){}
   set(f); $("thAlly").onclick=()=>set("a"); $("thHorde").onclick=()=>set("h"); $("thHallow").onclick=()=>set("w",true); })();
-try{ $("cyear").textContent=new Date().getFullYear(); }catch(e){}
 </script>
 </body>
 </html>
