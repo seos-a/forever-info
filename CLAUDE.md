@@ -95,7 +95,7 @@ Commit and push straight to `main`. GitHub Pages deploys from there.
 
 ## Automatic beta sync
 
-`.github/workflows/beta-sync.yml` runs daily (and on demand from the Actions tab): it runs the
+`.github/workflows/beta-sync.yml` runs twice a day, 02:00 and 14:30 UTC (and on demand from the Actions tab): it runs the
 sync scripts, `talent_meta.py`, the build and `fetch_images.py`, and if anything changed opens a
 pull request on the `beta-sync` branch with a report of what changed. Merging it publishes the
 update. The repo setting "Allow GitHub Actions to create and approve pull requests" must be on.
