@@ -1,13 +1,18 @@
-# Checks Wowhead's WoW Forever data twice a day and, when talents or spells changed, opens a pull request with the
-# updated site for review (a later run updates that same pull request). Nothing goes live until it is merged.
+# Checks Wowhead's WoW Forever data twice a day (10 PM and 10:30 AM US Eastern) and, when talents or spells changed,
+# opens a pull request with the updated site for review (a later run updates that same pull request). Nothing goes
+# live until it is merged.
 # Run it by hand from the Actions tab ("Beta sync" > "Run workflow").
 name: Beta sync
 
 on:
   schedule:
-    # beta builds have reached Wowhead around 22:00-23:00 UTC (3-4 PM US Pacific), on Thursdays so far
-    - cron: '0 2 * * *'          # 02:00 UTC: 7 PM Pacific, 10 PM Eastern, the same evening as a patch
-    - cron: '30 14 * * *'        # 14:30 UTC: the next morning in the US, for anything that landed late
+    # 10:00 PM and 10:30 AM US Eastern all year: the same evening as a patch (beta builds have reached Wowhead around
+    # 3-4 PM Pacific, on Thursdays so far) and the next morning. Schedules are in UTC, so each time is listed for
+    # daylight time (UTC-4) and standard time (UTC-5); the "when" job skips the one that doesn't apply.
+    - cron: '0 2 * * *'          # 10:00 PM EDT
+    - cron: '30 14 * * *'        # 10:30 AM EDT
+    - cron: '0 3 * * *'          # 10:00 PM EST
+    - cron: '30 15 * * *'        # 10:30 AM EST
   workflow_dispatch:
 
 permissions:
@@ -15,7 +20,28 @@ permissions:
   pull-requests: write
 
 jobs:
+  when:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.check.outputs.go }}
+    steps:
+      - id: check
+        env:
+          CRON: ${{ github.event.schedule }}
+        run: |
+          # a run by hand always goes; a scheduled one only if its UTC offset is New York's today
+          offset=$(TZ=America/New_York date +%z)
+          case "$CRON" in
+            '') go=true ;;
+            '0 2 * * *'|'30 14 * * *') [ "$offset" = "-0400" ] && go=true || go=false ;;
+            *) [ "$offset" = "-0500" ] && go=true || go=false ;;
+          esac
+          echo "New York is UTC$offset, schedule '$CRON': go=$go"
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+
   sync:
+    needs: when
+    if: needs.when.outputs.go == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
