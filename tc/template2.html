@@ -1710,6 +1710,19 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
   addEventListener("mousemove",e=>{ x=e.clientX; y=e.clientY; if(!queued){ queued=true; requestAnimationFrame(over); } },{passive:true});
   addEventListener("scroll",()=>{ if(x>=0&&!queued){ queued=true; requestAnimationFrame(over); } },{passive:true});
   document.addEventListener("mouseleave",()=>document.documentElement.classList.remove("atk","buy")); })();
+/* Preload every class's talent icons and tree backgrounds in the background (about 1.5 MB), so switching class shows
+   its trees at once instead of waiting a moment for the pictures. Starts once the page has loaded and is idle, one
+   picture at a time so it never competes with what you're looking at; skipped when the device asks to save data. */
+(function(){ const c=navigator.connection; if(c&&(c.saveData||/2g/.test(c.effectiveType||""))) return;
+  const urls=new Set();
+  const art=s=>`https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/${s}.jpg`;
+  const go=()=>{ for(const m of Object.values(MODEL)) if(!m.legacy) for(const tr of m.trees){ urls.add(art(tr.spec)); }     // backgrounds first: biggest
+    for(const m of Object.values(MODEL)) if(!m.legacy) for(const tr of m.trees){ urls.add(IMG(tr.icon)); tr.talents.forEach(t=>urls.add(IMG(t.icon))); }
+    const list=[...urls]; let i=0, keep=[];
+    const next=()=>{ if(i>=list.length) return; const im=new Image(); im.decoding="async"; im.onload=im.onerror=next; im.src=list[i++]; keep.push(im); };
+    for(let k=0;k<3;k++) next(); };   // three at a time
+  const idle=f=>window.requestIdleCallback?requestIdleCallback(f,{timeout:3000}):setTimeout(f,300);
+  if(document.readyState==="complete") setTimeout(()=>idle(go),800); else addEventListener("load",()=>setTimeout(()=>idle(go),800)); })();
 /* faction theme toggle (remembered per visitor) */
 /* theme toggle (remembered per visitor): Alliance "a", Horde "h", Hallow's End "w".
    Hallow's End swaps the logo and corner models for their data-hw versions and rings the bell when picked. */
