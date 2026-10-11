@@ -2181,17 +2181,17 @@
       "Improved Slam",
       "ability_warrior_decisivestrike",
       "Arms talent · reworked",
-      "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts {*or delays*} your melee swing {*and Slam's cooldown is reduced by 3*}.{*0 sec.*}",
+      "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts {*or delays*} your melee swing {*and Slam's cooldown is reduced by 3.0 sec*}.",
       "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts your melee swing {~time~}.",
       [
        [
         2,
-        "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts {*or delays*} your melee swing {*and Slam's cooldown is reduced by 3*}.{*0 sec.*}",
+        "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts {*or delays*} your melee swing {*and Slam's cooldown is reduced by 3.0 sec*}.",
         "Reduces the global cooldown and cast time of your Slam ability by 0.50 sec. In addition, Slam no longer interrupts your melee swing {~time~}."
        ],
        [
         1,
-        "Reduces the global cooldown and cast time of your Slam ability by 0.25 sec. In addition, Slam no longer interrupts {*or delays*} your melee swing {*and Slam's cooldown is reduced by 1*}.{*5 sec.*}",
+        "Reduces the global cooldown and cast time of your Slam ability by 0.25 sec. In addition, Slam no longer interrupts {*or delays*} your melee swing {*and Slam's cooldown is reduced by 1.5 sec*}.",
         "Reduces the global cooldown and cast time of your Slam ability by 0.25 sec. In addition, Slam no longer interrupts your melee swing {~time~}."
        ]
       ]

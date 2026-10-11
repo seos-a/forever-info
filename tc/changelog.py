@@ -186,7 +186,7 @@ def snapshot(d, which):
 def word_diff(old, new):
     """Mark what a rewording added and removed, as Wowhead does: {*added*} in the new text, {~removed~} in the old
     one. None when the two have too little in common for marks to help (a rewrite)."""
-    tok = lambda s: re.findall(r'\w+|\s+|[^\w\s]', s)
+    tok = lambda s: re.findall(r'\d+(?:\.\d+)+|\w+|\s+|[^\w\s]', s)   # "3.0" is one word, not "3", "." and "0"
     a, b = tok(old), tok(new)
     sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
     if sm.ratio() < 0.5: return None
