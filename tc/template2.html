@@ -170,24 +170,31 @@ button:focus-visible,input:focus-visible,select:focus-visible,.cls:focus-visible
 .tree-h .undo{padding:0;width:24px;height:22px;display:grid;place-items:center;color:#ffd75a}
 .tree-h .undo:disabled{opacity:1;filter:brightness(.7)}   /* nothing to reset: darken instead of fading, so the box stays visible and doesn't seem to move between themes */
 .grid{position:relative;display:grid;grid-template-columns:repeat(4,46px);grid-auto-rows:46px;column-gap:26px;row-gap:24px;width:max-content;margin:4px auto 0}
-.grid svg{position:absolute;left:0;top:0;overflow:visible;z-index:0;pointer-events:none}
+.grid svg{position:absolute;left:0;top:0;overflow:visible;z-index:2;pointer-events:none}   /* arrows drawn over the icons' edges, like WoW's talent frame */
 .arrow{fill:#9a9a9a;stroke:#111;stroke-width:1.5;stroke-linejoin:round;filter:drop-shadow(0 1px 1px #000)}
 .arrow.met{fill:#f2c94c}
 .cell{width:46px;height:46px}
-.tal{position:relative;z-index:1;width:46px;height:46px;padding:0;border-radius:8px;border:2px solid #0c0c0e;background:#16181f;cursor:pointer;
+.tal{position:relative;width:46px;height:46px;padding:0;border-radius:5px;border:0;background:#050505;cursor:pointer;
   user-select:none;-webkit-user-select:none;display:grid;place-items:center;font-family:var(--font);
-  box-shadow:inset 0 0 0 1px #ffffff40,0 2px 5px #000c;transition:transform .08s,box-shadow .12s}
+  box-shadow:0 0 0 2px #000000b8,0 2px 5px #000c;transition:transform .08s,box-shadow .12s}
 .tal .mono{font-size:11px;color:#bbb}
-.tal .ic{position:absolute;inset:1px;width:calc(100% - 2px);height:calc(100% - 2px);object-fit:cover;border-radius:6px}
+/* As WoW draws a talent: (1) the icon, corners clipped; (2) a dark shadow edge a little larger than everything; (3) on top,
+   a thin outline: the silver rim while locked, a glowing green line when available, gold when maxed. */
+.tal .ic{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:cover;border-radius:3px;corner-shape:bevel;object-view-box:inset(2%)}   /* crop the dark edge baked into WoW's icon art (like ElvUI's icon zoom) */
+@supports not (object-view-box:inset(2%)){.tal .ic{transform:scale(1.042);clip-path:inset(2% round 2.9px)}}
+.tal::after{content:"";position:absolute;inset:0;border-radius:5px;padding:1.2px;background:linear-gradient(150deg,#d4d4d4 0%,#9a9a9a 30%,#646464 58%,#868686 82%,#bcbcbc 100%);pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.tal.avail::after,.tal.part::after{padding:1.4px;background:#45e04a;filter:drop-shadow(0 0 1.5px #3ad23f)}
+.tal.max::after{padding:1.4px;background:#f6cc3a;filter:drop-shadow(0 0 1.5px #f0c22c)}
 .tal.locked .ic{filter:grayscale(1) brightness(.75)}
-.tal.avail,.tal.part{border-color:#2fbf3a;box-shadow:inset 0 0 0 1px #9dff9d55,0 0 6px #2fbf3a99,0 2px 5px #000c}
-.tal.max{border-color:#e8b923;box-shadow:inset 0 0 0 1px #ffe48055,0 0 7px #e8b92399,0 2px 5px #000c}
-.tal .rk{position:absolute;right:-12px;bottom:-9px;border-radius:5px;background:#000000e0;padding:0 5px;font-size:11px;line-height:1.45;font-weight:700;color:#a8a8a8;box-shadow:0 1px 2px #000;font-variant-numeric:tabular-nums}
+.tal.avail,.tal.part{box-shadow:0 0 0 2px #000000b8,0 0 7px #2fbf3a77,0 2px 5px #000c}
+.tal.max{box-shadow:0 0 0 2px #000000b8,0 0 7px #e8b92377,0 2px 5px #000c}
+.tal .rk{position:absolute;right:-12px;bottom:-9px;border-radius:5px;z-index:3;background:#000000e0;padding:0 5px;font-size:11px;line-height:1.45;font-weight:700;color:#a8a8a8;box-shadow:0 1px 2px #000;font-variant-numeric:tabular-nums}
 .tal.avail .rk,.tal.part .rk{color:var(--ok)}
 .tal.max .rk{color:#f5c518}
 .tal:hover{box-shadow:inset 0 0 0 1px #ffffff80,0 0 8px #ffffff55,0 2px 5px #000c}
-.tal.avail:hover,.tal.part:hover{box-shadow:inset 0 0 0 1px #c8ffc8aa,0 0 10px #2fbf3acc,0 2px 5px #000c}
-.tal.max:hover{box-shadow:inset 0 0 0 1px #fff0b0aa,0 0 10px #e8b923cc,0 2px 5px #000c}
+.tal.avail:hover,.tal.part:hover{box-shadow:0 0 0 2px #000000b8,0 0 11px #2fbf3acc,0 2px 5px #000c}
+.tal.max:hover{box-shadow:0 0 0 2px #000000b8,0 0 11px #e8b923cc,0 2px 5px #000c}
 .tal:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
 .tal:active{transform:scale(.96)}
 
@@ -1197,15 +1204,15 @@ function buildTrees(m=cur,host=$("trees")){
     }
     // Arrows run from the edge of the prerequisite to the edge of the talent
     tr.talents.filter(t=>t.pre).forEach(t=>{
-      const p=t.pre, sw=6, hw=16, hl=10, gap=2; let d;
+      const p=t.pre, sw=7, hw=20, hl=11, gap=-2, tip=-2; let d;   // negative: the arrow tucks a little into the source icon and its head overlaps the target's edge
       if(p.c===t.c){
-        const x=p.c*PX+S/2, y1=p.r*PY+S+gap, y2=t.r*PY-gap, yb=y2-hl;
+        const x=p.c*PX+S/2, y1=p.r*PY+S+gap, y2=t.r*PY-tip, yb=y2-hl;
         d=`M${x-sw/2},${y1}L${x+sw/2},${y1}L${x+sw/2},${yb}L${x+hw/2},${yb}L${x},${y2}L${x-hw/2},${yb}L${x-sw/2},${yb}Z`;
       } else if(p.r===t.r){
-        const dir=t.c>p.c?1:-1, y=p.r*PY+S/2, x1=dir>0?p.c*PX+S+gap:p.c*PX-gap, x2=dir>0?t.c*PX-gap:t.c*PX+S+gap, xb=x2-dir*hl;
+        const dir=t.c>p.c?1:-1, y=p.r*PY+S/2, x1=dir>0?p.c*PX+S+gap:p.c*PX-gap, x2=dir>0?t.c*PX-tip:t.c*PX+S+tip, xb=x2-dir*hl;
         d=`M${x1},${y-sw/2}L${xb},${y-sw/2}L${xb},${y-hw/2}L${x2},${y}L${xb},${y+hw/2}L${xb},${y+sw/2}L${x1},${y+sw/2}Z`;
       } else {
-        const dir=t.c>p.c?1:-1, y=p.r*PY+S/2, x1=dir>0?p.c*PX+S+gap:p.c*PX-gap, x=t.c*PX+S/2, y2=t.r*PY-gap, yb=y2-hl;
+        const dir=t.c>p.c?1:-1, y=p.r*PY+S/2, x1=dir>0?p.c*PX+S+gap:p.c*PX-gap, x=t.c*PX+S/2, y2=t.r*PY-tip, yb=y2-hl;
         const xo=x+dir*sw/2, xi=x-dir*sw/2;
         d=`M${x1},${y-sw/2}L${xo},${y-sw/2}L${xo},${yb}L${x+dir*hw/2},${yb}L${x},${y2}L${x-dir*hw/2},${yb}L${xi},${yb}L${xi},${y+sw/2}L${x1},${y+sw/2}Z`;
       }
