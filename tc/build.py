@@ -136,9 +136,9 @@ HEAD=f"""<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <meta property="og:site_name" content="Forever Info">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{SITE}">
-<meta property="og:title" content="Forever Info – WoW Forever Talent Calculator">
-<meta property="og:description" content="Plan your WoW Forever builds: every class's beta talents, the Legacy tree, racial abilities and a full spellbook.">
-<meta property="og:image" content="{SITE}images/og.jpg">
+<meta property="og:title" content="Forever Info – WoW Forever Talent Calculator &amp; Class Changes">
+<meta property="og:description" content="Plan your WoW Forever builds and see what each beta patch changed: every class's talent trees, patch-by-patch class changes, the full spellbook, racial abilities and the Legacy tree.">
+<meta property="og:image" content="{SITE}images/og.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#1a0d04">
