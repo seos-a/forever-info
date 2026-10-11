@@ -1710,16 +1710,23 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
   addEventListener("mousemove",e=>{ x=e.clientX; y=e.clientY; if(!queued){ queued=true; requestAnimationFrame(over); } },{passive:true});
   addEventListener("scroll",()=>{ if(x>=0&&!queued){ queued=true; requestAnimationFrame(over); } },{passive:true});
   document.addEventListener("mouseleave",()=>document.documentElement.classList.remove("atk","buy")); })();
-/* Preload every class's talent icons and tree backgrounds in the background (about 1.5 MB), so switching class shows
+/* Preload every class's (and the Legacy tree's) talent icons and tree backgrounds, then the Racial Abilities icons, the
+   goblin's voice lines and the Spellbook icons, in the background (about 1.95 MB), so switching class shows
    its trees at once instead of waiting a moment for the pictures. Starts once the page has loaded and is idle, one
    picture at a time so it never competes with what you're looking at; skipped when the device asks to save data. */
 (function(){ const c=navigator.connection; if(c&&(c.saveData||/2g/.test(c.effectiveType||""))) return;
   const urls=new Set();
   const art=s=>`https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/${s}.jpg`;
   const go=()=>{ for(const m of Object.values(MODEL)) if(!m.legacy) for(const tr of m.trees){ urls.add(art(tr.spec)); }     // backgrounds first: biggest
-    for(const m of Object.values(MODEL)) if(!m.legacy) for(const tr of m.trees){ urls.add(IMG(tr.icon)); tr.talents.forEach(t=>urls.add(IMG(t.icon))); }
+    for(const m of Object.values(MODEL)) if(m.legacy) for(const tr of m.trees) if(tr.art&&!/^data:/.test(tr.art)) urls.add(tr.art);   // Legacy tree art, if any
+    for(const m of Object.values(MODEL)) for(const tr of m.trees){ urls.add(IMG(tr.icon)); tr.talents.forEach(t=>urls.add(IMG(t.icon))); }   // icons, Legacy included
+    for(const r of RACIALS){ urls.add(IMG(r.icon)); (r.traits||[]).forEach(t=>urls.add(IMG(t[1]))); (r.priest||[]).forEach(p=>urls.add(IMG(p[1]))); }   // Racial Abilities
+    GOBLIN_LINES.forEach(n=>urls.add("sounds/goblin/"+n+".ogg"));   // the merchant goblin's voice, so his first line plays at once
+    for(const v of Object.values(SB)) if(v&&v.spells) [...v.spells,...(v.general||[]),...(v.tabs||[])].forEach(x=>urls.add(IMG(x[1])));   // Spellbook last: the biggest
     const list=[...urls]; let i=0, keep=[];
-    const next=()=>{ if(i>=list.length) return; const im=new Image(); im.decoding="async"; im.onload=im.onerror=next; im.src=list[i++]; keep.push(im); };
+    const next=()=>{ if(i>=list.length) return; const u=list[i++];
+      if(/\.ogg$/.test(u)){ fetch(u).then(next,next); return; }
+      const im=new Image(); im.decoding="async"; im.onload=im.onerror=next; im.src=u; keep.push(im); };
     for(let k=0;k<3;k++) next(); };   // three at a time
   const idle=f=>window.requestIdleCallback?requestIdleCallback(f,{timeout:3000}):setTimeout(f,300);
   if(document.readyState==="complete") setTimeout(()=>idle(go),800); else addEventListener("load",()=>setTimeout(()=>idle(go),800)); })();
@@ -1736,6 +1743,8 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
     if(hw&&click&&was!=="w"){ try{ bell=bell||new Audio("sounds/undertaker-bell.mp3"); bell.currentTime=0; bell.volume=.6; bell.play().catch(()=>{}); }catch(e){} }
     try{ localStorage.setItem("theme",f); }catch(e){} };
   let f="h"; try{ f=localStorage.getItem("theme")||"h"; }catch(e){}
+  const warm=()=>{ try{ if(!bell){ bell=new Audio("sounds/undertaker-bell.mp3"); bell.preload="auto"; bell.load(); } }catch(e){} };   // fetch the bell as the pointer nears the pumpkin, so the first click rings at once
+  ["pointerenter","pointerdown","focus"].forEach(ev=>$("thHallow").addEventListener(ev,warm,{once:true}));
   set(f); $("thAlly").onclick=()=>set("a"); $("thHorde").onclick=()=>set("h"); $("thHallow").onclick=()=>set("w",true); })();
 </script>
 </body>
