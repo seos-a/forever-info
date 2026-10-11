@@ -32,6 +32,11 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       `rank_tips.json`) from each rank's tooltip. It never changes rank counts or levels;
       those, and spells that look new, are listed under "To check by hand"
     - `fetch_images.py`: after a build, downloads any icon in `web/image-list.txt` the repo lacks
+    - `changelog.py`: run after the sync scripts. Compares the data with the last commit and adds the update's
+      talent and spell changes per class to `changes.json` (shown on the Class Changes page), marking each a buff,
+      nerf or other change as a best guess from the wording. It also keeps `version.json` (beta version and data date,
+      shown bottom left like WoW's login screen) in step with Wowhead; the build number in it is set by hand.
+      `py changelog.py REV --dry` previews the changes since an older commit
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.

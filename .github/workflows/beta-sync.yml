@@ -41,6 +41,10 @@ jobs:
             echo '```'
             python talent_meta.py | tail -n 1
             echo '```'
+            echo '### Class Changes page (review the buff / nerf guesses in tc/changes.json)'
+            echo '```'
+            python changelog.py
+            echo '```'
             echo '### Build'
             echo '```'
             python build.py

@@ -1,0 +1,286 @@
+{
+ "updates": [
+  {
+   "date": "2026-10-08",
+   "version": "1.60.1",
+   "build": "70338",
+   "classes": {
+    "druid": [
+     [
+      "other",
+      "Feral Charge",
+      "ability_hunter_pet_bear",
+      "Feral Combat talent · reworked",
+      "Reworked: Requires Bear Form, Dire Bear Form Charge an enemy, immobilizing them and interrupting any spell they are casting for 4 sec."
+     ],
+     [
+      "other",
+      "Natural Instinct",
+      "ability_druid_predatoryinstincts",
+      "Feral Combat talent · new",
+      "New talent: Increases the critical strike damage bonus of your melee abilities by 20% and increases your spell healing by 25% of your Intellect."
+     ],
+     [
+      "other",
+      "Natural Reaction",
+      "ability_bullrush",
+      "Feral Combat talent · reworked",
+      "Reworked: Increases your dodge chance by 5%, and gives you a 100% chance to gain 5 Rage each time you dodge."
+     ],
+     [
+      "other",
+      "Furor",
+      "spell_holy_blessingofstamina",
+      "Restoration talent · reworked",
+      "Reworked: Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per sec spent outside Cat Form, up to 100 Energy. Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active."
+     ],
+     [
+      "other",
+      "Predatory Instincts",
+      "ability_druid_predatoryinstincts",
+      "Feral Combat talent · removed",
+      "Removed from the talent tree."
+     ],
+     [
+      "nerf",
+      "Thorns",
+      "spell_nature_thorns",
+      "Spell · top rank",
+      "Thorns sprout from the friendly target causing {-18} (down from 22) Nature damage to attackers when hit. Lasts 10 min."
+     ]
+    ],
+    "hunter": [
+     [
+      "nerf",
+      "Lightning Reflexes",
+      "spell_nature_invisibilty",
+      "Survival talent",
+      "Increases your Agility by {-10%} (down from 15%)."
+     ],
+     [
+      "other",
+      "Aspect of the Beast",
+      "ability_mount_pinktiger",
+      "Spell · top rank",
+      "Reworded: You take on the aspects of a beast, becoming untrackable and increasing Melee Attack Power by 110. Only one Aspect can be active at a time."
+     ]
+    ],
+    "mage": [
+     [
+      "buff",
+      "Fireball",
+      "spell_fire_flamebolt",
+      "Spell · top rank",
+      "Cost reduced from 410 Mana to {+395 Mana}."
+     ],
+     [
+      "buff",
+      "Fire Blast",
+      "spell_fire_fireball",
+      "Spell · top rank",
+      "Cooldown reduced from 15 sec cooldown to {+8 sec cooldown}."
+     ],
+     [
+      "buff",
+      "Arcane Missiles",
+      "spell_nature_starfall",
+      "Spell · top rank",
+      "Cost reduced from 655 Mana to {+595 Mana}."
+     ]
+    ],
+    "paladin": [
+     [
+      "other",
+      "Reckoning",
+      "spell_holy_blessingofstrength",
+      "Protection talent · reworked",
+      "Reworked: Gives you a 40% chance to gain an extra attack after Blocking a melee attack and a 100% chance to gain an extra attack after being the victim of a non-periodic critical strike. Cannot occur more often than once every 1.5 sec."
+     ],
+     [
+      "nerf",
+      "Retribution Aura",
+      "spell_holy_auraoflight",
+      "Spell · top rank",
+      "Causes {-20} (down from 30) Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time."
+     ]
+    ],
+    "priest": [
+     [
+      "nerf",
+      "Penance",
+      "spell_holy_penance",
+      "Discipline talent",
+      "Launches a volley of holy light at the target, causing {-45} (down from 81) Holy damage to an enemy, or {-134} (down from 184) healing to an ally, instantly and every 1 sec for 2 sec. Cost increased from 100 Mana to {-150 Mana}."
+     ],
+     [
+      "nerf",
+      "Searing Light",
+      "spell_holy_searinglightpriest",
+      "Holy talent",
+      "Increases your Holy damage done by {-5%} (down from 10%), and gives a 10% chance each time your Holy Fire spell deals periodic damage for your next Holy Nova to cost no Mana."
+     ],
+     [
+      "other",
+      "Prayer of Mending",
+      "spell_holy_prayerofmendingtga",
+      "Holy talent · reworked",
+      "Reworked: Places a spell on the target that heals them for 172 (plus about 43% of your bonus healing) the next time they take damage or receive non-periodic healing. When the heal occurs, Prayer of Mending jumps to a party or raid member within 20 yards. Jumps up to 5 times and lasts 30 sec after each jump. This spell can only be placed on one target at a time per caster."
+     ],
+     [
+      "other",
+      "Improved Mind Flay",
+      "spell_shadow_soulleech_2",
+      "Shadow talent · reworked",
+      "Reworked: Your Mind Flay now deals 20% more damage, gains 10 yards increased range, but slows the target's movement speed by 20%."
+     ],
+     [
+      "other",
+      "Devouring Contagion",
+      "spell_shadow_devouringplague",
+      "Shadow talent · reworked",
+      "Reworked: Reduces the mana cost of your Devouring Plague by 50%. Targets that die while Devouring Plague is active spreads it, jumping to a nearby enemy within 10 yds for the remaining duration."
+     ],
+     [
+      "buff",
+      "Lesser Heal",
+      "spell_holy_lesserheal",
+      "Spell · top rank",
+      "Heal your target for {+157} (up from 138) to {+181} (up from 160)."
+     ],
+     [
+      "nerf",
+      "Penance",
+      "spell_holy_penance",
+      "Spell · top rank",
+      "Healing for {-425} (down from 673) every 1 sec for 2 sec."
+     ],
+     [
+      "buff",
+      "Prayer of Healing",
+      "spell_holy_prayerofhealing02",
+      "Spell · top rank",
+      "Cost reduced from 1070 Mana to {+1030 Mana}."
+     ]
+    ],
+    "rogue": [
+     [
+      "other",
+      "Distract",
+      "ability_rogue_distract",
+      "Spell · top rank",
+      "Reworded: Throws a distraction, attracting the attention of all nearby enemies and reducing their Stealth detection as if they were 1 level lower for 10 seconds. Does not break stealth."
+     ]
+    ],
+    "warlock": [
+     [
+      "other",
+      "Demonic Brand",
+      "ability_demonhunter_chaoticimprint_fire",
+      "Demonology talent · reworked",
+      "Reworked: Your Searing Pain generates 50% less threat and brands the target for 10 sec. Your pet's next 6 attacks against the target deal ((((60 - 26) * 1.5) + 14 + (0.078 * ((Shadow spell power)))) * (1 * 1 * 1)) to ((((60 - 26) * 1.5) + 17 + (0.078 * ((Shadow spell power)))) * (1 * 1 * 1)) Fire or Shadow damage based on the pet. If Shadow damage is dealt, it has high threat."
+     ],
+     [
+      "buff",
+      "Immolate",
+      "spell_fire_immolation",
+      "Spell · top rank",
+      "Cost reduced from 380 Mana to {+370 Mana}."
+     ],
+     [
+      "buff",
+      "Shadow Bolt",
+      "spell_shadow_shadowbolt",
+      "Spell · top rank",
+      "Cost reduced from 380 Mana to {+370 Mana}."
+     ],
+     [
+      "other",
+      "Drain Life",
+      "spell_shadow_lifedrain02",
+      "Spell · top rank",
+      "Cost reduced from 600 Mana to {+300 Mana}. Cast time changed from Instant to Channeled."
+     ]
+    ],
+    "warrior": [
+     [
+      "other",
+      "Spearing Strike",
+      "inv_spear_01",
+      "Arms talent · reworked",
+      "Reworked: A brutal attack that deals 40% weapon damage. Deals an additional 80% weapon damage against Giants, Dragonkin, and mounted targets. Mounted targets are dismounted."
+     ],
+     [
+      "other",
+      "Booming Voice",
+      "spell_nature_purge",
+      "Fury talent · reworked",
+      "Reworked: Increases the area of effect of your Shouts by 50% and reduces their Rage cost by 25%."
+     ],
+     [
+      "other",
+      "Unbridled Wrath",
+      "spell_nature_stoneclawtotem",
+      "Fury talent · reworked",
+      "Reworked: Gives you a 60% chance to generate 1 additional Rage when you deal melee damage with a weapon."
+     ],
+     [
+      "other",
+      "Piercing Howl",
+      "spell_shadow_deathscream",
+      "Fury talent · reworked",
+      "Reworked: Causes all enemies within 10 yds to be Dazed, reducing movement speed by 50% for 6 sec."
+     ],
+     [
+      "other",
+      "Blood Craze",
+      "spell_shadow_summonimp",
+      "Fury talent · reworked",
+      "Reworked: Regenerates 3% of your total Health over 6 sec after being the victim of a critical strike or suffering more than 20% of your maximum Health from a single attack."
+     ],
+     [
+      "other",
+      "Dual Wield Specialization",
+      "ability_dualwield",
+      "Fury talent · reworked",
+      "Reworked: Increases the damage done by your off-hand weapon by 25% and the Rage generated by your off-hand attacks by 50%."
+     ],
+     [
+      "other",
+      "Raging Blows",
+      "ability_whirlwind",
+      "Fury talent · reworked",
+      "Reworked: Reduces the Rage cost of your Cleave and Whirlwind abilities by 3."
+     ],
+     [
+      "buff",
+      "Bloodthirst",
+      "spell_nature_bloodlust",
+      "Fury talent",
+      "Instantly attack the target causing damage equal to {+45%} (up from 35%) of your Attack Power plus 30 and increasing your movement speed by 10% for 10 sec."
+     ],
+     [
+      "other",
+      "Intimidating Shout",
+      "ability_golemthunderclap",
+      "Spell · top rank",
+      "Reworded: The warrior shouts, causing the targeted enemy to cower in fear. Up to 5 enemies within 8 yds will flee in fear. Lasts 8 sec."
+     ],
+     [
+      "other",
+      "Whirlwind",
+      "ability_whirlwind",
+      "Spell · top rank",
+      "Reworded: In a whirlwind of steel you attack up to 4 enemies within 8 yards, causing weapon damage from both melee weapons to each enemy."
+     ],
+     [
+      "buff",
+      "Bloodthirst",
+      "spell_nature_bloodlust",
+      "Spell · top rank",
+      "Instantly attack the target causing damage equal to {+45%} (up from 35%) of your Attack Power plus 48 and increasing your movement speed by 10% for 10 sec."
+     ]
+    ]
+   }
+  }
+ ]
+}

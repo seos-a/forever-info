@@ -16,28 +16,7 @@ CLASSES = [
 def fmt_num(v):
     return str(int(v)) if float(v).is_integer() else str(v)
 
-def clean_html(desc):
-    """Wowhead occasionally leaves HTML in a description (Weaponmaster): a double <br /> starts a new line,
-    a single one is just a line wrap, and tags such as <span> are dropped."""
-    desc = re.sub(r'\s*(<br\s*/?>\s*){2,}', '\n', desc)
-    desc = re.sub(r'\s*<br\s*/?>\s*', ' ', desc)
-    desc = re.sub(r'<[^>]+>', '', desc)
-    return re.sub(r'[ \t]{2,}', ' ', desc)
-
-def tidy_formula(desc):
-    """Wowhead sometimes leaves a damage/healing formula in a talent's text. Write it the way the site always has:
-    "[32 / Ferocity: 48 + (Ranged Attack Power * (0.05))]" -> "32 (plus 5% of your Ranged Attack Power)" (the
-    "/ Talent: n" parts are the value with other talents taken), "[(172 + (Healing * 0.429)) * (1 * 1)]" ->
-    "172 (plus about 43% of your bonus healing)"."""
-    desc = re.sub(r'\[(\d+(?:\.\d+)?)(?: / [^\]/:]+: \d+(?:\.\d+)?)+', lambda m: '[' + m.group(1), desc)
-    def pct(x):
-        v = float(x) * 100
-        return (f'about {round(v)}' if abs(v - round(v)) > 0.05 else f'{round(v)}') + '%'
-    desc = re.sub(r'\[\(?(\d+(?:\.\d+)?) \+ \(Healing \* \(?([\d.]+)\)?\)\)?(?: \* \(1 \* 1\))?\]',
-                  lambda m: f'{m.group(1)} (plus {pct(m.group(2))} of your bonus healing)', desc)
-    desc = re.sub(r'\[\(?(\d+(?:\.\d+)?) \+ \(((?:Ranged )?Attack Power|Spell Power|[A-Z][a-z]+ spell power) \* \(?([\d.]+)\)?\)\)?(?: \* \(1 \* 1\))?\]',
-                  lambda m: f'{m.group(1)} (plus {pct(m.group(3))} of your {m.group(2)})', desc)
-    return desc
+from textfix import clean_html, tidy_formula
 
 def fix_desc(desc, ranks):
     """Wowhead sometimes leaves a value as 0 when it lives in another rank field.
@@ -119,9 +98,12 @@ if os.path.exists('bg.jpg'):
     BG = 'data:image/jpeg;base64,' + base64.b64encode(open('bg.jpg','rb').read()).decode()
 from spellbook import build as _sb
 SBK=_sb()
+# Class Changes history and the beta version stamp (tc/changelog.py keeps both up to date)
+CHG=json.load(open('changes.json', encoding='utf-8')) if os.path.exists('changes.json') else {'updates': []}
+VER=json.load(open('version.json', encoding='utf-8')) if os.path.exists('version.json') else {}
 blob = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
 for src, dst in (('template.html', '../Forever-Talents.html'), ('template2.html', '../Forever-Talents-Classic-Style.html')):
-    html = open(src, encoding='utf-8').read().replace('/*DATA*/', blob).replace('/*BG*/', BG).replace('/*RACIALS*/', open('racials.json', encoding='utf-8').read()).replace('/*SPELLBOOK*/', json.dumps(SBK, ensure_ascii=False, separators=(',',':')))
+    html = open(src, encoding='utf-8').read().replace('/*DATA*/', blob).replace('/*BG*/', BG).replace('/*RACIALS*/', open('racials.json', encoding='utf-8').read()).replace('/*SPELLBOOK*/', json.dumps(SBK, ensure_ascii=False, separators=(',',':'))).replace('/*CHANGES*/', json.dumps(CHG, ensure_ascii=False, separators=(',',':'))).replace('/*VERSION*/', json.dumps(VER))
     open(dst, 'w', encoding='utf-8', newline='\n').write(html)
 print('written', len(html))
 
@@ -172,6 +154,8 @@ used={tr['i'] for c in data.values() for tr in c['trees']} | {t[4] for c in data
 used|={s[1] for k,v in SBK.items() if isinstance(v,dict) and 'spells' in v for s in v['spells']+v['general']+v.get('tabs',[])}
 RAC=_json.load(open('racials.json', encoding='utf-8'))
 used|={r['icon'] for r in RAC}|{t[1] for r in RAC for t in r['traits']}|{p[1] for r in RAC for p in r.get('priest',[])}
+used|={e[2] for u in CHG['updates'] for ch in u['classes'].values() for e in ch}   # Class Changes icons
+used|=set(_re.findall(r'images/icons/([a-z0-9_]+)\.jpg',web))   # icons named directly in the page (Quick Info buttons...)
 icons=list(A['icons'])+sorted(i for i in used if i and i not in set(A['icons']))
 lines=[f"https://wow.zamimg.com/images/wow/icons/large/{i}.jpg|images/icons/{i}.jpg" for i in icons]
 lines+=[f"https://wow.zamimg.com/images/wow/talents/backgrounds/classicplus/{s}.jpg|images/backgrounds/{s}.jpg" for s in A['specs']]
