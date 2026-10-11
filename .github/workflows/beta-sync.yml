@@ -1,11 +1,13 @@
-# Checks Wowhead's WoW Forever data every day and, when talents or spells changed, opens a pull request with the
-# updated site for review. Nothing goes live until that pull request is merged.
+# Checks Wowhead's WoW Forever data twice a day and, when talents or spells changed, opens a pull request with the
+# updated site for review (a later run updates that same pull request). Nothing goes live until it is merged.
 # Run it by hand from the Actions tab ("Beta sync" > "Run workflow").
 name: Beta sync
 
 on:
   schedule:
-    - cron: '30 14 * * *'        # daily, 14:30 UTC (morning in the US); beta patches land on Thursdays, live ones on Tuesdays
+    # beta builds have reached Wowhead around 22:00-23:00 UTC (3-4 PM US Pacific), on Thursdays so far
+    - cron: '0 2 * * *'          # 02:00 UTC: 7 PM Pacific, 10 PM Eastern, the same evening as a patch
+    - cron: '30 14 * * *'        # 14:30 UTC: the next morning in the US, for anything that landed late
   workflow_dispatch:
 
 permissions:
