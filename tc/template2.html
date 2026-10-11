@@ -413,7 +413,7 @@ body.touch .tip .hint{display:none}
 #racials .rt .rm,#racials .rt .rd,#racials .gl,#racials .none-note,#spellbook .sb-sp .ss,#spellbook .sb-pager,
 #changes .rt .rm,#changes .rt .rd,#changes .none-note{color:#120802}
 #racials .rt .rd,
-#changes .rt .rd{color:#0e0602}
+#changes .rt .rd{color:#0e0602;white-space:pre-line}   /* tooltip line breaks (a finishing move's combo point lines) */
 /* Racial page sized like the spellbook */
 #racials .rt,
 #changes .rt{grid-template-columns:50px minmax(0,1fr);gap:14px;padding:12px 2px}
@@ -1714,8 +1714,9 @@ const chgDate=d=>{ const [y,m,dd]=d.split("-").map(Number); return new Date(Date
 const chgText=t=>esc(t).replace(/\{\*([^{}]*?)\*\}/g,'<ins class="chg-add">$1</ins>').replace(/\{~([^{}]*?)~\}/g,'<del class="chg-del">$1</del>')
   .replace(/\{([+-])([^{}]+)\}/g,(_,s,v)=>`<span class="${s==="+"?"chg-up":"chg-dn"}">${v}</span>`);
 const chgList=a=>a.length<2?String(a[0]):a.length>2&&a.every((x,j)=>!j||x===a[j-1]+1)?`${a[0]}–${a[a.length-1]}`:a.slice(0,-1).join(", ")+" and "+a[a.length-1];
+const chgJoin=(t,note)=>note?t+(t.includes("\n")?"\n":" ")+note:t;   // after a list, a note starts on its own line
 const chgAlso=(ranks,r,kind)=>{ const o=ranks.map(x=>x[0]).filter(x=>x!==r).sort((a,b)=>a-b);
-  return o.length?` ${o.length>1?"Ranks":"Rank"} ${chgList(o)} ${o.length>1?"were":"was"} ${kind==="buff"?"buffed":kind==="nerf"?"nerfed":"changed"} too.`:""; };
+  return o.length?`${o.length>1?"Ranks":"Rank"} ${chgList(o)} ${o.length>1?"were":"was"} ${kind==="buff"?"buffed":kind==="nerf"?"nerfed":"changed"} too.`:""; };
 const chgBody=(text,was,open)=>`<div class="rd">${chgText(text)}</div>`
   +(was?`<details class="chg-was"${open?" open":""}><summary>Previous version</summary><div class="rd">${chgText(was)}</div></details>`:"");
 // a spell with ranks: ranks = [[rank, text, was], ...] for each rank that changed, highest first, with a picker when there are several
@@ -1724,7 +1725,7 @@ const chgRow=([kind,name,icon,where,text,was,ranks],i)=>{ const r=ranks&&ranks[0
   const rk=!ranks?"":ranks.length<2?` · Rank ${r}`:` · <select class="chg-rk" data-i="${i}" aria-label="${esc(name)} rank">`
     +ranks.map(([n])=>`<option value="${n}">Rank ${n}</option>`).join("")+`</select>`;
   return `<div class="rt" data-n="${esc(name)}" data-w="${esc(where)}"${r?` data-rank="${r}"`:""}><span class="slot"><img src="${IMG(icon)}" alt="" onerror="this.style.visibility='hidden'"></span><div class="rtip">`
-  +`<div class="tx"><span class="rn">${esc(name)}</span></div><div class="rw">${esc(where)}${rk}</div><div class="chg-body">${chgBody(text+(ranks?chgAlso(ranks,r,kind):""),was)}</div></div></div>`; };
+  +`<div class="tx"><span class="rn">${esc(name)}</span></div><div class="rw">${esc(where)}${rk}</div><div class="chg-body">${chgBody(chgJoin(text,ranks?chgAlso(ranks,r,kind):""),was)}</div></div></div>`; };
 const chgRows=list=>list.map(e=>chgRow(e,chgShown.push(e)-1)).join("");
 function showChanges(k,build){
   hideTip(); $("changes").hidden=false;
@@ -1754,14 +1755,14 @@ $("chgPrompt").addEventListener("change",e=>{ if(e.target.id==="chgUpd"){ chgUpd
 // picking another rank shows that rank's change, and the tooltip follows it
 $("changes").addEventListener("change",e=>{ const s=e.target.closest(".chg-rk"); if(!s) return;
   const row=s.closest(".rt"), en=chgShown[+s.dataset.i], ranks=en[6], [r,t,w]=ranks.find(([n])=>String(n)===s.value), body=row.querySelector(".chg-body");
-  row.dataset.rank=s.value; body.innerHTML=chgBody(t+chgAlso(ranks,r,en[0]),w,body.querySelector(".chg-was[open]")); hideTip(); });
+  row.dataset.rank=s.value; body.innerHTML=chgBody(chgJoin(t,chgAlso(ranks,r,en[0])),w,body.querySelector(".chg-was[open]")); hideTip(); });
 chgBtn.addEventListener("click",()=>showChanges(chgClass));
 
 // Class Changes tooltips: the talent's or spell's current WoW tooltip, as on the trees and in the Spellbook
 function chgEntry(row){
   const n=row.dataset.n, w=row.dataset.w||"", m=MODEL[chgClass]; if(!m) return null;
   if(/talent/.test(w)){ const t=m.trees.flatMap(tr=>tr.talents).find(x=>x.name===n); if(!t||/removed/.test(w)) return null;
-    return {n,ic:t.icon,sub:"Talent",d:textAt(t,t.max),talent:t}; }
+    const k=+row.dataset.rank||t.max; return {n,ic:t.icon,sub:t.max>1?`Talent · Rank ${Math.min(k,t.max)}/${t.max}`:"Talent",d:textAt(t,k),talent:t}; }   // the rank shown
   const sp=(SB[chgClass]&&SB[chgClass].spells||[]).find(x=>x[0]===n); if(!sp) return null;
   const [,ic,,lv,rk,d,id,rks]=sp;
   if(rks&&rks.length){ const want=+row.dataset.rank, [r,l,rd,rt]=rks.find(x=>x[0]===want)||rks[rks.length-1]; return {n,ic,sub:"Rank "+r,d:rd,lv,id,rt}; }
@@ -1879,9 +1880,10 @@ document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+
     if(innerWidth>820 && !fr.hidden && ob.offsetParent){
       const ratio=parseFloat(getComputedStyle(fr).zoom)||1;  /* screen px per css px (zoom) */
       const diff=oh.getBoundingClientRect().top-ch.getBoundingClientRect().top;   /* red bar to red bar */
-      if(diff>0.5){ /* sidebar shorter: spread the extra room evenly between the sidebar boxes */
-        const gaps=groups.slice(1).concat(cg), each=diff/ratio/gaps.length;
-        gaps.forEach(g=>g.style.marginTop=each+"px");
+      if(diff>0.5){ /* sidebar shorter: a little extra room between the sidebar boxes, the rest above Build Code, so a
+                       tall page (the Legacy trees) keeps Quick Info and Search right under Classes */
+        const gaps=groups.slice(1), room=diff/ratio, each=Math.min(room/(gaps.length+1),14);
+        gaps.forEach(g=>g.style.marginTop=each+"px"); cg.style.marginTop=(room-each*gaps.length)+"px";
       } else if(diff<-0.5){ tr.style.minHeight=((tr.getBoundingClientRect().height-diff)/ratio)+"px"; } /* sidebar taller: stretch the trees */
       /* second pass to remove any sub-pixel leftover */
       const d2=oh.getBoundingClientRect().top-ch.getBoundingClientRect().top;

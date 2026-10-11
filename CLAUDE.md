@@ -38,7 +38,12 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       `.../spellbook/...`), which hold every build's tooltips, and marks each change a buff, nerf or other change as a
       best guess from the numbers. It also keeps `version.json` (beta version, build and the date it appeared, shown
       bottom left like WoW's login screen) in step with Blizzard's patch server. `--dry` previews;
-      `--rebuild --date=YYYY-MM-DD` rebuilds the whole history (the date is the latest build's, which Wowhead doesn't list)
+      `--rebuild --date=YYYY-MM-DD` rebuilds the whole history (the date is the latest build's, which Wowhead doesn't list).
+      Its "Needs a look" scan flags changes that look like data errors (a number changing 3x or more, every rank suddenly
+      showing the same number, values becoming 0, leftover formulas, removals); the daily job puts that list at the top
+      of the pull request. Wowhead's data is sometimes wrong (Thick Hide, Oct 8: 180 armor per level at every rank, in
+      game 1 / 2 / 3): once checked in game, a wrong Class Changes entry is corrected in `changes_fixes.json` (applied on
+      every run, so rebuilds keep it) and a wrong talent text in `TEXT_FIXES` in `build.py`
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.

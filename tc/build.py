@@ -40,6 +40,14 @@ OVERRIDES = {
     ('rogue', 'Improved Gouge'): ('Increases the duration of your Gouge ability by {v} sec.', ['0.5', '1', '1.5']),
 }
 
+# Wowhead tooltip errors in the per-rank texts, checked in game: (class, talent) -> (pattern, the right text for rank k).
+# Each applies only while every rank shows the same wrong number, so it stops by itself once Wowhead's data is fixed.
+TEXT_FIXES = {
+    # Oct 8 (1.60.1.70291): Wowhead shows "180 additional base Armor per level" at every rank (3 x level 60?);
+    # in game it is 1 / 2 / 3 per level
+    ('druid', 'Thick Hide'): (r'gain (\d+) additional base Armor per level', lambda k: f'gain {k} additional base Armor per level'),
+}
+
 import os
 TMETA = json.load(open('talent_meta.json', encoding='utf-8')) if os.path.exists('talent_meta.json') else {}
 
@@ -54,7 +62,12 @@ for key, name, color in CLASSES:
         for r, c, mx, tname, icon, desc, ranks, pre, *rest in tr['t']:
             # per-rank texts from sync_talents.py: shown as they are, so every changing number is right at every rank
             texts = [tidy_formula(clean_html(x)).strip() for x in rest[0]] if rest and rest[0] else None
+            fix = TEXT_FIXES.get((key, tname))
+            if fix and texts and len({m.group(1) for x in texts for m in [re.search(fix[0], x)] if m}) == 1 and all(re.search(fix[0], x) for x in texts) and len(texts) > 1:
+                texts = [re.sub(fix[0], fix[1](k + 1), x) for k, x in enumerate(texts)]
             desc = fix_desc(tidy_formula(clean_html(desc)), ranks).strip()
+            if fix and texts and re.search(fix[0], texts[-1]) and re.search(fix[0], texts[-1]).group(0) == fix[1](mx):
+                desc = re.sub(fix[0], fix[1](mx), desc)   # a corrected talent's fallback text too, at the top rank
             # values Wowhead doesn't list yet: show "?" instead of a misleading 0
             desc = re.sub(r'(?<![\d.])0 (sec|Mana)', r'? \1', desc)
             desc = desc.replace('(0 /- 3 * - 204)', '?')

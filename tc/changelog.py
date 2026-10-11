@@ -6,6 +6,11 @@ Run from inside tc/ (needs internet):
     py changelog.py --dry        just print what it would record (works with --rebuild too)
     --date=YYYY-MM-DD            with --rebuild: the latest build's date (Wowhead only dates the older builds)
 
+Each run also does a "Needs a look" scan (sanity()) for changes that look like data errors rather than balance changes:
+a number growing or shrinking 3x or more, every rank suddenly saying the same number, a value becoming 0, formula text
+left in a tooltip, a talent's rank count changing, removals, and numbers moving both ways at once. The daily job puts
+the list at the top of the pull request (../needs-a-look.md). It only flags; corrections go in changes_fixes.json.
+
 The changes come from Wowhead's WoW Forever change pages (wowhead.com/forever/changes/talents/<class> and
 .../spellbook/<class>). Each page compares the latest build with an older one (?vs=<build>) and lists, per talent or
 spell and per rank, the tooltip in both builds plus changes the tooltip doesn't show (threat, icon...). From those
@@ -91,7 +96,8 @@ def plain(s):
     s = re.sub(r'(?<![\d.])(\d{2,})\.\d{3,}', lambda m: str(round(float(m.group(0)))), s)   # level-scaled damage: 104.473 -> 104, as in game
     s = re.sub(r'\s*<br\s*/?>\s*', ' ', s)
     s = re.sub(r'<[^>]+>', '', s).replace('&nbsp;', ' ')
-    return re.sub(r'\s+', ' ', s).strip()
+    s = re.sub(r'[ \t]*\n\s*', '\n', s)   # keep line breaks (a finishing move's "1 point: ..." lines), as the tooltip has them
+    return re.sub(r'[ \t\r\f\v]+', ' ', s).strip()
 
 def better(old, new, before, after):
     """Is old -> new an improvement, judging by the words around the number?"""
@@ -133,6 +139,13 @@ def row_change(label, old, new):
         word = 'increased' if up else 'reduced'
         return f"{label.capitalize()} {word} from {old} to {{{'+' if good else '-'}{new}}}.", {'good' if good else 'bad'}
     return f'{label.capitalize()} changed from {old} to {new}.', {'other'}
+
+def join(notes):
+    """Notes one after another; after a text that ends in a list (a finishing move's combo point lines) the next note
+    starts on its own line."""
+    out = ''
+    for n in notes: out += ('\n' if '\n' in out else ' ' if out else '') + n
+    return out
 
 def kind_of(verdicts):
     if verdicts == {'good'}: return 'buff'
@@ -231,8 +244,8 @@ def diff(kind, prev, nxt, hidden_prev, hidden_next):
             extra.append(f"Now learned at level {{{'+' if nl < pl else '-'}{nl}}} (was {pl})."); xv.add('good' if nl < pl else 'bad')
         for line in sorted(hidden_prev.get(key, set()) - hidden_next.get(key, set())):
             extra.append(line.rstrip('.') + '.'); xv.add('other')
-        if talent: pairs = [(top, p['ranks'][max(p['ranks'])], nt)]
-        else:   # spells: every rank both builds have, highest first
+        if talent and len(p['ranks']) != len(n['ranks']): pairs = [(top, p['ranks'][max(p['ranks'])], nt)]   # top rank to top rank
+        else:   # every rank both builds have, highest first (Improved Slam, Oct 1: only rank 1 changed)
             common = sorted(set(p['ranks']) & set(n['ranks']), reverse=True)
             if not common: continue
             pairs = [(r, p['ranks'][r], n['ranks'][r]) for r in common]
@@ -248,9 +261,9 @@ def diff(kind, prev, nxt, hidden_prev, hidden_next):
         for rk in ranks: groups.setdefault(kind_of(rk[2]), []).append(rk)
         for k, group in groups.items():
             r, notes, v, was, tag, b = group[0]
-            entry = [kind_of(v | xv) if len(groups) == 1 else k, b['name'], n['icon'], where + tag, ' '.join(notes + extra), was or '']
-            if not talent and len(n['ranks']) > 1:
-                entry.append([[rr, ' '.join(nn + extra), ww or ''] for rr, nn, vv, ww, tt, bb in group])
+            entry = [kind_of(v | xv) if len(groups) == 1 else k, b['name'], n['icon'], where + tag, join(notes + extra), was or '']
+            if len(n['ranks']) > 1 and not (talent and len(p['ranks']) != len(n['ranks'])):
+                entry.append([[rr, join(nn + extra), ww or ''] for rr, nn, vv, ww, tt, bb in group])
             elif not was: entry.pop()
             out.append(entry)
     for key, p in prev.items():
@@ -260,9 +273,62 @@ def diff(kind, prev, nxt, hidden_prev, hidden_next):
                         'Removed from the talent tree.' if talent else 'Removed from the spellbook.', plain(pt['text'])])
     return out
 
+LEFTOVER = re.compile(r'[\[\]*$]|\?(?! )|(?<![\w.])\? ')   # formula or placeholder text Wowhead didn't work out
+
+def nums(s): return [float(x) for x in NUM.findall(s)]
+
+def sanity(kind, prev, nxt):
+    """The "Needs a look" scan: changes between two builds that look implausible rather than like balance changes, so a
+    person checks them in game before they go live (Thick Hide, Oct 8: "3 armor per level" became 180 at every rank, a
+    Wowhead data error). Only flags, never changes anything. -> [(name, reason), ...]"""
+    flags = []
+    for key, n in nxt.items():
+        p = prev.get(key)
+        if not p: continue
+        name = n['ranks'][max(n['ranks'])]['name']
+        common = sorted(set(p['ranks']) & set(n['ranks']))
+        if kind == 'talents' and len(p['ranks']) != len(n['ranks']):
+            flags.append((name, f"now has {len(n['ranks'])} ranks (was {len(p['ranks'])})"))
+        # every rank now says the same number where the ranks used to differ (1 / 2 / 3 -> 180 / 180 / 180)
+        if len(common) > 1:
+            po = [plain(p['ranks'][r]['text']) for r in common]; no = [plain(n['ranks'][r]['text']) for r in common]
+            if len({NUM.sub('#', x) for x in po + no}) == 1:
+                pv, nv = [nums(x) for x in po], [nums(x) for x in no]
+                for i in range(len(nv[0])):
+                    was, now_ = [v[i] for v in pv], [v[i] for v in nv]
+                    if len(set(was)) > 1 and len(set(now_)) == 1:
+                        f = lambda x: f'{x:g}'
+                        flags.append((name, f"every rank now says {f(now_[0])} where the ranks said {' / '.join(map(f, was))}")); break
+        for r in common[::-1]:   # the highest rank that changed is enough to show
+            a, b = p['ranks'][r], n['ranks'][r]
+            ta, tb = plain(a['text']), plain(b['text'])
+            reasons = []
+            # a number that grew or shrank 3x or more, in the text or in the cost / cast time / cooldown / range
+            pairs = list(zip(nums(ta), nums(tb))) if NUM.sub('#', ta) == NUM.sub('#', tb) else []
+            for field in ('cost', 'cast', 'cooldown', 'range'):
+                fa, fb = a.get(field) or '', b.get(field) or ''
+                if NUM.sub('#', fa) == NUM.sub('#', fb): pairs += list(zip(nums(fa), nums(fb)))
+            for o, v in pairs:
+                if o == v: continue
+                if v == 0 and o: reasons.append(f'{o:g} became 0'); break
+                if o == 0: reasons.append(f'0 became {v:g}'); break
+                if max(o, v) / min(o, v) >= 3: reasons.append(f'{o:g} became {v:g} ({max(o, v) / min(o, v):.0f}x {"bigger" if v > o else "smaller"})'); break
+            if LEFTOVER.search(tb) and not LEFTOVER.search(ta): reasons.append('the new text has a formula or placeholder left in it')
+            notes, v, was, tag = rank_change(a, b)
+            if {'good', 'bad'} <= v: reasons.append('some numbers got better and others worse')
+            if reasons:
+                flags.append((name, ('' if kind == 'talents' or len(n['ranks']) < 2 else f'rank {r}: ') + '; '.join(reasons))); break
+    for key, p in prev.items():
+        if key not in nxt:
+            flags.append((p['ranks'][max(p['ranks'])]['name'], 'removed' + (' from the talent tree' if kind == 'talents' else ' from the spellbook')))
+    return flags
+
+FLAGS = {}   # class -> [(name, reason)] for the update being worked out
+
 def update(prev_vs, next_vs):
     """Every class's changes from build prev_vs to build next_vs (None = the latest build)."""
     classes = {}
+    FLAGS.clear()
     for c in CLASSES:
         ch = []
         for kind in KINDS:
@@ -274,6 +340,10 @@ def update(prev_vs, next_vs):
             hp = {k: top(e) for k, e in prev.items()}
             hn = {k: top(e) for k, e in nxt.items()} if b else {}
             ch += diff(kind, prev, nxt, hp, hn)
+            for name, why in sanity(kind, prev, nxt):   # one line per talent or spell, its reasons joined
+                fl = FLAGS.setdefault(c, []); i = next((j for j, (nm, _) in enumerate(fl) if nm == name), None)
+                if i is None: fl.append((name, why))
+                elif why not in fl[i][1]: fl[i] = (name, fl[i][1] + '; ' + why)
         talents = {e[1] for e in ch if 'talent' in e[3]}
         ch = [e for e in ch if 'talent' in e[3] or e[1] not in talents]   # a talent's spell (Bloodthirst) shows once
         if ch: classes[c] = ch
@@ -293,6 +363,35 @@ def beta_build():
     row = next(l for l in txt.splitlines() if l.startswith('us|')).split('|')
     name = row[5]   # VersionsName, e.g. 1.60.1.70338
     return name.rsplit('.', 1)[0], name.rsplit('.', 1)[1]
+
+def apply_fixes(log):
+    """Hand corrections from changes_fixes.json, applied every run so a rebuild keeps them: an entry Wowhead's data got
+    wrong (checked in game) is dropped, or its kind / text replaced. Each fix names the update's build, the class and
+    the talent or spell, and says why."""
+    try: fixes = now('changes_fixes.json')['fixes']
+    except FileNotFoundError: return
+    for fx in fixes:
+        for u in log['updates']:
+            if u['build'] != fx['build'] or fx['class'] not in u['classes']: continue
+            ch = u['classes'][fx['class']]
+            for e in [e for e in ch if e[1] == fx['name']]:
+                if fx.get('drop'): ch.remove(e); continue
+                if 'kind' in fx: e[0] = fx['kind']
+                if 'text' in fx: e[4] = fx['text']
+            if not ch: del u['classes'][fx['class']]
+
+def needs_a_look(build):
+    """The scan's flags for one update, as the top of the pull request report (Markdown); '' when nothing looks off.
+    A flag already handled in changes_fixes.json says so."""
+    try: fixed = {(f['build'], f['class'], f['name']) for f in now('changes_fixes.json')['fixes']}
+    except FileNotFoundError: fixed = set()
+    rows = [f"- **{c.capitalize()}: {name}**: {why}" + (' (already corrected in changes_fixes.json)' if (build, c, name) in fixed else '')
+            for c, fl in FLAGS.items() for name, why in fl]
+    if not rows: return ''
+    return ('### Needs a look\n'
+            "These changes look unusual for a balance change: check them in game or on Wowhead before merging. If one is "
+            "wrong, it can be corrected in tc/changes_fixes.json (and, for a talent's text, TEXT_FIXES in tc/build.py).\n\n"
+            + '\n'.join(rows) + '\n')
 
 def show(u):
     print(f"== {u['date']} build {u['build']}")
@@ -325,7 +424,7 @@ def main():
             build, label, date = (nb[0], nb[1], nb[2]) if nb else (int(lb), live, live_date or (known.get(lb) or {}).get('date', today))
             updates.insert(0, {'date': date, 'version': label.rsplit('.', 1)[0], 'build': str(build),
                                'classes': update(prev_vs, nb[0] if nb else None)})
-            show(updates[0])
+            show(updates[0]); print(needs_a_look(str(build)) or 'Needs a look: nothing')
         log['updates'] = updates
     else:
         if lb in known: print(f'build {lb} is already recorded'); return
@@ -334,8 +433,12 @@ def main():
         prev_vs = max([b for b in recorded if b in avail] or [max(avail)])   # the newest build we recorded that Wowhead can still compare with
         u = {'date': today, 'version': lv, 'build': lb, 'classes': update(prev_vs, None)}
         show(u)
+        look = needs_a_look(lb); print(look or 'Needs a look: nothing')
+        if not dry:   # the workflow puts this at the top of the pull request report
+            with open('../needs-a-look.md', 'w', encoding='utf-8', newline='\n') as f: f.write(look)
         if not u['classes']: return
         log['updates'].insert(0, u)
+    apply_fixes(log)
     if dry: return
     with open('changes.json', 'w', encoding='utf-8', newline='\n') as f: json.dump(log, f, ensure_ascii=False, indent=1); f.write('\n')
 

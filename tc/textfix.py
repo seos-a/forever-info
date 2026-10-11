@@ -2,10 +2,13 @@
 import re
 
 def clean_html(desc):
-    """Wowhead occasionally leaves HTML in a description (Weaponmaster): a double <br /> starts a new line,
-    a single one is just a line wrap, and tags such as <span> are dropped."""
+    """Wowhead occasionally leaves HTML in a description (Weaponmaster): a double <br /> starts a new line, and so
+    does a single one that starts a list line ("2 points: 12 sec", as in finishing moves); any other single one is
+    just a line wrap. Tags such as <span> are dropped."""
     desc = re.sub(r'\s*(<br\s*/?>\s*){2,}', '\n', desc)
+    desc = re.sub(r'\s*<br\s*/?>\s*(?=\d+ points?\s*:)', '\n', desc)
     desc = re.sub(r'\s*<br\s*/?>\s*', ' ', desc)
+    desc = re.sub(r'(\d+ points?)\s+:', r'\1:', desc)   # "1 point  : 9 sec" (padded to line up in game) -> "1 point: 9 sec"
     desc = re.sub(r'<[^>]+>', '', desc)
     return re.sub(r'[ \t]{2,}', ' ', desc)
 

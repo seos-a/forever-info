@@ -1,0 +1,11 @@
+{
+ "fixes": [
+  {
+   "build": "70291",
+   "class": "druid",
+   "name": "Thick Hide",
+   "drop": true,
+   "why": "Wowhead's data shows 180 armor per level at every rank from this build (3 x level 60?); in game it is still 1 / 2 / 3 per level, so nothing changed"
+  }
+ ]
+}
