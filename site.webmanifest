@@ -1,0 +1,14 @@
+{
+ "name": "Forever Info",
+ "short_name": "Forever Info",
+ "description": "Up-to-date WoW Forever class data: talent calculator, spellbook, patch-by-patch class changes and more.",
+ "start_url": "/",
+ "scope": "/",
+ "display": "minimal-ui",
+ "background_color": "#000000",
+ "theme_color": "#1a0d04",
+ "icons": [
+  {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+  {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+ ]
+}

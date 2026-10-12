@@ -1,14 +1,16 @@
-"""Make art/banner_hallow.png, the Hallow's End version of the site logo, from art/banner_title.png.
+"""Make art/banner_hallow.png, the Hallow's End version of the site logo, from art/banner_title.png
+(and, with HALLOW_SRC=art/banner_title_nobeta.png HALLOW_OUT=art/banner_hallow_nobeta.png, the phones' version).
 
 The letters go from pumpkin orange at the top to a dark purple base, the purple drop shadow turns slime green,
 the BETA! starburst turns orange with purple lettering, and a few bats fly round the title.
 Run from tc/:  py art/hallow_logo.py   (needs Pillow), then paste the PNG as a base64 data URI into the logo
 <img data-hw="..."> in template2.html.
 """
-import colorsys
+import colorsys, os
 from PIL import Image, ImageDraw
 
-SRC, OUT = "art/banner_title.png", "art/banner_hallow.png"
+# HALLOW_SRC / HALLOW_OUT: another source, e.g. the phones' logo without the BETA! sticker (art/banner_title_nobeta.png)
+SRC, OUT = os.environ.get("HALLOW_SRC", "art/banner_title.png"), os.environ.get("HALLOW_OUT", "art/banner_hallow.png")
 LETTERS = {   # banded letter fill of the original title -> Hallow's End bands
     (255, 246, 140): (255, 206, 120), (255, 214, 40): (255, 158, 28), (255, 160, 20): (236, 108, 12),
     (232, 90, 16): (168, 52, 40), (190, 40, 20): (96, 30, 110)}
@@ -42,6 +44,7 @@ def bat(cx, cy, w, ang=0):
     L = L.resize((w, w//2), Image.LANCZOS).rotate(ang, resample=Image.BICUBIC, expand=True)
     im.alpha_composite(L, (int(cx - L.width/2), int(cy - L.height/2)))
 for cx, cy, w, ang in [(34, 22, 46, -12), (420, 12, 34, 8), (1046, 150, 36, -6), (22, 170, 30, 10)]:
+    if cx > W - 30: cx, cy = W - 30, 40   # a narrower logo (no BETA! sticker): this bat flies above the "o" instead
     bat(cx, cy, w, ang)
 im.save(OUT, optimize=True)
 print(OUT, im.size)

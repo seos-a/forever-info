@@ -144,7 +144,12 @@ document.head.appendChild(t);})();
 # real icon files and link-preview tags: search engines and link cards (Discord, Google chat...) can't use the inline icon
 SITE='https://foreverinfo.io/'
 HEAD=f"""<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebSite","name":"Forever Info","url":"{SITE}"}}</script>
 <link rel="canonical" href="{SITE}">
 <meta property="og:site_name" content="Forever Info">
 <meta property="og:type" content="website">
@@ -153,11 +158,20 @@ HEAD=f"""<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <meta property="og:description" content="Up-to-date WoW Forever class data: talent calculator, spellbook, patch-by-patch class changes and more... without the bloat.">
 <meta property="og:image" content="{SITE}images/og.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Forever Info logo">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#1a0d04">
 """
 web=web.replace('</head>',HEAD+GC+'</head>',1)
+# the template's inline favicon (for the offline pages) would come first; search engines need the real files above
+web=_re.sub(r'<link rel="icon" type="image/png" href="data:image/png;base64,[^"]*">\n?','',web,count=1)
 assert 'zamimg' not in web, _re.findall(r'.{40}zamimg.{40}',web)[:3]
+# ---- 404 page (GitHub Pages shows ../404.html for any address that doesn't exist), styled like the
+# Burning Crusade-era WoW site's: a parchment panel with a red title bar. It borrows the page's own textures. ----
+_T=open('template2.html',encoding='utf-8').read()
+_vars='\n'.join(l for l in _T.split('\n')[:60] if _re.match(r'\s*--(tex-weather|tex-paper|tex-fibre|tex-speck|tex-stain|parch-bg):',l))
+P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars)
+open('../404.html','w',encoding='utf-8',newline='\n').write(P404)
 _os.makedirs('../web',exist_ok=True)
 open('../web/index.html', 'w', encoding='utf-8', newline='\n').write(web)
 A=_json.load(open('assets.json', encoding='utf-8'))
