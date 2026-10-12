@@ -135,7 +135,8 @@ function send(){var g=window.goatcounter; if(!g||!g.count) return;
   g.count({path:"/forever-info/"+s,title:s});}
 window.gcTrack=send;
 var _r=history.replaceState; history.replaceState=function(){var r=_r.apply(this,arguments); setTimeout(send,0); return r;};
-window.addEventListener("hashchange",send);
+var _p=history.pushState; history.pushState=function(){var r=_p.apply(this,arguments); setTimeout(send,0); return r;};   // phones: the tab bar moves between pages with pushState
+window.addEventListener("hashchange",send); window.addEventListener("popstate",function(){setTimeout(send,0);});
 var t=document.createElement("script"); t.async=true; t.src="https://gc.zgo.at/count.js";
 t.setAttribute("data-goatcounter","https://seos-a.goatcounter.com/count"); t.onload=send;
 document.head.appendChild(t);})();

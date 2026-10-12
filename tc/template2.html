@@ -480,11 +480,11 @@ body.touch .tip .hint{display:none}
 #app #sbRaces{display:flex!important;flex-wrap:wrap;justify-content:center;gap:4px 2px;width:100%}
 #app #sbRaces .rp-sq{width:64px!important;min-width:0}
 #sbClasses .rp-sq,#app #sbRaces .rp-sq,
-#chgClasses .rp-sq{padding:3px 3px 24px!important}
+#chgClasses .rp-sq,#talClasses .rp-sq{padding:3px 3px 24px!important}
 #spellbook .rn-ov,
 #changes .rn-ov{bottom:-21px}
 #sbClasses .rn-ov,
-#chgClasses .rn-ov{color:var(--c)!important}
+#chgClasses .rn-ov,#talClasses .rn-ov{color:var(--c)!important}
 /* both Skyborne portraits are mirrored so the Alliance one faces right and the Horde one faces left, toward each other */
 img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scaleX(-1)}
 /* Skyborne faction badge: WoW's own unit-frame PvP flags (art/pvp-alliance.png, art/pvp-horde.png, from the game files) */
@@ -588,6 +588,8 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 
 /* ---- Phones: a tab bar along the top (sticky once scrolled to), one page at a time ---- */
 .mtabs{display:none}
+.tal-pick{display:none}   /* phones and tablets: Talents uses the same stone class picker as the other pages, in place of the sidebar's Classes box */
+@media (max-width:820px){.tal-pick{display:flex;order:1}.side>.sgrp:has(>#classbar){display:none!important}}
 @media (max-width:820px){
   .mtabs{order:-1;position:sticky;top:0;z-index:60;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:8px;margin:0 -4px;
     background:#0d0d0f;box-shadow:inset 0 0 0 1px #000,inset 0 0 0 2px #c9a24c,inset 0 0 0 3px #7a5618,inset 0 0 0 4px #000,0 4px 12px #000c}   /* plain dark with the title bars' gold ring, drawn inside so the bar runs edge to edge and nothing shows past it while it sticks to the top */
@@ -601,6 +603,7 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
   .sgrp-links .legacy-link{display:none!important}
   /* Talents shows the class picker, search, build code, stats, trees and Talent Order; every other tab only its page */
   #app:not([data-mtab="talents"]) .side>.sgrp,
+  #app:not([data-mtab="talents"]) .side>.tal-pick,
   #app:not([data-mtab="talents"]) .main>.status,
   #app:not([data-mtab="talents"]) .main>#trees,
   #app:not([data-mtab="talents"]) .main>.orderbox{display:none!important}
@@ -648,15 +651,15 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
   #app .rp .rpi{width:38px!important;height:38px!important}
   .sb-pick{gap:8px}
   #sbClasses,#sbRaces,#raceAlly,#raceHorde,
-  #chgClasses{display:grid;grid-template-columns:repeat(auto-fill,64px);justify-content:center;column-gap:2px;justify-items:center;align-items:start;align-content:start;row-gap:6px;width:100%}
+  #chgClasses,#talClasses{display:grid;grid-template-columns:repeat(auto-fill,64px);justify-content:center;column-gap:2px;justify-items:center;align-items:start;align-content:start;row-gap:6px;width:100%}
   .race-bar .race-group{width:100%}
   /* spellbook classes: 9 icons as a centred 5 + 4 block (second row offset by half a slot) */
   #app #sbClasses,
-  #app #chgClasses{grid-template-columns:repeat(10,32px);column-gap:1px}
+  #app #chgClasses,#app #talClasses{grid-template-columns:repeat(10,32px);column-gap:1px}
   #app #sbClasses .rp,
-  #app #chgClasses .rp{grid-column:span 2}
+  #app #chgClasses .rp,#app #talClasses .rp{grid-column:span 2}
   #app #sbClasses .rp:nth-child(6),
-  #app #chgClasses .rp:nth-child(6){grid-column:2 / span 2}
+  #app #chgClasses .rp:nth-child(6),#app #talClasses .rp:nth-child(6){grid-column:2 / span 2}
   #app .race-row .rp{width:100%!important;min-width:0;grid-template-columns:minmax(0,1fr);white-space:normal;text-align:center;line-height:1.15;font-size:11px!important;letter-spacing:-.01em}
   /* the Quick Info box is laid out as plain buttons on phones; its torn-edge overlay would otherwise span the page */
   .qlbar.tatter::after{display:none}
@@ -699,6 +702,7 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
   #racials #raceAlly,#racials #raceHorde{grid-template-columns:repeat(5,minmax(0,1fr));padding:10px 6px 26px}
   #racials .rp-sq[aria-pressed="true"] .rn-ov{opacity:1}
   #racials .race-bar{padding-top:10px!important}
+  #racials .race-bar:has(>#raceInfo[hidden]){padding-bottom:10px}   /* no race picked yet: no class icons under the factions, so even space above and below */
   #app #racials .race-row .rp{padding:2px 1px;gap:2px}
   #app #racials .race-row .rp .rpi{width:34px!important;height:34px!important}
   #racials .race-info{padding-top:6px}
@@ -714,8 +718,8 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 @media (min-width:600px) and (max-width:820px){
   body .faction-pick button{width:32px!important;height:32px!important;border-width:2px!important}   /* larger theme buttons (phones: 22px); still clear of the logo below */
   /* the nine classes in one row, like the races under them */
-  #app #sbClasses,#app #chgClasses{grid-template-columns:repeat(9,64px);column-gap:2px}
-  #app #sbClasses .rp,#app #chgClasses .rp,#app #sbClasses .rp:nth-child(6),#app #chgClasses .rp:nth-child(6){grid-column:auto}
+  #app #sbClasses,#app #chgClasses,#app #talClasses{grid-template-columns:repeat(9,64px);column-gap:2px}
+  #app #sbClasses .rp,#app #chgClasses .rp,#app #sbClasses .rp:nth-child(6),#app #chgClasses .rp:nth-child(6),#app #talClasses .rp,#app #talClasses .rp:nth-child(6){grid-column:auto}
   /* the spellbook keeps a book's shape, with its tabs down the right side as on desktop; equal padding on the left keeps
      the book itself centred on the screen */
   .sb-wrap{max-width:656px;padding-left:58px}
@@ -1043,6 +1047,14 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
   .leg-status .ctrls{grid-column:auto;justify-content:center}
   .leg-status .stat{justify-content:center}
   .status .cap-l{display:none}.status .cap-s{display:inline}
+  /* tidier on phones and tablets: the search box needs no title bar (its placeholder says what it is); the four stats get
+     thin dividers and quieter labels, and Talented / Cap / Reset All sit evenly in their own row under a divider */
+  .sgrp:has(>.srch)>.hdr{display:none!important}
+  .main>.status{column-gap:0!important;padding:10px 12px!important}
+  .main>.status .stat{color:#cfc6b0;font-size:10.5px!important;letter-spacing:.03em}
+  .main>.status .stat+.stat{box-shadow:-1px 0 0 #00000080,-2px 0 0 #ffffff12}
+  .main>.status .ctrls{display:grid!important;grid-template-columns:1fr 1fr 1fr;justify-items:center;margin-top:4px!important;padding-top:9px;box-shadow:0 -1px 0 #ffffff12,inset 0 1px 0 #00000080}
+  .main>.status .ctrls #resetAll{margin:0!important}
   /* spellbook: every page is the same height */
   .sb-grid{grid-template-rows:repeat(6,58px)!important;align-items:center}
 }
@@ -1124,6 +1136,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
   <aside class="side" aria-label="Classes">
     <div class="sgrp"><div class="hdr">Classes</div>
     <nav class="classbar tatter" id="classbar" aria-label="Class"></nav></div>
+    <div class="race-bar wood sb-pick tal-pick" id="talPick"><div class="race-group"><div class="race-row" id="talClasses" aria-label="Class"></div></div></div>
     <div class="sgrp sgrp-links">
     <div class="hdr">Quick Info</div>
     <div class="qlbar tatter">
@@ -1133,7 +1146,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
     <button type="button" class="cls legacy-link" id="legacyLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/inv_misc_food_30.jpg" alt="" onerror="this.remove()"></span><span>Legacy Talents</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button></div></div>
     <div class="sgrp"><div class="hdr">Search</div>
     <div class="srch tatter">
-      <div class="srch-row"><input id="search" type="text" aria-label="Search talents" spellcheck="false"><button type="button" id="searchClear" aria-label="Clear search">×</button></div>
+      <div class="srch-row"><input id="search" type="text" aria-label="Search talents" placeholder="Search talents" spellcheck="false"><button type="button" id="searchClear" aria-label="Clear search">×</button></div>
       <div class="srch-info" id="searchInfo" aria-live="polite"></div>
     </div></div>
     <div class="sgrp code-grp"><div class="hdr">Build Code</div>
@@ -1284,6 +1297,11 @@ for(const m of Object.values(MODEL).filter(m=>!m.legacy)){
   b.addEventListener("click",()=>selectClass(m.key));
   bar.appendChild(b);
 }
+const talClassBtns=[];
+for(const k of ["druid","hunter","mage","paladin","priest","rogue","shaman","warlock","warrior"]){ const m=MODEL[k];
+  const b=document.createElement("button"); b.type="button"; b.className="rp rp-sq"; b.dataset.k=k; b.style.setProperty("--c",m.color); b.setAttribute("aria-label",m.name);
+  b.innerHTML=`<span class="rpi"><img src="${IMG("classicon_"+k)}" alt="" onerror="this.style.visibility='hidden'"><span class="rn-ov">${esc(m.name)}</span></span><span class="rp-n">${esc(m.name)}</span>`;
+  b.addEventListener("click",()=>selectClass(k)); $("talClasses").appendChild(b); talClassBtns.push(b); }
 const legBtn=$("legacyLink");
 if(MODEL.legacy){ legBtn.dataset.key="legacy"; legBtn.style.setProperty("--c",MODEL.legacy.color); legBtn.style.setProperty("--ci",INK.legacy); legBtn.addEventListener("click",()=>selectClass("legacy")); } else legBtn.hidden=true;
 const racBtn=$("racialLink"); racBtn.dataset.key="racials"; racBtn.style.setProperty("--c","#ffd75a");
@@ -1368,7 +1386,7 @@ function selectClass(key){
   document.title=cur.legacy?"Forever Legacy Talents":`Forever ${cur.name} Talents`;
   $("app").dataset.mode=cur.legacy?"legacy":"class";
   $("resetAll").textContent="Reset All";
-  if(isPhone()){ bar.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); setMTab("talents"); }
+  if(isPhone()){ bar.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); talClassBtns.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===key))); setMTab("talents"); }
   else { $("racials").hidden=true; $("spellbook").hidden=true; $("changes").hidden=true; $("legPanel").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); }
   if(window.ordReset) window.ordReset();   // Talent Order (or the Legacy Point Order) folds again for the new tree, until it has points
   buildTrees(); render(); runSearch();
