@@ -283,8 +283,14 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .lp-a:hover .lp-i,.lp-a:focus-visible .lp-i{box-shadow:0 0 0 1px #ffd75a,0 0 0 2px #000,0 0 12px #ffd75a;transform:translateY(-1px)}
 .lp-a:hover span:last-child,.lp-a:focus-visible span:last-child{text-decoration:underline;text-underline-offset:3px}
 /* phones: the four links in one row of plain gold names, as wide as the class icons above */
-@media (max-width:820px){.lp-ql{margin-top:18px;flex-wrap:nowrap;gap:0 calc(var(--u)*31)}
-  .lp-a{font-size:calc(var(--u)*10);padding:0;white-space:nowrap}.lp-a .lp-i{display:none}}
+@media (max-width:820px){.lp-ql{margin-top:18px;flex-wrap:nowrap;gap:0 calc(var(--u)*13.3)}
+  .lp-a{font-size:calc(var(--u)*10);white-space:nowrap;padding:calc(var(--u)*4) calc(var(--u)*6);background:#0b0b0d;
+    border:1px solid #000;border-radius:3px;box-shadow:0 0 0 1px #b8902f,0 0 0 2px #000}   /* the class icons' gold edge, so each name reads as its own button */
+  .lp-a{font-size:calc(var(--u)*9);box-sizing:border-box;justify-content:center;padding:0;height:calc(var(--u)*24.6)}
+  /* each box keeps the size it had with 10px text, so the row still lines up with the class icons */
+  .lp-a:nth-child(1){width:calc(var(--u)*93.9)}.lp-a:nth-child(2){width:calc(var(--u)*68.6)}
+  .lp-a:nth-child(3){width:calc(var(--u)*96.4)}.lp-a:nth-child(4){width:calc(var(--u)*97.2)}
+  .lp-a .lp-i{display:none}}
 .pk{display:grid;justify-items:center;gap:8px;background:none;border:0;cursor:pointer;padding:6px;border-radius:6px;
   font-family:var(--font);font-weight:700;font-size:14px;color:var(--c);text-shadow:0 1px 0 #000,0 0 8px #000,0 0 3px #000}
 .pk .pi{width:64px;height:64px;border-radius:6px;overflow:hidden;border:2px solid #000;display:grid;place-items:center;background:#1a1b1e;color:#ccc;font-size:1rem;
