@@ -102,6 +102,13 @@ Sanity check: rebuilding the current, unchanged sources reproduces the committed
 
 Commit and push straight to `main`. GitHub Pages deploys from there.
 
+## IndexNow (Bing)
+
+`.github/workflows/indexnow.yml` runs after every push to `main` that changes `index.html` (including merged sync pull
+requests): once GitHub Pages has published, it tells IndexNow (Bing, Yandex...) that https://foreverinfo.io/ changed. It
+needs the IndexNow key file in the repo root, `<32 hex characters>.txt` containing that same key (public on purpose);
+without it the workflow does nothing.
+
 ## Automatic beta sync
 
 `.github/workflows/beta-sync.yml` runs twice a day, 10:00 PM and 10:30 AM US Eastern (and on demand from the Actions tab): it runs the

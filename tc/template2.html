@@ -2035,7 +2035,7 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
   document.addEventListener("contextmenu",e=>{ x=e.clientX; y=e.clientY; over(); const im=target; if(!im) return; e.preventDefault();
     if(isShop(im)){ if(voice&&!voice.paused) return;   // let him finish his sentence
       let k; do{ k=Math.floor(Math.random()*LINES.length); }while(LINES.length>1&&k===last); last=k;
-      try{ voice=new Audio(LINES[k]); voice.volume=.7; voice.play().catch(()=>{}); }catch(err){} return; }
+      try{ voice=new Audio(LINES[k]); voice.volume=.15;   /* as quiet as the Hallow's End bell */ voice.play().catch(()=>{}); }catch(err){} return; }
     const k=rampOf(im)||"top-mur", now=performance.now(), crit=Math.random()<.15; let n;
     { const [lo,hi]=RAMP[k];
       if(now-lastHit>1500) spamStart=now; lastHit=now;
