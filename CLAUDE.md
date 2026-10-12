@@ -47,7 +47,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.
-    To change one, re-encode it and replace the data URI in the template. Phones show the logo without the BETA!
+    To change one, re-encode it and replace the data URI in the template. `art/skyborne_icon.py` makes the zoomed Horde Skyborne
+    portrait (`images/icons/race_skyborne_male.jpg`); `art/bloodelf_icon.py` the Alliance one. Phones show the logo without the BETA!
     sticker instead, from files: `images/logo-nobeta.png` and `images/logo-hallow-nobeta.png` (copies of
     `art/banner_title_nobeta.png` and `art/banner_hallow_nobeta.png`; the Hallow's End one is made by
     `HALLOW_SRC=art/banner_title_nobeta.png HALLOW_OUT=art/banner_hallow_nobeta.png py art/hallow_logo.py`).
@@ -67,7 +68,7 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
    (`wow.zamimg.com`) become local `images/...` paths, and the GoatCounter
    analytics snippet is added before `</head>`, along with the icon links and the link-preview (Open Graph) tags,
    which point at `https://foreverinfo.io/`. The preview picture `images/og.png` is made by `tc/art/og_image.py`;
-   `favicon.png`, `favicon.ico`, the larger icons (`apple-touch-icon.png` for iPhone bookmarks, `favicon-48.png` / `favicon-96.png` for Google results, `icon-192.png` / `icon-512.png` for Android; all made by `tc/art/touch_icon.py`), `site.webmanifest` (Android home screen), `404.html` (GitHub Pages shows it for any address that doesn't exist; `build.py` writes it from `tc/page404.html` with the main page's parchment textures, styled after the Burning Crusade-era WoW site's 404 page), `robots.txt` and `sitemap.xml` sit in the repo root. The head also gets a WebSite structured-data tag naming the site "Forever Info" for Google results. It asserts that no `zamimg` URLs
+   `favicon.png`, `favicon.ico`, the larger icons (`apple-touch-icon.png` for iPhone bookmarks, `favicon-48.png` / `favicon-96.png` for Google results, `icon-192.png` / `icon-512.png` for Android; all made by `tc/art/touch_icon.py`, transparent behind the murloc; after changing them, bump `ICONV` in `build.py` so browsers fetch the new files), `site.webmanifest` (Android home screen), `404.html` (GitHub Pages shows it for any address that doesn't exist; `build.py` writes it from `tc/page404.html` with the main page's parchment textures, styled after the Burning Crusade-era WoW site's 404 page), `robots.txt` and `sitemap.xml` sit in the repo root. The head also gets a WebSite structured-data tag naming the site "Forever Info" for Google results. It asserts that no `zamimg` URLs
    remain, then writes:
    - `../web/index.html`: the site
    - `../web/image-list.txt`: `url|local path` lines for every image the site needs

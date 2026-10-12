@@ -20,7 +20,7 @@ def icon(S):
     drawn straight at the final size so their blocks stay sharp."""
     base = min(S, 180)
     head = src.crop((CX - SIDE // 2, TOP, CX + SIDE // 2, TOP + SIDE)).resize((base, base), Image.LANCZOS)
-    im = Image.new('RGBA', (base, base), (255, 255, 255, 255)); im.alpha_composite(head)
+    im = Image.new('RGBA', (base, base), (0, 0, 0, 0)); im.alpha_composite(head)   # transparent behind the murloc (iPhone shows it on dark)
     if S > base: im = im.resize((S, S), Image.LANCZOS)
     B = S / 32                                        # the favicon's pixels, scaled to this size
     left, top = S / 2 - (x1 - x0 + 1) * B / 2, y0 * B     # centred, at the favicon's height (over the eyes)
@@ -29,7 +29,7 @@ def icon(S):
         g.paste(c[:3] + (255,), (round(left + (x - x0) * B), round(top + (y - y0) * B),
                                  round(left + (x - x0 + 1) * B), round(top + (y - y0 + 1) * B)))
     im.alpha_composite(g)
-    return im.convert('RGB')
+    return im
 
 for name, S in (('apple-touch-icon.png', 180), ('favicon-48.png', 48), ('favicon-96.png', 96),
                 ('icon-192.png', 192), ('icon-512.png', 512)):

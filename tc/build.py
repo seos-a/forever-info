@@ -143,12 +143,14 @@ document.head.appendChild(t);})();
 """
 # real icon files and link-preview tags: search engines and link cards (Discord, Google chat...) can't use the inline icon
 SITE='https://foreverinfo.io/'
-HEAD=f"""<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
-<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
+ICONV=2   # bump when the icons change: browsers (Safari especially) keep old icons until the address changes
+HEAD=f"""<link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v={ICONV}">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v={ICONV}">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png?v={ICONV}">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v={ICONV}">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v={ICONV}">
+<meta name="apple-mobile-web-app-title" content="Forever Info">
+<link rel="manifest" href="site.webmanifest?v={ICONV}">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebSite","name":"Forever Info","url":"{SITE}"}}</script>
 <link rel="canonical" href="{SITE}">
 <meta property="og:site_name" content="Forever Info">
