@@ -4,7 +4,9 @@ Run from tc/art:  py touch_icon.py   Writes, in the repo root:
     apple-touch-icon.png (180)    iPhone / iPad bookmarks and home screen
     favicon-48.png, favicon-96.png  Google search results (they want 48px or more)
     icon-192.png, icon-512.png    Android home screen (site.webmanifest)
-The tab favicon (favicon.png / favicon.ico, 32px) stays the hand-made pixel version."""
+    favicon.png (32), favicon.ico (16 + 32)   browser tabs, and Safari's Favourites and search suggestions
+The original hand-made pixel favicon stays in tc/art (fav_shades.png); Safari blew it up in Favourites, so the site's
+favicons are made from the same art as the big icons."""
 from PIL import Image
 
 src = Image.open('../../images/models/441.png').convert('RGBA')
@@ -31,7 +33,9 @@ def icon(S):
     im.alpha_composite(g)
     return im
 
-for name, S in (('apple-touch-icon.png', 180), ('favicon-48.png', 48), ('favicon-96.png', 96),
+for name, S in (('favicon.png', 32), ('apple-touch-icon.png', 180), ('favicon-48.png', 48), ('favicon-96.png', 96),
                 ('icon-192.png', 192), ('icon-512.png', 512)):
     icon(S).save('../../' + name, optimize=True)
     print(name, S)
+icon(32).save('../../favicon.ico', sizes=[(16, 16), (32, 32)])
+print('favicon.ico 16 + 32')
