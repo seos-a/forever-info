@@ -146,7 +146,7 @@ document.head.appendChild(t);})();
 """
 # real icon files and link-preview tags: search engines and link cards (Discord, Google chat...) can't use the inline icon
 SITE='https://foreverinfo.io/'
-ICONV=4   # largest icon listed first: Safari (Favourites, search suggestions) takes the first; browser tabs take the 32px (the only transparent one, the rest sit on stone grey); bump when the icons change: browsers (Safari especially) keep old icons until the address changes
+ICONV=5   # largest icon listed first: Safari (Favourites, search suggestions) takes the first; browser tabs take the 32px (the only transparent one, the rest sit on black); bump when the icons change: browsers (Safari especially) keep old icons until the address changes
 HEAD=f"""<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v={ICONV}">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png?v={ICONV}">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v={ICONV}">
