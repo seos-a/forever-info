@@ -146,7 +146,7 @@ document.head.appendChild(t);})();
 """
 # real icon files and link-preview tags: search engines and link cards (Discord, Google chat...) can't use the inline icon
 SITE='https://foreverinfo.io/'
-ICONV=5   # largest icon listed first: Safari (Favourites, search suggestions) takes the first; browser tabs take the 32px (the only transparent one, the rest sit on black); bump when the icons change: browsers (Safari especially) keep old icons until the address changes
+ICONV=6   # largest icon listed first: Safari (Favourites, search suggestions) takes the first; browser tabs take the 32px (the only transparent one, the rest sit on black); bump when the icons change: browsers (Safari especially) keep old icons until the address changes
 HEAD=f"""<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v={ICONV}">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png?v={ICONV}">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v={ICONV}">
@@ -161,7 +161,7 @@ HEAD=f"""<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=
 <meta property="og:url" content="{SITE}">
 <meta property="og:title" content="Forever Info – WoW Forever Talent Calculator &amp; Class Changes">
 <meta property="og:description" content="Up-to-date WoW Forever class data: talent calculator, spellbook, patch-by-patch class changes and more... without the bloat.">
-<meta property="og:image" content="{SITE}images/og.png?v=2">   <!-- bump ?v= when og.png changes: link previews cache the picture by its address -->
+<meta property="og:image" content="{SITE}images/og.png?v=3">   <!-- bump ?v= when og.png changes: link previews cache the picture by its address -->
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The Forever Info logo, with the site's murloc in sunglasses peeking up from below">
 <meta name="twitter:card" content="summary_large_image">

@@ -4,7 +4,7 @@ Writes ../../images/og.png (1200x630, the size link previews expect). Run from t
 The logo is pixel art drawn at 2x (each "pixel" is a 2x2 block), so it is pasted at its own size, never resized:
 any other scale makes the blocks uneven and the edges look smeared. PNG keeps those edges sharp, where JPEG blurs them."""
 from PIL import Image
-from touch_icon import src, CX, TOP, SIDE, cells, x0, x1, y0
+from touch_icon import src, CX, TOP, SIDE, cells, x0, x1, y0, GLASS_TOP
 
 W, H = 1200, 630
 LOGO_Y = 70                 # the logo's top, raised to leave the murloc room
@@ -19,7 +19,7 @@ def murloc(S):
     h = src.crop((L, T, R, TOP + SIDE * 2))
     h = h.resize((round(h.width * k), round(h.height * k)), Image.LANCZOS)
     B, cx = S / 32, (CX - L) * k
-    left, top = cx - (x1 - x0 + 1) * B / 2, (TOP - T) * k + y0 * B
+    left, top = cx - (x1 - x0 + 1) * B / 2, (TOP - T) * k + GLASS_TOP * B
     g = Image.new('RGBA', h.size, (0, 0, 0, 0))
     for x, y, c in cells:
         g.paste(c[:3] + (255,), (round(left + (x - x0) * B), round(top + (y - y0) * B),

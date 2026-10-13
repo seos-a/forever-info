@@ -16,6 +16,8 @@ plain, shades = Image.open('fav.png').convert('RGBA'), Image.open('fav_shades.pn
 cells = [(x, y, shades.getpixel((x, y))) for y in range(32) for x in range(32)
          if shades.getpixel((x, y)) != plain.getpixel((x, y))]   # the sunglasses' pixels in the favicon
 x0, x1, y0 = min(c[0] for c in cells), max(c[0] for c in cells), min(c[1] for c in cells)
+GLASS_TOP = 18   # the glasses' top row on the 32-cell grid: over this render's eyes (the slanted red diamonds above the
+                 # mouth), lower than in the pixel favicon they come from
 
 BG = (0, 0, 0)   # black, like the site's background
 
@@ -30,7 +32,7 @@ def icon(S, bg=False):
     im.alpha_composite(head)
     if S > base: im = im.resize((S, S), Image.LANCZOS)
     B = S / 32                                        # the favicon's pixels, scaled to this size
-    left, top = S / 2 - (x1 - x0 + 1) * B / 2, y0 * B     # centred, at the favicon's height (over the eyes)
+    left, top = S / 2 - (x1 - x0 + 1) * B / 2, GLASS_TOP * B     # centred, over the eyes
     g = Image.new('RGBA', (S, S), (0, 0, 0, 0))
     for x, y, c in cells:
         g.paste(c[:3] + (255,), (round(left + (x - x0) * B), round(top + (y - y0) * B),
