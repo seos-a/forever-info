@@ -1,5 +1,5 @@
-# Tells Bing (and the other IndexNow search engines) that the site changed, each time a push to main changes the live
-# page, so it re-crawls within hours or days instead of whenever it gets round to it. Google doesn't use IndexNow: for
+# Tells Bing (and the other IndexNow search engines) that the site changed, each time a push to main changes a live
+# page, listing every page in sitemap.xml, so it re-crawls within hours or days instead of whenever it gets round to it. Google doesn't use IndexNow: for
 # Google, use Search Console's "Request indexing".
 # The IndexNow key is the name of a <32 hex characters>.txt file in the repo root whose content is the same key (the
 # file is public on purpose: it proves the notice comes from the site's owner). Without that file this does nothing.
@@ -8,7 +8,7 @@ name: IndexNow
 on:
   push:
     branches: [main]
-    paths: [index.html]
+    paths: ['*.html', sitemap.xml]
   workflow_dispatch:
 
 permissions:
@@ -25,9 +25,12 @@ jobs:
           key_file=$(ls | grep -E '^[0-9a-f]{32}\.txt$' | head -n 1 || true)
           if [ -z "$key_file" ]; then echo "No IndexNow key file in the repo root: nothing to do."; exit 0; fi
           key="${key_file%.txt}"
+          # every page in the sitemap (the home page and each section's own address: /rogue, /spellbook...)
+          urls=$(grep -o '<loc>[^<]*</loc>' sitemap.xml | sed 's/<\/*loc>//g; s/.*/"&"/' | paste -sd, -)
+          [ -n "$urls" ] || urls='"https://foreverinfo.io/"'
           sleep 120   # give GitHub Pages time to publish the push
           status=$(curl -s -o /dev/null -w '%{http_code}' -X POST https://api.indexnow.org/indexnow \
             -H 'Content-Type: application/json; charset=utf-8' \
-            -d "{\"host\":\"foreverinfo.io\",\"key\":\"$key\",\"keyLocation\":\"https://foreverinfo.io/$key_file\",\"urlList\":[\"https://foreverinfo.io/\"]}")
+            -d "{\"host\":\"foreverinfo.io\",\"key\":\"$key\",\"keyLocation\":\"https://foreverinfo.io/$key_file\",\"urlList\":[$urls]}")
           echo "IndexNow answered HTTP $status (200 or 202 = accepted)"
           case "$status" in 200|202) ;; *) exit 1 ;; esac
