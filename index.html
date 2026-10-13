@@ -587,6 +587,11 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 
 /* ---- Phones: a tab bar along the top (sticky once scrolled to), one page at a time ---- */
 .mtabs{display:none}
+@media (max-width:820px){.site-banner:has(+.landing:not([hidden])){top:max(312px,362px - 8.4vw)}}   /* phones and tablets: on the home screen the logo sits just above the class icons (about 20-30px clear of them at every width) */
+/* phones and tablets: a short page still puts the launch timer, notes and version at the bottom of the screen */
+@media (max-width:820px){body{display:flex;flex-direction:column;min-height:100svh}
+  #app:not([hidden]){flex:1 0 auto;display:flex!important;flex-direction:column;align-items:stretch!important}
+  #app .main>.launch{margin-top:auto}}
 .tal-pick{display:none}   /* phones and tablets: Talents uses the same stone class picker as the other pages, in place of the sidebar's Classes box */
 @media (max-width:820px){.tal-pick{display:flex;order:1}.side>.sgrp:has(>#classbar){display:none!important}}
 @media (max-width:820px){
@@ -696,12 +701,13 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
   #racials .race-bar{padding:8px 8px 18px;gap:0}
   #racials .race-group{gap:1px}
   #racials .rg-label{line-height:1.2}
-  #racials .race-group:has(#raceHorde){margin-top:6px!important}
+  #racials .race-group:has(#raceHorde){margin-top:0!important}
   #app #racials .race-row .rp-sq .rpi{width:38px!important;height:38px!important}
   #racials #raceAlly,#racials #raceHorde{grid-template-columns:repeat(5,minmax(0,1fr));padding:10px 6px 26px}
   #racials .rp-sq[aria-pressed="true"] .rn-ov{opacity:1}
-  #racials .race-bar{padding-top:10px!important}
-  #racials .race-bar:has(>#raceInfo[hidden]){padding-bottom:10px}   /* no race picked yet: no class icons under the factions, so even space above and below */
+  #raceAlly{direction:rtl}#raceAlly>*{direction:ltr}   /* Alliance reads Human, Dwarf, Night Elf, Gnome, Skyborne, mirroring the Horde row */
+  #racials .race-bar{padding-top:7px!important;padding-left:7px;padding-right:7px}   /* the faction bars fill the frame right up to its gold trim */
+  #racials .race-bar:has(>#raceInfo[hidden]){padding-bottom:7px}   /* no race picked yet: no class icons under the factions, so even space above and below */
   #app #racials .race-row .rp{padding:2px 1px;gap:2px}
   #app #racials .race-row .rp .rpi{width:34px!important;height:34px!important}
   #racials .race-info{padding-top:6px}
@@ -1143,8 +1149,10 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 window.goatcounter={no_onload:true};
 (function(){var last=null;
 function send(){var g=window.goatcounter; if(!g||!g.count) return;
-  var s=decodeURIComponent(location.hash.slice(1)).split(":")[0]||"home"; if(s===last) return; last=s;
-  g.count({path:"/forever-info/"+s,title:s});}
+  var s=decodeURIComponent(location.hash.slice(1)).split(":")[0]
+    ||location.pathname.replace(/^\/+|\/+$/g,"").replace(/(^|\/)index\.html$/,"").replace(/\.html$/,"")||"home";
+  if(s===last) return; last=s;
+  g.count({path:s==="home"?"/":"/"+s,title:s});}   // the page's own address: /rogue, /spellbook... (home is /)
 window.gcTrack=send;
 var _r=history.replaceState; history.replaceState=function(){var r=_r.apply(this,arguments); setTimeout(send,0); return r;};
 var _p=history.pushState; history.pushState=function(){var r=_p.apply(this,arguments); setTimeout(send,0); return r;};   // phones: the tab bar moves between pages with pushState
@@ -1484,7 +1492,7 @@ function render(){
   renderOrder(); if(window.ordAutoOpen) window.ordAutoOpen();
   const code=spent?buildCode():""; $("code").value=code; $("code").closest(".sgrp").classList.toggle("empty",!code);
   const otherTab=isPhone()&&$("app").dataset.mtab&&$("app").dataset.mtab!=="talents";   // phones: another tab keeps its own link
-  if(!otherTab){ try{ history.replaceState(null,"","#"+(code||cur.key)); }catch(e){} }
+  if(!otherTab) setLink(code||cur.key);
   if(tipFor) showTip(tipFor,!canHover);
 }
 // Talent buttons and tree headers of one tree set
@@ -1603,6 +1611,23 @@ $("searchClear").onclick=()=>{ $("search").value=""; runSearch(); $("search").fo
 $("codeClear").onclick=()=>{ $("code").value=""; $("code").focus(); };   // clears the box (e.g. to paste a code); the build itself is untouched
 $("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".srch-jump"); if(!b) return; if(b.dataset.race) showRacials(b.dataset.race); else selectClass(b.dataset.key); });
 
+// Page addresses. On the website each page has its own address: foreverinfo.io/rogue, a build as /rogue?05-0-55002,
+// /spellbook?rogue:human, /changes?rogue:70291 (GitHub Pages serves rogue.html etc. for /rogue; build.py writes them).
+// The offline files keep the old form (#rogue:05-0-55002), and old # links still open, moved to the new address.
+// Inside the page every address is one "link" string as before: "rogue:05-0-55002", "spellbook:rogue:human"...
+const HOME_TITLE="Forever Info – WoW Forever Talent Calculator & Class Changes";
+function pathLinks(){ return /^https?:$/.test(location.protocol); }
+function linkFor(h){
+  if(!pathLinks()) return h?"#"+h:location.pathname+location.search;
+  if(!h) return "/";
+  const i=h.indexOf(":"); return "/"+(i<0?h:h.slice(0,i)+"?"+h.slice(i+1)); }
+function curLink(){
+  if(location.hash.length>1||!pathLinks()) return decodeURIComponent(location.hash.slice(1));
+  const s=location.pathname.replace(/^\/+|\/+$/g,"").replace(/(^|\/)index\.html$/,"").replace(/\.html$/,"");
+  const q=decodeURIComponent(location.search.slice(1));
+  return s+(s&&q&&!q.includes("=")?":"+q:"");   // "=": someone else's tracking tag (?fbclid=...), not ours
+}
+function setLink(h,push){ try{ history[push?"pushState":"replaceState"](null,"",linkFor(h)); }catch(e){} }
 const buildCode=()=>cur.key+":"+cur.trees.map(tr=>tr.talents.map(t=>t.pts).join("").replace(/0+$/,"")).join("-");
 function loadCode(code){
   const m=(code||"").trim().match(/^([a-z]+):([0-9]*)-([0-9]*)-([0-9]*)$/);
@@ -1634,7 +1659,7 @@ for(const m of Object.values(MODEL).filter(m=>!m.legacy).sort((a,b)=>a.name.loca
   const b=document.createElement("button"); b.type="button"; b.className="pk"; b.style.setProperty("--c",m.color); b.title=m.name;
   b.innerHTML=`<span class="pi"><span>${m.name.slice(0,2)}</span><img src="${IMG("classicon_"+m.key)}" alt="" onerror="this.remove()"></span><span class="pk-n">${m.name}</span>`;
   b.querySelector(".pi").style.position="relative"; b.querySelector(".pi span").style.position="absolute";
-  b.addEventListener("click",()=>{ try{ history.pushState(null,"",location.pathname+location.search+"#"+m.key); }catch(e){} openApp(m.key); });
+  b.addEventListener("click",()=>{ setLink(m.key,true); openApp(m.key); });
   pick.appendChild(b);
 }
 function openApp(key){ $("landing").hidden=true; $("app").hidden=false; if(key) selectClass(key); scrollTo(0,0); }
@@ -1679,7 +1704,7 @@ function showRacials(key){
   $("racials").querySelector(".race-cols").hidden=!r; $("glanceCard").hidden=!r;   // nothing but the race picker until a race is chosen
   $("raceInfo").hidden=!r; $("racePrompt").textContent=r?"":"Choose a race to see its racial abilities.";   // the prompt sits under the frame, as on Spellbook and Class Changes
   if(!r){
-    if(!isPhone()){ try{ history.replaceState(null,"","#racials"); }catch(e){} }
+    if(!isPhone()) setLink("racials");
     runSearch(); return; }
   $("raceHead").innerHTML=`${esc(r.name)} Racial Traits<span class="fold-caret chg-fold" aria-hidden="true"></span>`;
   // all nine class icons in the class-menu order: available classes lit, the rest greyed out
@@ -1692,7 +1717,7 @@ function showRacials(key){
   $("racials").querySelector(".race-cols").classList.toggle("solo",!PRIEST_CAN(r));
   $("racePriest").innerHTML = r.priest.length ? r.priest.map(x=>traitRow([x[0],x[1],x[2],x[3],""])).join("")
     : `<p class="none-note">${PRIEST_CAN(r)?"No Priest racial spells are listed for this race yet.":`${esc(r.name)} cannot be Priests`}</p>`;
-  if(!isPhone()){ try{ history.replaceState(null,"","#racials:"+r.key); }catch(e){} }
+  if(!isPhone()) setLink("racials:"+r.key);
   runSearch();
 }
 // class icon tooltip: name in its class colour, and whether this race can play it
@@ -1742,8 +1767,9 @@ function showSpellbook(k,race,tab){
   // race picker
   $("sbRaceGroup").hidden=!sbClass; $("sbRaces").innerHTML="";
   if(sbClass){ $("sbRaceLabel").textContent=`${MODEL[sbClass].name} Races`;
-    // same order as the Racial Abilities page: Alliance mirrored (Skyborne ... Human), then Horde (Orc ... Skyborne)
-    const rs=racesFor(sbClass), order=rs.filter(r=>r.faction==="Alliance").reverse().concat(rs.filter(r=>r.faction!=="Alliance"));
+    // same order as the Racial Abilities page: Alliance mirrored (Skyborne ... Human), then Horde (Orc ... Skyborne);
+    // phones and tablets list the Alliance Human first, as their Racials page does
+    const rs=racesFor(sbClass), al=rs.filter(r=>r.faction==="Alliance"), order=(isPhone()?al:al.reverse()).concat(rs.filter(r=>r.faction!=="Alliance"));
     for(const r of order){ const b=document.createElement("button"); b.type="button"; b.className="rp rp-sq"; b.setAttribute("aria-pressed",sbRace===r?"true":"false");
       // Skyborne can be either faction: a small crest in the portrait's corner tells the two apart
       const both=order.filter(x=>x.name===r.name).length>1, ally=r.faction==="Alliance";
@@ -1755,7 +1781,7 @@ function showSpellbook(k,race,tab){
   $("sbPrompt").textContent=!sbClass?"Choose a class to open its spellbook.":!sbRace?`Choose a race for your ${MODEL[sbClass].name}.`:"";
   $("sbWrap").hidden=!(sbClass&&sbRace);
   if(!isPhone()){ document.title=sbClass&&sbRace?`Forever ${sbRace.name} ${MODEL[sbClass].name} Spellbook`:"Forever Spellbook";
-    try{ history.replaceState(null,"","#spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }catch(e){} }
+    setLink("spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }
   if(sbClass&&sbRace) renderSpellbook();
 }
 const sbExtra=()=>(SB[sbClass]&&SB[sbClass].tabs)||[];   // non-tree tabs, e.g. the hunter's Beast Training
@@ -1880,7 +1906,7 @@ function showChanges(k,build){
     $("chgOtherCard").classList.remove("collapsed");
     $("chgOtherCard").hidden=!other.length; $("chgOther").innerHTML=chgRows(other); requestAnimationFrame(chgMatch); }
   if(!isPhone()){ document.title=chgClass?`Forever ${m.name} Changes`:"Forever Class Changes";
-    try{ history.replaceState(null,"","#changes"+(chgClass?":"+chgClass+(chgUpd&&upd?":"+upd.build:""):"")); }catch(e){} }
+    setLink("changes"+(chgClass?":"+chgClass+(chgUpd&&upd?":"+upd.build:""):"")); }
 }
 $("chgPrompt").addEventListener("change",e=>{ if(e.target.id==="chgUpd"){ chgUpd=+e.target.value; showChanges(chgClass); } });
 // picking another rank shows that rank's change, and the tooltip follows it
@@ -1918,7 +1944,8 @@ $("changes").addEventListener("click",e=>{ const r=e.target.closest(".rt[data-n]
 
 for(const [id,hash] of [["changesLink","changes"],["spellLink","spellbook"],["racialLink","racials"],["legacyLink","legacy"]]){
   const src=$(id); if(src.hidden) continue;
-  const a=document.createElement("a"); a.className="lp-a"; a.href="#"+hash;
+  const a=document.createElement("a"); a.className="lp-a"; a.href=linkFor(hash);
+  a.addEventListener("click",e=>{ if(e.button||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return; e.preventDefault(); setLink(hash,true); route(); });   // a new tab still opens the address
   a.innerHTML=`<span class="lp-i">${src.querySelector(".ci").innerHTML}</span><span>${src.querySelector(".ci+span").textContent}</span>`;
   $("lpLinks").appendChild(a); }
 // ---- phones: the tab bar. Each tab is one page; the Quick Info pages open with their usual functions ----
@@ -1945,21 +1972,22 @@ function openMTab(k){
   hideTip();
   // a new history entry first (so Back returns to the previous tab), then open the tab, which may refine the link
   const h=k==="talents"?(cur&&!cur.legacy?cur.key:lastClass||"warrior"):k;
-  if(k!==mtab){ try{ history.pushState(null,"","#"+h); }catch(e){} }
+  if(k!==mtab) setLink(h,true);
   if(k==="talents"){ setMTab("talents"); render(); }
   else if(k==="changes") showChanges(chgClass);
   else if(k==="spellbook") showSpellbook(sbClass,sbRace&&sbRace.key);
   else if(k==="racials") showRacials(curRace?curRace.key:null);
   else selectClass("legacy");
 }
-function showLanding(){ hideTip(); $("app").hidden=true; $("landing").hidden=false; scrollTo(0,0); }
+function showLanding(){ hideTip(); $("app").hidden=true; $("landing").hidden=false; document.title=HOME_TITLE; scrollTo(0,0); }
 function route(){
-  const h=decodeURIComponent(location.hash.slice(1));
+  const h=curLink();
+  if(location.hash.length>1 && pathLinks()) setLink(h);   // an old #rogue link: show the new address
   const wasOpen=!$("app").hidden, keep=()=>{ if(!cur) selectClass("priest"); };   // a Quick Info link keeps the class you were on
   if(h.startsWith("changes")){ if(!wasOpen) openApp(); keep(); const [,k,b]=h.split(":"); showChanges(k||null,b); }
   else if(h.startsWith("spellbook")){ const [,k,r]=h.split(":"); if(!wasOpen) openApp(); keep(); showSpellbook(k,r); }
   else if(h.startsWith("racials")){ if(!wasOpen) openApp(); keep(); showRacials(h.split(":")[1]); }
-  if(/^(changes|spellbook|racials)/.test(h)){ try{ history.replaceState(null,"","#"+h); }catch(e){} }   // setting up the calculator above may have rewritten the link
+  if(/^(changes|spellbook|racials)/.test(h)) setLink(h);   // setting up the calculator above may have rewritten the link
   else if(h && MODEL[h.split(":")[0]]){ if(!wasOpen) openApp(); if(!loadCode(h)) selectClass(h.split(":")[0]); }
   else showLanding();
 }
@@ -1986,7 +2014,8 @@ try{ const lh=$("legOrderHead"), lb=lh.closest(".orderbox");
   if(isPhone()) fold(true);
   lh.addEventListener("click",()=>fold(!lb.classList.contains("collapsed")));
 }catch(e){}
-$("siteBanner").addEventListener("click",e=>{ e.preventDefault(); if($("app").hidden) return; try{ history.pushState(null,"",location.pathname+location.search); }catch(_){} showLanding(); });
+if(pathLinks()) $("siteBanner").href="/";
+$("siteBanner").addEventListener("click",e=>{ e.preventDefault(); if($("app").hidden) return; setLink("",true); showLanding(); });
 
 document.querySelectorAll(".side .sgrp>.hdr").forEach(h=>{
   const g=h.parentElement, key="fold:"+h.textContent.trim();

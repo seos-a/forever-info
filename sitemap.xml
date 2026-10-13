@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://foreverinfo.io/</loc></url>
+  <url><loc>https://foreverinfo.io/druid</loc></url>
+  <url><loc>https://foreverinfo.io/hunter</loc></url>
+  <url><loc>https://foreverinfo.io/mage</loc></url>
+  <url><loc>https://foreverinfo.io/paladin</loc></url>
+  <url><loc>https://foreverinfo.io/priest</loc></url>
+  <url><loc>https://foreverinfo.io/rogue</loc></url>
+  <url><loc>https://foreverinfo.io/shaman</loc></url>
+  <url><loc>https://foreverinfo.io/warlock</loc></url>
+  <url><loc>https://foreverinfo.io/warrior</loc></url>
+  <url><loc>https://foreverinfo.io/legacy</loc></url>
+  <url><loc>https://foreverinfo.io/racials</loc></url>
+  <url><loc>https://foreverinfo.io/spellbook</loc></url>
+  <url><loc>https://foreverinfo.io/changes</loc></url>
 </urlset>

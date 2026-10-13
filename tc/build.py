@@ -131,8 +131,10 @@ GC="""<script>
 window.goatcounter={no_onload:true};
 (function(){var last=null;
 function send(){var g=window.goatcounter; if(!g||!g.count) return;
-  var s=decodeURIComponent(location.hash.slice(1)).split(":")[0]||"home"; if(s===last) return; last=s;
-  g.count({path:"/forever-info/"+s,title:s});}
+  var s=decodeURIComponent(location.hash.slice(1)).split(":")[0]
+    ||location.pathname.replace(/^\/+|\/+$/g,"").replace(/(^|\/)index\.html$/,"").replace(/\.html$/,"")||"home";
+  if(s===last) return; last=s;
+  g.count({path:s==="home"?"/":"/"+s,title:s});}   // the page's own address: /rogue, /spellbook... (home is /)
 window.gcTrack=send;
 var _r=history.replaceState; history.replaceState=function(){var r=_r.apply(this,arguments); setTimeout(send,0); return r;};
 var _p=history.pushState; history.pushState=function(){var r=_p.apply(this,arguments); setTimeout(send,0); return r;};   // phones: the tab bar moves between pages with pushState
@@ -172,10 +174,31 @@ assert 'zamimg' not in web, _re.findall(r'.{40}zamimg.{40}',web)[:3]
 # Burning Crusade-era WoW site's: a parchment panel with a red title bar. It borrows the page's own textures. ----
 _T=open('template2.html',encoding='utf-8').read()
 _vars='\n'.join(l for l in _T.split('\n')[:60] if _re.match(r'\s*--(tex-weather|tex-paper|tex-fibre|tex-speck|tex-stain|parch-bg):',l))
-P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars)
+P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars).replace('/*PAGES*/','|'.join(k for k,_,_ in CLASSES)+'|legacy|racials|spellbook|changes')
 open('../404.html','w',encoding='utf-8',newline='\n').write(P404)
 _os.makedirs('../web',exist_ok=True)
 open('../web/index.html', 'w', encoding='utf-8', newline='\n').write(web)
+# ---- one page per section, so each has its own address: GitHub Pages serves rogue.html for foreverinfo.io/rogue.
+# They are the same page as index.html (it opens the section from the address) with their own title and link-preview
+# tags, so a link pasted in Discord shows "Rogue Talents" rather than the home page. Copy them with index.html. ----
+TITLE0='Forever Info – WoW Forever Talent Calculator &amp; Class Changes'
+DESC0='content="Up-to-date WoW Forever class data: talent calculator, spellbook, patch-by-patch class changes and more... without the bloat."'
+PAGES=[(k, f'{n} Talents', f'WoW Forever {n} talent calculator: plan a build, see every rank of every talent and share the build as a link.') for k,n,_ in CLASSES]
+PAGES+=[('legacy','Legacy Talents','The WoW Forever Legacy talents: the account-wide tree, with every rank.'),
+        ('racials','Racials','Every WoW Forever race\'s racial traits and Priest racial spells.'),
+        ('spellbook','Spellbook','The WoW Forever spellbook for every class and race, with every rank and the level it is learned.'),
+        ('changes','Class Changes','Patch-by-patch WoW Forever class changes: buffs, nerfs and other talent and spell changes per class.')]
+for k,t,d in PAGES:
+    pg=web
+    for old,new in ((f'<title>{TITLE0}</title>',f'<title>{t} – Forever Info</title>'),
+                    (f'<meta property="og:title" content="{TITLE0}">',f'<meta property="og:title" content="{t} – Forever Info">'),
+                    (f'<link rel="canonical" href="{SITE}">',f'<link rel="canonical" href="{SITE}{k}">'),
+                    (f'<meta property="og:url" content="{SITE}">',f'<meta property="og:url" content="{SITE}{k}">'),
+                    (f'<meta property="og:description" {DESC0}>',f'<meta property="og:description" content="{d}">')):
+        assert pg.count(old)==1, old
+        pg=pg.replace(old,new)
+    pg=_re.sub(r'<meta name="description" content="[^"]*">',f'<meta name="description" content="{d}">',pg,count=1)
+    open(f'../web/{k}.html','w',encoding='utf-8',newline='\n').write(pg)
 A=_json.load(open('assets.json', encoding='utf-8'))
 models=sorted(set(_re.findall(r'images/models/(\d+)\.png',web)))
 # every icon the data uses (so a new talent, spell or tab from a beta sync gets its icon), plus the hand list in assets.json

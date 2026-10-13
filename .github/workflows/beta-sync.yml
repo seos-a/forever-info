@@ -78,7 +78,7 @@ jobs:
             python build.py
             echo '```'
           } | tee ../sync-report.md
-          cp ../web/index.html ../index.html
+          cp ../web/*.html ..   # index.html and the section pages (rogue.html, spellbook.html...)
           { echo '### Icons'; echo '```'; python fetch_images.py; echo '```'; } | tee -a ../sync-report.md
           # changelog.py's "Needs a look" list (changes that look like data errors) goes at the very top
           if [ -s ../needs-a-look.md ]; then cat ../needs-a-look.md ../sync-report.md > ../report.tmp && mv ../report.tmp ../sync-report.md; fi
@@ -95,6 +95,6 @@ jobs:
 
             Automated by .github/workflows/beta-sync.yml
           add-paths: |
-            index.html
+            *.html
             tc/*.json
             images/**

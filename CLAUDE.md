@@ -7,6 +7,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
 ## Layout
 
 - `index.html`: the published site (build output, copied here by hand)
+- `<section>.html` (`rogue.html`, `legacy.html`, `spellbook.html`, `changes.html`...): the same page once per section, so each
+  has its own address (`foreverinfo.io/rogue`; GitHub Pages serves `rogue.html` for it). Build output too, copied with `index.html`
 - `images/`: icons, talent-tree backgrounds and NPC model thumbnails, served
   next to `index.html` (`images/icons/`, `images/backgrounds/`, `images/models/`)
 - `tc/`: the source folder
@@ -71,6 +73,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
    `favicon.png`, `favicon.ico`, the larger icons (`apple-touch-icon.png` for iPhone bookmarks, `favicon-48.png` / `favicon-96.png` for Google results, `icon-192.png` / `icon-512.png` for Android; all made by `tc/art/touch_icon.py`, transparent behind the murloc; after changing them, bump `ICONV` in `build.py` so browsers fetch the new files), `site.webmanifest` (Android home screen), `404.html` (GitHub Pages shows it for any address that doesn't exist; `build.py` writes it from `tc/page404.html` with the main page's parchment textures, styled after the Burning Crusade-era WoW site's 404 page), `robots.txt` and `sitemap.xml` sit in the repo root. The head also gets a WebSite structured-data tag naming the site "Forever Info" for Google results. It asserts that no `zamimg` URLs
    remain, then writes:
    - `../web/index.html`: the site
+   - `../web/<section>.html`: the same page for each class, `legacy`, `racials`, `spellbook` and `changes`, with its own
+     title, description and link-preview tags
    - `../web/image-list.txt`: `url|local path` lines for every image the site needs
 
 Because `tc/..` is the repo root, all of these outputs land in the repo root
@@ -88,15 +92,24 @@ Elsewhere use `python3`.
 ```bash
 cd tc
 py build.py
-cp ../web/index.html ../index.html
+cp ../web/*.html ..
 ```
 
-Check with `git diff --stat`: normally only `index.html` and the source files you
+Check with `git diff --stat`: normally only the published pages (`index.html` and the section pages) and the source files you
 edited should change. If you add talents or spells with new icons, check
 `web/image-list.txt` and add any missing images under `images/`.
 
 Sanity check: rebuilding the current, unchanged sources reproduces the committed
 `index.html` byte for byte.
+
+## Page addresses
+
+On the website every page has its own address: `/rogue`, a build as `/rogue?05-0-55002`, `/racials?nightelf`,
+`/spellbook?rogue:human`, `/changes?rogue:70291` (`linkFor` / `curLink` / `setLink` in `template2.html`; inside the page
+each address is still one "link" string such as `rogue:05-0-55002`). Old `#rogue:05-0-55002` links still open and are
+moved to the new address; the offline `Forever-Talents*.html` files keep the `#` form. `404.html` sends section addresses
+with a slash after them (`/rogue/`, `/spellbook/rogue/human`) to the right page. GoatCounter counts each page by its
+address (`/rogue`; home is `/`).
 
 ## Committing
 
