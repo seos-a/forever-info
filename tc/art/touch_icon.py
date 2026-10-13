@@ -4,7 +4,7 @@ Run from tc/art:  py touch_icon.py   Writes, in the repo root:
     apple-touch-icon.png (180)    iPhone / iPad bookmarks and home screen
     favicon-48.png, favicon-96.png  Google search results (they want 48px or more)
     icon-192.png, icon-512.png    Android home screen (site.webmanifest)
-    favicon.png (32), favicon.ico (16 + 32)   browser tabs, and Safari's Favourites and search suggestions
+    favicon.png (32), favicon.ico (16 + 32)   browser tabs (transparent; the others sit on stone grey)
 The original hand-made pixel favicon stays in tc/art (fav_shades.png); Safari blew it up in Favourites, so the site's
 favicons are made from the same art as the big icons."""
 from PIL import Image
@@ -17,12 +17,20 @@ cells = [(x, y, shades.getpixel((x, y))) for y in range(32) for x in range(32)
          if shades.getpixel((x, y)) != plain.getpixel((x, y))]   # the sunglasses' pixels in the favicon
 x0, x1, y0 = min(c[0] for c in cells), max(c[0] for c in cells), min(c[1] for c in cells)
 
-def icon(S):
+STONE = ((65, 67, 72), (22, 23, 25))   # the site's dark iron frames, lighter at the top
+
+def icon(S, bg=False):
     """The icon at S x S. Big sizes are drawn at 180 and scaled up (the render has no more detail), the glasses
-    drawn straight at the final size so their blocks stay sharp."""
+    drawn straight at the final size so their blocks stay sharp. bg: on the stone-grey gradient instead of transparent
+    (home screens and Google fill a transparent background with white)."""
     base = min(S, 180)
     head = src.crop((CX - SIDE // 2, TOP, CX + SIDE // 2, TOP + SIDE)).resize((base, base), Image.LANCZOS)
-    im = Image.new('RGBA', (base, base), (0, 0, 0, 0)); im.alpha_composite(head)   # transparent behind the murloc (iPhone shows it on dark)
+    im = Image.new('RGBA', (base, base), (0, 0, 0, 0))
+    if bg:
+        for y in range(base):
+            t = y / (base - 1)
+            im.paste(tuple(round(STONE[0][k] + (STONE[1][k] - STONE[0][k]) * t) for k in range(3)) + (255,), (0, y, base, y + 1))
+    im.alpha_composite(head)
     if S > base: im = im.resize((S, S), Image.LANCZOS)
     B = S / 32                                        # the favicon's pixels, scaled to this size
     left, top = S / 2 - (x1 - x0 + 1) * B / 2, y0 * B     # centred, at the favicon's height (over the eyes)
@@ -33,9 +41,11 @@ def icon(S):
     im.alpha_composite(g)
     return im
 
-for name, S in (('favicon.png', 32), ('apple-touch-icon.png', 180), ('favicon-48.png', 48), ('favicon-96.png', 96),
-                ('icon-192.png', 192), ('icon-512.png', 512)):
-    icon(S).save('../../' + name, optimize=True)
-    print(name, S)
-icon(32).save('../../favicon.ico', sizes=[(16, 16), (32, 32)])
-print('favicon.ico 16 + 32')
+# browser tabs keep the transparent icon; home screens and Google search get it on stone grey
+if __name__ == '__main__':   # og_image.py imports the murloc from here
+  for name, S, bg in (('favicon.png', 32, False), ('apple-touch-icon.png', 180, True), ('favicon-48.png', 48, True),
+                      ('favicon-96.png', 96, True), ('icon-192.png', 192, True), ('icon-512.png', 512, True)):
+      icon(S, bg).save('../../' + name, optimize=True)
+      print(name, S, 'stone grey' if bg else 'transparent')
+  icon(32).save('../../favicon.ico', sizes=[(16, 16), (32, 32)])
+  print('favicon.ico 16 + 32')
