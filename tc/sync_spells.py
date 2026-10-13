@@ -8,8 +8,9 @@ the ranks by spell name, and for every spell already in the spellbook updates:
   spells_raw.json  levels, "Rank N" label, top-rank id and description
   ranks_raw.json   each rank's description (written as full text when it changed)
   rank_tips.json   each rank's cost / range / cast time / cooldown
-Spells in the beta that the spellbook doesn't have yet are listed, not added: which tab a new spell belongs on has
-to be decided by hand. Prints what changed.
+A spell the beta's trainers teach that the spellbook doesn't have yet is added when Wowhead's spellbook page says which
+tab it's on (a Classic spell); a brand-new Forever spell comes without a tab there, so it's listed for placing by hand.
+Rank counts and levels of spells already in the spellbook are listed too, not changed. Prints what changed.
 """
 import json, re, sys
 from concurrent.futures import ThreadPoolExecutor
@@ -49,6 +50,14 @@ def header_of(tip):
         elif re.search(r'range|Melee Range|yards', b, re.I): out['r'] = b
         elif re.search(r'Instant|cast|Channeled|Next melee', b): out['t'] = 'Channeled' if b.startswith('Channeled') else b
     return out
+
+_wh = {}
+def wowhead_spells(cls):
+    """Wowhead's spellbook for a class ({"tabs": [{id, name}], "spells": [{name, tab, icon, ...}]}), from its change page"""
+    if cls not in _wh:
+        import changelog
+        _wh[cls] = changelog.page('spellbook', cls, None)['data']
+    return _wh[cls]
 
 def same(a, b):
     n = lambda x: re.sub(r'\s+', ' ', spellbook.clean(x).replace('&nbsp;', ' ')).strip()
@@ -118,7 +127,27 @@ def main():
                 rt.setdefault(cls, {})[name] = new
                 changes.append(f'{cls} {name}: per-rank cost / range / cast time / cooldown')
         extra = sorted(set(groups.get(cls, {})) - known - spellbook.DROP - KNOWN_EXTRA.get(cls, set()))
-        if extra: check.append(f'{cls}: in the beta but not in the spellbook (some are pet or passive skills): ' + ', '.join(extra))
+        # a spell the trainer now teaches that the spellbook doesn't have: added when Wowhead's spellbook page says which
+        # tab it's on (a Classic spell); a brand-new Forever spell comes without a tab there, so it's listed to place by hand
+        unplaced = []
+        for name in extra:
+            wh = next((s for s in wowhead_spells(cls)['spells'] if s['name'] == name), None)
+            tab = wh and wh.get('tab')
+            if tab not in spellbook.SKILL[cls]: unplaced.append(name); continue
+            by_lv = {}
+            for e in sorted(groups[cls][name], key=lambda e: (e[0], 'c' not in e[3])):   # one entry per level, the castable one
+                by_lv.setdefault(e[0], e)
+            rows = [by_lv[lv] for lv in sorted(by_lv)]
+            top = rows[-1]
+            spells.append([name, wh['icon'], tab, [r[0] for r in rows], f'Rank {len(rows)}' if len(rows) > 1 else '', top[2], top[1]])
+            if len(rows) > 1:
+                rk.setdefault(cls, {})[name] = {'r': [[i + 1, r[0], r[2]] for i, r in enumerate(rows)]}
+                tips = {str(i + 1): r[3] for i, r in enumerate(rows) if 'c' in r[3]}
+                if tips: rt.setdefault(cls, {})[name] = tips
+            tab_name = next((t['name'] for t in wowhead_spells(cls)['tabs'] if t['id'] == tab), tab)
+            changes.append(f'{cls} {name}: new spell, added to the {tab_name} tab (learned at {", ".join(str(r[0]) for r in rows)})')
+        if unplaced: check.append(f'{cls}: in the beta but not in the spellbook, and Wowhead doesn\'t say which tab (a new Forever '
+                                  'spell, or a pet or passive skill): ' + ', '.join(unplaced))
     save('spells_raw.json', raw, sep_raw)
     save('ranks_raw.json', rk, sep_rk)
     save('rank_tips.json', rt, sep_rt)

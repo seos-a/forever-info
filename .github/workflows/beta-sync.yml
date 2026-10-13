@@ -73,6 +73,14 @@ jobs:
             echo '```'
             python changelog.py
             echo '```'
+            echo '### Racials'
+            echo '```'
+            python sync_racials.py
+            echo '```'
+            echo '### Legacy trees'
+            echo '```'
+            python sync_legacy.py
+            echo '```'
             echo '### Build'
             echo '```'
             python build.py
@@ -80,7 +88,7 @@ jobs:
           } | tee ../sync-report.md
           cp ../web/*.html ..   # index.html and the section pages (rogue.html, spellbook.html...)
           { echo '### Icons'; echo '```'; python fetch_images.py; echo '```'; } | tee -a ../sync-report.md
-          # changelog.py's "Needs a look" list (changes that look like data errors) goes at the very top
+          # the "Needs a look" lists (changelog.py: changes that look like data errors; sync_racials.py: hand-worded racials Wowhead changed) go at the very top
           if [ -s ../needs-a-look.md ]; then cat ../needs-a-look.md ../sync-report.md > ../report.tmp && mv ../report.tmp ../sync-report.md; fi
 
       - name: Open a pull request if anything changed
@@ -91,7 +99,7 @@ jobs:
           title: 'Beta sync: WoW Forever data changed'
           body-path: sync-report.md
           commit-message: |
-            Beta sync: WoW Forever talent and spell data
+            Beta sync: WoW Forever talent, spell, racial and Legacy data
 
             Automated by .github/workflows/beta-sync.yml
           add-paths: |

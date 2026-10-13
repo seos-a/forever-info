@@ -1516,10 +1516,22 @@ function orderTip(li,ev){ const t=li._t, r=li._r;
 const talentHit=(t,q)=>t.name.toLowerCase().includes(q) || textAt(t,t.max).toLowerCase().includes(q);
 function runSearch(){
   if($("app").dataset.mode==="spellbook"){
-    const q=$("search").value.trim().toLowerCase(); let n=0;
-    document.querySelectorAll("#sbGrid .sb-sp").forEach(r=>{ const on=!q||(r.dataset.q||"").includes(q); r.classList.toggle("dim",!on); if(q&&on) n++; });
-    const els=q?[...document.querySelectorAll("#sbGrid .sb-sp:not(.dim)")]:[];
-    $("searchInfo").innerHTML=q?`<div class="sr-n"><b>${n}</b> ${n===1?"match":"matches"} on this tab</div>`+hitList(els.map(el=>({el,icon:el.querySelector("img").src,name:el.querySelector(".sn").textContent,sub:el.querySelector(".ss").textContent,tip:()=>sbTip(el)}))):""; return;
+    const q=$("search").value.trim().toLowerCase();
+    document.querySelectorAll("#sbGrid .sb-sp").forEach(r=>{ const on=!q||(r.dataset.q||"").includes(q); r.classList.toggle("dim",!on); });   // this page
+    if(!q||!sbClass||!sbRace){ $("searchInfo").innerHTML=""; return; }
+    // every tab of this class's spellbook: one result per spell and tab (its first matching rank), with the tab named
+    const items=[], page=[...document.querySelectorAll("#sbGrid .sb-sp")];
+    for(let t=0;t<sbTabCount(sbClass);t++){ const seen=new Set();
+      sbEntries(sbClass,sbRace,t).forEach((e,i)=>{ if(!sbHit(e,q)||seen.has(e.n)) return; seen.add(e.n);
+        const here=t===sbTab&&Math.floor(i/SBPER)===sbPage?page[i%SBPER]:null;
+        items.push({el:here,go:()=>sbGoTo(t,Math.floor(i/SBPER),i%SBPER),icon:IMG(e.ic),name:e.n,sub:sbTabName(sbClass,t)+(/Racial|Talent/.test(e.sub||"")?" · "+e.sub.replace(/ · Rank.*/,""):""),tip:()=>sbTipFor(e,$("searchInfo"))}); }); }
+    // the other classes' spellbooks, with how many spells match in each (the race you're on when it can be that class)
+    const elsewhere=SBORD.filter(k=>k!==sbClass).map(k=>{ const race=racesFor(k).find(r=>r.key===sbRace.key)||racesFor(k)[0];
+        let n=0, first=null;
+        for(let t=0;t<sbTabCount(k);t++){ const names=new Set(sbEntries(k,race,t).filter(e=>sbHit(e,q)).map(e=>e.n)); n+=names.size; if(names.size&&first==null) first=t; }
+        return [k,race,n,first]; }).filter(x=>x[2]);
+    const other=elsewhere.length?`<div class="sr-also">Also found in:</div><div class="sr-list">`+elsewhere.map(([k,race,c,t],i)=>`<button type="button" class="cls srch-jump" data-sb="${k}" data-sbrace="${race.key}" data-sbtab="${t}" style="--c:${INK[k]||MODEL[k].color};--tx:-${i*137%360}px -${(i*83+40)%360}px"><span class="ci"><img src="${IMG("classicon_"+k)}" alt="" onerror="this.style.visibility='hidden'"></span><span>${esc(MODEL[k].name)}</span><i>${c}</i></button>`).join("")+`</div>`:"";
+    $("searchInfo").innerHTML=`<div class="sr-n"><b>${items.length}</b> ${items.length===1?"match":"matches"} in the ${esc(MODEL[sbClass].name)} spellbook</div>`+hitList(items)+other; return;
   }
   if($("app").dataset.mode==="racials"){
     const q=$("search").value.trim().toLowerCase(); let n=0;
@@ -1549,8 +1561,8 @@ function runSearch(){
   info.innerHTML = q ? `<div class="sr-n"><b>${hits}</b> ${hits===1?"match":"matches"} here</div>`+hitList(cur.all.filter(t=>talentHit(t,q)).map(t=>({el:t.el,icon:IMG(t.icon),name:t.name,sub:cur.trees[t.tree].name,tip:()=>{ $("tip").innerHTML=tipHTML(t); }})))+other : "";
 }
 // the matches on this page, listed in the dropdown: hover outlines the spell, click scrolls to it
-let srEls=[], srTips=[], srAll=false, srPick=null;   // srPick: {el, q}, the result last clicked for this search   // srAll: "and N more" was clicked, so list every match until the search changes
-function hitList(items){ srEls=items.map(x=>x.el); srTips=items.map(x=>x.tip); const max=srAll?Infinity:isPhone()?3:6;
+let srEls=[], srTips=[], srGos=[], srAll=false, srPick=null;   // srGos: opens a result that isn't on the page (the spellbook's other tabs and pages)   // srPick: {el, q}, the result last clicked for this search   // srAll: "and N more" was clicked, so list every match until the search changes
+function hitList(items){ srEls=items.map(x=>x.el); srTips=items.map(x=>x.tip); srGos=items.map(x=>x.go); const max=srAll?Infinity:isPhone()?3:6;
   return items.length?`<div class="sr-hits">`+items.slice(0,max).map((x,i)=>`<button type="button" class="sr-hit" data-h="${i}" style="--tx:-${i*137%360}px -${(i*83+40)%360}px"><img src="${x.icon}" alt="" onerror="this.style.visibility='hidden'"><span><span class="sh-n">${esc(x.name)}</span><span class="sh-s">${esc(x.sub||"")}</span></span></button>`).join("")
     +(items.length>max?`<button type="button" class="sr-more">and ${items.length-max} more</button>`:"")+`</div>`:""; }
 // bring a talent's whole tree into view (its header just below the top of the screen); if the tree is taller than
@@ -1566,7 +1578,9 @@ const srHl=el=>{ document.querySelectorAll(".sr-hl").forEach(x=>x.classList.remo
 $("searchInfo").addEventListener("mouseover",e=>{ const b=e.target.closest(".sr-hit"); if(!b||!canHover) return; srHl(srEls[+b.dataset.h]);
   const f=srTips[+b.dataset.h]; if(f){ f(); tipFor=null; placeTip($("searchInfo")); $("tip").style.top=Math.max(8,Math.min(innerHeight-$("tip").getBoundingClientRect().height-8,b.getBoundingClientRect().top))+"px"; } });   // beside the dropdown, so it never covers the other results
 $("searchInfo").addEventListener("mouseout",e=>{ const b=e.target.closest(".sr-hit"); if(b&&!b.contains(e.relatedTarget)){ srHl(null); if(canHover) hideTip(); } });
-$("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".sr-hit"), el=b&&srEls[+b.dataset.h]; if(!el) return;
+$("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".sr-hit"), el=b&&srEls[+b.dataset.h];
+  if(b&&!el&&srGos[+b.dataset.h]){ srHl(null); hideTip(); $("searchInfo").classList.add("closed"); srGos[+b.dataset.h](); return; }
+  if(!el) return;
   srPick={el,q:$("search").value.trim().toLowerCase()}; runSearch();
   srHl(null); hideTip(); $("searchInfo").classList.add("closed"); scrollToTree(el);
   el.classList.remove("sr-flash"); void el.offsetWidth; el.classList.add("sr-flash"); setTimeout(()=>el.classList.remove("sr-flash"),1600); });
@@ -1576,7 +1590,8 @@ $("searchInfo").addEventListener("click",e=>{ if(e.target.closest(".sr-more")){ 
 document.addEventListener("click",e=>{ if(!e.composedPath().some(n=>n.classList&&n.classList.contains("srch"))) $("searchInfo").classList.add("closed"); });
 $("searchClear").onclick=()=>{ $("search").value=""; runSearch(); $("search").focus(); };
 $("codeClear").onclick=()=>{ $("code").value=""; $("code").focus(); };   // clears the box (e.g. to paste a code); the build itself is untouched
-$("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".srch-jump"); if(!b) return; if(b.dataset.race) showRacials(b.dataset.race); else selectClass(b.dataset.key); });
+$("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".srch-jump"); if(!b) return;
+  if(b.dataset.sb) showSpellbook(b.dataset.sb,b.dataset.sbrace,+b.dataset.sbtab); else if(b.dataset.race) showRacials(b.dataset.race); else selectClass(b.dataset.key); });
 
 // Page addresses. On the website each page has its own address: foreverinfo.io/rogue, a build as /rogue?05-0-55002,
 // /spellbook?rogue:human, /changes?rogue:70291 (GitHub Pages serves rogue.html etc. for /rogue; build.py writes them).
@@ -1751,9 +1766,17 @@ function showSpellbook(k,race,tab){
     setLink("spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }
   if(sbClass&&sbRace) renderSpellbook();
 }
-const sbExtra=()=>(SB[sbClass]&&SB[sbClass].tabs)||[];   // non-tree tabs, e.g. the hunter's Beast Training
-function sbEntries(){
-  const c=SB[sbClass], race=sbRace, cname=MODEL[sbClass].name;
+const sbExtraOf=k=>(SB[k]&&SB[k].tabs)||[], sbExtra=()=>sbExtraOf(sbClass);   // non-tree tabs, e.g. the hunter's Beast Training
+const sbTabCount=k=>1+MODEL[k].trees.length+sbExtraOf(k).length;
+const sbTabName=(k,t)=>t===0?"General":t<=MODEL[k].trees.length?MODEL[k].trees[t-1].name:(sbExtraOf(k)[t-1-MODEL[k].trees.length]||["General"])[0];
+const sbHit=(e,q)=>(e.n+" "+(e.d||"")).toLowerCase().includes(q);   // the same test as a spell's data-q on the page
+// open a search result on another tab or page of the spellbook, and make it flash like a talent result
+function sbGoTo(tab,page,slot){ sbTab=tab; sbPage=page; hideTip(); renderSpellbook();
+  const el=$("sbGrid").querySelectorAll(".sb-sp")[slot]; if(!el) return;
+  el.scrollIntoView({block:"nearest",behavior:"smooth"}); el.classList.remove("sr-flash"); void el.offsetWidth; el.classList.add("sr-flash"); setTimeout(()=>el.classList.remove("sr-flash"),1600); }
+// one tab's entries, as its pages list them (any class, race and tab: the search looks through them all)
+function sbEntries(cls=sbClass,race=sbRace,tab=sbTab){
+  const c=SB[cls], cname=MODEL[cls].name, sbTab=tab;
   const mine=new Set(race.priest.map(p=>p[0])), others=new Set(SB.priestRacial);
   if(sbTab===0){
     const g=c.general.map(([n,ic,sub,d,lv])=>({n,ic,sub,d,lv:lv?[lv]:null}));
@@ -1763,7 +1786,7 @@ function sbEntries(){
   const list=c.spells.filter(s=>s[2]===sbTab-1 && (!others.has(s[0])||mine.has(s[0])));
   // active talents from this tree (cast time / cooldown known) that aren't already trainable spells
   const have=new Set(list.map(s=>s[0]));
-  const tree=MODEL[sbClass].trees[sbTab-1];   // extra tabs (Beast Training) have no talent tree
+  const tree=MODEL[cls].trees[sbTab-1];   // extra tabs (Beast Training) have no talent tree
   const talents=(tree?tree.talents:[]).filter(t=>t.meta&&!have.has(t.name))
     .map(t=>({n:t.name,ic:t.icon,sub:"Talent",d:textAt(t,t.max),talent:t}));
   const out=[];
@@ -1779,7 +1802,7 @@ function renderSpellbook(){
   $("sbTabs").innerHTML=[`<button type="button" class="sb-tab" role="tab" data-t="0" aria-selected="${sbTab===0}" data-name="General"><img src="${IMG("inv_misc_book_09")}" alt="General"></button>`]
     .concat(trees.map((t,i)=>`<button type="button" class="sb-tab" role="tab" data-t="${i+1}" aria-selected="${sbTab===i+1}" data-name="${esc(t.name)}"><img src="${IMG(t.icon)}" alt="${esc(t.name)}"></button>`))
     .concat(sbExtra().map(([n,ic],j)=>`<button type="button" class="sb-tab" role="tab" data-t="${trees.length+1+j}" aria-selected="${sbTab===trees.length+1+j}" data-name="${esc(n)}"><img src="${IMG(ic)}" alt="${esc(n)}"></button>`)).join("");
-  $("sbHead").textContent=sbTab===0?"General":sbTab<=trees.length?trees[sbTab-1].name:(sbExtra()[sbTab-1-trees.length]||["General"])[0];
+  $("sbHead").textContent=sbTabName(sbClass,sbTab);
   $("sbRanks").disabled=sbTab===0; $("sbRanksLbl").classList.toggle("off",sbTab===0);
   window.__sbAll=sbEntries(); const pages=Math.max(1,Math.ceil(__sbAll.length/SBPER)); if(sbPage>=pages) sbPage=pages-1;
   window.__sb=__sbAll.slice(sbPage*SBPER,sbPage*SBPER+SBPER);

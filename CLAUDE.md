@@ -18,8 +18,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
   - `ranks.py`, `spellbook.py`: helpers imported by `build.py`
   - Data:
     - `<class>.json` (druid, hunter, mage, paladin, priest, rogue, shaman, warlock, warrior): talent trees
-    - `legacy_raw.json`: the account-wide Legacy tree
-    - `racials.json`: racials
+    - `legacy_raw.json`: the account-wide Legacy tree (kept current by `sync_legacy.py`)
+    - `racials.json`: racials (traits and Priest racial spells, worded for the site; kept current by `sync_racials.py`)
     - `spells_raw.json`, `ranks_raw.json`, `rank_tips.json`, `details.json`: spellbook
     - `assets.json`: icon and spec lists used to write `image-list.txt`
     - `talent_meta.json`: cost / range / cast time / cooldown rows per rank for active
@@ -31,8 +31,23 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       (position, ranks, icon, prerequisite and each rank's full text, stored as a 9th field
       that `build.py` shows as-is)
     - `sync_spells.py`: updates the spellbook (`spells_raw.json`, `ranks_raw.json`,
-      `rank_tips.json`) from each rank's tooltip. It never changes rank counts or levels;
-      those, and spells that look new, are listed under "To check by hand"
+      `rank_tips.json`) from each rank's tooltip. The spellbook holds what the beta's class trainers teach (Wowhead's
+      talent feed). A spell a trainer now teaches that the spellbook lacks is added when Wowhead's spellbook change page
+      gives its tab (a Classic spell); a brand-new Forever spell has no tab there (tab 0), so it is listed under "To check
+      by hand" to be placed by hand, as are rank-count and level changes of spells already in the spellbook. Wowhead's
+      spellbook pages also list spells Forever removed (Detect Magic, Curse of Shadow...): those are rightly left out
+    - `sync_racials.py` (after `changelog.py`): compares each racial trait's Wowhead tooltip (spell ids in `TRAIT_IDS`)
+      with the copy saved last run in `racials_wh.json`. A trait the site shows exactly as Wowhead words it is updated in
+      `racials.json` automatically; one worded by hand (Eureka! and Expansive Mind merge their per-class versions, Touch of
+      the Grave its two proc chances; Touch of Weakness and Hex of Weakness fix
+      Wowhead's typos) is never overwritten but listed under "Racials: needs a look" in the pull request. Racial changes are
+      summarised in the pull request report only, not on the Class Changes page (the developers don't plan to change
+      racials after launch). It also reads Wowhead's race pages and lists any racial added or removed there. Priest racial spells
+      follow the spellbook text (`spells_raw.json`)
+    - `sync_legacy.py`: rewrites `legacy_raw.json` from Wowhead's Legacy Calculator data feed (nodes, ranks, rank texts,
+      points needed, cast time / cooldown, the arrows between nodes; positions are Wowhead's grid of 750 units a slot,
+      stored as 14 + slot * 92) and lists what changed. The feed doesn't say how many points an arrow needs, so existing
+      links keep the site's number (1; Reagent Economy 2) and a new link gets 1 and is listed to check
     - `fetch_images.py`: after a build, downloads any icon in `web/image-list.txt` the repo lacks
     - `changelog.py`: when Wowhead has a new beta build, adds its talent and spell changes per class to
       `changes.json` (shown on the Class Changes page, one entry per build, with a picker for older ones). It reads

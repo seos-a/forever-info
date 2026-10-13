@@ -1,0 +1,297 @@
+{
+ "2481": {
+  "name": "Find Treasure",
+  "cells": [],
+  "text": "Allows the dwarf to sense nearby treasure, making it appear on the minimap. Lasts until canceled."
+ },
+ "5227": {
+  "name": "Underwater Breathing",
+  "cells": [],
+  "text": "Underwater breath lasts 300% longer than normal."
+ },
+ "7744": {
+  "name": "Will of the Forsaken",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Instantly removes all Charm, Fear and Sleep effects."
+ },
+ "20549": {
+  "name": "War Stomp",
+  "cells": [
+   "0.5 sec cast",
+   "2 min cooldown"
+  ],
+  "text": "Stuns up to 5 enemies within 8 yds for 2 sec."
+ },
+ "20550": {
+  "name": "Endurance",
+  "cells": [],
+  "text": "Total Health increased by 5% and chance to hit increased by 1%."
+ },
+ "20552": {
+  "name": "Cultivation",
+  "cells": [],
+  "text": "Cultivate a nearby herb, growing a duplicate you can harvest without requiring Herbalism skill. Each herb may only be cultivated once."
+ },
+ "20554": {
+  "name": "Berserking",
+  "cells": [
+   "Instant",
+   "3 min cooldown"
+  ],
+  "text": "Increases your spellcasting and attack speed by 10% for 10 sec."
+ },
+ "20555": {
+  "name": "Regeneration",
+  "cells": [],
+  "text": "Health regeneration rate increased by 10%. In addition, 10% of total Health regeneration will continue during combat."
+ },
+ "20557": {
+  "name": "Beast Slaying",
+  "cells": [],
+  "text": "Damage dealt versus Beasts increased by 5%."
+ },
+ "20572": {
+  "name": "Blood Fury",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Increases Attack Power and Spell Power by 10% for 15 sec."
+ },
+ "20573": {
+  "name": "Hardiness",
+  "cells": [],
+  "text": "Duration of Stun effects on you reduced by 20%."
+ },
+ "20574": {
+  "name": "Axe Specialization",
+  "cells": [],
+  "text": "Increases your critical strike chance with all spells and abilities by 1% while you have an axe or a two-handed axe equipped."
+ },
+ "20577": {
+  "name": "Cannibalize",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "When activated, regenerates 7% of total Health and 7% of total Mana every 2 sec for 10 sec. Only works on Humanoid or Undead corpses within 5 yds. Any movement, action, or damage taken while Cannibalizing will cancel the effect."
+ },
+ "20580": {
+  "name": "Shadowmeld",
+  "cells": [
+   "Instant",
+   "10 sec cooldown"
+  ],
+  "text": "Activate to slip into the shadows, reducing the chance for enemies to detect your presence. Lasts until cancelled or upon moving. Using this ability in combat discourages enemies from attacking you, but increases the cooldown to 2 min."
+ },
+ "20582": {
+  "name": "Quickness",
+  "cells": [],
+  "text": "Dodge chance increased by 1% and movement speed increased by 2%. Night Elf Rogues and Druids are harder to detect in Stealth as if they were 1 level higher."
+ },
+ "20585": {
+  "name": "Wisp Spirit",
+  "cells": [],
+  "text": "Transform into a wisp upon death, increasing movement speed by 75%."
+ },
+ "20589": {
+  "name": "Escape Artist",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Instantly escape the effects of any movement impairing effect and gain immunity to those effects for 3 sec."
+ },
+ "20591": {
+  "name": "Expansive Mind",
+  "cells": [],
+  "text": "Maximum Mana increased by 5%."
+ },
+ "20593": {
+  "name": "Engineering Specialization",
+  "cells": [],
+  "text": "Your gnomish ingenuity reduces the rate of engineering devices failing or backfiring when you use them by 20%."
+ },
+ "20594": {
+  "name": "Stoneform",
+  "cells": [
+   "Instant",
+   "3 min cooldown"
+  ],
+  "text": "Instantly removes and grants immunity to all Bleed, Poison, and Disease effects, and reduces all Physical damage taken by 10% for 8 sec."
+ },
+ "20597": {
+  "name": "Sword Specialization",
+  "cells": [],
+  "text": "Increases your critical strike chance with all spells and attacks by 2% while you have a sword or two-handed sword equipped."
+ },
+ "20598": {
+  "name": "The Human Spirit",
+  "cells": [],
+  "text": "Spirit increased by 5%."
+ },
+ "20600": {
+  "name": "Perception",
+  "cells": [
+   "Instant",
+   "3 min cooldown"
+  ],
+  "text": "Dramatically increases stealth detection for 20 sec."
+ },
+ "1259416": {
+  "name": "Walk on Air",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Glide downward through the air for 10 sec while controlling your direction of travel."
+ },
+ "1259686": {
+  "name": "Skysight",
+  "cells": [
+   "0.5 sec cast",
+   "2 min cooldown"
+  ],
+  "text": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 10%. Lasts 30 sec if no elemental convergence is nearby, and 15 min if one is found."
+ },
+ "1259705": {
+  "name": "Read Ley Line",
+  "cells": [
+   "2 sec cast",
+   "2 min cooldown"
+  ],
+  "text": "Attempt to tap into the power of a nearby ley line, increasing your Health and Mana regeneration by 100%. Lasts 15 sec if no ley line is nearby, and 15 min if one is found."
+ },
+ "1259707": {
+  "name": "Elemental Insight",
+  "cells": [],
+  "text": "Damage dealt versus Elementals increased by 5%."
+ },
+ "1259710": {
+  "name": "Wind Blessed",
+  "cells": [],
+  "text": "Increases your spellcasting, melee, and ranged Haste by 1%."
+ },
+ "1259718": {
+  "name": "Will to Survive",
+  "cells": [
+   "Instant",
+   "3 min cooldown"
+  ],
+  "text": "Instantly removes all Stun effects."
+ },
+ "1259719": {
+  "name": "Mace Specialization",
+  "cells": [],
+  "text": "Increases your critical strike chance with all spells and attacks by 1% while you have a mace or two-handed mace equipped."
+ },
+ "1259721": {
+  "name": "Big Game Hunter",
+  "cells": [],
+  "text": "Damage dealt versus Beasts increased by 5%."
+ },
+ "1259799": {
+  "name": "Elune's Light",
+  "cells": [
+   "Instant",
+   "3 min cooldown"
+  ],
+  "text": "Increases your critical strike chance with all spells and attacks by 10% for 15 sec."
+ },
+ "1259802": {
+  "name": "Expansive Mind",
+  "cells": [],
+  "text": "Maximum Rage increased by 5%."
+ },
+ "1259803": {
+  "name": "Expansive Mind",
+  "cells": [],
+  "text": "Maximum Energy increased by 5%."
+ },
+ "1259812": {
+  "name": "Eureka!",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Your next 3 non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage."
+ },
+ "1259813": {
+  "name": "Eureka!",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Your next 3 non-periodic damaging abilities have their Rage cost reduced by 10% and deal 10% more damage."
+ },
+ "1259817": {
+  "name": "Eureka!",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Your next 3 damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
+ },
+ "1259821": {
+  "name": "Eureka!",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Your next 3 non-periodic damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
+ },
+ "1259823": {
+  "name": "Eureka!",
+  "cells": [
+   "Instant",
+   "2 min cooldown"
+  ],
+  "text": "Your next 3 non-periodic damaging or healing abilities have their Mana cost reduced by 10% and deal 10% more damage or healing."
+ },
+ "1259918": {
+  "name": "Plainsrunning",
+  "cells": [],
+  "text": "Gain 1% increased movement speed every 5 sec spent moving, up to a maximum of 30% increase. Taking damage or standing still will reduce this effect."
+ },
+ "1260189": {
+  "name": "Touch of the Grave",
+  "cells": [],
+  "text": "Your spells and attacks have a 5% chance to drain Health from the target, up to 5% of your maximum Health."
+ },
+ "1260201": {
+  "name": "Touch of the Grave",
+  "cells": [],
+  "text": "Your spells and attacks have a 10% chance to drain Health from the target, up to 5% of your maximum Health."
+ },
+ "1260270": {
+  "name": "Rapid Regeneration",
+  "cells": [
+   "Channeled (6 sec cast)",
+   "3 min cooldown"
+  ],
+  "text": "Regenerate 50% of your maximum Health over 6 sec. Any movement, action, or damage taken will cancel the effect."
+ },
+ "1299026": {
+  "name": "Shatter Curse",
+  "cells": [
+   "Instant",
+   "3 min cooldown"
+  ],
+  "text": "Instantly removes and grants immunity to all Curses and Banes, and reduces all Magical damage taken by 15% for 8 sec."
+ },
+ "priest:Chastise": "Chastise the target, causing 272 to 306 Holy damage and Immobilizing them for up to 2 sec. Only works against Humanoids. This spell causes very low threat.",
+ "priest:Confounding Flash": "Confuses up to 5 enemies within 8 yds for 3 sec. Any damage taken will break the effect.",
+ "priest:Contingency Plan": "Place a Holy ward on an ally for 30 sec. The next time this ally takes damage dropping their Health below 35%, they will gain a shield absorbing 926 damage and begin healing for 670 Health over 15 sec. A target may be affected by only one Contingency Plan.",
+ "priest:Dark Sacrifice": "Cannibalize 1640 of your own Health over 15 sec to gain (1640 + Spirit) Mana.",
+ "priest:Desperate Prayer": "Instantly heals the caster for 1318 to 1546.",
+ "priest:Divine Grace": "Instantly heals a friendly target below 50% Health for 1318 to 1546 and removes Weakened Soul from that target. Cannot be cast on self.",
+ "priest:Elune's Grace": "Reduces the chance you'll be hit by melee and ranged attacks by 50% for 15 sec or until you are missed 3 times.",
+ "priest:Feedback": "The priest becomes surrounded with anti-magic energy. Any successful spell cast against the priest will burn 105 of the attacker's Mana, causing 1 Shadow damage for each point of Mana burned. Lasts 15 sec.",
+ "priest:Hex of Weakness": "Weakens the target enemy, reducing melee attack power by 204 and reducing the effectiveness of any healing by 20%. Lasts 2 min",
+ "priest:Shadowguard": "The caster is surrounded by shadows. When a spell, melee or ranged attack hits the caster, the attacker will be struck for 96 Shadow damage. Attackers can only be damaged once every few seconds. This damage causes no threat. 3 charges. Lasts 10 min.",
+ "priest:Starshards": "Rains starshards down on the enemy target's head, causing 1800 Arcane damage over 6 sec.",
+ "priest:Touch of Weakness": "The next melee attack on the caster will cause 56 Shadow damage and reduce the attacker's melee attack power by the attacker by 204 for 2 min."
+}
