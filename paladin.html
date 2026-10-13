@@ -1382,7 +1382,7 @@ function buildTrees(m=cur,host=$("trees")){
       const cell=document.createElement("div"); cell.className="cell"; cell.style.gridRow=r+1; cell.style.gridColumn=c+1;
       if(t){
         const b=document.createElement("button"); b.type="button"; b.className="tal"+(t.nyi?" nyi":""); t.el=b;
-        b.innerHTML=`<span class="mono">${mono(t.name)}</span><img class="ic" src="${IMG(t.icon)}" alt="" loading="lazy" onerror="this.remove()"><span class="rk"></span><span class="minus" aria-hidden="true">−</span>`;
+        b.innerHTML=`<span class="mono">${mono(t.name)}</span><img class="ic" src="${IMG(t.icon)}" alt="" decoding="sync" onerror="this.remove()"><span class="rk"></span><span class="minus" aria-hidden="true">−</span>`;
         b.addEventListener("click",e=>{ if(e.shiftKey || e.target.closest(".minus")) remove(t); else add(t); if(!canHover) showTip(t,true); });
         b.addEventListener("contextmenu",e=>{ e.preventDefault(); remove(t); });
         b.addEventListener("mouseenter",()=>showTip(t));
