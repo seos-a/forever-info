@@ -57,7 +57,7 @@
   "name": "Blood Fury",
   "cells": [
    "Instant",
-   "2 min cooldown"
+   "3 min cooldown"
   ],
   "text": "Increases Attack Power and Spell Power by 10% for 15 sec."
  },
