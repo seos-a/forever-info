@@ -1,6 +1,1582 @@
 {
  "updates": [
   {
+   "date": "2026-10-16",
+   "version": "1.60.1",
+   "build": "70425",
+   "classes": {
+    "druid": [
+     [
+      "other",
+      "Moonkin Form",
+      "spell_nature_forceofnature",
+      "Balance talent · reworded",
+      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party {*or raid*} members within 45 yards have their {*spell*} Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party members within 45 yards have their Critical Strike chance increased by 3%{~, exclusive with Leader of the Pack~}. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
+     ],
+     [
+      "other",
+      "Leader of the Pack",
+      "spell_nature_unyeildingstamina",
+      "Feral Combat talent · reworded",
+      "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {*melee and ranged Critical Strike*} chance of all party {*or raid*} members within 45 yards by 3%.",
+      "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {~critical strike~} chance of all party members within 45 yards by 3%{~, exclusive with Moonkin Aura~}."
+     ],
+     [
+      "other",
+      "Furor",
+      "spell_holy_blessingofstamina",
+      "Restoration talent · reworded",
+      "Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 100 Energy.",
+      "Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per {~sec~} spent outside {~Cat~} Form, up to 100 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}",
+      [
+       [
+        5,
+        "Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 100 Energy.",
+        "Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per {~sec~} spent outside {~Cat~} Form, up to 100 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}"
+       ],
+       [
+        4,
+        "Gives you a 80% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 80% of the Energy you had when last in Cat Form, plus 8 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 80 Energy.",
+        "Gives you a 80% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 80% of the Energy you had when last in Cat Form, plus 8 Energy per {~sec~} spent outside {~Cat~} Form, up to 80 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}"
+       ],
+       [
+        3,
+        "Gives you a 60% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 60% of the Energy you had when last in Cat Form, plus 6 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 60 Energy.",
+        "Gives you a 60% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 60% of the Energy you had when last in Cat Form, plus 6 Energy per {~sec~} spent outside {~Cat~} Form, up to 60 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}"
+       ],
+       [
+        2,
+        "Gives you a 40% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 40% of the Energy you had when last in Cat Form, plus 4 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 40 Energy.",
+        "Gives you a 40% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 40% of the Energy you had when last in Cat Form, plus 4 Energy per {~sec~} spent outside {~Cat~} Form, up to 40 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}"
+       ],
+       [
+        1,
+        "Gives you a 20% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 20% of the Energy you had when last in Cat Form, plus 2 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 20 Energy.",
+        "Gives you a 20% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 20% of the Energy you had when last in Cat Form, plus 2 Energy per {~sec~} spent outside {~Cat~} Form, up to 20 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}"
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Shred",
+      "spell_shadow_vampiricaura",
+      "Spell",
+      "Shred the target, causing 155% damage plus {-80} (down from 180) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
+      "",
+      [
+       [
+        5,
+        "Shred the target, causing 155% damage plus {-80} (down from 180) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
+        ""
+       ],
+       [
+        4,
+        "Shred the target, causing 155% damage plus {-64} (down from 144) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
+        ""
+       ],
+       [
+        3,
+        "Shred the target, causing 155% damage plus {-44} (down from 99) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
+        ""
+       ],
+       [
+        2,
+        "Shred the target, causing 155% damage plus {-32} (down from 72) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
+        ""
+       ],
+       [
+        1,
+        "Shred the target, causing 155% damage plus {-22} (down from 54) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "hunter": [
+     [
+      "other",
+      "Trueshot Aura",
+      "ability_trueshot",
+      "Marksmanship talent · reworded",
+      "Increases the Ranged Attack Power of party {*or raid*} members within 45 yds by 30.",
+      "Increases the Ranged Attack Power of party members within 45 yds by 30."
+     ],
+     [
+      "other",
+      "Rapid Recuperation",
+      "ability_hunter_rapidregeneration",
+      "Marksmanship talent · reworded",
+      "{*Afflicting*} a target with Serpent Sting {*allows*} 50% of your Mana {*Regeneration to continue*} while casting for 15 sec{*, increased to 100% when Rapid Killing is consumed*}.",
+      "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you~} 50{~% and consuming Rapid Killing grants you 100~}% of your Mana {~regeneration~} while casting for {~the next~} 15 sec.",
+      [
+       [
+        2,
+        "{*Afflicting*} a target with Serpent Sting {*allows*} 50% of your Mana {*Regeneration to continue*} while casting for 15 sec{*, increased to 100% when Rapid Killing is consumed*}.",
+        "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you~} 50{~% and consuming Rapid Killing grants you 100~}% of your Mana {~regeneration~} while casting for {~the next~} 15 sec."
+       ],
+       [
+        1,
+        "{*Afflicting*} a target with Serpent Sting {*allows*} 25% of your Mana {*Regeneration to continue*} while casting for 15 sec{*, increased to 50% when Rapid Killing is consumed*}.",
+        "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you~} 25{~% and consuming Rapid Killing grants you 50~}% of your Mana {~regeneration~} while casting for {~the next~} 15 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Predator's Edge",
+      "ability_dualwield",
+      "Survival talent · reworded",
+      "Increases your melee {*ability*} critical strike damage by 30% and your Off Hand weapon damage by 50%.",
+      "Increases your melee critical strike damage by 30% and your Off Hand weapon damage by 50%.",
+      [
+       [
+        5,
+        "Increases your melee {*ability*} critical strike damage by 30% and your Off Hand weapon damage by 50%.",
+        "Increases your melee critical strike damage by 30% and your Off Hand weapon damage by 50%."
+       ],
+       [
+        4,
+        "Increases your melee {*ability*} critical strike damage by 24% and your Off Hand weapon damage by 40%.",
+        "Increases your melee critical strike damage by 24% and your Off Hand weapon damage by 40%."
+       ],
+       [
+        3,
+        "Increases your melee {*ability*} critical strike damage by 18% and your Off Hand weapon damage by 30%.",
+        "Increases your melee critical strike damage by 18% and your Off Hand weapon damage by 30%."
+       ],
+       [
+        2,
+        "Increases your melee {*ability*} critical strike damage by 12% and your Off Hand weapon damage by 20%.",
+        "Increases your melee critical strike damage by 12% and your Off Hand weapon damage by 20%."
+       ],
+       [
+        1,
+        "Increases your melee {*ability*} critical strike damage by 6% and your Off Hand weapon damage by 10%.",
+        "Increases your melee critical strike damage by 6% and your Off Hand weapon damage by 10%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Resourcefulness",
+      "ability_hunter_resourcefulness",
+      "Survival talent · reworked",
+      "Reduces the {*Mana*} cost of your Trap and melee abilities by 60%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*100*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec.",
+      "Reduces the {~mana~} cost of your Trap {~abilities~} and melee abilities by 60%{~. In addition,~} your {~critical strikes have~} a {~60~}% chance to allow 50% of your Mana {~regeneration~} to continue while casting for 30 sec.",
+      [
+       [
+        2,
+        "Reduces the {*Mana*} cost of your Trap and melee abilities by 60%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*100*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec.",
+        "Reduces the {~mana~} cost of your Trap {~abilities~} and melee abilities by 60%{~. In addition,~} your {~critical strikes have~} a {~60~}% chance to allow 50% of your Mana {~regeneration~} to continue while casting for 30 sec."
+       ],
+       [
+        1,
+        "Reduces the {*Mana*} cost of your Trap and melee abilities by 30%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*50*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec.",
+        "Reduces the {~mana~} cost of your Trap {~abilities~} and melee abilities by 30%{~. In addition,~} your {~critical strikes have~} a {~30~}% chance to allow 50% of your Mana {~regeneration~} to continue while casting for 30 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Expose Prey",
+      "ability_hunter_swiftstrike",
+      "Survival talent · reworded",
+      "{*Grants your melee and ranged*} attacks against {*enemies afflicted by*} Hunter's Mark a 10% chance to {*allow an activation of*} Mongoose Bite{*. Lasts*} 10 sec.",
+      "{~Your~} attacks against {~targets with~} Hunter's Mark {~have~} a 10% chance to {~activate your~} Mongoose Bite {~for~} 10 sec.",
+      [
+       [
+        2,
+        "{*Grants your melee and ranged*} attacks against {*enemies afflicted by*} Hunter's Mark a 10% chance to {*allow an activation of*} Mongoose Bite{*. Lasts*} 10 sec.",
+        "{~Your~} attacks against {~targets with~} Hunter's Mark {~have~} a 10% chance to {~activate your~} Mongoose Bite {~for~} 10 sec."
+       ],
+       [
+        1,
+        "{*Grants your melee and ranged*} attacks against {*enemies afflicted by*} Hunter's Mark a 5% chance to {*allow an activation of*} Mongoose Bite{*. Lasts*} 10 sec.",
+        "{~Your~} attacks against {~targets with~} Hunter's Mark {~have~} a 5% chance to {~activate your~} Mongoose Bite {~for~} 10 sec."
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Dismember",
+      "ability_hunter_pet_crocolisk",
+      "Spell",
+      "Viciously bites enemy appendages for 50 to 58 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+      "",
+      [
+       [
+        5,
+        "Viciously bites enemy appendages for 50 to 58 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        ""
+       ],
+       [
+        4,
+        "Viciously bites enemy appendages for 39 to 45 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        ""
+       ],
+       [
+        3,
+        "Viciously bites enemy appendages for 26 to 30 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        ""
+       ],
+       [
+        2,
+        "Viciously bites enemy appendages for 18 to 20 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        ""
+       ],
+       [
+        1,
+        "Viciously bites enemy appendages for 11 to 13 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Mine!",
+      "spell_nature_natureswrath",
+      "Spell",
+      "Grabs an enemy's weapon with its talons, causing 41 to 47 damage and disarming them for {-3} (down from 4) sec.",
+      "",
+      [
+       [
+        5,
+        "Grabs an enemy's weapon with its talons, causing 41 to 47 damage and disarming them for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        4,
+        "Grabs an enemy's weapon with its talons, causing 33 to 37 damage and disarming them for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        3,
+        "Grabs an enemy's weapon with its talons, causing 20 to 24 damage and disarming them for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        2,
+        "Grabs an enemy's weapon with its talons, causing 14 to 16 damage and disarming them for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        1,
+        "Grabs an enemy's weapon with its talons, causing 10 to 12 damage and disarming them for {-3} (down from 4) sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Multi-Shot",
+      "ability_upgrademoonglaive",
+      "Spell",
+      "Cast time changed from 0.5 sec cast to Instant."
+     ]
+    ],
+    "mage": [
+     [
+      "other",
+      "Improved Channeling",
+      "spell_nature_starfall",
+      "Arcane talent · reworded",
+      "Gives you a 100% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 70% chance while casting Arcane Blast {*or Arcane Wrath*}.",
+      "Gives you a 100% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 70% chance while casting Arcane Blast.",
+      [
+       [
+        5,
+        "Gives you a 100% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 70% chance while casting Arcane Blast {*or Arcane Wrath*}.",
+        "Gives you a 100% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 70% chance while casting Arcane Blast."
+       ],
+       [
+        4,
+        "Gives you a 80% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 56% chance while casting Arcane Blast {*or Arcane Wrath*}.",
+        "Gives you a 80% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 56% chance while casting Arcane Blast."
+       ],
+       [
+        3,
+        "Gives you a 60% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 42% chance while casting Arcane Blast {*or Arcane Wrath*}.",
+        "Gives you a 60% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 42% chance while casting Arcane Blast."
+       ],
+       [
+        2,
+        "Gives you a 40% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 28% chance while casting Arcane Blast {*or Arcane Wrath*}.",
+        "Gives you a 40% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 28% chance while casting Arcane Blast."
+       ],
+       [
+        1,
+        "Gives you a 20% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 14% chance while casting Arcane Blast {*or Arcane Wrath*}.",
+        "Gives you a 20% chance to avoid interruption caused by damage while channeling Arcane Missiles and a 14% chance while casting Arcane Blast."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Missile Barrage",
+      "ability_mage_missilebarrage",
+      "Arcane talent · reworked",
+      "Gives your Arcane Blast spell a 40% chance, {*your Arcane Missile hits a 10% chance,*} and your {*Arcane Wrath,*} Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec. Now has 2 ranks (was 1).",
+      "Gives your Arcane Blast spell a 40% chance, and your Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+     ],
+     [
+      "other",
+      "Arcane Blast",
+      "spell_arcane_blast",
+      "Arcane talent · reworked",
+      "Blasts the target with energy, dealing {*34*} to {*38*} Arcane damage. Each time you cast Arcane Blast, {*you gain 15%*} of your {*Intellect as Spell Damage*} and the mana cost of Arcane Blast is increased by 175%. Effect stacks up to 4 times and lasts {*15*} sec {*from time of initial application*}. Cast time reduced from 2.5 sec cast to {+1.5 sec cast}.",
+      "Blasts the target with energy, dealing {~57~} to {~65~} Arcane damage. Each time you cast Arcane Blast, {~the damage~} of {~all~} your {~other spells is increased by 10%~} and the mana cost of Arcane Blast is increased by 175%. Effect stacks up to 4 times and lasts {~8~} sec {~or until any other damage spell is cast~}."
+     ],
+     [
+      "other",
+      "Arcane Wrath",
+      "ability_mage_netherwindpresence",
+      "Arcane talent · new",
+      "New talent: Launches a projectile of pure Arcane energy at the enemy target, causing 122 to 146 Arcane damage. This spell gains additional Spell Damage equal to 5% of your maximum Mana."
+     ],
+     [
+      "other",
+      "Improved Fire Blast",
+      "spell_fire_lavaspawn",
+      "Fire talent · reworked",
+      "Renamed from Wake of Fire. Reduces the cooldown of your Fire Blast spell by 2 sec {*and*} increases {*its range*} by {*15 yards*}.",
+      "Reduces the cooldown of your Fire Blast spell by 2 sec{~. Killing a non-trivial target~} increases {~the critical strike chance of your next Fire Blast cast within 30 sec~} by {~50%~}.",
+      [
+       [
+        2,
+        "Renamed from Wake of Fire. Reduces the cooldown of your Fire Blast spell by 2 sec {*and*} increases {*its range*} by {*15 yards*}.",
+        "Reduces the cooldown of your Fire Blast spell by 2 sec{~. Killing a non-trivial target~} increases {~the critical strike chance of your next Fire Blast cast within 30 sec~} by {~50%~}."
+       ],
+       [
+        1,
+        "Renamed from Wake of Fire. Reduces the cooldown of your Fire Blast spell by 1 sec {*and*} increases {*its range*} by {*8 yards*}.",
+        "Reduces the cooldown of your Fire Blast spell by 1 sec{~. Killing a non-trivial target~} increases {~the critical strike chance of your next Fire Blast cast within 30 sec~} by {~25%~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Heating Up",
+      "spell_fire_firebolt",
+      "Fire talent · reworded",
+      "Non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch reduce the cast time of your next Pyroblast cast within 20 sec by 25%, stacking up to 3 times. {*Fire Blast grants an additional stack every time it deals damage.*}",
+      "Non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch reduce the cast time of your next Pyroblast cast within 20 sec by 25%, stacking up to 3 times."
+     ],
+     [
+      "other",
+      "Critical Mass",
+      "spell_nature_wispheal",
+      "Fire talent",
+      "Increases the critical strike chance of your Fire spells by {+10%} (up from 6%). Now has 5 ranks (was 3)."
+     ],
+     [
+      "other",
+      "Fire Power",
+      "spell_fire_immolation",
+      "Fire talent · reworked",
+      "Increases the damage done by your Fire spells by 3% per your Fire effects on the target, up to a maximum increase of 12%. Effects which mix multiple schools of magic do not qualify. Now has 3 ranks (was 5).",
+      "Increases the damage done by your Fire spells by 10%."
+     ],
+     [
+      "other",
+      "Improved Frostbolt",
+      "spell_frost_frostbolt02",
+      "Frost talent · reworded",
+      "Reduces the casting time of your Frostbolt {*and Frost Blast spells*} by 0.5 sec.",
+      "Reduces the casting time of your Frostbolt {~spell~} by 0.5 sec.",
+      [
+       [
+        5,
+        "Reduces the casting time of your Frostbolt {*and Frost Blast spells*} by 0.5 sec.",
+        "Reduces the casting time of your Frostbolt {~spell~} by 0.5 sec."
+       ],
+       [
+        4,
+        "Reduces the casting time of your Frostbolt {*and Frost Blast spells*} by 0.4 sec.",
+        "Reduces the casting time of your Frostbolt {~spell~} by 0.4 sec."
+       ],
+       [
+        3,
+        "Reduces the casting time of your Frostbolt {*and Frost Blast spells*} by 0.3 sec.",
+        "Reduces the casting time of your Frostbolt {~spell~} by 0.3 sec."
+       ],
+       [
+        2,
+        "Reduces the casting time of your Frostbolt {*and Frost Blast spells*} by 0.2 sec.",
+        "Reduces the casting time of your Frostbolt {~spell~} by 0.2 sec."
+       ],
+       [
+        1,
+        "Reduces the casting time of your Frostbolt {*and Frost Blast spells*} by 0.1 sec.",
+        "Reduces the casting time of your Frostbolt {~spell~} by 0.1 sec."
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Ice Lance",
+      "spell_frost_frostblast",
+      "Frost talent",
+      "Deals 28 to 32 Frost damage to an enemy target. Deals {-200%} (down from 300%) increased damage to Frozen targets."
+     ],
+     [
+      "other",
+      "Arctic Reach",
+      "spell_shadow_darkritual",
+      "Frost talent · reworded",
+      "Increases the range of your Frostbolt{*, Frost Blast,*} and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+      "Increases the range of your Frostbolt and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+      [
+       [
+        2,
+        "Increases the range of your Frostbolt{*, Frost Blast,*} and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+        "Increases the range of your Frostbolt and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%."
+       ],
+       [
+        1,
+        "Increases the range of your Frostbolt{*, Frost Blast,*} and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%.",
+        "Increases the range of your Frostbolt and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Winter's Chill",
+      "spell_frost_chillingblast",
+      "Frost talent · reworked",
+      "Gives your Frost damage spells a 100% chance to apply the Winter's Chill effect, which increases the {*damage done by*} your {*Cone of Cold spell to*} the target by {*40*}%{*, stacking*} up to 5 times.",
+      "Gives your Frost damage spells a 100% chance to apply the Winter's Chill effect, which increases the {~chance~} your {~Ice Lance and Frostbolt spells will critically hit~} the target by {~2~}% {~for 15 sec. Stacks~} up to 5 times.",
+      [
+       [
+        5,
+        "Gives your Frost damage spells a 100% chance to apply the Winter's Chill effect, which increases the {*damage done by*} your {*Cone of Cold spell to*} the target by {*40*}%{*, stacking*} up to 5 times.",
+        "Gives your Frost damage spells a 100% chance to apply the Winter's Chill effect, which increases the {~chance~} your {~Ice Lance and Frostbolt spells will critically hit~} the target by {~2~}% {~for 15 sec. Stacks~} up to 5 times."
+       ],
+       [
+        4,
+        "Gives your Frost damage spells a 80% chance to apply the Winter's Chill effect, which increases the {*damage done by*} your {*Cone of Cold spell to*} the target by {*40*}%{*, stacking*} up to {*5*} times.",
+        "Gives your Frost damage spells a 80% chance to apply the Winter's Chill effect, which increases the {~chance~} your {~Ice Lance and Frostbolt spells will critically hit~} the target by {~2~}% {~for 15 sec. Stacks~} up to {~4~} times."
+       ],
+       [
+        3,
+        "Gives your Frost damage spells a 60% chance to apply the Winter's Chill effect, which increases the {*damage done by*} your {*Cone of Cold spell to*} the target by {*40*}%{*, stacking*} up to {*5*} times.",
+        "Gives your Frost damage spells a 60% chance to apply the Winter's Chill effect, which increases the {~chance~} your {~Ice Lance and Frostbolt spells will critically hit~} the target by {~2~}% {~for 15 sec. Stacks~} up to {~3~} times."
+       ],
+       [
+        2,
+        "Gives your Frost damage spells a 40% chance to apply the Winter's Chill effect, which increases the {*damage done by*} your {*Cone of Cold spell to*} the target by {*40*}%{*, stacking*} up to {*5*} times.",
+        "Gives your Frost damage spells a 40% chance to apply the Winter's Chill effect, which increases the {~chance~} your {~Ice Lance and Frostbolt spells will critically hit~} the target by {~2~}% {~for 15 sec. Stacks~} up to {~2~} times."
+       ],
+       [
+        1,
+        "Gives your Frost damage spells a 20% chance to apply the Winter's Chill effect, which increases the {*damage done by*} your {*Cone of Cold spell to*} the target by {*40*}%{*, stacking*} up to {*5*} times.",
+        "Gives your Frost damage spells a 20% chance to apply the Winter's Chill effect, which increases the {~chance~} your {~Ice Lance and Frostbolt spells will critically hit~} the target by {~2~}% {~for 15 sec. Stacks~} up to {~1~} times."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Frost Blast",
+      "spell_frost_frostbolt",
+      "Spell · new",
+      "New spell: Quickly launch a weak blast of frost at the enemy, causing 80 to 88 Frost damage and slowing movement speed by 40% for 9 sec."
+     ],
+     [
+      "other",
+      "Cone of Cold",
+      "spell_frost_glacier",
+      "Spell · reworked",
+      "Targets in a cone in front of the caster take 333 to 362 Frost damage and are slowed by 40% for 6 sec. {*The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.*}",
+      "Targets in a cone in front of the caster take 333 to 362 Frost damage and are slowed by 40% for 6 sec.",
+      [
+       [
+        5,
+        "Targets in a cone in front of the caster take 333 to 362 Frost damage and are slowed by 40% for 6 sec. {*The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.*}",
+        "Targets in a cone in front of the caster take 333 to 362 Frost damage and are slowed by 40% for 6 sec."
+       ],
+       [
+        4,
+        "Targets in a cone in front of the caster take 261 to 286 Frost damage and are slowed by 40% for 6 sec. {*The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.*}",
+        "Targets in a cone in front of the caster take 261 to 286 Frost damage and are slowed by 40% for 6 sec."
+       ],
+       [
+        3,
+        "Targets in a cone in front of the caster take 200 to 220 Frost damage and are slowed by 40% for 6 sec. {*The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.*}",
+        "Targets in a cone in front of the caster take 200 to 220 Frost damage and are slowed by 40% for 6 sec."
+       ],
+       [
+        2,
+        "Targets in a cone in front of the caster take 142 to 156 Frost damage and are slowed by 40% for 6 sec. {*The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.*}",
+        "Targets in a cone in front of the caster take 142 to 156 Frost damage and are slowed by 40% for 6 sec."
+       ],
+       [
+        1,
+        "Targets in a cone in front of the caster take 96 to 106 Frost damage and are slowed by 40% for 6 sec. {*The first 4 targets hit by this cone are slowed by an additional 10% for an additional 3 sec.*}",
+        "Targets in a cone in front of the caster take 96 to 106 Frost damage and are slowed by 40% for 6 sec."
+       ]
+      ]
+     ]
+    ],
+    "paladin": [
+     [
+      "nerf",
+      "Shield Specialization",
+      "inv_shield_06",
+      "Protection talent",
+      "Increases the amount of damage absorbed by your shield by 30%, and gives your blocks a 100% chance to restore {-4%} (down from 6%) of your maximum Mana. May only occur once every 3 sec.",
+      "",
+      [
+       [
+        3,
+        "Increases the amount of damage absorbed by your shield by 30%, and gives your blocks a 100% chance to restore {-4%} (down from 6%) of your maximum Mana. May only occur once every 3 sec.",
+        ""
+       ],
+       [
+        2,
+        "Increases the amount of damage absorbed by your shield by 20%, and gives your blocks a 66% chance to restore {-4%} (down from 6%) of your maximum Mana. May only occur once every 3 sec.",
+        ""
+       ],
+       [
+        1,
+        "Increases the amount of damage absorbed by your shield by 10%, and gives your blocks a 33% chance to restore {-4%} (down from 6%) of your maximum Mana. May only occur once every 3 sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Reckoning",
+      "spell_holy_blessingofstrength",
+      "Protection talent · reworked",
+      "Gives you a 40% chance after Blocking and a 100% chance after {*receiving*} a non-periodic critical strike {*to gain an extra attack. Stores up to 4 extra attacks*}. Cannot occur {*from Blocks*} more than once every 1.5 sec.",
+      "Gives you a 40% chance {~to gain an extra attack~} after Blocking {~a melee attack~} and a 100% chance {~to gain an extra attack~} after {~being the victim of~} a non-periodic critical strike. Cannot occur more {~often~} than once every 1.5 sec.",
+      [
+       [
+        5,
+        "Gives you a 40% chance after Blocking and a 100% chance after {*receiving*} a non-periodic critical strike {*to gain an extra attack. Stores up to 4 extra attacks*}. Cannot occur {*from Blocks*} more than once every 1.5 sec.",
+        "Gives you a 40% chance {~to gain an extra attack~} after Blocking {~a melee attack~} and a 100% chance {~to gain an extra attack~} after {~being the victim of~} a non-periodic critical strike. Cannot occur more {~often~} than once every 1.5 sec."
+       ],
+       [
+        4,
+        "Gives you a 32% chance after Blocking and a 80% chance after {*receiving*} a non-periodic critical strike {*to gain an extra attack. Stores up to 4 extra attacks*}. Cannot occur {*from Blocks*} more than once every 1.5 sec.",
+        "Gives you a 32% chance {~to gain an extra attack~} after Blocking {~a melee attack~} and a 80% chance {~to gain an extra attack~} after {~being the victim of~} a non-periodic critical strike. Cannot occur more {~often~} than once every 1.5 sec."
+       ],
+       [
+        3,
+        "Gives you a 24% chance after Blocking and a 60% chance after {*receiving*} a non-periodic critical strike {*to gain an extra attack. Stores up to 4 extra attacks*}. Cannot occur {*from Blocks*} more than once every 1.5 sec.",
+        "Gives you a 24% chance {~to gain an extra attack~} after Blocking {~a melee attack~} and a 60% chance {~to gain an extra attack~} after {~being the victim of~} a non-periodic critical strike. Cannot occur more {~often~} than once every 1.5 sec."
+       ],
+       [
+        2,
+        "Gives you a 16% chance after Blocking and a 40% chance after {*receiving*} a non-periodic critical strike {*to gain an extra attack. Stores up to 4 extra attacks*}. Cannot occur {*from Blocks*} more than once every 1.5 sec.",
+        "Gives you a 16% chance {~to gain an extra attack~} after Blocking {~a melee attack~} and a 40% chance {~to gain an extra attack~} after {~being the victim of~} a non-periodic critical strike. Cannot occur more {~often~} than once every 1.5 sec."
+       ],
+       [
+        1,
+        "Gives you a 8% chance after Blocking and a 20% chance after {*receiving*} a non-periodic critical strike {*to gain an extra attack. Stores up to 4 extra attacks*}. Cannot occur {*from Blocks*} more than once every 1.5 sec.",
+        "Gives you a 8% chance {~to gain an extra attack~} after Blocking {~a melee attack~} and a 20% chance {~to gain an extra attack~} after {~being the victim of~} a non-periodic critical strike. Cannot occur more {~often~} than once every 1.5 sec."
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Vindication",
+      "spell_holy_vindication",
+      "Retribution talent",
+      "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-6} (down from 204), and increase your Attack Power by 3% for 30 sec.",
+      "",
+      [
+       [
+        3,
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-6} (down from 204), and increase your Attack Power by 3% for 30 sec.",
+        ""
+       ],
+       [
+        2,
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-4} (down from 136), and increase your Attack Power by 2% for 30 sec.",
+        ""
+       ],
+       [
+        1,
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-2} (down from 68), and increase your Attack Power by 1% for 30 sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Champion of the Light",
+      "ability_paladin_enlightenedjudgements",
+      "Retribution talent",
+      "Increases your spell damage by up to {-30%} (down from 60%) of your Intellect.",
+      "",
+      [
+       [
+        3,
+        "Increases your spell damage by up to {-30%} (down from 60%) of your Intellect.",
+        ""
+       ],
+       [
+        2,
+        "Increases your spell damage by up to {-20%} (down from 40%) of your Intellect.",
+        ""
+       ],
+       [
+        1,
+        "Increases your spell damage by up to {-10%} (down from 20%) of your Intellect.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Seal of Righteousness",
+      "ability_thunderbolt",
+      "Spell · reworked",
+      "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.\n{*0*}",
+      "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 to {~83~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.",
+      [
+       [
+        8,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.\n{*0*}",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 to {~83~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy."
+       ],
+       [
+        7,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 {*(plus about 8% of your Spell Power)*} to {*67.56 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 to {~68~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy."
+       ],
+       [
+        6,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 {*(plus about 8% of your Spell Power)*} to {*53.12 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 to {~53~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy."
+       ],
+       [
+        5,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 {*(plus about 8% of your Spell Power)*} to {*40.28 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 to {~40~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy."
+       ],
+       [
+        4,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*8.35632 (plus about*} 8{*% of your Spell Power)*} to {*29.08 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 8 to {~29~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy."
+       ],
+       [
+        3,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*5.63218 (plus about 8% of your Spell Power)*} to {*19.6 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~6~} to {~20~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy."
+       ],
+       [
+        2,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*3.65517 (plus about 8% of your Spell Power)*} to {*12.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~4~} to {~13~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy."
+       ],
+       [
+        1,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*2.48276 (plus about 8% of your Spell Power)*} to {*8.64 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~2~} to {~9~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Seal of Fury",
+      "spell_holy_retributionaura",
+      "Spell · reworded",
+      "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts*} 168 to 182 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+      "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~causes~} 168 to 182 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+      [
+       [
+        7,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts*} 168 to 182 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~causes~} 168 to 182 Holy damage to an enemy and taunts the target to attack you for 4 sec."
+       ],
+       [
+        6,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts*} 140 to 151 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~causes~} 140 to 151 Holy damage to an enemy and taunts the target to attack you for 4 sec."
+       ],
+       [
+        5,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts*} 112 to 121 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~causes~} 112 to 121 Holy damage to an enemy and taunts the target to attack you for 4 sec."
+       ],
+       [
+        4,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts*} 87 to 94 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~causes~} 87 to 94 Holy damage to an enemy and taunts the target to attack you for 4 sec."
+       ],
+       [
+        3,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts*} 66 to 72 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~causes~} 66 to 72 Holy damage to an enemy and taunts the target to attack you for 4 sec."
+       ],
+       [
+        1,
+        "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {*inflicts 32*} to 34 Holy damage to an enemy and taunts the target to attack you for 4 sec.",
+        "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy {~inflicts32~} to 34 Holy damage to an enemy and taunts the target to attack you for 4 sec."
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Righteous Fury",
+      "spell_holy_sealoffury",
+      "Spell",
+      "Increases the threat generated by your Holy attacks by {+90%} (up from 60%). Lasts 30 min."
+     ],
+     [
+      "other",
+      "Revoke",
+      "spell_holy_prayerofmendingtga",
+      "Spell · new",
+      "New spell: Remove target party or raid member's Salvation or Mass Salvation."
+     ],
+     [
+      "other",
+      "Salvation",
+      "spell_holy_sealofsalvation",
+      "Spell · reworded",
+      "Renamed from Blessing of Salvation. Reduces all threat generated by target party member by 30% for 1 hour.",
+      "Places a Blessing on the party member, reducing the amount of all threat generated by 30% for 1 hour. Players may only have one Blessing on them per Paladin at any one time."
+     ],
+     [
+      "other",
+      "Mass Salvation",
+      "spell_holy_greaterblessingofsalvation",
+      "Spell · reworded",
+      "Renamed from Greater Blessing of Salvation. Gives all members of the raid or group that share the same class with the target {*a reduction to*} all threat generated by 30% for 1 hour.",
+      "Gives all members of the raid or group that share the same class with the target {~the Greater Blessing of Salvation, reducing the amount of~} all threat generated by 30% for 1 hour. {~Players may only have one Blessing on them per Paladin at any one time.~}"
+     ]
+    ],
+    "priest": [
+     [
+      "other",
+      "Power in Light",
+      "spell_holy_searinglight",
+      "Discipline talent · reworded",
+      "Your Smite and Penance spells deal 10% increased damage to targets afflicted with your Holy Fire {*or Shadow Word: Pain*}.",
+      "Your Smite and Penance spells deal 10% increased damage to targets afflicted with your Holy Fire.",
+      [
+       [
+        5,
+        "Your Smite and Penance spells deal 10% increased damage to targets afflicted with your Holy Fire {*or Shadow Word: Pain*}.",
+        "Your Smite and Penance spells deal 10% increased damage to targets afflicted with your Holy Fire."
+       ],
+       [
+        4,
+        "Your Smite and Penance spells deal 8% increased damage to targets afflicted with your Holy Fire {*or Shadow Word: Pain*}.",
+        "Your Smite and Penance spells deal 8% increased damage to targets afflicted with your Holy Fire."
+       ],
+       [
+        3,
+        "Your Smite and Penance spells deal 6% increased damage to targets afflicted with your Holy Fire {*or Shadow Word: Pain*}.",
+        "Your Smite and Penance spells deal 6% increased damage to targets afflicted with your Holy Fire."
+       ],
+       [
+        2,
+        "Your Smite and Penance spells deal 4% increased damage to targets afflicted with your Holy Fire {*or Shadow Word: Pain*}.",
+        "Your Smite and Penance spells deal 4% increased damage to targets afflicted with your Holy Fire."
+       ],
+       [
+        1,
+        "Your Smite and Penance spells deal 2% increased damage to targets afflicted with your Holy Fire {*or Shadow Word: Pain*}.",
+        "Your Smite and Penance spells deal 2% increased damage to targets afflicted with your Holy Fire."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Silent Resolve",
+      "spell_nature_manaregentotem",
+      "Discipline talent · reworded",
+      "Reduces the threat generated by your spells by 30% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 15%.",
+      "Reduces the threat generated by your {~Holy~} spells by 30% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 15%.",
+      [
+       [
+        3,
+        "Reduces the threat generated by your spells by 30% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 15%.",
+        "Reduces the threat generated by your {~Holy~} spells by 30% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 15%."
+       ],
+       [
+        2,
+        "Reduces the threat generated by your spells by 20% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 10%.",
+        "Reduces the threat generated by your {~Holy~} spells by 20% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 10%."
+       ],
+       [
+        1,
+        "Reduces the threat generated by your spells by 10% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 5%.",
+        "Reduces the threat generated by your {~Holy~} spells by 10% and reduces the duration of Stun, Fear, and Silence effects inflicted on you by 5%."
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Mental Strength",
+      "spell_nature_enchantarmor",
+      "Discipline talent",
+      "Increases your total Intellect by {-10%} (down from 15%).",
+      "",
+      [
+       [
+        5,
+        "Increases your total Intellect by {-10%} (down from 15%).",
+        ""
+       ],
+       [
+        4,
+        "Increases your total Intellect by {-8%} (down from 12%).",
+        ""
+       ],
+       [
+        3,
+        "Increases your total Intellect by {-6%} (down from 9%).",
+        ""
+       ],
+       [
+        2,
+        "Increases your total Intellect by {-4%} (down from 6%).",
+        ""
+       ],
+       [
+        1,
+        "Increases your total Intellect by {-2%} (down from 3%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Divine Aegis",
+      "spell_holy_devineaegis",
+      "Discipline talent · reworked",
+      "Your {*non-periodic*} critical heals create a protective shield on the target, absorbing 15% of the amount healed. {*Shields up to 1200 damage and lasts*} 12 sec.",
+      "Your critical heals create a protective shield on the target, absorbing 15% of the amount healed. {~Lasts~} 12 sec.",
+      [
+       [
+        3,
+        "Your {*non-periodic*} critical heals create a protective shield on the target, absorbing 15% of the amount healed. {*Shields up to 1200 damage and lasts*} 12 sec.",
+        "Your critical heals create a protective shield on the target, absorbing 15% of the amount healed. {~Lasts~} 12 sec."
+       ],
+       [
+        2,
+        "Your {*non-periodic*} critical heals create a protective shield on the target, absorbing 10% of the amount healed. {*Shields up to 1200 damage and lasts*} 12 sec.",
+        "Your critical heals create a protective shield on the target, absorbing 10% of the amount healed. {~Lasts~} 12 sec."
+       ],
+       [
+        1,
+        "Your {*non-periodic*} critical heals create a protective shield on the target, absorbing 5% of the amount healed. {*Shields up to 1200 damage and lasts*} 12 sec.",
+        "Your critical heals create a protective shield on the target, absorbing 5% of the amount healed. {~Lasts~} 12 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Improved Mind Flay",
+      "spell_shadow_soulleech_2",
+      "Shadow talent · reworked",
+      "Each instance of damage of Mind Flay deals 20% more damage than its previous instance of damage.",
+      "Your Mind Flay now deals 20% more damage, gains 10 yards increased range, but slows the target's movement speed by 20%.",
+      [
+       [
+        2,
+        "Each instance of damage of Mind Flay deals 20% more damage than its previous instance of damage.",
+        "Your Mind Flay now deals 20% more damage, gains 10 yards increased range, but slows the target's movement speed by 20%."
+       ],
+       [
+        1,
+        "Each instance of damage of Mind Flay deals 10% more damage than its previous instance of damage.",
+        "Your Mind Flay now deals 10% more damage, gains 5 yards increased range, but slows the target's movement speed by 35%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Dark Inspiration",
+      "spell_warlock_demonsoul",
+      "Shadow talent · new",
+      "New talent: Your Mind Blast and fully channeled Mind Flay causes Dark Inspiration, increasing yours and your party's Spirit by 15% for 10 sec."
+     ],
+     [
+      "other",
+      "Vampiric Embrace",
+      "spell_shadow_unsummonbuilding",
+      "Shadow talent",
+      "Cooldown changed from 1 min cooldown to 30 sec cooldown."
+     ],
+     [
+      "other",
+      "Shadow Weaving",
+      "spell_shadow_blackplague",
+      "Shadow talent · reworded",
+      "Your Shadow damage spells have a 100% chance to increase the Shadow damage {*the target takes from*} you by 2% for 15 sec, stacking up to 5 times.",
+      "Your Shadow damage spells have a 100% chance to increase the Shadow damage you {~deal~} by 2% for 15 sec, stacking up to 5 times.",
+      [
+       [
+        3,
+        "Your Shadow damage spells have a 100% chance to increase the Shadow damage {*the target takes from*} you by 2% for 15 sec, stacking up to 5 times.",
+        "Your Shadow damage spells have a 100% chance to increase the Shadow damage you {~deal~} by 2% for 15 sec, stacking up to 5 times."
+       ],
+       [
+        2,
+        "Your Shadow damage spells have a 67% chance to increase the Shadow damage {*the target takes from*} you by 2% for 15 sec, stacking up to 5 times.",
+        "Your Shadow damage spells have a 67% chance to increase the Shadow damage you {~deal~} by 2% for 15 sec, stacking up to 5 times."
+       ],
+       [
+        1,
+        "Your Shadow damage spells have a 33% chance to increase the Shadow damage {*the target takes from*} you by 2% for 15 sec, stacking up to 5 times.",
+        "Your Shadow damage spells have a 33% chance to increase the Shadow damage you {~deal~} by 2% for 15 sec, stacking up to 5 times."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Devouring Contagion",
+      "spell_shadow_devouringplague",
+      "Shadow talent · reworked",
+      "Reduces the mana cost of your Devouring Plague by 50%.\nTargets that die while Devouring Plague is active spreads it, jumping to {*2*} nearby {*enemies*} within 10 yds for the remaining duration.",
+      "Reduces the mana cost of your Devouring Plague by 50%.\nTargets that die while Devouring Plague is active spreads it, jumping to {~a~} nearby {~enemy~} within 10 yds for the remaining duration.",
+      [
+       [
+        2,
+        "Reduces the mana cost of your Devouring Plague by 50%.\nTargets that die while Devouring Plague is active spreads it, jumping to {*2*} nearby {*enemies*} within 10 yds for the remaining duration.",
+        "Reduces the mana cost of your Devouring Plague by 50%.\nTargets that die while Devouring Plague is active spreads it, jumping to {~a~} nearby {~enemy~} within 10 yds for the remaining duration."
+       ],
+       [
+        1,
+        "Reduces the mana cost of your Devouring Plague by 25%.\nTargets that die while Devouring Plague is active spreads it, jumping to {*2*} nearby {*enemies*} within 5 yds for the remaining duration.",
+        "Reduces the mana cost of your Devouring Plague by 25%.\nTargets that die while Devouring Plague is active spreads it, jumping to {~a~} nearby {~enemy~} within 5 yds for the remaining duration."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Shadow Affinity",
+      "spell_shadow_shadowward",
+      "Shadow talent · removed",
+      "Removed from the talent tree.",
+      "Reduces the threat generated by your Shadow spells by 30%."
+     ],
+     [
+      "other",
+      "Improved Fade",
+      "spell_magic_lesserinvisibilty",
+      "Shadow talent · removed",
+      "Removed from the talent tree.",
+      "Decreases the cooldown of your Fade ability by 6 sec."
+     ],
+     [
+      "other",
+      "Devouring Plague",
+      "spell_shadow_devouringplague",
+      "Spell",
+      "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+      "",
+      [
+       [
+        6,
+        "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+        ""
+       ],
+       [
+        5,
+        "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+        ""
+       ],
+       [
+        4,
+        "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+        ""
+       ],
+       [
+        3,
+        "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+        ""
+       ],
+       [
+        2,
+        "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+        ""
+       ],
+       [
+        1,
+        "Cooldown changed from 1 min cooldown to 24 sec cooldown.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Holy Fire",
+      "spell_holy_searinglight",
+      "Spell",
+      "Consumes the enemy in holy flames that cause 103 to 127 Holy damage and an additional {-45} (down from 65) Holy damage over 10 sec.",
+      "",
+      [
+       [
+        5,
+        "Consumes the enemy in holy flames that cause 103 to 127 Holy damage and an additional {-45} (down from 65) Holy damage over 10 sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Shadow Word: Death",
+      "spell_shadow_demonicfortitude",
+      "Spell",
+      "Cooldown increased from 15 sec cooldown to {-18 sec cooldown}.",
+      "",
+      [
+       [
+        4,
+        "Cooldown increased from 15 sec cooldown to {-18 sec cooldown}.",
+        ""
+       ],
+       [
+        3,
+        "Cooldown increased from 15 sec cooldown to {-18 sec cooldown}.",
+        ""
+       ],
+       [
+        2,
+        "Cooldown increased from 15 sec cooldown to {-18 sec cooldown}.",
+        ""
+       ],
+       [
+        1,
+        "Cooldown increased from 15 sec cooldown to {-18 sec cooldown}.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "shaman": [
+     [
+      "other",
+      "Elemental Devastation",
+      "spell_fire_elementaldevastation",
+      "Elemental talent · reworded",
+      "Your {*Critical Strikes with direct damage spells*} increase your chance to get a {*Critical Strike*} with melee attacks by 9% for 10 sec.",
+      "Your {~offensive spell critical strikes will~} increase your chance to get a {~critical strike~} with melee attacks by 9% for 10 sec.",
+      [
+       [
+        3,
+        "Your {*Critical Strikes with direct damage spells*} increase your chance to get a {*Critical Strike*} with melee attacks by 9% for 10 sec.",
+        "Your {~offensive spell critical strikes will~} increase your chance to get a {~critical strike~} with melee attacks by 9% for 10 sec."
+       ],
+       [
+        2,
+        "Your {*Critical Strikes with direct damage spells*} increase your chance to get a {*Critical Strike*} with melee attacks by 6% for 10 sec.",
+        "Your {~offensive spell critical strikes will~} increase your chance to get a {~critical strike~} with melee attacks by 6% for 10 sec."
+       ],
+       [
+        1,
+        "Your {*Critical Strikes with direct damage spells*} increase your chance to get a {*Critical Strike*} with melee attacks by 3% for 10 sec.",
+        "Your {~offensive spell critical strikes will~} increase your chance to get a {~critical strike~} with melee attacks by 3% for 10 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Call of Flame",
+      "spell_fire_immolation",
+      "Elemental talent · reworked",
+      "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 15%{*, as well as increases the duration of your Flame Shock spell by 9 sec*}.",
+      "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 15%.",
+      [
+       [
+        3,
+        "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 15%{*, as well as increases the duration of your Flame Shock spell by 9 sec*}.",
+        "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 15%."
+       ],
+       [
+        2,
+        "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 10%{*, as well as increases the duration of your Flame Shock spell by 6 sec*}.",
+        "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 10%."
+       ],
+       [
+        1,
+        "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 5%{*, as well as increases the duration of your Flame Shock spell by 3 sec*}.",
+        "Increases the damage done by your Fire Totems and by your Flame Shock, Fire Nova, and Lava Burst spells by 5%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Trial by Fire",
+      "spell_fire_sealoffire",
+      "Elemental talent · reworked",
+      "Renamed from Improved Fire Nova. Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by 4 sec{*, and increases the duration of your Magma Totem by 20 sec*}.",
+      "Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by 4 sec.",
+      [
+       [
+        2,
+        "Renamed from Improved Fire Nova. Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by 4 sec{*, and increases the duration of your Magma Totem by 20 sec*}.",
+        "Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by 4 sec."
+       ],
+       [
+        1,
+        "Renamed from Improved Fire Nova. Increases the damage done by your Fire Nova spell by 10% and reduces its cooldown by 2 sec{*, and increases the duration of your Magma Totem by 10 sec*}.",
+        "Increases the damage done by your Fire Nova spell by 10% and reduces its cooldown by 2 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Elemental Reach",
+      "spell_nature_stormreach",
+      "Elemental talent · reworked",
+      "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 6 yards and {*reduces*} the {*cooldown*} of {*Totemic Projection*} by {*20 sec*}.",
+      "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 6 yards{~,~} and {~increases~} the {~range~} of {~your Flame Shock spell~} by {~15 yards~}.",
+      [
+       [
+        2,
+        "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 6 yards and {*reduces*} the {*cooldown*} of {*Totemic Projection*} by {*20 sec*}.",
+        "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 6 yards{~,~} and {~increases~} the {~range~} of {~your Flame Shock spell~} by {~15 yards~}."
+       ],
+       [
+        1,
+        "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 3 yards and {*reduces*} the {*cooldown*} of {*Totemic Projection*} by {*10 sec*}.",
+        "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova, and Lava Burst spells by 3 yards{~,~} and {~increases~} the {~range~} of {~your Flame Shock spell~} by {~8 yards~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Lava Burst",
+      "spell_shaman_lavaburst",
+      "Elemental talent",
+      "You hurl molten lava at the target, dealing {-114} (down from 150) to {-145} (down from 192) Fire damage. If your Flame Shock is on the target, Lava Burst deals 20% increased damage. Cost reduced from 165 Mana to {+135 Mana}."
+     ],
+     [
+      "other",
+      "Elemental Mastery",
+      "spell_nature_wispheal",
+      "Elemental talent · new",
+      "New talent: Gain mastery over Fire and Lightning, reducing the cast time of Lightning Bolt and Lava Burst by 0.5 sec, and removing the cooldown from Chain Lightning. Lasts 15 sec."
+     ],
+     [
+      "other",
+      "Stormstrike",
+      "ability_shaman_stormstrike",
+      "Enhancement talent",
+      "Cost changed from 125 Mana to 8% of base power."
+     ],
+     [
+      "other",
+      "Water Shield",
+      "ability_shaman_watershield",
+      "Restoration talent · reworded",
+      "The caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds. Lasts 10 min.\nOnly one Elemental Shield can be active on the Shaman at any one time.",
+      "The caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's {~healing~} spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds. Lasts 10 min.\nOnly one Elemental Shield can be active on the Shaman at any one time."
+     ],
+     [
+      "other",
+      "Call of Thunder",
+      "spell_nature_callstorm",
+      "Elemental talent · removed",
+      "Removed from the talent tree.",
+      "Increases the critical strike chance of your Lightning Bolt and Chain Lightning spells by 3%."
+     ],
+     [
+      "other",
+      "Strength of Earth Totem",
+      "spell_nature_earthbindtotem",
+      "Spell · reworded",
+      "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party {*or raid*} members within 30 yards by 53. Lasts 5 min.",
+      "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party members within 30 yards by 53. Lasts 5 min.",
+      [
+       [
+        5,
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party {*or raid*} members within 30 yards by 53. Lasts 5 min.",
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party members within 30 yards by 53. Lasts 5 min."
+       ],
+       [
+        4,
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party {*or raid*} members within 30 yards by 42. Lasts 5 min.",
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party members within 30 yards by 42. Lasts 5 min."
+       ],
+       [
+        3,
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party {*or raid*} members within 30 yards by 25. Lasts 5 min.",
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party members within 30 yards by 25. Lasts 5 min."
+       ],
+       [
+        2,
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party {*or raid*} members within 30 yards by 14. Lasts 5 min.",
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party members within 30 yards by 14. Lasts 5 min."
+       ],
+       [
+        1,
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party {*or raid*} members within 30 yards by 7. Lasts 5 min.",
+        "Summons a Strength of Earth Totem with 5 health at the feet of the caster. The totem increases the strength of party members within 30 yards by 7. Lasts 5 min."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Fire Nova",
+      "spell_fire_sealoffire",
+      "Spell",
+      "Instantly inflicts {-232} (down from 413) to {-259} (down from 459) fire damage to enemies within 10 yd of your active Fire totem. Cost reduced from 520 Mana to {+375 Mana}.",
+      "",
+      [
+       [
+        5,
+        "Instantly inflicts {-232} (down from 413) to {-259} (down from 459) fire damage to enemies within 10 yd of your active Fire totem. Cost reduced from 520 Mana to {+375 Mana}.",
+        ""
+       ],
+       [
+        4,
+        "Instantly inflicts {-174} (down from 295) to {-195} (down from 331) fire damage to enemies within 10 yd of your active Fire totem. Cost reduced from 395 Mana to {+290 Mana}.",
+        ""
+       ],
+       [
+        3,
+        "Instantly inflicts {-127} (down from 195) to {-142} (down from 219) fire damage to enemies within 10 yd of your active Fire totem. Cost reduced from 280 Mana to {+210 Mana}.",
+        ""
+       ],
+       [
+        2,
+        "Instantly inflicts {-54} (down from 110) to {-62} (down from 124) fire damage to enemies within 10 yd of your active Fire totem. Cost reduced from 170 Mana to {+120 Mana}.",
+        ""
+       ],
+       [
+        1,
+        "Instantly inflicts {-32} (down from 54) to {-38} (down from 62) fire damage to enemies within 10 yd of your active Fire totem. Cost reduced from 95 Mana to {+65 Mana}.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Fire Resistance Totem",
+      "spell_fireresistancetotem_01",
+      "Spell · reworded",
+      "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {*or*} raid members within 30 yards by 60.",
+      "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {~and~} raid members within 30 yards by 60.",
+      [
+       [
+        3,
+        "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {*or*} raid members within 30 yards by 60.",
+        "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {~and~} raid members within 30 yards by 60."
+       ],
+       [
+        2,
+        "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {*or*} raid members within 30 yards by 45.",
+        "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {~and~} raid members within 30 yards by 45."
+       ],
+       [
+        1,
+        "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {*or*} raid members within 30 yards by 30.",
+        "Summons a Fire Resistance Totem with 5 health at the feet of the caster for 5 min that increases the fire resistance of party {~and~} raid members within 30 yards by 30."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Flametongue Totem",
+      "spell_nature_guardianward",
+      "Spell · reworded",
+      "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit causes 17 to 54.52 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+      "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit causes 17 to 54.52 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+      [
+       [
+        4,
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit causes 17 to 54.52 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit causes 17 to 54.52 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min."
+       ],
+       [
+        3,
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit causes 13 to 42.44 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit causes 13 to 42.44 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min."
+       ],
+       [
+        2,
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit causes 9.143 to 31.24 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit causes 9.143 to 31.24 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min."
+       ],
+       [
+        1,
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enchants all party {*or raid*} members' main-hand weapons with fire if they are within 30 yards. Each hit causes 6.117 to 21.92 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min.",
+        "Summons a Flametongue Totem with 5 health at the feet of the caster. The totem enchants all party members' main-hand weapons with fire if they are within 30 yards. Each hit causes 6.117 to 21.92 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min."
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Chain Lightning",
+      "spell_nature_chainlightning",
+      "Spell",
+      "Cost reduced from 485 Mana to {+315 Mana}.",
+      "",
+      [
+       [
+        4,
+        "Cost reduced from 485 Mana to {+315 Mana}.",
+        ""
+       ],
+       [
+        3,
+        "Cost reduced from 390 Mana to {+250 Mana}.",
+        ""
+       ],
+       [
+        2,
+        "Cost reduced from 305 Mana to {+200 Mana}.",
+        ""
+       ],
+       [
+        1,
+        "Cost reduced from 225 Mana to {+145 Mana}.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Windfury Totem",
+      "spell_nature_windfury",
+      "Spell · reworded",
+      "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 246 extra melee attack power. Lasts 5 min.",
+      "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 246 extra melee attack power. Lasts 5 min.",
+      [
+       [
+        3,
+        "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 246 extra melee attack power. Lasts 5 min.",
+        "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 246 extra melee attack power. Lasts 5 min."
+       ],
+       [
+        2,
+        "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 179 extra melee attack power. Lasts 5 min.",
+        "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 179 extra melee attack power. Lasts 5 min."
+       ],
+       [
+        1,
+        "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party {*or raid*} members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 95 extra melee attack power. Lasts 5 min.",
+        "Summons a Windfury Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit has a 20% chance of granting the attacker 1 extra attack with 95 extra melee attack power. Lasts 5 min."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Sentry Totem",
+      "spell_nature_removecurse",
+      "Spell · reworded",
+      "Summons an immobile Sentry Totem with 100 health at your feet for 5 min that allows vision of nearby area and warns of enemies that attack it. Right-Click on buff to switch back and forth between totem sight and {*Shaman*} sight.",
+      "Summons an immobile Sentry Totem with 100 health at your feet for 5 min that allows vision of nearby area and warns of enemies that attack it. Right-Click on buff to switch back and forth between totem sight and {~shaman~} sight."
+     ],
+     [
+      "other",
+      "Mana Tide Totem",
+      "spell_frost_summonwaterelemental",
+      "Spell",
+      "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores {+197} (down from 290) mana every 3 seconds to group members within 30 yards. Cost reduced from 60 Mana to {+30 Mana}. Now has 3 ranks (was 2). Now learned at level {+38} (was 48).",
+      "",
+      [
+       [
+        3,
+        "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores {+197} (down from 290) mana every 3 seconds to group members within 30 yards. Cost reduced from 60 Mana to {+30 Mana}. Now has 3 ranks (was 2). Now learned at level {+38} (was 48).",
+        ""
+       ],
+       [
+        2,
+        "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores {+133} (down from 197) mana every 3 seconds to group members within 30 yards. Cost reduced from 30 Mana to {+20 Mana}. Now has 3 ranks (was 2). Now learned at level {+38} (was 48).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Grace of Air Totem",
+      "spell_nature_invisibilitytotem",
+      "Spell · reworded",
+      "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 89. Lasts 5 min.",
+      "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 89. Lasts 5 min.",
+      [
+       [
+        3,
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 89. Lasts 5 min.",
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 89. Lasts 5 min."
+       ],
+       [
+        2,
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 77. Lasts 5 min.",
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 77. Lasts 5 min."
+       ],
+       [
+        1,
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 49. Lasts 5 min.",
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 49. Lasts 5 min."
+       ]
+      ]
+     ]
+    ],
+    "warlock": [
+     [
+      "other",
+      "Grim Reach",
+      "spell_shadow_callofbone",
+      "Affliction talent · new",
+      "New talent: Increases the range of your Affliction spells by 20%."
+     ],
+     [
+      "buff",
+      "Amplify Curse",
+      "spell_shadow_contagion",
+      "Affliction talent",
+      "Increases the effect of your next Curse of Weakness or Bane of Agony by 50%, or your next Curse of Exhaustion by {+50%} (up from 20%). Lasts 30 sec."
+     ],
+     [
+      "buff",
+      "Shadow Mastery",
+      "spell_shadow_shadetruesight",
+      "Affliction talent",
+      "Increases the damage dealt or life drained by your Shadow spells by {+10%} (up from 5%).",
+      "",
+      [
+       [
+        5,
+        "Increases the damage dealt or life drained by your Shadow spells by {+10%} (up from 5%).",
+        ""
+       ],
+       [
+        4,
+        "Increases the damage dealt or life drained by your Shadow spells by {+8%} (up from 4%).",
+        ""
+       ],
+       [
+        3,
+        "Increases the damage dealt or life drained by your Shadow spells by {+6%} (up from 3%).",
+        ""
+       ],
+       [
+        2,
+        "Increases the damage dealt or life drained by your Shadow spells by {+4%} (up from 2%).",
+        ""
+       ],
+       [
+        1,
+        "Increases the damage dealt or life drained by your Shadow spells by {+2%} (up from 1%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Destructive Reach",
+      "spell_shadow_corpseexplode",
+      "Destruction talent · reworded",
+      "Increases the range of your {*Destruction*} spells by 20%.",
+      "Increases the range of your {~damaging~} spells by 20%.",
+      [
+       [
+        2,
+        "Increases the range of your {*Destruction*} spells by 20%.",
+        "Increases the range of your {~damaging~} spells by 20%."
+       ],
+       [
+        1,
+        "Increases the range of your {*Destruction*} spells by 10%.",
+        "Increases the range of your {~damaging~} spells by 10%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Malediction",
+      "spell_shadow_curseofachimonde",
+      "Affliction talent · removed",
+      "Removed from the talent tree.",
+      "Increases all periodic damage done by your Warlock spells by 5%."
+     ]
+    ],
+    "warrior": [
+     [
+      "other",
+      "Bloodthrill",
+      "inv_sword_01",
+      "Arms talent · reworked",
+      "{*Grants your*} Main Hand melee attacks against enemies afflicted by your Rend a 20% chance to allow {*an activation*} of Overpower.",
+      "{~Your~} Main Hand melee attacks against enemies afflicted by your Rend {~have~} a 20% chance to allow {~the use~} of {~your~} Overpower {~ability on the target~}. {~Lasts 6 sec.~}",
+      [
+       [
+        5,
+        "{*Grants your*} Main Hand melee attacks against enemies afflicted by your Rend a 20% chance to allow {*an activation*} of Overpower.",
+        "{~Your~} Main Hand melee attacks against enemies afflicted by your Rend {~have~} a 20% chance to allow {~the use~} of {~your~} Overpower {~ability on the target~}. {~Lasts 6 sec.~}"
+       ],
+       [
+        4,
+        "{*Grants your*} Main Hand melee attacks against enemies afflicted by your Rend a 16% chance to allow {*an activation*} of Overpower.",
+        "{~Your~} Main Hand melee attacks against enemies afflicted by your Rend {~have~} a 16% chance to allow {~the use~} of {~your~} Overpower {~ability on the target~}. {~Lasts 6 sec.~}"
+       ],
+       [
+        3,
+        "{*Grants your*} Main Hand melee attacks against enemies afflicted by your Rend a 12% chance to allow {*an activation*} of Overpower.",
+        "{~Your~} Main Hand melee attacks against enemies afflicted by your Rend {~have~} a 12% chance to allow {~the use~} of {~your~} Overpower {~ability on the target~}. {~Lasts 6 sec.~}"
+       ],
+       [
+        2,
+        "{*Grants your*} Main Hand melee attacks against enemies afflicted by your Rend a 8% chance to allow {*an activation*} of Overpower.",
+        "{~Your~} Main Hand melee attacks against enemies afflicted by your Rend {~have~} a 8% chance to allow {~the use~} of {~your~} Overpower {~ability on the target~}. {~Lasts 6 sec.~}"
+       ],
+       [
+        1,
+        "{*Grants your*} Main Hand melee attacks against enemies afflicted by your Rend a 4% chance to allow {*an activation*} of Overpower.",
+        "{~Your~} Main Hand melee attacks against enemies afflicted by your Rend {~have~} a 4% chance to allow {~the use~} of {~your~} Overpower {~ability on the target~}. {~Lasts 6 sec.~}"
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Battle Shout",
+      "ability_warrior_battleshout",
+      "Spell · reworded",
+      "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 140. Lasts 3 min.",
+      "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 140. Lasts 3 min.",
+      [
+       [
+        7,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 140. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 140. Lasts 3 min."
+       ],
+       [
+        6,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 116. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 116. Lasts 3 min."
+       ],
+       [
+        5,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 83. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 83. Lasts 3 min."
+       ],
+       [
+        4,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 56. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 56. Lasts 3 min."
+       ],
+       [
+        3,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 36. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 36. Lasts 3 min."
+       ],
+       [
+        2,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 24. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 24. Lasts 3 min."
+       ],
+       [
+        1,
+        "The warrior shouts, increasing the melee attack power of all party {*or raid*} members within 20 yards by 12. Lasts 3 min.",
+        "The warrior shouts, increasing the melee attack power of all party members within 20 yards by 12. Lasts 3 min."
+       ]
+      ]
+     ]
+    ]
+   }
+  },
+  {
    "date": "2026-10-08",
    "version": "1.60.1",
    "build": "70291",

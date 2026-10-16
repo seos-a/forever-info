@@ -188,6 +188,18 @@
     ]
    ]
   ],
+  "Arcane Wrath": [
+   [
+    [
+     "140 Mana",
+     "30 yd range"
+    ],
+    [
+     "3.5 sec cast",
+     "6 sec cooldown"
+    ]
+   ]
+  ],
   "Blast Wave": [
    [
     [
@@ -516,6 +528,14 @@
   ]
  },
  "shaman": {
+  "Elemental Mastery": [
+   [
+    [
+     "Instant",
+     "3 min cooldown"
+    ]
+   ]
+  ],
   "Lava Burst": [
    [
     [
