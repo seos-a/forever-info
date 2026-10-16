@@ -371,18 +371,28 @@ def beta_build():
 
 def apply_fixes(log):
     """Hand corrections from changes_fixes.json, applied every run so a rebuild keeps them: an entry Wowhead's data got
-    wrong (checked in game) is dropped, or its kind / text replaced. Each fix names the update's build, the class and
-    the talent or spell, and says why."""
+    wrong (checked in game) is dropped, or its kind / text replaced, or a sentence appended to it and its ranks
+    ("append": a cooldown change Wowhead's change page leaves out); "add" is a whole entry Wowhead's change pages
+    don't have (Sonic Blast, Oct 15: the patch notes' nerf, missing from the Hunter page). Each fix names the
+    update's build, the class and the talent or spell, and says why."""
     try: fixes = now('changes_fixes.json')['fixes']
     except FileNotFoundError: return
     for fx in fixes:
         for u in log['updates']:
-            if u['build'] != fx['build'] or fx['class'] not in u['classes']: continue
+            if u['build'] != fx['build']: continue
+            if 'add' in fx:
+                ch = u['classes'].setdefault(fx['class'], [])
+                if not any(e[1] == fx['name'] for e in ch): ch.append(fx['add'])
+                continue
+            if fx['class'] not in u['classes']: continue
             ch = u['classes'][fx['class']]
             for e in [e for e in ch if e[1] == fx['name']]:
                 if fx.get('drop'): ch.remove(e); continue
                 if 'kind' in fx: e[0] = fx['kind']
                 if 'text' in fx: e[4] = fx['text']
+                if 'append' in fx and fx['append'] not in e[4]:
+                    e[4] += ' ' + fx['append']
+                    for row in (e[6] if len(e) > 6 else []): row[1] += ' ' + fx['append']
             if not ch: del u['classes'][fx['class']]
 
 def needs_a_look(build):

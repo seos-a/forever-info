@@ -202,32 +202,32 @@
       "Dismember",
       "ability_hunter_pet_crocolisk",
       "Spell",
-      "Viciously bites enemy appendages for 50 to 58 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+      "Viciously bites enemy appendages for 50 to 58 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec. Cooldown increased from 6 sec cooldown to {-15 sec cooldown}.",
       "",
       [
        [
         5,
-        "Viciously bites enemy appendages for 50 to 58 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        "Viciously bites enemy appendages for 50 to 58 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec. Cooldown increased from 6 sec cooldown to {-15 sec cooldown}.",
         ""
        ],
        [
         4,
-        "Viciously bites enemy appendages for 39 to 45 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        "Viciously bites enemy appendages for 39 to 45 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec. Cooldown increased from 6 sec cooldown to {-15 sec cooldown}.",
         ""
        ],
        [
         3,
-        "Viciously bites enemy appendages for 26 to 30 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        "Viciously bites enemy appendages for 26 to 30 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec. Cooldown increased from 6 sec cooldown to {-15 sec cooldown}.",
         ""
        ],
        [
         2,
-        "Viciously bites enemy appendages for 18 to 20 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        "Viciously bites enemy appendages for 18 to 20 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec. Cooldown increased from 6 sec cooldown to {-15 sec cooldown}.",
         ""
        ],
        [
         1,
-        "Viciously bites enemy appendages for 11 to 13 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec.",
+        "Viciously bites enemy appendages for 11 to 13 damage and reduces the effectiveness of any healing by {-25%} (down from 50%) for {-6} (down from 10) sec. Cooldown increased from 6 sec cooldown to {-15 sec cooldown}.",
         ""
        ]
       ]
@@ -237,32 +237,32 @@
       "Mine!",
       "spell_nature_natureswrath",
       "Spell",
-      "Grabs an enemy's weapon with its talons, causing 41 to 47 damage and disarming them for {-3} (down from 4) sec.",
+      "Grabs an enemy's weapon with its talons, causing 41 to 47 damage and disarming them for {-3} (down from 4) sec. Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
       "",
       [
        [
         5,
-        "Grabs an enemy's weapon with its talons, causing 41 to 47 damage and disarming them for {-3} (down from 4) sec.",
+        "Grabs an enemy's weapon with its talons, causing 41 to 47 damage and disarming them for {-3} (down from 4) sec. Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
         ""
        ],
        [
         4,
-        "Grabs an enemy's weapon with its talons, causing 33 to 37 damage and disarming them for {-3} (down from 4) sec.",
+        "Grabs an enemy's weapon with its talons, causing 33 to 37 damage and disarming them for {-3} (down from 4) sec. Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
         ""
        ],
        [
         3,
-        "Grabs an enemy's weapon with its talons, causing 20 to 24 damage and disarming them for {-3} (down from 4) sec.",
+        "Grabs an enemy's weapon with its talons, causing 20 to 24 damage and disarming them for {-3} (down from 4) sec. Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
         ""
        ],
        [
         2,
-        "Grabs an enemy's weapon with its talons, causing 14 to 16 damage and disarming them for {-3} (down from 4) sec.",
+        "Grabs an enemy's weapon with its talons, causing 14 to 16 damage and disarming them for {-3} (down from 4) sec. Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
         ""
        ],
        [
         1,
-        "Grabs an enemy's weapon with its talons, causing 10 to 12 damage and disarming them for {-3} (down from 4) sec.",
+        "Grabs an enemy's weapon with its talons, causing 10 to 12 damage and disarming them for {-3} (down from 4) sec. Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
         ""
        ]
       ]
@@ -273,6 +273,41 @@
       "ability_upgrademoonglaive",
       "Spell",
       "Cast time changed from 0.5 sec cast to Instant."
+     ],
+     [
+      "nerf",
+      "Sonic Blast",
+      "ability_vehicle_sonicshockwave",
+      "Spell",
+      "Emits a piercing shriek, inflicting 77 to 91 Nature damage and increasing the casting time of all spells by {-30%} (down from 60%) for {-20} (down from 30) sec. Cooldown increased from 30 sec cooldown to {-1 min cooldown}.",
+      "",
+      [
+       [
+        5,
+        "Emits a piercing shriek, inflicting 77 to 91 Nature damage and increasing the casting time of all spells by {-30%} (down from 60%) for {-20} (down from 30) sec. Cooldown increased from 30 sec cooldown to {-1 min cooldown}.",
+        ""
+       ],
+       [
+        4,
+        "Emits a piercing shriek, inflicting 62 to 74 Nature damage and increasing the casting time of all spells by {-30%} (down from 60%) for {-20} (down from 30) sec. Cooldown increased from 30 sec cooldown to {-1 min cooldown}.",
+        ""
+       ],
+       [
+        3,
+        "Emits a piercing shriek, inflicting 44 to 52 Nature damage and increasing the casting time of all spells by {-30%} (down from 60%) for {-20} (down from 30) sec. Cooldown increased from 30 sec cooldown to {-1 min cooldown}.",
+        ""
+       ],
+       [
+        2,
+        "Emits a piercing shriek, inflicting 33 to 39 Nature damage and increasing the casting time of all spells by {-30%} (down from 60%) for {-20} (down from 30) sec. Cooldown increased from 30 sec cooldown to {-1 min cooldown}.",
+        ""
+       ],
+       [
+        1,
+        "Emits a piercing shriek, inflicting 15 to 17 Nature damage and increasing the casting time of all spells by {-30%} (down from 60%) for {-20} (down from 30) sec. Cooldown increased from 30 sec cooldown to {-1 min cooldown}.",
+        ""
+       ]
+      ]
      ]
     ],
     "mage": [
