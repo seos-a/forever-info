@@ -39,9 +39,16 @@ def main():
             by_name = {t['name']: t for t in live}
             by_cell = {(t['row'], t['col']): t for t in live}
             out, used = [], set()
+            old_names = {old[3] for old in tr['t']}
             for old in tr['t']:
-                l = by_name.get(old[3]) or by_cell.get((old[0], old[1]))
+                l = by_name.get(old[3])
                 if not l:
+                    # renamed in place: whatever now sits in its cell, unless that's another talent that moved there
+                    # (Oct 15: Shadow Affinity was removed and Improved Mind Blast moved into its cell -- taking it as
+                    # a rename listed Improved Mind Blast twice)
+                    l = by_cell.get((old[0], old[1]))
+                    if l and l['name'] in old_names: l = None
+                if not l or l['id'] in used:
                     changes.append(f'{key} {tr["n"]}: {old[3]} removed'); continue
                 used.add(l['id'])
                 texts = [l['descriptions'][k] for k in sorted(l['descriptions'], key=int)]

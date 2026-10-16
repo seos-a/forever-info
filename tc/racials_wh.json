@@ -21,14 +21,14 @@
   "name": "War Stomp",
   "cells": [
    "0.5 sec cast",
-   "2 min cooldown"
+   "1.5 min cooldown"
   ],
   "text": "Stuns up to 5 enemies within 8 yds for 2 sec."
  },
  "20550": {
   "name": "Endurance",
   "cells": [],
-  "text": "Total Health increased by 5% and chance to hit increased by 1%."
+  "text": "Total Health increased by 5% and critical strike bonus to damage and healing increased by 2%."
  },
  "20552": {
   "name": "Cultivation",
@@ -46,7 +46,7 @@
  "20555": {
   "name": "Regeneration",
   "cells": [],
-  "text": "Health regeneration rate increased by 10%. In addition, 10% of total Health regeneration will continue during combat."
+  "text": "Health regeneration rate increased by 20%. In addition, 20% of total Health regeneration will continue during combat."
  },
  "20557": {
   "name": "Beast Slaying",
@@ -57,7 +57,7 @@
   "name": "Blood Fury",
   "cells": [
    "Instant",
-   "3 min cooldown"
+   "2 min cooldown"
   ],
   "text": "Increases Attack Power and Spell Power by 10% for 15 sec."
  },
@@ -67,9 +67,9 @@
   "text": "Duration of Stun effects on you reduced by 20%."
  },
  "20574": {
-  "name": "Axe Specialization",
+  "name": "Savage",
   "cells": [],
-  "text": "Increases your critical strike chance with all spells and abilities by 1% while you have an axe or a two-handed axe equipped."
+  "text": "Increases your critical strike chance with all spells and abilities by 1%."
  },
  "20577": {
   "name": "Cannibalize",
@@ -124,9 +124,9 @@
   "text": "Instantly removes and grants immunity to all Bleed, Poison, and Disease effects, and reduces all Physical damage taken by 10% for 8 sec."
  },
  "20597": {
-  "name": "Sword Specialization",
+  "name": "Ruthless",
   "cells": [],
-  "text": "Increases your critical strike chance with all spells and attacks by 2% while you have a sword or two-handed sword equipped."
+  "text": "Increases your critical strike chance with all spells and attacks by 2%."
  },
  "20598": {
   "name": "The Human Spirit",
@@ -145,7 +145,7 @@
   "name": "Walk on Air",
   "cells": [
    "Instant",
-   "2 min cooldown"
+   "1.5 min cooldown"
   ],
   "text": "Glide downward through the air for 10 sec while controlling your direction of travel."
  },
@@ -158,12 +158,12 @@
   "text": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 10%. Lasts 30 sec if no elemental convergence is nearby, and 15 min if one is found."
  },
  "1259705": {
-  "name": "Read Ley Line",
+  "name": "Read Leyline",
   "cells": [
    "2 sec cast",
    "2 min cooldown"
   ],
-  "text": "Attempt to tap into the power of a nearby ley line, increasing your Health and Mana regeneration by 100%. Lasts 15 sec if no ley line is nearby, and 15 min if one is found."
+  "text": "Attempt to tap into the power of a nearby leyline, increasing your Health and Mana regeneration by 100%. Lasts 30 sec if no leyline is nearby, and 15 min if one is found."
  },
  "1259707": {
   "name": "Elemental Insight",
@@ -173,7 +173,7 @@
  "1259710": {
   "name": "Wind Blessed",
   "cells": [],
-  "text": "Increases your spellcasting, melee, and ranged Haste by 1%."
+  "text": "Increases your spellcasting, melee, and ranged Haste by 3%."
  },
  "1259718": {
   "name": "Will to Survive",
@@ -184,9 +184,9 @@
   "text": "Instantly removes all Stun effects."
  },
  "1259719": {
-  "name": "Mace Specialization",
+  "name": "Earth Fury",
   "cells": [],
-  "text": "Increases your critical strike chance with all spells and attacks by 1% while you have a mace or two-handed mace equipped."
+  "text": "Increases your critical strike bonus to damage and healing by 2%."
  },
  "1259721": {
   "name": "Big Game Hunter",
@@ -217,7 +217,7 @@
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your next 3 non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage."
+  "text": "Your non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage."
  },
  "1259813": {
   "name": "Eureka!",
@@ -225,7 +225,7 @@
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your next 3 non-periodic damaging abilities have their Rage cost reduced by 10% and deal 10% more damage."
+  "text": "Your non-periodic damaging abilities have their Rage cost reduced by 10% and deal 10% more damage."
  },
  "1259817": {
   "name": "Eureka!",
@@ -233,7 +233,7 @@
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your next 3 damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
+  "text": "Your damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
  },
  "1259821": {
   "name": "Eureka!",
@@ -241,7 +241,7 @@
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your next 3 non-periodic damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
+  "text": "Your non-periodic damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
  },
  "1259823": {
   "name": "Eureka!",
@@ -249,22 +249,22 @@
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your next 3 non-periodic damaging or healing abilities have their Mana cost reduced by 10% and deal 10% more damage or healing."
+  "text": "Your non-periodic damaging or healing abilities have their Mana cost reduced by 10% and deal 10% more damage or healing."
  },
  "1259918": {
   "name": "Plainsrunning",
   "cells": [],
-  "text": "Gain 1% increased movement speed every 5 sec spent moving, up to a maximum of 30% increase. Taking damage or standing still will reduce this effect."
+  "text": "Gain 1% increased movement speed every 5 sec spent moving, up to a maximum of 30% increase. Taking damage or standing still will reduce this effect. In addition, you move 3% faster while mounted."
  },
  "1260189": {
   "name": "Touch of the Grave",
   "cells": [],
-  "text": "Your spells and attacks have a 5% chance to drain Health from the target, up to 5% of your maximum Health."
+  "text": "Your spells and attacks have a 20% chance to drain Health from the target, up to 5% of your maximum Health."
  },
  "1260201": {
   "name": "Touch of the Grave",
   "cells": [],
-  "text": "Your spells and attacks have a 10% chance to drain Health from the target, up to 5% of your maximum Health."
+  "text": "Your spells and attacks have a 30% chance to drain Health from the target, up to 5% of your maximum Health."
  },
  "1260270": {
   "name": "Rapid Regeneration",
@@ -280,7 +280,7 @@
    "Instant",
    "3 min cooldown"
   ],
-  "text": "Instantly removes and grants immunity to all Curses and Banes, and reduces all Magical damage taken by 15% for 8 sec."
+  "text": "Instantly removes all Curses and Banes, and reduces all Magical damage taken by 5% for 8 sec."
  },
  "priest:Chastise": "Chastise the target, causing 272 to 306 Holy damage and Immobilizing them for up to 2 sec. Only works against Humanoids. This spell causes very low threat.",
  "priest:Confounding Flash": "Confuses up to 5 enemies within 8 yds for 3 sec. Any damage taken will break the effect.",

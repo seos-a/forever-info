@@ -25,14 +25,14 @@ import changelog as cl
 RACE_PAGES = {'human': 1, 'orc': 2, 'dwarf': 3, 'nightelf': 4, 'undead': 5, 'tauren': 6, 'gnome': 7, 'troll': 8}
 # racials.json trait name -> Wowhead spell ids (several when the site merges per-class versions into one line)
 TRAIT_IDS = {
-    'Perception': [20600], 'Will to Survive': [1259718], 'Sword Specialization': [20597], 'The Human Spirit': [20598],
-    'Find Treasure': [2481], 'Stoneform': [20594], 'Big Game Hunter': [1259721], 'Mace Specialization': [1259719],
+    'Perception': [20600], 'Will to Survive': [1259718], 'Ruthless': [20597], 'The Human Spirit': [20598],
+    'Find Treasure': [2481], 'Stoneform': [20594], 'Big Game Hunter': [1259721], 'Earth Fury': [1259719],
     "Elune's Light": [1259799], 'Shadowmeld': [20580], 'Quickness': [20582], 'Wisp Spirit': [20585],
     'Escape Artist': [20589], 'Eureka!': [1259813, 1259812, 1259817, 1259823, 1259821],
     'Engineering Specialization': [20593], 'Expansive Mind': [20591, 1259802, 1259803],
-    'Read Ley Line': [1259705], 'Skysight': [1259686], 'Walk on Air': [1259416], 'Elemental Insight': [1259707],
+    'Read Leyline': [1259705], 'Skysight': [1259686], 'Walk on Air': [1259416], 'Elemental Insight': [1259707],
     'Wind Blessed': [1259710],
-    'Blood Fury': [20572], 'Shatter Curse': [1299026], 'Axe Specialization': [20574], 'Hardiness': [20573],
+    'Blood Fury': [20572], 'Shatter Curse': [1299026], 'Savage': [20574], 'Hardiness': [20573],
     'Cannibalize': [20577], 'Will of the Forsaken': [7744], 'Touch of the Grave': [1260201, 1260189],
     'Underwater Breathing': [5227],
     'Cultivation': [20552], 'War Stomp': [20549], 'Endurance': [20550], 'Plainsrunning': [1259918],
@@ -51,7 +51,12 @@ def read(sid):
     for table in re.findall(r'<table width="100%">(.*?)</table>', html, re.S):
         tr = re.search(r'<tr>(.*?)</tr>', table, re.S)
         if tr: cells += [c for c in (tm.strip(x) for x in re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', tr.group(1), re.S)) if c]
-    return {'name': tip.get('name', ''), 'cells': cells, 'text': spellbook.clean(ss.desc_of(html) or '').strip()}
+    return {'name': tip.get('name', ''), 'icon': tip.get('icon', ''), 'cells': cells,
+            'text': spellbook.clean(ss.desc_of(html) or '').strip()}
+
+def differs(o, n):
+    """Did a tooltip change? A snapshot saved before icons were kept has no icon: that alone isn't a change."""
+    return o != (n if 'icon' in o else {k: v for k, v in n.items() if k != 'icon'})
 
 def header(cells):
     """The site's line under a trait's name, from the tooltip cells: "Instant · 3 min cooldown · 5 yd" / "Passive"."""
@@ -95,13 +100,23 @@ def main():
     traits = {t[0]: (r, t) for r in R for t in r['traits']}
     for name, ids in TRAIT_IDS.items():
         if name not in traits: flags.append(f'{name}: listed in sync_racials.py but no longer in racials.json'); continue
-        changed = [sid for sid in ids if sid in old and sid in new and old[sid] != new[sid]]
+        changed = [sid for sid in ids if sid in old and sid in new and differs(old[sid], new[sid])]
         if not changed: continue
+        # a new name or icon isn't applied by itself: TRAIT_IDS is keyed by the site's name (Oct 15: Sword, Mace and Axe
+        # Specialization became Ruthless, Earth Fury and Savage, and the text alone was updated)
+        for sid in changed:
+            o, n = old[sid], new[sid]
+            if o['name'] != n['name']:
+                flags.append(f"**{name}**: Wowhead renamed it {n['name']} (spell {sid}); rename it in tc/racials.json and "
+                             "in TRAIT_IDS in tc/sync_racials.py")
+            if o.get('icon') and n.get('icon') and o['icon'] != n['icon']:
+                flags.append(f"**{name}**: Wowhead's icon is now {n['icon']} (spell {sid}); change it in tc/racials.json")
         for r, t in [(r, t) for r in R for t in r['traits'] if t[0] == name]:   # Walk on Air etc. appear for both Skybornes
             plain_trait = len(ids) == 1 and norm(t[3]) == norm(old[ids[0]]['text']) and t[2] == header(old[ids[0]]['cells'])
             for sid in changed:
                 notes, v, was, tag = cl.rank_change(fields(old[sid]), fields(new[sid]))
-                label = f'{name} ({VARIANT[sid]})' if sid in VARIANT else name
+                shown = new[sid]['name'] or name
+                label = f'{shown} ({VARIANT[sid]})' if sid in VARIANT else shown
                 if notes and not any(e[1] == label for e in entries.get(r['key'], [])):
                     entries.setdefault(r['key'], []).append([cl.kind_of(v), label, t[1], f"{r['name']} racial{tag}", cl.join(notes), was or ''])
             if plain_trait:

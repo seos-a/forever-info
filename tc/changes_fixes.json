@@ -6,6 +6,13 @@
    "name": "Thick Hide",
    "drop": true,
    "why": "Wowhead's data shows 180 armor per level at every rank from this build (3 x level 60?); in game it is still 1 / 2 / 3 per level, so nothing changed"
+  },
+  {
+   "build": "70425",
+   "class": "paladin",
+   "name": "Vindication",
+   "drop": true,
+   "why": "Wowhead's data has an unworked formula for the Attack Power reduction that comes out as 6; Wowhead's own tooltip still shows 68 / 136 / 204, so nothing changed"
   }
  ]
 }

@@ -274,6 +274,10 @@ def diff(kind, prev, nxt, hidden_prev, hidden_next):
     return out
 
 LEFTOVER = re.compile(r'[\[\]*$]|\?(?! )|(?<![\w.])\? ')   # formula or placeholder text Wowhead didn't work out
+# a formula in Wowhead's raw text that plain() worked out ("(3 /- 3 * 6)", Vindication, Oct 16): its numbers come from
+# Wowhead's export, not the tooltip, so a big jump there is more likely a data error than a balance change
+RAW_FORMULA = re.compile(r'\([^()]*\d[^()]*[*/][^()]*\)')
+def from_formula(*texts): return any(RAW_FORMULA.search(clean_html(re.sub(r'<!--.*?-->', '', t or ''))) for t in texts)
 
 def nums(s): return [float(x) for x in NUM.findall(s)]
 
@@ -312,7 +316,8 @@ def sanity(kind, prev, nxt):
                 if o == v: continue
                 if v == 0 and o: reasons.append(f'{o:g} became 0'); break
                 if o == 0: reasons.append(f'0 became {v:g}'); break
-                if max(o, v) / min(o, v) >= 3: reasons.append(f'{o:g} became {v:g} ({max(o, v) / min(o, v):.0f}x {"bigger" if v > o else "smaller"})'); break
+                if max(o, v) / min(o, v) >= 3: reasons.append(f'{o:g} became {v:g} ({max(o, v) / min(o, v):.0f}x {"bigger" if v > o else "smaller"})'
+                                                               + (", worked out from a formula in Wowhead's data (compare Wowhead's tooltip)" if from_formula(a['text'], b['text']) else '')); break
             if LEFTOVER.search(tb) and not LEFTOVER.search(ta): reasons.append('the new text has a formula or placeholder left in it')
             notes, v, was, tag = rank_change(a, b)
             if {'good', 'bad'} <= v: reasons.append('some numbers got better and others worse')

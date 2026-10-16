@@ -580,31 +580,6 @@
      ],
      [
       "nerf",
-      "Vindication",
-      "spell_holy_vindication",
-      "Retribution talent",
-      "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-6} (down from 204), and increase your Attack Power by 3% for 30 sec.",
-      "",
-      [
-       [
-        3,
-        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-6} (down from 204), and increase your Attack Power by 3% for 30 sec.",
-        ""
-       ],
-       [
-        2,
-        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-4} (down from 136), and increase your Attack Power by 2% for 30 sec.",
-        ""
-       ],
-       [
-        1,
-        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by {-2} (down from 68), and increase your Attack Power by 1% for 30 sec.",
-        ""
-       ]
-      ]
-     ],
-     [
-      "nerf",
       "Champion of the Light",
       "ability_paladin_enlightenedjudgements",
       "Retribution talent",

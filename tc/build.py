@@ -46,6 +46,9 @@ TEXT_FIXES = {
     # Oct 8 (1.60.1.70291): Wowhead shows "180 additional base Armor per level" at every rank (3 x level 60?);
     # in game it is 1 / 2 / 3 per level
     ('druid', 'Thick Hide'): (r'gain (\d+) additional base Armor per level', lambda k: f'gain {k} additional base Armor per level'),
+    # Oct 16 (1.60.1.70425): Wowhead's text has an unworked formula, "(3 /- 3 * 6)" (before: "(3 /- 3 * - 204)", which the
+    # site showed as-is); Wowhead's own tooltip and the game say 68 / 136 / 204
+    ('paladin', 'Vindication'): (r"Attack Power by \(\d+ /- 3 \* (- ?\d+|\d+)\)", lambda k: f'Attack Power by {68 * k}'),
 }
 
 import os
@@ -63,10 +66,12 @@ for key, name, color in CLASSES:
             # per-rank texts from sync_talents.py: shown as they are, so every changing number is right at every rank
             texts = [tidy_formula(clean_html(x)).strip() for x in rest[0]] if rest and rest[0] else None
             fix = TEXT_FIXES.get((key, tname))
+            fixed = False
             if fix and texts and len({m.group(1) for x in texts for m in [re.search(fix[0], x)] if m}) == 1 and all(re.search(fix[0], x) for x in texts) and len(texts) > 1:
                 texts = [re.sub(fix[0], fix[1](k + 1), x) for k, x in enumerate(texts)]
+                fixed = True
             desc = fix_desc(tidy_formula(clean_html(desc)), ranks).strip()
-            if fix and texts and re.search(fix[0], texts[-1]) and re.search(fix[0], texts[-1]).group(0) == fix[1](mx):
+            if fixed or (fix and texts and re.search(fix[0], texts[-1]) and re.search(fix[0], texts[-1]).group(0) == fix[1](mx)):
                 desc = re.sub(fix[0], fix[1](mx), desc)   # a corrected talent's fallback text too, at the top rank
             # values Wowhead doesn't list yet: show "?" instead of a misleading 0
             desc = re.sub(r'(?<![\d.])0 (sec|Mana)', r'? \1', desc)
