@@ -1161,14 +1161,14 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-slots{display:grid;gap:4px;padding:5px;border-radius:3px;background:#2b190a2e;box-shadow:inset 0 1px 4px #0006,0 1px 0 #f9eccb55}
 .rc-slot{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 7px 0 5px;border-radius:3px;min-width:0;
   box-shadow:inset 0 0 0 1px #5c3d1699;background:#1a0d0414}
-.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:16.25px;text-shadow:1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,0 1px 3px #000;
+.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:16.25px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000;
   background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#9a6f41,#7b5630 55%,#684626);box-shadow:inset 0 1px 0 #ffffff33,inset 0 0 0 1px #000,inset 0 0 6px #0003}
 .rc-slot.on:hover{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#aa7d4c,#8a6339 55%,#75512d)}
 .rc-slot.over{box-shadow:inset 0 0 0 2px #ffd75a,0 0 8px #ffd75a99}
 .rc-slot.drag{opacity:.45}
 .rc-slot .rc-si{width:30px;height:30px;flex:none;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #8a6a2a;overflow:hidden;background:#222}
 .rc-slot .rc-si img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
-.rc-slot .rc-sn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 1px;margin:-1px -5px -3px -1px}   /* room on the right for the outline and its 3px halo, which overflow:hidden would clip */
+.rc-slot .rc-sn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 2px;margin:-1px -5px -3px -2px}   /* room for the outline and its 3px halo, which overflow:hidden would clip */
 .rc-x{flex:none;width:22px;height:22px;padding:0;border:0;border-radius:2px;background:none;color:#f1e3c0;font:700 18px/1 var(--font);cursor:pointer;opacity:0;text-shadow:0 1px 2px #000}
 .rc-slot.on:hover .rc-x,.rc-x:focus-visible,body.touch .rc-x{opacity:1}
 .rc-x:hover{color:#ff8f84}
@@ -1187,7 +1187,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:27px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,15.5px);font-weight:700;color:#2b1a0a;cursor:default}
 .rc-it:hover{background:#2b190a24}
 .rc-it .n{min-width:2.2ch;text-align:right;color:#1a0d04;font-variant-numeric:tabular-nums}
-.rc-it .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 1px;margin:-1px -5px -3px -1px}   /* room for the outline: overflow:hidden clipped the last letter's right edge */
+.rc-it .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 2px;margin:-1px -5px -3px -2px}   /* room for the outline: overflow:hidden clipped the last letter's right edge */
 /* spell names: class colours with the black outline the sidebar's class buttons use */
 .rc-it.sp .t{color:var(--c);text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000}   /* the class picker's labels (.rn-ov): outline plus a soft black halo */
 .rc-it.sp .rc-mk{color:var(--c);filter:drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000) drop-shadow(0 1px 2px #000)}   /* the names' outline plus their soft halo (0 1px 3px) */
