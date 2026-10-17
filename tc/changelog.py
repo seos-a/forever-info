@@ -394,7 +394,7 @@ def apply_fixes(log):
                 if 'where' in fx: e[3] = fx['where']   # the line under the name: "Balance talent · reworked"
                 if 'text' in fx: e[4] = fx['text']
                 if 'was' in fx: e[5] = fx['was']   # the old text, under "Previous version"
-                if 'ranks' in fx: e[6:] = [fx['ranks']]   # [[rank, text, was], ...], highest first
+                if 'ranks' in fx: e[6:] = [fx['ranks']] if fx['ranks'] else []   # [[rank, text, was], ...], highest first; null: no rank rows
                 if 'append' in fx and fx['append'] not in e[4]:
                     e[4] += ' ' + fx['append']
                     for row in (e[6] if len(e) > 6 else []): row[1] += ' ' + fx['append']

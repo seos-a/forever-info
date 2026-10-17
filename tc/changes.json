@@ -166,21 +166,21 @@
       ]
      ],
      [
-      "other",
+      "buff",
       "Resourcefulness",
       "ability_hunter_resourcefulness",
       "Survival talent · reworked",
-      "Reduces the {*Mana*} cost of your Trap and melee abilities by 60%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*100*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec.",
+      "Reduces the {*Mana*} cost of your Trap and melee abilities by 60%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*100*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec. Now also reduces the Mana cost of Strider Kick.*",
       "Reduces the {~mana~} cost of your Trap {~abilities~} and melee abilities by 60%{~. In addition,~} your {~critical strikes have~} a {~60~}% chance to allow 50% of your Mana {~regeneration~} to continue while casting for 30 sec.",
       [
        [
         2,
-        "Reduces the {*Mana*} cost of your Trap and melee abilities by 60%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*100*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec.",
+        "Reduces the {*Mana*} cost of your Trap and melee abilities by 60%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*100*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec. Now also reduces the Mana cost of Strider Kick.*",
         "Reduces the {~mana~} cost of your Trap {~abilities~} and melee abilities by 60%{~. In addition,~} your {~critical strikes have~} a {~60~}% chance to allow 50% of your Mana {~regeneration~} to continue while casting for 30 sec."
        ],
        [
         1,
-        "Reduces the {*Mana*} cost of your Trap and melee abilities by 30%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*50*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec.",
+        "Reduces the {*Mana*} cost of your Trap and melee abilities by 30%{*, and grants*} your {*melee and ranged ability Critical Strikes*} a {*50*}% chance to allow 50% of your Mana {*Regeneration*} to continue while casting for 30 sec. Now also reduces the Mana cost of Strider Kick.*",
         "Reduces the {~mana~} cost of your Trap {~abilities~} and melee abilities by 30%{~. In addition,~} your {~critical strikes have~} a {~30~}% chance to allow 50% of your Mana {~regeneration~} to continue while casting for 30 sec."
        ]
       ]
@@ -679,51 +679,51 @@
       ]
      ],
      [
-      "other",
+      "nerf",
       "Seal of Righteousness",
       "ability_thunderbolt",
       "Spell · reworked",
-      "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.\n{*0*}",
+      "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
       "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 to {~83~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.",
       [
        [
         8,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.\n{*0*}",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 to {~83~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy."
        ],
        [
         7,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 {*(plus about 8% of your Spell Power)*} to {*67.56 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 {*(plus about 8% of your Spell Power)*} to {*67.56 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 to {~68~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy."
        ],
        [
         6,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 {*(plus about 8% of your Spell Power)*} to {*53.12 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 {*(plus about 8% of your Spell Power)*} to {*53.12 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 to {~53~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy."
        ],
        [
         5,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 {*(plus about 8% of your Spell Power)*} to {*40.28 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 {*(plus about 8% of your Spell Power)*} to {*40.28 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 to {~40~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy."
        ],
        [
         4,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*8.35632 (plus about*} 8{*% of your Spell Power)*} to {*29.08 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*8.35632 (plus about*} 8{*% of your Spell Power)*} to {*29.08 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 8 to {~29~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy."
        ],
        [
         3,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*5.63218 (plus about 8% of your Spell Power)*} to {*19.6 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*5.63218 (plus about 8% of your Spell Power)*} to {*19.6 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~6~} to {~20~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy."
        ],
        [
         2,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*3.65517 (plus about 8% of your Spell Power)*} to {*12.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*3.65517 (plus about 8% of your Spell Power)*} to {*12.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~4~} to {~13~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy."
        ],
        [
         1,
-        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*2.48276 (plus about 8% of your Spell Power)*} to {*8.64 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*2.48276 (plus about 8% of your Spell Power)*} to {*8.64 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time. Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
         "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~2~} to {~9~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time."
        ]
       ]
@@ -1072,16 +1072,16 @@
       ]
      ],
      [
-      "nerf",
+      "other",
       "Holy Fire",
       "spell_holy_searinglight",
-      "Spell",
-      "Consumes the enemy in holy flames that cause 103 to 127 Holy damage and an additional {-45} (down from 65) Holy damage over 10 sec.",
+      "Spell · bug fix",
+      "Consumes the enemy in holy flames that cause 103 to 127 Holy damage and an additional {-45} (down from 65) Holy damage over 10 sec. Fixes Rank 5's periodic damage being higher than Rank 6's.*",
       "",
       [
        [
         5,
-        "Consumes the enemy in holy flames that cause 103 to 127 Holy damage and an additional {-45} (down from 65) Holy damage over 10 sec.",
+        "Consumes the enemy in holy flames that cause 103 to 127 Holy damage and an additional {-45} (down from 65) Holy damage over 10 sec. Fixes Rank 5's periodic damage being higher than Rank 6's.*",
         ""
        ]
       ]
@@ -1438,42 +1438,30 @@
       "Mana Tide Totem",
       "spell_frost_summonwaterelemental",
       "Spell",
-      "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores {+197} (down from 290) mana every 3 seconds to group members within 30 yards. Cost reduced from 60 Mana to {+30 Mana}. Now has 3 ranks (was 2). Now learned at level {+38} (was 48).",
-      "",
-      [
-       [
-        3,
-        "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores {+197} (down from 290) mana every 3 seconds to group members within 30 yards. Cost reduced from 60 Mana to {+30 Mana}. Now has 3 ranks (was 2). Now learned at level {+38} (was 48).",
-        ""
-       ],
-       [
-        2,
-        "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores {+133} (down from 197) mana every 3 seconds to group members within 30 yards. Cost reduced from 30 Mana to {+20 Mana}. Now has 3 ranks (was 2). Now learned at level {+38} (was 48).",
-        ""
-       ]
-      ]
+      "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores mana every 3 seconds to group members within 30 yards. New rank added at level 38: ranks are now learned at levels 25, 38, 48 and 58 (was 25, 48 and 58).*",
+      ""
      ],
      [
       "buff",
       "Grace of Air Totem",
       "spell_nature_invisibilitytotem",
       "Spell · reworded",
-      "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 89. Lasts 5 min.",
+      "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 89. Lasts 5 min. No longer exclusive with Windfury Totem and Flametongue Totem.*",
       "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 89. Lasts 5 min.",
       [
        [
         3,
-        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 89. Lasts 5 min.",
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 89. Lasts 5 min. No longer exclusive with Windfury Totem and Flametongue Totem.*",
         "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 89. Lasts 5 min."
        ],
        [
         2,
-        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 77. Lasts 5 min.",
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 77. Lasts 5 min. No longer exclusive with Windfury Totem and Flametongue Totem.*",
         "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 77. Lasts 5 min."
        ],
        [
         1,
-        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 49. Lasts 5 min.",
+        "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party {*or raid*} members within 30 yards by 49. Lasts 5 min. No longer exclusive with Windfury Totem and Flametongue Totem.*",
         "Summons a Grace of Air Totem with 5 health at the feet of the caster. The totem increases the agility of party members within 30 yards by 49. Lasts 5 min."
        ]
       ]

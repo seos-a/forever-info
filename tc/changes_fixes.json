@@ -409,6 +409,89 @@
    "name": "Battle Shout",
    "kind": "buff",
    "why": "party to raid-wide is a buff"
+  },
+  {
+   "build": "70425",
+   "class": "paladin",
+   "name": "Seal of Righteousness",
+   "kind": "nerf",
+   "text": "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.",
+   "ranks": [
+    [
+     8,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 {*(plus about 8% of your Spell Power)*} to {*82.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 to {~83~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy."
+    ],
+    [
+     7,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 {*(plus about 8% of your Spell Power)*} to {*67.56 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 19 to {~68~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 156 to 168 Holy damage to an enemy."
+    ],
+    [
+     6,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 {*(plus about 8% of your Spell Power)*} to {*53.12 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 15 to {~53~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 125 to 135 Holy damage to an enemy."
+    ],
+    [
+     5,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 {*(plus about 8% of your Spell Power)*} to {*40.28 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 12 to {~40~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 97 to 105 Holy damage to an enemy."
+    ],
+    [
+     4,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*8.35632 (plus about*} 8{*% of your Spell Power)*} to {*29.08 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 8 to {~29~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 74 to 80 Holy damage to an enemy."
+    ],
+    [
+     3,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*5.63218 (plus about 8% of your Spell Power)*} to {*19.6 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~6~} to {~20~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 53 to 57 Holy damage to an enemy."
+    ],
+    [
+     2,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*3.65517 (plus about 8% of your Spell Power)*} to {*12.72 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~4~} to {~13~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 36 to 38 Holy damage to an enemy."
+    ],
+    [
+     1,
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {*2.48276 (plus about 8% of your Spell Power)*} to {*8.64 (plus 12% of your Spell Power)*} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.",
+     "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional {~2~} to {~9~} Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time."
+    ]
+   ],
+   "append": "Fixed it gaining almost twice as much benefit from Spell Damage as intended.*",
+   "why": "a stray \"0\" line from Wowhead's data; the patch notes call the Spell Damage change a fix for twice the intended benefit, so a nerf"
+  },
+  {
+   "build": "70425",
+   "class": "shaman",
+   "name": "Mana Tide Totem",
+   "text": "Summons a Mana Tide Totem with 5 health at the feet of the caster for 12 sec that restores mana every 3 seconds to group members within 30 yards. New rank added at level 38: ranks are now learned at levels 25, 38, 48 and 58 (was 25, 48 and 58).*",
+   "ranks": null,
+   "why": "Wowhead compared the new level 38 rank with the old rank 2, showing a lower number as better"
+  },
+  {
+   "build": "70425",
+   "class": "priest",
+   "name": "Holy Fire",
+   "kind": "other",
+   "where": "Spell · bug fix",
+   "append": "Fixes Rank 5's periodic damage being higher than Rank 6's.*",
+   "why": "12.1.5 patch notes: a fix for Rank 5's periodic damage being higher than Rank 6's, not a balance nerf"
+  },
+  {
+   "build": "70425",
+   "class": "shaman",
+   "name": "Grace of Air Totem",
+   "append": "No longer exclusive with Windfury Totem and Flametongue Totem.*",
+   "why": "12.1.5 patch notes; not a tooltip change"
+  },
+  {
+   "build": "70425",
+   "class": "hunter",
+   "name": "Resourcefulness",
+   "kind": "buff",
+   "append": "Now also reduces the Mana cost of Strider Kick.*",
+   "why": "12.1.5 patch notes: now reduces Strider Kick's cost, and the proc chance rose (60% to 100%)"
   }
  ]
 }
