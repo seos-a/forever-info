@@ -8,7 +8,7 @@
 <script>
 /* A section address with a slash after it (/rogue/, /rogue/05-0-55002, /spellbook/rogue/human) has no file of its own:
    open that page instead (/rogue, /rogue?05-0-55002, /spellbook?rogue:human). build.py fills in the section names. */
-(function(){ var m=location.pathname.match(/^\/(druid|hunter|mage|paladin|priest|rogue|shaman|warlock|warrior|legacy|racials|spellbook|changes)(?:\.html)?\/+(.*?)\/*$/);
+(function(){ var m=location.pathname.match(/^\/(druid|hunter|mage|paladin|priest|rogue|shaman|warlock|warrior|legacy|racials|spellbook|changes|raid)(?:\.html)?\/+(.*?)\/*$/);
   if(m) location.replace("/"+m[1]+(m[2]?"?"+m[2].split("/").join(":"):"")+location.hash); })();
 </script>
 <meta name="theme-color" content="#1a0d04">

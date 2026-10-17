@@ -116,12 +116,16 @@ if os.path.exists('bg.jpg'):
     BG = 'data:image/jpeg;base64,' + base64.b64encode(open('bg.jpg','rb').read()).decode()
 from spellbook import build as _sb
 SBK=_sb()
+# Raid Composition: raidcomp.json with each spell's class, specs, icon and text worked out (raidcomp.py)
+import raidcomp
+RCD,_rcp=raidcomp.build(data,SBK)
+print('raid comp problems:', _rcp)
 # Class Changes history and the beta version stamp (tc/changelog.py keeps both up to date)
 CHG=json.load(open('changes.json', encoding='utf-8')) if os.path.exists('changes.json') else {'updates': []}
 VER=json.load(open('version.json', encoding='utf-8')) if os.path.exists('version.json') else {}
 blob = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
 for src, dst in (('template.html', '../Forever-Talents.html'), ('template2.html', '../Forever-Talents-Classic-Style.html')):
-    html = open(src, encoding='utf-8').read().replace('/*DATA*/', blob).replace('/*BG*/', BG).replace('/*RACIALS*/', open('racials.json', encoding='utf-8').read()).replace('/*SPELLBOOK*/', json.dumps(SBK, ensure_ascii=False, separators=(',',':'))).replace('/*CHANGES*/', json.dumps(CHG, ensure_ascii=False, separators=(',',':'))).replace('/*VERSION*/', json.dumps(VER))
+    html = open(src, encoding='utf-8').read().replace('/*DATA*/', blob).replace('/*BG*/', BG).replace('/*RACIALS*/', open('racials.json', encoding='utf-8').read()).replace('/*SPELLBOOK*/', json.dumps(SBK, ensure_ascii=False, separators=(',',':'))).replace('/*CHANGES*/', json.dumps(CHG, ensure_ascii=False, separators=(',',':'))).replace('/*VERSION*/', json.dumps(VER)).replace('/*RAIDCOMP*/', json.dumps(RCD, ensure_ascii=False, separators=(',',':')))
     open(dst, 'w', encoding='utf-8', newline='\n').write(html)
 print('written', len(html))
 
@@ -180,7 +184,7 @@ assert 'zamimg' not in web, _re.findall(r'.{40}zamimg.{40}',web)[:3]
 # Burning Crusade-era WoW site's: a parchment panel with a red title bar. It borrows the page's own textures. ----
 _T=open('template2.html',encoding='utf-8').read()
 _vars='\n'.join(l for l in _T.split('\n')[:60] if _re.match(r'\s*--(tex-weather|tex-paper|tex-fibre|tex-speck|tex-stain|parch-bg):',l))
-P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars).replace('/*PAGES*/','|'.join(k for k,_,_ in CLASSES)+'|legacy|racials|spellbook|changes')
+P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars).replace('/*PAGES*/','|'.join(k for k,_,_ in CLASSES)+'|legacy|racials|spellbook|changes|raid')
 open('../404.html','w',encoding='utf-8',newline='\n').write(P404)
 _os.makedirs('../web',exist_ok=True)
 open('../web/index.html', 'w', encoding='utf-8', newline='\n').write(web)
@@ -193,7 +197,8 @@ PAGES=[(k, f'{n} Talents', f'WoW Forever {n} talent calculator: plan a build, se
 PAGES+=[('legacy','Legacy Talents','The WoW Forever Legacy talents: the account-wide tree, with every rank.'),
         ('racials','Racials','Every WoW Forever race\'s racial traits and Priest racial spells.'),
         ('spellbook','Spellbook','The WoW Forever spellbook for every class and race, with every rank and the level it is learned.'),
-        ('changes','Class Changes','Patch-by-patch WoW Forever class changes: buffs, nerfs and other talent and spell changes per class.')]
+        ('changes','Class Changes','Patch-by-patch WoW Forever class changes: buffs, nerfs and other talent and spell changes per class.'),
+        ('raid','Raid Composition','Plan a WoW Forever raid: 8 groups of 5 specs, with the buffs, debuffs, dispels, cooldowns and crowd control they bring.')]
 for k,t,d in PAGES:
     pg=web
     for old,new in ((f'<title>{TITLE0}</title>',f'<title>{t} – Forever Info</title>'),
@@ -213,6 +218,7 @@ used|={s[1] for k,v in SBK.items() if isinstance(v,dict) and 'spells' in v for s
 RAC=_json.load(open('racials.json', encoding='utf-8'))
 used|={r['icon'] for r in RAC}|{t[1] for r in RAC for t in r['traits']}|{p[1] for r in RAC for p in r.get('priest',[])}
 used|={e[2] for u in CHG['updates'] for ch in u['classes'].values() for e in ch}   # Class Changes icons
+used|={e['i'] for e in RCD['spells']}   # Raid Composition icons
 used|=set(_re.findall(r'images/icons/([a-z0-9_]+)\.jpg',web))   # icons named directly in the page (Quick Info buttons...)
 icons=list(A['icons'])+sorted(i for i in used if i and i not in set(A['icons']))
 lines=[f"https://wow.zamimg.com/images/wow/icons/large/{i}.jpg|images/icons/{i}.jpg" for i in icons]

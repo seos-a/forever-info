@@ -145,12 +145,12 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,3.4vw,2.2re
 select,input[type=text]{background:#0c0d0f;color:#f1ead6;border:1px solid #5b5f68;border-radius:2px;padding:4px 7px;box-shadow:inset 0 1px 3px #000}
 
 /* Red buttons with yellow text, like the old Search button */
-.status button,.share button,.det-btns button,.tree-h button,.bgctl button,.srch-row button{
+.status button,.rc-btns button,.share button,.det-btns button,.tree-h button,.bgctl button,.srch-row button{
   font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer;padding:5px 12px;border-radius:2px;
   background:var(--tex-weather) 0 0/300px 60px,radial-gradient(ellipse 110% 160% at 50% 45%,var(--bar-c));
   border:1px solid #000;box-shadow:inset 0 0 0 1px #000,inset 0 0 12px #000d,inset 0 1px 0 #ff7a5a22,0 0 0 1px #c9a24c,0 0 0 2px #7a5618,0 0 0 3px #000,0 2px 5px #000;
   color:var(--steel-text);text-shadow:0 1px 0 #000,0 -1px 0 #2a0200,0 0 6px #000}
-.status button:hover,.share button:hover,.det-btns button:hover,.tree-h button:hover,.bgctl button:hover,.srch-row button:hover{background:var(--tex-weather) 0 0/300px 60px,radial-gradient(ellipse 110% 160% at 50% 45%,var(--bar-hc));color:#ffe592}
+.status button:hover,.rc-btns button:hover,.share button:hover,.det-btns button:hover,.tree-h button:hover,.bgctl button:hover,.srch-row button:hover{background:var(--tex-weather) 0 0/300px 60px,radial-gradient(ellipse 110% 160% at 50% 45%,var(--bar-hc));color:#ffe592}
 button:disabled{opacity:.45;cursor:default}
 button:focus-visible,input:focus-visible,select:focus-visible,.cls:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
 
@@ -164,7 +164,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.cls:focus-visible
   background:var(--tex-weather) 0 0/300px 60px,radial-gradient(ellipse 110% 160% at 50% 45%,var(--bar-c));border:1px solid #000;box-shadow:inset 0 0 0 1px #000,inset 0 0 12px #000d,inset 0 1px 0 #ff7a5a22,0 0 0 1px #c9a24c,0 0 0 2px #7a5618,0 0 0 3px #000,0 2px 5px #000;}
 .tree-h .ti{width:22px;height:22px;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #e6b540;overflow:hidden;flex:0 0 auto}
 .tree-h .ti img{width:100%;height:100%;object-fit:cover}
-.tree-h h2{flex:1;text-align:center;font-family:var(--display);letter-spacing:0;font-size:15px;line-height:1.2;font-weight:700;margin:0;color:var(--steel-text);text-shadow:0 1px 0 #000,0 0 6px #000}
+.tree-h h2{flex:1;text-align:center;font-family:var(--display);letter-spacing:.04em;font-size:15px;line-height:1.2;font-weight:700;margin:0;color:var(--steel-text);text-shadow:0 1px 0 #000,0 -1px 0 #2a0200,0 0 6px #000}   /* the same as the title bars (.hdr) */
 .tree-h .pts{font-size:14px;font-weight:700;color:#ffd75a;text-shadow:0 1px 0 #000,0 0 4px #000;font-variant-numeric:tabular-nums}
 .tree-h button{padding:3px 9px;font-size:12px}
 .tree-h .undo{padding:0;width:24px;height:22px;display:grid;place-items:center;color:#ffd75a}
@@ -482,7 +482,7 @@ body.touch .tip .hint{display:none}
 #sbClasses .rp-sq,#app #sbRaces .rp-sq,
 #chgClasses .rp-sq,#talClasses .rp-sq{padding:3px 3px 24px!important}
 #spellbook .rn-ov,
-#changes .rn-ov{bottom:-21px}
+#changes .rn-ov,#talClasses .rn-ov{bottom:-21px}
 #sbClasses .rn-ov,
 #chgClasses .rn-ov,#talClasses .rn-ov{color:var(--c)!important}
 /* both Skyborne portraits are mirrored so the Alliance one faces right and the Horde one faces left, toward each other */
@@ -763,7 +763,7 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 /* Collapsible talent order */
 .ord-tog{width:100%;justify-content:center;cursor:pointer;font:inherit;font-family:var(--display);font-weight:700;letter-spacing:.04em;font-size:15px;color:var(--steel-text)}
 .ord-tog .ord-caret{display:inline-block;margin-left:9px;font-size:11px;transition:transform .15s}
-.orderbox.collapsed .ord-caret{transform:rotate(-90deg)}
+.orderbox.collapsed .ord-caret,.rc-sec.collapsed .ord-caret{transform:rotate(-90deg)}
 .orderbox.collapsed .order-parch{display:none}
 
 /* Collapsible sidebar boxes */
@@ -872,7 +872,7 @@ input[type=text],textarea{cursor:text!important}
 
 /* spec name truly centred on its bar, regardless of icon / points width */
 .tree-h{position:relative}
-.tree-h h2{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);pointer-events:none}
+.tree-h h2{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}   /* centred without translateY(-50%), which blurred it between pixels */
 .tree-h .pts{margin-left:auto}
 /* calmer parchment in the sidebar */
 .side .classbar,.side .qlbar,.side .srch,.side .share{background:var(--tex-speck),var(--tex-stain),var(--tex-paper),var(--tex-fibre),linear-gradient(180deg,#ebd294,#d8b26c)!important}
@@ -909,7 +909,7 @@ body.hallow #load{position:relative}body.hallow #load::after{right:-6px;width:11
 /* fold buttons (+/-): deep purple with slime green icons */
 body.hallow .fold-caret,body.hallow .ord-tog .ord-caret,body.hallow .legacy-link .ql-caret{background:linear-gradient(180deg,#5a1f86,#3a0f5a 60%,#22063a)}
 body.hallow .fold-caret::after,body.hallow .ord-tog .ord-caret::after,body.hallow .legacy-link .ql-caret::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9H14.5' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M3.5 9H14.5' stroke='%239be84a' stroke-width='3' fill='none'/%3E%3C/svg%3E")}
-body.hallow .sgrp.collapsed .fold-caret::after,body.hallow .card.collapsed .fold-caret::after,body.hallow .orderbox.collapsed .ord-caret::after,body.hallow .legacy-link:not([aria-pressed="true"]) .ql-caret::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%239be84a' stroke-width='3' fill='none'/%3E%3C/svg%3E")}
+body.hallow .sgrp.collapsed .fold-caret::after,body.hallow .card.collapsed .fold-caret::after,body.hallow .orderbox.collapsed .ord-caret::after,body.hallow .rc-sec.collapsed .ord-caret::after,body.hallow .legacy-link:not([aria-pressed="true"]) .ql-caret::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%239be84a' stroke-width='3' fill='none'/%3E%3C/svg%3E")}
 body.hallow .tree-h .undo:disabled{opacity:1;filter:brightness(.8)}   /* nothing to reset: darken a touch instead of going see-through, so the purple doesn't turn muddy over the orange bar */
 body.hallow .critter.top-gob{top:47px}   /* the pirate picture has extra room above his head for the hat */
 /* Faction theme: Horde = red bars (default), Alliance = blue bars */
@@ -982,11 +982,11 @@ body.ally .fold-caret,body.ally .ord-tog .ord-caret,body.ally .legacy-link .ql-c
    the button's image so every button renders them identically whatever the page scale */
 .fold-caret::after,.ord-tog .ord-caret::after,.legacy-link .ql-caret::after{content:"";position:absolute;inset:0;margin:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9H14.5' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M3.5 9H14.5' stroke='%23ffd75a' stroke-width='3' fill='none'/%3E%3C/svg%3E") center/100% 100% no-repeat}
 .fold-caret::before,.ord-tog .ord-caret::before,.legacy-link .ql-caret::before{content:none}
-.sgrp.collapsed .fold-caret::after,.card.collapsed .fold-caret::after,.orderbox.collapsed .ord-caret::after,.legacy-link:not([aria-pressed="true"]) .ql-caret::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%23ffd75a' stroke-width='3' fill='none'/%3E%3C/svg%3E")}
+.sgrp.collapsed .fold-caret::after,.card.collapsed .fold-caret::after,.orderbox.collapsed .ord-caret::after,.rc-sec.collapsed .ord-caret::after,.legacy-link:not([aria-pressed="true"]) .ql-caret::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M3.5 9H14.5M9 3.5V14.5' stroke='%23ffd75a' stroke-width='3' fill='none'/%3E%3C/svg%3E")}
 .srch-row #searchClear,.srch-row #codeClear,.tree-h .undo,.tree-h .undo:hover,.tal .minus{position:relative;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 5L13 13M13 5L5 13' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M5 5L13 13M13 5L5 13' stroke='%23ffd75a' stroke-width='3' fill='none'/%3E%3C/svg%3E"),linear-gradient(180deg,#4a1410,#2a0806 60%,#170403)!important;background-size:100% 100%,auto!important;background-position:center!important;background-repeat:no-repeat!important}
 body.ally .srch-row #searchClear,body.ally .srch-row #codeClear,body.ally .tree-h .undo,body.ally .tree-h .undo:hover,body.ally .tal .minus{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 5L13 13M13 5L5 13' stroke='%23000' stroke-opacity='.6' stroke-width='3' fill='none' transform='translate(0 1)'/%3E%3Cpath d='M5 5L13 13M13 5L5 13' stroke='%23ffd75a' stroke-width='3' fill='none'/%3E%3C/svg%3E"),linear-gradient(180deg,#c43a2c,#8a1c14 60%,#62110c)!important}
 .tal .minus{position:absolute}
-.sgrp.collapsed .fold-caret::before,.card.collapsed .fold-caret::before,.orderbox.collapsed .ord-caret::before,.legacy-link:not([aria-pressed="true"]) .ql-caret::before{display:block}
+.sgrp.collapsed .fold-caret::before,.card.collapsed .fold-caret::before,.orderbox.collapsed .ord-caret::before,.rc-sec.collapsed .ord-caret::before,.legacy-link:not([aria-pressed="true"]) .ql-caret::before{display:block}
 .fold-caret{top:50%;margin-top:-9px}
 /* phones: Legacy / Racials / Spellbook buttons open a section below them, so they get the same + / - button as the
    Talent Order and Build Code bars (+ when closed, - when open); the "Quick Info" title is dropped */
@@ -1136,6 +1136,111 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .build-stamp{position:fixed;left:10px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap}
 @media (max-width:820px){.build-stamp{position:static;display:block;text-align:center;margin:8px 0 0;order:100}}
 @media (min-width:821px){.frame{padding-bottom:11px!important}}   /* the footer ends level with the version stamp */
+/* ---- Raid Composition page ---- */
+#app[data-mode="raid"] .main>.status,#app[data-mode="raid"] .trees,#app[data-mode="raid"] .orderbox,#app[data-mode="raid"] .code-grp{display:none}
+.raid{display:grid;gap:12px}
+.raid .hdr{justify-content:center}
+#raid .parch{background:linear-gradient(180deg,#6b4a2366,#4a2f1266),var(--parch-bg);box-shadow:inset 0 0 0 1px #f9eccb33,inset 0 0 36px #3a200acc,inset 0 0 3px #3a2008,0 0 0 1px #000}
+/* the spec bar: the class picker's metal bar, one cluster of three spec icons per class */
+.rc-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 10px;padding:18px 16px 16px}
+.rc-cls{display:grid;justify-items:center;gap:5px;padding:6px 7px 4px;border-radius:4px;background:color-mix(in srgb,var(--c) 13%,#0000);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 35%,#0000),0 1px 3px #0008}
+.rc-specs{display:flex;gap:5px}
+.rc-br{flex-basis:100%;height:0}
+@media (max-width:599px){.rc-br{display:none}}
+.rc-spec{width:46px;height:46px;padding:0;border:2px solid #000;border-radius:3px;background:#111;cursor:grab;box-shadow:0 0 0 1px #9a9ca3,0 2px 5px #000c;overflow:hidden;touch-action:manipulation}
+.rc-spec img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
+.rc-spec:hover{box-shadow:0 0 0 2px var(--c),0 0 10px var(--c)}
+.rc-spec:active{cursor:grabbing}
+.rc-cn{font-size:15px;font-weight:700;color:var(--c);text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000}
+/* the board: eight groups of five on parchment */
+.rc-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 12px;padding:14px}
+@media (max-width:1100px){.rc-board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rc-gh{font-family:var(--display);font-weight:700;font-size:15.5px;color:#3b2410;text-align:center;margin:0 0 6px;text-shadow:0 1px 0 #f4e4ba88}
+.rc-slots{display:grid;gap:4px;padding:5px;border-radius:3px;background:#2b190a2e;box-shadow:inset 0 1px 4px #0006,0 1px 0 #f9eccb55}
+.rc-slot{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 7px 0 5px;border-radius:3px;min-width:0;
+  box-shadow:inset 0 0 0 1px #5c3d1699;background:#1a0d0414}
+.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:15.5px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000;
+  background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#9a6f41,#7b5630 55%,#684626);box-shadow:inset 0 1px 0 #ffffff33,inset 0 0 0 1px #000,inset 0 0 6px #0003}
+.rc-slot.on:hover{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#aa7d4c,#8a6339 55%,#75512d)}
+.rc-slot.over{box-shadow:inset 0 0 0 2px #ffd75a,0 0 8px #ffd75a99}
+.rc-slot.drag{opacity:.45}
+.rc-slot .rc-si{width:30px;height:30px;flex:none;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #8a6a2a;overflow:hidden;background:#222}
+.rc-slot .rc-si img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
+.rc-slot .rc-sn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-x{flex:none;width:22px;height:22px;padding:0;border:0;border-radius:2px;background:none;color:#f1e3c0;font:700 18px/1 var(--font);cursor:pointer;opacity:0;text-shadow:0 1px 2px #000}
+.rc-slot.on:hover .rc-x,.rc-x:focus-visible,body.touch .rc-x{opacity:1}
+.rc-x:hover{color:#ff8f84}
+.rc-pb{display:flex;flex-wrap:wrap;gap:4px;min-height:28px;margin-top:6px}
+.rc-ic{position:relative;width:27px;height:27px;flex:none;border-radius:2px;border:1px solid #000;box-shadow:0 0 0 1px #8a6a2a;overflow:visible;background:#222;cursor:default}
+.rc-ic img{width:100%;height:100%;display:block;object-fit:cover;border-radius:1px}
+.rc-ic b{position:absolute;right:-3px;bottom:-4px;font-size:12.5px;line-height:1;color:#fff;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}
+/* Categories / Spells panel and the lists under it */
+.rc-tabs{justify-content:flex-start!important;gap:4px;padding-block:3px}
+.rc-tab{border:0;background:none;padding:3px 14px;font:inherit;font-size:16px;color:#d8b46a;cursor:pointer;border-radius:2px;text-shadow:inherit}
+.rc-tab:hover{color:#ffe592}
+.rc-tab[aria-selected="true"]{color:#ffe592;box-shadow:inset 0 -2px 0 #ffd75a}
+.rc-grp-t{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;color:var(--navy);margin:16px 0 7px;padding-bottom:3px;border-bottom:1px solid #5c3d1666;text-shadow:0 1px 0 #f4e4ba88}
+.rc-grp-t:first-child{margin-top:0}
+.rc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:4px 18px}
+.rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:30px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,14.5px);font-weight:700;color:#2b1a0a;cursor:default}
+.rc-it:hover{background:#2b190a24}
+.rc-it .n{min-width:1.4ch;text-align:right;color:#1a0d04;font-variant-numeric:tabular-nums}
+.rc-it .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* spell names: class colours with the black outline the sidebar's class buttons use */
+.rc-it.sp .t{color:var(--c);text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000}   /* the class picker's labels (.rn-ov): outline plus a soft black halo */
+.rc-it.sp .rc-mk{color:var(--c);filter:drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000)}
+.rc-it.zero{opacity:.42}
+.rc-sec.collapsed>.parch{display:none}
+.rc-cols{display:block;column-width:305px;column-gap:18px}   /* spell lists read down each column */
+.rc-cols>.rc-it{break-inside:avoid;margin-bottom:4px}
+/* spells: a brown leather button each, like the class list in the sidebar, with the count beside it */
+.rc-it.sp{padding:1px 0;min-height:35px;font-size:15px}
+.rc-pill img.si{width:24px;height:24px}
+.rc-it.sp:hover{background:none}
+.rc-pill{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 4px;border-radius:3px;font-size:15px;
+  background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#9a6f41,#7b5630 55%,#684626);box-shadow:inset 0 1px 0 #ffffff33,inset 0 0 0 1px #000,inset 0 0 6px #0003,0 1px 0 #fff3c855}
+.rc-it.sp:hover .rc-pill{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#aa7d4c,#8a6339 55%,#75512d)}
+.rc-pill img.si{border-radius:3px;box-shadow:0 0 0 1px #8a6a2a}
+.rc-it.sp.hit .rc-pill{box-shadow:inset 0 0 0 2px #ffd75a,0 0 8px #ffd75a99}
+.rc-it.sp.hit{box-shadow:none;background:none}
+.rc-it img.si{width:22px;height:22px;flex:none;border:1px solid #000;border-radius:2px;box-shadow:0 0 0 1px #8a6a2a88}
+.rc-mk{display:inline-block;flex:none;width:16px;height:16px;vertical-align:-3px;color:#6b4a1a}
+.rc-it.dim,.rc-spec.dim,.rc-slot.dim{opacity:.25}
+.rc-it.hit{box-shadow:inset 0 0 0 2px #b8913f;background:#ffe08a33}
+.rc-ic.may{opacity:.45}
+/* the board's title bar: players on the left, the buttons on the right */
+.rc-bh{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center}
+.rc-pl{justify-self:start;font-size:15px;color:#f1e3c0;letter-spacing:0}
+.rc-pl b{color:#ffd75a}
+.rc-btns{justify-self:end;display:flex;gap:8px}
+.rc-btns button{letter-spacing:0}   /* the talent page's Reset All look (.status button), not the title bar's spacing */
+.tip .rc-eff{margin:0 0 3px 38px;color:#c8c9d4;font-size:11px;line-height:1.35}
+.tip .rc-eff.off{opacity:.42}
+.rc-empty{margin:0;color:#6b5030;font-size:15px;font-style:italic}
+.rc-legend{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin:0;color:#f1ece0;font-size:15px;text-shadow:1px 1px 0 #000}
+.rc-legend span{display:inline-flex;align-items:center;gap:5px}
+.rc-legend .rc-mk{color:#ffd75a}
+.rc-legend b{color:#ffd75a}
+.tip .rc-row .mb{margin-left:2px}
+.rc-legend i{font-style:normal;color:#ffb3a8}
+/* tooltips */
+.tip .rc-th{font-size:14px;font-weight:700}
+.tip .rc-h{color:#ffd100;margin-top:6px;font-weight:700}
+.tip .rc-row{display:flex;align-items:center;gap:6px;margin-top:2px}
+.tip .rc-row img{width:16px;height:16px;border:1px solid #000;border-radius:2px}
+.tip .rc-row .n{min-width:1.4ch;text-align:right;color:#fff;font-weight:700}
+.tip .rc-row .mb{color:#b9b9c6;font-size:11px;margin-left:-3px}
+.tip .rc-row.off{opacity:.42}
+.tip .rc-row.off img{filter:grayscale(1)}
+.tip .rc-note{margin-top:7px;padding-top:6px;border-top:1px solid #ffffff22;color:#c8c9d4;font-size:11.5px}
+.tip .rc-st{font-weight:700}
+.tip .rc-st.ok{color:#1eff00}.tip .rc-st.as{color:#ff9f40}
+.tip .rc-mk{color:#ffd75a;width:12px;height:12px}
+@media (max-width:820px){.rc-bar{gap:8px 6px;padding:10px 6px}.rc-cls{padding:4px 4px 3px}.rc-specs{gap:3px}.rc-spec{width:34px;height:34px}.rc-cn{font-size:12.5px}
+  .rc-bh{grid-template-columns:1fr auto!important}.rc-bh>span:nth-child(2){display:none}   /* phones: players and the buttons only */
+  .mtabs{grid-template-columns:repeat(6,minmax(0,1fr))!important}.lp-a:nth-child(5){display:none}   /* phones: Raid joins the tab bar; the home page's link row keeps its four */
+  .rc-board{gap:10px 8px;padding:10px 8px}.rc-slot{height:34px;font-size:14px!important;gap:6px}.rc-slot .rc-si{width:24px;height:24px}.rc-x{width:18px}.rc-pl{font-size:13.5px}.rc-list{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:560px) and (max-width:820px){.rc-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
 </head>
 <body>
@@ -1158,7 +1263,8 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
     <button type="button" class="cls legacy-link" id="changesLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_screwdriver_02.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/inv_misc_screwdriver_01.jpg" alt="" onerror="this.remove()"></span><span>Class Changes</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button>
     <button type="button" class="cls legacy-link" id="spellLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_book_09.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/inv_misc_book_06.jpg" alt="" onerror="this.remove()"></span><span>Spellbook</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button>
     <button type="button" class="cls legacy-link" id="racialLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/race_human_male.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/race_scourge_male.jpg" alt="" onerror="this.remove()"></span><span>Racial Abilities</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button>
-    <button type="button" class="cls legacy-link" id="legacyLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/inv_misc_food_30.jpg" alt="" onerror="this.remove()"></span><span>Legacy Talents</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button></div></div>
+    <button type="button" class="cls legacy-link" id="legacyLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_coin_01.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/inv_misc_food_30.jpg" alt="" onerror="this.remove()"></span><span>Legacy Talents</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button>
+    <button type="button" class="cls legacy-link" id="raidLink"><span class="ci"><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_note_01.jpg" data-hw="https://wow.zamimg.com/images/wow/icons/large/inv_misc_ticket_darkmoon_01.jpg" alt="" onerror="this.remove()"></span><span>Raid Composition</span><span class="dot"></span><span class="ql-caret" aria-hidden="true"></span></button></div></div>
     <div class="sgrp"><div class="hdr">Search</div>
     <div class="srch tatter">
       <div class="srch-row"><input id="search" type="text" aria-label="Search talents" placeholder="Search talents" spellcheck="false"><button type="button" id="searchClear" aria-label="Clear search">×</button></div>
@@ -1217,6 +1323,15 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
       <section class="card wood glance-card" id="glanceCard"><div class="hdr">Priest Racials</div><div class="parch"><div class="glance" id="glance"></div></div></section>
     </section>
 
+    <section class="raid" id="raid" hidden>
+      <div class="race-bar wood rc-bar" id="rcBar" aria-label="Specs"></div>
+      <p class="sb-prompt" id="rcPrompt"></p>
+      <section class="card wood"><div class="hdr rc-bh"><span class="rc-pl">Players <b><span id="rcCount">0</span>/40</b></span><span>Raid Groups</span><span class="rc-btns"><button id="rcCopy" type="button">Copy Link</button><button id="rcReset" type="button">Reset All</button></span></div><div class="parch rc-board" id="rcBoard"></div></section>
+      <section class="card wood"><div class="hdr rc-tabs" role="tablist"><button type="button" class="rc-tab" role="tab" data-t="cats" aria-selected="true">Categories</button><button type="button" class="rc-tab" role="tab" data-t="spells" aria-selected="false">Spells</button></div><div class="parch" id="rcSum"></div></section>
+      <div id="rcSecs" class="raid"></div>
+      <p class="rc-legend" id="rcLegend"></p>
+    </section>
+
     <section class="leg-panel" id="legPanel" hidden>
       <section class="status wood leg-status"><div class="stat">Points spent <b id="legSpent">0</b></div><div class="stat">Points left <b id="legLeft">16</b></div><div class="grow"></div><div class="ctrls"><button id="legReset" type="button">Reset All</button></div></section>
       <div class="trees" id="legTrees"></div>
@@ -1258,6 +1373,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 <script>
 const DATA = /*DATA*/;
 const RACIALS = /*RACIALS*/;
+const RAIDCOMP = /*RAIDCOMP*/;
 const EMBEDDED_BG = "/*BG*/";
 // Darker "ink" versions of each class colour so names stay readable on parchment
 const INK={};
@@ -1323,11 +1439,12 @@ if(MODEL.legacy){ legBtn.dataset.key="legacy"; legBtn.style.setProperty("--c",MO
 const racBtn=$("racialLink"); racBtn.dataset.key="racials"; racBtn.style.setProperty("--c","#ffd75a");
 const sbBtn=$("spellLink"); sbBtn.dataset.key="spellbook"; sbBtn.style.setProperty("--c","#ffd75a");
 const chgBtn=$("changesLink"); chgBtn.dataset.key="changes"; chgBtn.style.setProperty("--c","#ffd75a");
+const raidBtn=$("raidLink"); raidBtn.dataset.key="raid"; raidBtn.style.setProperty("--c","#ffd75a");
 const isPhone=()=>matchMedia("(max-width:820px)").matches;
-const sideBtns=()=>[...bar.querySelectorAll(".cls"),legBtn,racBtn,sbBtn,chgBtn];
+const sideBtns=()=>[...bar.querySelectorAll(".cls"),legBtn,racBtn,sbBtn,chgBtn,raidBtn];
 // Phones: Legacy Talents, Racial Abilities and Spellbook each open as their own panel directly under
 // their button and stay open alongside the class trees; tapping the button again closes it.
-const PANELS=[[legBtn,"legPanel"],[racBtn,"racials"],[sbBtn,"spellbook"],[chgBtn,"changes"]];
+const PANELS=[[legBtn,"legPanel"],[racBtn,"racials"],[sbBtn,"spellbook"],[chgBtn,"changes"],[raidBtn,"raid"]];
 const syncPanelBtns=()=>PANELS.forEach(([b,id])=>b.setAttribute("aria-pressed",String(!$(id).hidden)));
 function openLegPanel(){ setMTab("legacy"); $("legPanel").hidden=false; buildTrees(MODEL.legacy,$("legTrees")); render(); syncPanelBtns(); }
 PANELS.forEach(([b,id])=>b.addEventListener("click",e=>{
@@ -1337,6 +1454,7 @@ PANELS.forEach(([b,id])=>b.addEventListener("click",e=>{
   if(id==="legPanel") openLegPanel();
   else if(id==="racials") showRacials(curRace?curRace.key:null);
   else if(id==="changes") showChanges(chgClass);
+  else if(id==="raid") showRaid();
   else showSpellbook(sbClass,sbRace&&sbRace.key);
   requestAnimationFrame(()=>b.scrollIntoView({block:"start",behavior:"smooth"}));
 },true));
@@ -1403,7 +1521,7 @@ function selectClass(key){
   $("app").dataset.mode=cur.legacy?"legacy":"class";
   $("resetAll").textContent="Reset All";
   if(isPhone()){ bar.querySelectorAll(".cls").forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); talClassBtns.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===key))); setMTab("talents"); }
-  else { $("racials").hidden=true; $("spellbook").hidden=true; $("changes").hidden=true; $("legPanel").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); }
+  else { $("racials").hidden=true; $("spellbook").hidden=true; $("changes").hidden=true; $("raid").hidden=true; $("legPanel").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b.dataset.key===key?"true":"false")); }
   if(window.ordReset) window.ordReset();   // Talent Order (or the Legacy Point Order) folds again for the new tree, until it has points
   buildTrees(); render(); runSearch();
 }
@@ -1525,6 +1643,7 @@ function orderTip(li,ev){ const t=li._t, r=li._r;
 // Search: highlights matching talents by name or description, dims the rest
 const talentHit=(t,q)=>t.name.toLowerCase().includes(q) || textAt(t,t.max).toLowerCase().includes(q);
 function runSearch(){
+  if(!$("raid").hidden){ rcSearch($("search").value.trim().toLowerCase()); return; }   // the Raid Composition page
   if($("app").dataset.mode==="spellbook"){
     const q=$("search").value.trim().toLowerCase();
     document.querySelectorAll("#sbGrid .sb-sp").forEach(r=>{ const on=!q||(r.dataset.q||"").includes(q); r.classList.toggle("dim",!on); });   // this page
@@ -1535,8 +1654,8 @@ function runSearch(){
       sbEntries(sbClass,sbRace,t).forEach((e,i)=>{ if(!sbHit(e,q)||seen.has(e.n)) return; seen.add(e.n);
         const here=t===sbTab&&Math.floor(i/SBPER)===sbPage?page[i%SBPER]:null;
         items.push({el:here,go:()=>sbGoTo(t,Math.floor(i/SBPER),i%SBPER),icon:IMG(e.ic),name:e.n,sub:sbTabName(sbClass,t)+(/Racial|Talent/.test(e.sub||"")?" · "+e.sub.replace(/ · Rank.*/,""):""),tip:()=>sbTipFor(e,$("searchInfo"))}); }); }
-    // the other classes' spellbooks, with how many spells match in each (the race you're on when it can be that class)
-    const elsewhere=SBORD.filter(k=>k!==sbClass).map(k=>{ const race=racesFor(k).find(r=>r.key===sbRace.key)||racesFor(k)[0];
+    // the other classes' spellbooks, with how many spells match in each
+    const elsewhere=SBORD.filter(k=>k!==sbClass).map(k=>{ const race=NORACE;
         let n=0, first=null;
         for(let t=0;t<sbTabCount(k);t++){ const names=new Set(sbEntries(k,race,t).filter(e=>sbHit(e,q)).map(e=>e.n)); n+=names.size; if(names.size&&first==null) first=t; }
         return [k,race,n,first]; }).filter(x=>x[2]);
@@ -1701,7 +1820,7 @@ function showRacials(key){
   const r=RACIALS.find(x=>x.key===key)||null; curRace=r; hideTip();   // no race chosen yet: just the race picker and a prompt
   $("racials").hidden=false;
   if(isPhone()) setMTab("racials");
-  else { $("app").dataset.mode="racials"; $("spellbook").hidden=true; $("changes").hidden=true; document.title=r?`Forever ${r.name} Racials`:"Forever Racials";
+  else { $("app").dataset.mode="racials"; $("spellbook").hidden=true; $("changes").hidden=true; $("raid").hidden=true; document.title=r?`Forever ${r.name} Racials`:"Forever Racials";
     sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===racBtn?"true":"false")); }
   raceBtns.forEach(b=>b.setAttribute("aria-pressed",String(!!r&&b.dataset.race===r.key)));
   $("racials").querySelector(".race-cols").hidden=!r; $("glanceCard").hidden=!r;   // nothing but the race picker until a race is chosen
@@ -1759,32 +1878,20 @@ for(const k of SBORD){ const m=MODEL[k];
   const b=document.createElement("button"); b.type="button"; b.className="rp rp-sq"; b.dataset.k=k; b.style.setProperty("--c",m.color); b.setAttribute("aria-label",m.name);
   b.innerHTML=`<span class="rpi"><img src="${IMG("classicon_"+k)}" alt="" onerror="this.style.visibility='hidden'"><span class="rn-ov">${esc(m.name)}</span></span><span class="rp-n">${esc(m.name)}</span>`;
   b.addEventListener("click",()=>showSpellbook(k,null)); $("sbClasses").appendChild(b); sbClassBtns.push(b); }
-const racesFor=k=>RACIALS.filter(r=>r.classes.includes(MODEL[k].name));
+const NORACE={key:"",name:"",traits:[],priest:[]};   // the Spellbook shows no race's traits or racial spells
 function showSpellbook(k,race,tab){
   hideTip(); $("spellbook").hidden=false;
   if(isPhone()) setMTab("spellbook");
-  else { $("app").dataset.mode="spellbook"; $("racials").hidden=true; $("changes").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===sbBtn?"true":"false")); }
-  sbClass=SB[k]?k:null; sbRace=null;
-  if(sbClass){ const rs=racesFor(sbClass); sbRace=rs.find(r=>r.key===race)||null; if(tab!=null) sbTab=tab; else if(!race) sbTab=0; sbPage=0; }
+  else { $("app").dataset.mode="spellbook"; $("racials").hidden=true; $("changes").hidden=true; $("raid").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===sbBtn?"true":"false")); }
+  // one spellbook per class: no race picker, so racial traits and the Priest racial spells are left out (NORACE)
+  sbClass=SB[k]?k:null; sbRace=sbClass?NORACE:null;
+  if(sbClass){ sbTab=tab!=null?tab:0; sbPage=0; }
   sbClassBtns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===sbClass?"true":"false"));
-  // race picker
-  $("sbRaceGroup").hidden=!sbClass; $("sbRaces").innerHTML="";
-  if(sbClass){ $("sbRaceLabel").textContent=`${MODEL[sbClass].name} Races`;
-    // same order as the Racial Abilities page: Alliance mirrored (Skyborne ... Human), then Horde (Orc ... Skyborne);
-    // phones and tablets list the Alliance Human first, as their Racials page does
-    const rs=racesFor(sbClass), al=rs.filter(r=>r.faction==="Alliance"), order=(isPhone()?al:al.reverse()).concat(rs.filter(r=>r.faction!=="Alliance"));
-    for(const r of order){ const b=document.createElement("button"); b.type="button"; b.className="rp rp-sq"; b.setAttribute("aria-pressed",sbRace===r?"true":"false");
-      // Skyborne can be either faction: a small crest in the portrait's corner tells the two apart
-      const both=order.filter(x=>x.name===r.name).length>1, ally=r.faction==="Alliance";
-      b.setAttribute("aria-label",both?`${r.name} (${r.faction})`:r.name);
-      const crest=both?`<span class="fx-badge ${ally?"ally":"horde"}"></span>`:"";
-      b.innerHTML=`<span class="rpi"><img src="${IMG(r.icon)}" alt="" onerror="this.style.visibility='hidden'">${crest}<span class="rn-ov">${esc(r.name)}</span></span><span class="rp-n">${esc(r.name)}</span>`;
-      b.addEventListener("click",()=>showSpellbook(sbClass,r.key,sbTab));
-      $("sbRaces").appendChild(b); } }
-  $("sbPrompt").textContent=!sbClass?"Choose a class to open its spellbook.":!sbRace?`Choose a race for your ${MODEL[sbClass].name}.`:"";
-  $("sbWrap").hidden=!(sbClass&&sbRace);
-  if(!isPhone()){ document.title=sbClass&&sbRace?`Forever ${sbRace.name} ${MODEL[sbClass].name} Spellbook`:"Forever Spellbook";
-    setLink("spellbook"+(sbClass?":"+sbClass+(sbRace?":"+sbRace.key:""):"")); }
+  $("sbRaceGroup").hidden=true;
+  $("sbPrompt").textContent=!sbClass?"Choose a class to open its spellbook.":"";
+  $("sbWrap").hidden=!sbClass;
+  if(!isPhone()){ document.title=sbClass?`Forever ${MODEL[sbClass].name} Spellbook`:"Forever Spellbook";
+    setLink("spellbook"+(sbClass?":"+sbClass:"")); }
   if(sbClass&&sbRace) renderSpellbook();
 }
 const sbExtraOf=k=>(SB[k]&&SB[k].tabs)||[], sbExtra=()=>sbExtraOf(sbClass);   // non-tree tabs, e.g. the hunter's Beast Training
@@ -1895,7 +2002,7 @@ const chgRows=list=>list.map(e=>chgRow(e,chgShown.push(e)-1)).join("");
 function showChanges(k,build){
   hideTip(); $("changes").hidden=false;
   if(isPhone()) setMTab("changes");
-  else { $("app").dataset.mode="changes"; $("racials").hidden=true; $("spellbook").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===chgBtn?"true":"false")); }
+  else { $("app").dataset.mode="changes"; $("racials").hidden=true; $("spellbook").hidden=true; $("raid").hidden=true; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===chgBtn?"true":"false")); }
   chgClass=MODEL[k]&&!MODEL[k].legacy?k:null;
   chgClassBtns.forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===chgClass?"true":"false"));
   if(build!=null){ const i=CHANGES.updates.findIndex(u=>u.build===String(build)); if(i>=0) chgUpd=i; }
@@ -1957,7 +2064,202 @@ $("changes").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.
 $("changes").addEventListener("mouseout",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&canHover&&!r.contains(e.relatedTarget)) hideTip(); });
 $("changes").addEventListener("click",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&!canHover&&!e.target.closest(".chg-was,.chg-rk")) chgTip(r); });
 
-for(const [id,hash] of [["changesLink","changes"],["spellLink","spellbook"],["racialLink","racials"],["legacyLink","legacy"]]){
+// ---- Raid Composition: 8 groups of 5, filled from the spec bar; what the raid brings, from tc/raidcomp.json ----
+const RC_CLS=["druid","hunter","mage","paladin","priest","rogue","shaman","warlock","warrior"];
+const RC_SPECS=RC_CLS.flatMap(k=>MODEL[k].trees.map((tr,ti)=>({k,ti,name:tr.name,icon:tr.icon,cls:MODEL[k].name})));
+const RC_CODE="0123456789abcdefghijklmnopq";   // one character per slot (spec index), "-" for an empty slot
+const RC_SP=RAIDCOMP.spells;
+let rcSlots=Array(40).fill(-1), rcTab="cats";
+const rcCol=k=>k==="shaman"?"#3190ee":k==="warrior"?"#d7b285":MODEL[k].color;   // on dark: the sidebar's lighter Warrior and Shaman
+// on parchment: darker "ink" versions of the class colours, readable without an outline
+const RC_INK={druid:"#a84300",hunter:"#3f6b12",mage:"#0b6688",paladin:"#a8255f",priest:"#4d4d4d",rogue:"#7f6a00",shaman:"#0a52ad",warlock:"#5146b8",warrior:"#7a4f22"};
+const rcSpecOf=(k,ti)=>RC_CLS.indexOf(k)*3+ti;
+const rcHas=(si,e)=>{ const s=RC_SPECS[si]; return e.c===s.k&&e.s.includes(s.ti); };
+// a talent low enough in another tree that this spec can still take it with the 20 points left after its own 31
+const rcMay=(si,e)=>{ const s=RC_SPECS[si]; return !!e.o&&e.c===s.k&&e.o.includes(s.ti); };
+const rcSpellsOf=si=>RC_SP.map((e,i)=>i).filter(i=>rcHas(si,RC_SP[i]));
+const rcMaysOf=si=>RC_SP.map((e,i)=>i).filter(i=>rcMay(si,RC_SP[i]));
+const rcFilled=()=>rcSlots.filter(si=>si>=0);
+const rcCountSpell=i=>{ const e=RC_SP[i], f=rcFilled(); return [f.filter(si=>rcHas(si,e)).length,f.filter(si=>rcMay(si,e)).length]; };
+// a category: players who bring one of its spells, and players who could with a talent from another tree
+const rcCountCat=c=>{ const f=rcFilled(), sure=f.filter(si=>c.s.some(i=>rcHas(si,RC_SP[i])));
+  return [sure.length,f.filter(si=>!sure.includes(si)&&c.s.some(i=>rcMay(si,RC_SP[i]))).length]; };
+const rcN=([a,b])=>`<span class="n">${a}</span>`;
+const RC_COULD=`<svg class="rc-mk rc-could" viewBox="0 0 16 16" aria-label="Someone here could talent into it"><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2.6 1.8"/></svg>`;
+const rcCould=([a,b])=>!a&&b?RC_COULD:"";
+const rcNT=([a,b])=>`<span class="n">${a}</span>${b?`<span class="mb">(+${b} could)</span>`:""}`;   // tooltips spell it out
+const RC_MK={t:`<svg class="rc-mk" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2.6" fill="currentColor"/></svg>`,
+  p:`<svg class="rc-mk" viewBox="0 0 16 16" aria-hidden="true"><g fill="currentColor"><ellipse cx="8" cy="11" rx="3.6" ry="3"/><circle cx="3.2" cy="7" r="1.6"/><circle cx="6" cy="3.9" r="1.6"/><circle cx="10" cy="3.9" r="1.6"/><circle cx="12.8" cy="7" r="1.6"/></g></svg>`,
+  r:`<svg class="rc-mk" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5l1.9 4.1 4.5.5-3.3 3.1.9 4.4L8 11.4l-4 2.2.9-4.4L1.6 6.1l4.5-.5z"/></svg>`};
+const rcMark=e=>e.t?RC_MK.t:e.p?RC_MK.p:e.r?RC_MK.r:"";
+const rcTree=e=>MODEL[e.c].trees[e.s[0]].name;
+const rcWhy=e=>e.t?`${rcTree(e)} talent`+(e.o?` (other specs: ${e.need} points in ${rcTree(e)})`:""):e.p?`Needs the ${e.p} pet`:e.r?`${e.r} Priests only`:"";
+const rcEncode=()=>rcSlots.map(si=>si<0?"-":RC_CODE[si]).join("").replace(/-+$/,"");
+function rcDecode(code){ rcSlots=Array(40).fill(-1); [...(code||"").slice(0,40)].forEach((ch,i)=>{ const si=RC_CODE.indexOf(ch); if(si>=0) rcSlots[i]=si; }); }
+const rcLink=()=>{ const c=rcEncode(); return "raid"+(c?":"+c:""); };
+const rcHit=(e,q)=>(e.n+" "+e.d).toLowerCase().includes(q);
+
+// the spec bar: a cluster of three spec icons per class, five classes on the top row and four below
+for(const k of RC_CLS){ const m=MODEL[k];
+  const g=document.createElement("div"); g.className="rc-cls"; g.style.setProperty("--c",rcCol(k));
+  g.innerHTML=`<div class="rc-specs">${m.trees.map((tr,ti)=>`<button type="button" class="rc-spec" draggable="true" data-si="${rcSpecOf(k,ti)}" aria-label="Add ${esc(tr.name)} ${esc(m.name)}"><img src="${IMG(tr.icon)}" alt="" onerror="this.style.visibility='hidden'"></button>`).join("")}</div><span class="rc-cn">${esc(m.name)}</span>`;
+  $("rcBar").appendChild(g);
+  if(k==="priest") $("rcBar").insertAdjacentHTML("beforeend",'<span class="rc-br"></span>'); }
+function rcAdd(si,at){
+  const i=at!=null?at:rcSlots.indexOf(-1); if(i<0){ rcToast("The raid is full"); return; }
+  rcSlots[i]=si; rcRender(); }
+function rcToast(msg){ $("rcPrompt").textContent=msg; clearTimeout(rcToast.t); rcToast.t=setTimeout(rcPromptText,2200); }
+function rcPromptText(){ $("rcPrompt").textContent=rcSlots.some(x=>x>=0)?"":"Click a spec to add it to the next free slot, or drag it into a group."; }
+
+function rcRender(){
+  $("rcCount").textContent=rcFilled().length; rcPromptText();
+  let h="";
+  for(let g=0;g<8;g++){
+    const members=rcSlots.slice(g*5,g*5+5);
+    h+=`<div class="rc-grp"><div class="rc-gh">Group ${g+1}</div><div class="rc-slots">`;
+    members.forEach((si,j)=>{ const i=g*5+j;
+      if(si<0){ h+=`<div class="rc-slot" data-i="${i}"></div>`; return; }
+      const s=RC_SPECS[si];
+      h+=`<div class="rc-slot on" draggable="true" data-i="${i}" data-si="${si}" style="--c:${rcCol(s.k)};--tx:-${(i*137)%360}px -${(i*83+40)%360}px"><span class="rc-si"><img src="${IMG(s.icon)}" alt="" onerror="this.style.visibility='hidden'"></span><span class="rc-sn">${esc(s.name)}</span><button type="button" class="rc-x" aria-label="Remove ${esc(s.name)} ${esc(s.cls)}">×</button></div>`; });
+    // the group's own buffs (party-only stat, armor and regen buffs; raid-wide ones aren't repeated per group), with how
+    // many members bring each; faded when a member could only bring it with a talent from another tree
+    const pb=new Map(); members.forEach(si=>{ if(si<0) return;
+      RC_SP.forEach((e,i)=>{ if(!e.b) return; const has=rcHas(si,e), may=rcMay(si,e); if(!has&&!may) return;
+        const v=pb.get(i)||[0,0]; v[has?0:1]++; pb.set(i,v); }); });
+    h+=`</div><div class="rc-pb">${[...pb].map(([i,[a,b]])=>`<span class="rc-ic${a?"":" may"}" data-sp="${i}" data-grp="${g}"><img src="${IMG(RC_SP[i].i)}" alt="${esc(RC_SP[i].n)}">${a>1?`<b>${a}</b>`:""}</span>`).join("")}</div></div>`;
+  }
+  $("rcBoard").innerHTML=h;
+  rcRenderSum(); rcRenderSecs();
+  if(!$("raid").hidden){ setLink(rcLink()); if($("search").value.trim()) runSearch(); }
+}
+const rcSort=list=>list.sort((a,b)=>RC_CLS.indexOf(RC_SP[a[0]].c)-RC_CLS.indexOf(RC_SP[b[0]].c)||RC_SP[a[0]].n.localeCompare(RC_SP[b[0]].n));
+const rcItem=(i,cnt)=>{ const e=RC_SP[i];
+  return `<div class="rc-it sp" data-sp="${i}" style="--c:${rcCol(e.c)};--tx:-${(i*137)%360}px -${(i*83+40)%360}px">${rcN(cnt)}<span class="rc-pill"><img class="si" src="${IMG(e.i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(e.n)}</span>${rcMark(e)}${rcCould(cnt)}</span></div>`; };
+function rcRenderSum(){
+  document.querySelectorAll(".rc-tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===rcTab)));
+  let h="";
+  for(const g of ["Buffs","Debuffs","Other"]){
+    const cats=RAIDCOMP.cats.map((c,ci)=>[c,ci]).filter(([c])=>c.g===g);
+    h+=`<div class="rc-grp-t">${g}</div>`;
+    if(rcTab==="cats") h+=`<div class="rc-list">${cats.map(([c,ci])=>{ const n=rcCountCat(c);
+        return `<div class="rc-it${n[0]||n[1]?"":" zero"}" data-cat="${ci}">${rcN(n)}<img class="si" src="${IMG(RC_SP[c.s[0]].i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(c.n)}</span>${rcCould(n)}</div>`; }).join("")}</div>`;
+    else { const seen=new Set(), list=[];
+      cats.forEach(([c])=>c.s.forEach(i=>{ if(!seen.has(i)){ seen.add(i); const n=rcCountSpell(i); if(n[0]||n[1]) list.push([i,n]); } }));
+      h+=list.length?`<div class="rc-list rc-cols">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`; }
+  }
+  $("rcSum").innerHTML=h;
+}
+// the lists under the board fold like Talent Order; which are folded is remembered on this browser
+const rcFold=new Set((()=>{ try{ return JSON.parse(localStorage.getItem("rcFold")||"[]"); }catch(e){ return []; } })());
+function rcRenderSecs(){
+  $("rcSecs").innerHTML=RAIDCOMP.secs.map(s=>{ const list=s.s.map(i=>[i,rcCountSpell(i)]).filter(x=>x[1][0]||x[1][1]);
+    const shut=rcFold.has(s.n);
+    return `<section class="card wood rc-sec${shut?" collapsed":""}" data-sec="${esc(s.n)}"><button type="button" class="hdr ord-tog" aria-expanded="${!shut}"><span>${esc(s.n)}</span><span class="ord-caret" aria-hidden="true">&#9660;</span></button><div class="parch">${list.length?`<div class="rc-list rc-cols">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`}</div></section>`; }).join("");
+}
+$("rcLegend").innerHTML=`<span>${RC_MK.t} Talent</span><span>${RC_MK.p} Pet</span><span>${RC_MK.r} Priest racial</span><span>${RC_COULD} nobody has it yet, but someone here could talent into it (hover for who)</span><span><i>Assumed</i> stacking rules aren't confirmed for Forever yet: hover a category to see them</span>`;
+
+// tooltips: a spec, a category (every spell in it, the ones nobody brings greyed), a spell
+function rcSpecTip(si){
+  const s=RC_SPECS[si], mine=rcSpellsOf(si), out=[`<div class="rc-th" style="color:${rcCol(s.k)}">${esc(s.name)} ${esc(s.cls)}</div>`];
+  for(const g of ["Buffs","Debuffs","Other"]){
+    const cats=RAIDCOMP.cats.filter(c=>c.g===g&&c.s.some(i=>mine.includes(i)));
+    if(cats.length) out.push(`<div class="rc-h">${g}</div><div>${cats.map(c=>esc(c.n)).join(", ")}</div>`); }
+  const grp=mine.filter(i=>RC_SP[i].g);
+  if(grp.length) out.push(`<div class="rc-h">Group Buffs</div><div>${grp.map(i=>esc(RC_SP[i].n)).join(", ")}</div>`);
+  for(const sec of RAIDCOMP.secs){ const l=sec.s.filter(i=>mine.includes(i));
+    if(l.length) out.push(`<div class="rc-h">${esc(sec.n)}</div><div>${l.map(i=>rcMark(RC_SP[i])+esc(RC_SP[i].n)).join(", ")}</div>`); }
+  const may=rcMaysOf(si).filter(i=>RAIDCOMP.cats.some(c=>c.s.includes(i))||RAIDCOMP.secs.some(c=>c.s.includes(i)));
+  if(may.length) out.push(`<div class="rc-note">Can also talent into: ${may.map(i=>{ const e=RC_SP[i]; return `${esc(e.n)} <span class="tk">(${e.need} in ${esc(rcTree(e))})</span>`; }).join(", ")}</div>`);
+  return out.join("");
+}
+// a spell's effect in a line: its first sentence, without "Summons a ... totem ... that" padding
+const rcShort=d=>{ let t=String(d||"").split(/\n/)[0].replace(/^Summons an? [^.]*? Totem with \d+ health at the feet of the caster(?: for [\d.]+ (?:sec|min))?\.?\s*(?:that |The totem )?/i,"");
+  t=t.charAt(0).toUpperCase()+t.slice(1); const m=t.match(/^.{20,}?\.(?=\s|$)/); return m?m[0]:t; };
+function rcCatTip(ci){
+  const c=RAIDCOMP.cats[ci];
+  return `<div class="rc-th">${esc(c.n)}</div>`+c.s.map(i=>{ const e=RC_SP[i], n=rcCountSpell(i);
+      return `<div class="rc-row${n[0]||n[1]?"":" off"}">${rcNT(n)}<img src="${IMG(e.i)}" alt=""><span style="color:${rcCol(e.c)}">${esc(e.n)}</span>${rcMark(e)}</div><div class="rc-eff${n[0]||n[1]?"":" off"}">${esc(rcShort(e.d))}</div>`; }).join("")
+    +(()=>{ const f=rcFilled(), could=f.filter(si=>!c.s.some(i=>rcHas(si,RC_SP[i]))&&c.s.some(i=>rcMay(si,RC_SP[i])));
+        return could.length?`<div class="rc-note">Could with a talent from another tree: ${could.map(si=>{ const s=RC_SPECS[si]; return `<span style="color:${rcCol(s.k)}">${esc(s.name)} ${esc(s.cls)}</span>`; }).join(", ")}</div>`:""; })()
+    +(c.note?`<div class="rc-note">${c.st?`<span class="rc-st ${c.st==="confirmed"?"ok":"as"}">${c.st==="confirmed"?"Confirmed":"Assumed"}:</span> `:""}${esc(c.note)}</div>`:"");
+}
+function rcSpellTip(i,grp){
+  const e=RC_SP[i], inG=j=>grp==null||Math.floor(j/5)===grp, sp=s=>`<span style="color:${rcCol(s.k)}">${esc(s.name)} ${esc(s.cls)}</span>`;
+  const who=rcSlots.map((si,j)=>[si,j]).filter(([si,j])=>si>=0&&inG(j)&&rcHas(si,e)).map(([si])=>RC_SPECS[si]);
+  const could=rcSlots.map((si,j)=>[si,j]).filter(([si,j])=>si>=0&&inG(j)&&rcMay(si,e)).map(([si])=>RC_SPECS[si]);
+  const why=rcWhy(e), cats=RAIDCOMP.cats.filter(c=>c.s.includes(i)).map(c=>c.n);
+  return `<div class="rc-th" style="color:${rcCol(e.c)}">${esc(e.n)}</div>`+(why?`<div class="tk">${rcMark(e)} ${esc(why)}</div>`:"")+(e.g?`<div class="tk">Reaches only the caster's group</div>`:"")
+    +`<div class="td">${esc(e.d)}</div>`+(cats.length?`<div class="tl2">${esc(cats.join(" · "))}</div>`:"")
+    +(who.length||could.length?`<div class="rc-note">${who.length?`${grp!=null?"In this group":"In this raid"}: ${who.map(sp).join(", ")}`:""}${who.length&&could.length?"<br>":""}${could.length?`Could talent into it: ${could.map(sp).join(", ")}`:""}</div>`:"");
+}
+function rcTipEl(el){
+  if(el.dataset.cat!=null) return rcCatTip(+el.dataset.cat);
+  if(el.dataset.sp!=null) return rcSpellTip(+el.dataset.sp,el.dataset.grp!=null?+el.dataset.grp:null);
+  if(el.dataset.si!=null) return rcSpecTip(+el.dataset.si);
+  return null;
+}
+const RC_TIPS=".rc-spec,.rc-slot.on,.rc-it,.rc-ic";
+function rcShowTip(el,ev){ const h=rcTipEl(el); if(!h) return; $("tip").innerHTML=h; tipFor=null;
+  if(ev&&canHover) placeTipAt(ev.clientX,ev.clientY); else placeTip(el); }
+$("raid").addEventListener("mouseover",e=>{ if(!canHover||rcDrag&&e.buttons) return; const el=e.target.closest(RC_TIPS); if(el&&!e.target.closest(".rc-x")) rcShowTip(el,e); else hideTip(); });
+$("raid").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.target.closest(RC_TIPS)) placeTipAt(e.clientX,e.clientY); });
+$("raid").addEventListener("mouseout",e=>{ const el=e.target.closest(RC_TIPS); if(el&&canHover&&!el.contains(e.relatedTarget)) hideTip(); });
+
+// click a spec: the next free slot; on a phone, tap a member, a group buff or a list entry for its tooltip
+$("raid").addEventListener("click",e=>{
+  const x=e.target.closest(".rc-x"); if(x){ rcSlots[+x.closest(".rc-slot").dataset.i]=-1; hideTip(); rcRender(); return; }
+  const sp=e.target.closest(".rc-spec"); if(sp){ rcAdd(+sp.dataset.si); if(canHover) rcShowTip(sp,e); return; }
+  const fd=e.target.closest(".rc-sec>.ord-tog"); if(fd){ const sec=fd.parentNode, n=sec.dataset.sec, shut=!sec.classList.contains("collapsed");
+    sec.classList.toggle("collapsed",shut); fd.setAttribute("aria-expanded",String(!shut)); if(shut) rcFold.add(n); else rcFold.delete(n);
+    try{ localStorage.setItem("rcFold",JSON.stringify([...rcFold])); }catch(err){} hideTip(); return; }
+  const tb=e.target.closest(".rc-tab"); if(tb){ rcTab=tb.dataset.t; hideTip(); rcRenderSum(); if($("search").value.trim()) runSearch(); return; }
+  const el=e.target.closest(".rc-it,.rc-ic,.rc-slot.on"); if(el) rcShowTip(el,canHover?e:null);
+});
+$("raid").addEventListener("contextmenu",e=>{ const s=e.target.closest(".rc-slot.on"); if(!s) return; e.preventDefault(); rcSlots[+s.dataset.i]=-1; hideTip(); rcRender(); });   // right-click removes, as on the talent trees
+if(!canHover) document.addEventListener("click",e=>{ if(!e.target.closest("#raid .rc-it,#raid .rc-ic,#raid .rc-slot.on")&&!$("raid").hidden) hideTip(); });
+// drag a spec into a slot, a member to another slot (the two swap), or a member off the board to take it out
+let rcDrag=null;
+$("raid").addEventListener("dragstart",e=>{ const sp=e.target.closest(".rc-spec"), sl=e.target.closest(".rc-slot.on"); hideTip();
+  if(sp) rcDrag={si:+sp.dataset.si}; else if(sl){ rcDrag={from:+sl.dataset.i}; sl.classList.add("drag"); } else return;
+  e.dataTransfer.effectAllowed="move"; try{ e.dataTransfer.setData("text/plain",""); }catch(err){} });
+$("raid").addEventListener("dragover",e=>{ const sl=rcDrag&&e.target.closest(".rc-slot"); if(!sl) return; e.preventDefault(); e.dataTransfer.dropEffect="move";
+  document.querySelectorAll(".rc-slot.over").forEach(x=>x!==sl&&x.classList.remove("over")); sl.classList.add("over"); });
+$("raid").addEventListener("dragleave",e=>{ const sl=e.target.closest(".rc-slot"); if(sl&&!sl.contains(e.relatedTarget)) sl.classList.remove("over"); });
+$("raid").addEventListener("drop",e=>{ const sl=rcDrag&&e.target.closest(".rc-slot"); if(!sl) return; e.preventDefault();
+  const to=+sl.dataset.i;
+  if(rcDrag.from!=null){ const a=rcSlots[rcDrag.from]; rcSlots[rcDrag.from]=rcSlots[to]; rcSlots[to]=a; } else rcSlots[to]=rcDrag.si;
+  rcDrag=null; rcRender(); });   // the board is redrawn, so the dragged member's dragend never arrives: the drag ends here
+document.addEventListener("dragend",()=>{ if(!rcDrag) return;
+  if(rcDrag.from!=null){ rcSlots[rcDrag.from]=-1; rcRender(); }   // dropped outside the board: out of the raid
+  rcDrag=null; document.querySelectorAll(".rc-slot.over,.rc-slot.drag").forEach(x=>x.classList.remove("over","drag")); });
+$("rcReset").onclick=()=>{ rcSlots=Array(40).fill(-1); hideTip(); rcRender(); };
+$("rcCopy").onclick=async()=>{ setLink(rcLink()); const u=location.href;
+  try{ await navigator.clipboard.writeText(u); rcToast("Link copied"); }catch(e){ rcToast(u); } };
+// the search box on this page: categories, spells and specs that match a spell's name or text stay lit, the rest fade
+function rcSearch(q){
+  const els=[];
+  document.querySelectorAll("#raid .rc-it").forEach(el=>{ let on=!q;
+    if(q){ if(el.dataset.cat!=null){ const c=RAIDCOMP.cats[+el.dataset.cat]; on=c.n.toLowerCase().includes(q)||c.s.some(i=>rcHit(RC_SP[i],q)); }
+      else on=rcHit(RC_SP[+el.dataset.sp],q); }
+    el.classList.toggle("dim",!on); el.classList.toggle("hit",!!q&&on); if(q&&on) els.push(el); });
+  document.querySelectorAll("#raid .rc-spec,#raid .rc-slot.on").forEach(el=>{ const si=+el.dataset.si;
+    const on=!q||RC_SP.some(e=>(rcHas(si,e)||rcMay(si,e))&&rcHit(e,q)); el.classList.toggle("dim",!on); });
+  if(!q){ $("searchInfo").innerHTML=""; return; }
+  $("searchInfo").innerHTML=`<div class="sr-n"><b>${els.length}</b> ${els.length===1?"match":"matches"} here</div>`+hitList(els.map(el=>{
+    const cat=el.dataset.cat!=null, c=cat&&RAIDCOMP.cats[+el.dataset.cat], e=!cat&&RC_SP[+el.dataset.sp];
+    return {el,icon:IMG(cat?RC_SP[c.s[0]].i:e.i),name:cat?c.n:e.n,sub:cat?`${c.g} category`:`${MODEL[e.c].name}${e.t?" · "+rcTree(e)+" talent":""}`,tip:()=>{ $("tip").innerHTML=rcTipEl(el); }}; }));
+}
+function showRaid(code){
+  hideTip(); $("raid").hidden=false;
+  if(code!=null) rcDecode(code);
+  if(isPhone()) setMTab("raid");
+  else { $("app").dataset.mode="raid"; $("racials").hidden=true; $("spellbook").hidden=true; $("changes").hidden=true; $("legPanel").hidden=true;
+    document.title="Forever Raid Composition"; sideBtns().forEach(b=>b.setAttribute("aria-pressed",b===raidBtn?"true":"false")); }
+  rcRender(); runSearch();
+}
+raidBtn.addEventListener("click",()=>showRaid());
+
+for(const [id,hash] of [["changesLink","changes"],["spellLink","spellbook"],["racialLink","racials"],["legacyLink","legacy"],["raidLink","raid"]]){
   const src=$(id); if(src.hidden) continue;
   const a=document.createElement("a"); a.className="lp-a"; a.href=linkFor(hash);
   a.addEventListener("click",e=>{ if(e.button||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return; e.preventDefault(); setLink(hash,true); route(); });   // a new tab still opens the address
@@ -1965,13 +2267,13 @@ for(const [id,hash] of [["changesLink","changes"],["spellLink","spellbook"],["ra
   $("lpLinks").appendChild(a); }
 // middle-click a page button (a class, a Quick Info page, a class on Class Changes): that page opens in a new tab, as a link would
 const PAGEBTN="#classbar .cls,#chgClasses .rp,.legacy-link";
-const btnPage=b=>({changesLink:"changes",spellLink:"spellbook",racialLink:"racials",legacyLink:"legacy"})[b.id]
+const btnPage=b=>({changesLink:"changes",spellLink:"spellbook",racialLink:"racials",legacyLink:"legacy",raidLink:"raid"})[b.id]
   ||(b.dataset.k&&b.closest("#chgClasses")?"changes:"+b.dataset.k:MODEL[b.dataset.key]?b.dataset.key:null);
 document.addEventListener("mousedown",e=>{ if(e.button===1&&e.target.closest(PAGEBTN)) e.preventDefault(); });   // no autoscroll
 document.addEventListener("auxclick",e=>{ const b=e.button===1&&e.target.closest(PAGEBTN), h=b&&btnPage(b); if(h){ e.preventDefault(); open(linkFor(h),"_blank","noopener"); } });
 // ---- phones: the tab bar. Each tab is one page; the Quick Info pages open with their usual functions ----
-const MTABS=[["talents","Talents",null],["changes","Changes","changesLink"],["spellbook","Spellbook","spellLink"],["racials","Racials","racialLink"],["legacy","Legacy","legacyLink"]];
-const MTAB_PANEL={changes:"changes",spellbook:"spellbook",racials:"racials",legacy:"legPanel"};
+const MTABS=[["talents","Talents",null],["changes","Changes","changesLink"],["spellbook","Spellbook","spellLink"],["racials","Racials","racialLink"],["legacy","Legacy","legacyLink"],["raid","Raid","raidLink"]];
+const MTAB_PANEL={changes:"changes",spellbook:"spellbook",racials:"racials",legacy:"legPanel",raid:"raid"};
 for(const [k,label,src] of MTABS){
   const b=document.createElement("button"); b.type="button"; b.className="mtab"; b.dataset.tab=k;
   b.innerHTML=(src?$(src).querySelector(".ci").innerHTML:`<img src="${IMG("ability_marksmanship")}" alt="">`)+`<span>${label}</span>`;   // Talents: WoW icon 132222
@@ -1984,7 +2286,7 @@ function setMTab(k){   // called by the show functions on phones: mark the tab, 
   for(const [tk,id] of Object.entries(MTAB_PANEL)) if(tk!==k && !$(id).hidden){ $(id).hidden=true; if(id==="legPanel") MODEL.legacy.host=null; }
   syncPanelBtns();
   document.title=k==="talents"?(cur&&!cur.legacy?`Forever ${cur.name} Talents`:"Forever Talents")
-    :{changes:"Forever Class Changes",spellbook:"Forever Spellbook",racials:"Forever Racials",legacy:"Forever Legacy Talents"}[k];
+    :{changes:"Forever Class Changes",spellbook:"Forever Spellbook",racials:"Forever Racials",legacy:"Forever Legacy Talents",raid:"Forever Raid Composition"}[k];
   // start the new page at its top: if the bar is stuck to the top of the screen, scroll back to where it sits
   const top=$("app").getBoundingClientRect().top+scrollY;
   if(scrollY>top) scrollTo(0,top);
@@ -1998,6 +2300,7 @@ function openMTab(k){
   else if(k==="changes") showChanges(chgClass);
   else if(k==="spellbook") showSpellbook(sbClass,sbRace&&sbRace.key);
   else if(k==="racials") showRacials(curRace?curRace.key:null);
+  else if(k==="raid") showRaid();
   else selectClass("legacy");
 }
 function showLanding(){ hideTip(); $("app").hidden=true; $("landing").hidden=false; document.title=HOME_TITLE; scrollTo(0,0); }
@@ -2008,7 +2311,8 @@ function route(){
   if(h.startsWith("changes")){ if(!wasOpen) openApp(); keep(); const [,k,b]=h.split(":"); showChanges(k||null,b); }
   else if(h.startsWith("spellbook")){ const [,k,r]=h.split(":"); if(!wasOpen) openApp(); keep(); showSpellbook(k,r); }
   else if(h.startsWith("racials")){ if(!wasOpen) openApp(); keep(); showRacials(h.split(":")[1]); }
-  if(/^(changes|spellbook|racials)/.test(h)) setLink(h);   // setting up the calculator above may have rewritten the link
+  else if(/^raid(:|$)/.test(h)){ if(!wasOpen) openApp(); keep(); showRaid(h.split(":")[1]||""); }
+  if(/^(changes|spellbook|racials|raid(:|$))/.test(h)) setLink(/^spellbook/.test(h)?"spellbook"+(sbClass?":"+sbClass:""):h);   // an old spellbook link with a race loses it   // setting up the calculator above may have rewritten the link
   else if(h && MODEL[h.split(":")[0]]){ if(!wasOpen) openApp(); if(!loadCode(h)) selectClass(h.split(":")[0]); }
   else showLanding();
 }
