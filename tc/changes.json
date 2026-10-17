@@ -10,16 +10,16 @@
       "other",
       "Moonkin Form",
       "spell_nature_forceofnature",
-      "Balance talent · reworded",
-      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party {*or raid*} members within 45 yards have their {*spell*} Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "Balance talent · reworked",
+      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party {*or raid*} members within 45 yards have their {~spell~} Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
       "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party members within 45 yards have their Critical Strike chance increased by 3%{~, exclusive with Leader of the Pack~}. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
      ],
      [
       "other",
       "Leader of the Pack",
       "spell_nature_unyeildingstamina",
-      "Feral Combat talent · reworded",
-      "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {*melee and ranged Critical Strike*} chance of all party {*or raid*} members within 45 yards by 3%.",
+      "Feral Combat talent · reworked",
+      "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {~melee and ranged Critical Strike~} chance of all party {*or raid*} members within 45 yards by 3%.",
       "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {~critical strike~} chance of all party members within 45 yards by 3%{~, exclusive with Moonkin Aura~}."
      ],
      [
@@ -61,7 +61,7 @@
       "other",
       "Shred",
       "spell_shadow_vampiricaura",
-      "Spell",
+      "Spell · corrected tooltip",
       "Shred the target, causing 155% damage plus {-80} (down from 180) to the target. Must be behind the target. Awards 1 combo point. Now learned at level {+20} (was 22).",
       "",
       [
@@ -91,11 +91,19 @@
         ""
        ]
       ]
+     ],
+     [
+      "buff",
+      "Faerie Fire",
+      "spell_nature_faeriefire",
+      "Spell",
+      "Now generates threat while in Bear Form or Dire Bear Form (instead of just initiating combat at 0 threat).",
+      ""
      ]
     ],
     "hunter": [
      [
-      "other",
+      "buff",
       "Trueshot Aura",
       "ability_trueshot",
       "Marksmanship talent · reworded",
@@ -308,6 +316,38 @@
         ""
        ]
       ]
+     ],
+     [
+      "other",
+      "Auto Shot",
+      "ability_whirlwind",
+      "Spell · reworked",
+      "Now requires you to stand still for 0.5 sec before shooting, matching early versions of World of Warcraft. You still fire Auto Shot while casting spells like Aimed Shot or Sniper Shot.",
+      ""
+     ],
+     [
+      "other",
+      "Traps",
+      "spell_fire_flameshock",
+      "Spell · reworked",
+      "You may now correctly have 1 active Fire Trap and 1 active Ice Trap (was 1 Trap among all types).",
+      ""
+     ],
+     [
+      "other",
+      "Summon Hawk",
+      "ability_hunter_animalhandler",
+      "Beast Mastery talent",
+      "Will now correctly cause the Hawk to spawn at the target the spell was cast on, and the Hawk will stick to the target it was summoned on.",
+      ""
+     ],
+     [
+      "buff",
+      "Strider Kick",
+      "ability_hunter_pet_tallstrider",
+      "Survival talent",
+      "Can now be used while disarmed or while no weapon is equipped in your Main Hand.",
+      ""
      ]
     ],
     "mage": [

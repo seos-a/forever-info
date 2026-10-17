@@ -68,6 +68,106 @@
    "name": "Mine!",
    "append": "Cooldown increased from 1 min cooldown to {-1.5 min cooldown}.",
    "why": "the 12.1.5 patch notes raise the cooldown to 90 sec (was 60); Wowhead's change page leaves the cooldown out"
+  },
+  {
+   "build": "70425",
+   "class": "druid",
+   "name": "Faerie Fire",
+   "add": [
+    "buff",
+    "Faerie Fire",
+    "spell_nature_faeriefire",
+    "Spell",
+    "Now generates threat while in Bear Form or Dire Bear Form (instead of just initiating combat at 0 threat).",
+    ""
+   ],
+   "why": "12.1.5 patch notes; not a tooltip change, so Wowhead's change page doesn't have it"
+  },
+  {
+   "build": "70425",
+   "class": "druid",
+   "name": "Shred",
+   "where": "Spell · corrected tooltip",
+   "why": "12.1.5 patch notes: the tooltip's flat damage now scales with Savage Fury; a visual fix, the damage is unchanged"
+  },
+  {
+   "build": "70425",
+   "class": "druid",
+   "name": "Moonkin Form",
+   "where": "Balance talent · reworked",
+   "text": "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party {*or raid*} members within 45 yards have their {~spell~} Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+   "why": "raid-wide is new (reworked, not just reworded), and only spell crit now (red: narrower than before)"
+  },
+  {
+   "build": "70425",
+   "class": "druid",
+   "name": "Leader of the Pack",
+   "where": "Feral Combat talent · reworked",
+   "text": "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {~melee and ranged Critical Strike~} chance of all party {*or raid*} members within 45 yards by 3%.",
+   "why": "raid-wide is new (reworked, not just reworded), and only melee and ranged crit now (red: narrower than before)"
+  },
+  {
+   "build": "70425",
+   "class": "hunter",
+   "name": "Auto Shot",
+   "add": [
+    "other",
+    "Auto Shot",
+    "ability_whirlwind",
+    "Spell · reworked",
+    "Now requires you to stand still for 0.5 sec before shooting, matching early versions of World of Warcraft. You still fire Auto Shot while casting spells like Aimed Shot or Sniper Shot.",
+    ""
+   ],
+   "why": "12.1.5 patch notes; not a tooltip change"
+  },
+  {
+   "build": "70425",
+   "class": "hunter",
+   "name": "Traps",
+   "add": [
+    "other",
+    "Traps",
+    "spell_fire_flameshock",
+    "Spell · reworked",
+    "You may now correctly have 1 active Fire Trap and 1 active Ice Trap (was 1 Trap among all types).",
+    ""
+   ],
+   "why": "12.1.5 patch notes; not a tooltip change"
+  },
+  {
+   "build": "70425",
+   "class": "hunter",
+   "name": "Summon Hawk",
+   "add": [
+    "other",
+    "Summon Hawk",
+    "ability_hunter_animalhandler",
+    "Beast Mastery talent",
+    "Will now correctly cause the Hawk to spawn at the target the spell was cast on, and the Hawk will stick to the target it was summoned on.",
+    ""
+   ],
+   "why": "12.1.5 patch notes; not a tooltip change"
+  },
+  {
+   "build": "70425",
+   "class": "hunter",
+   "name": "Trueshot Aura",
+   "kind": "buff",
+   "why": "party to raid-wide is a buff"
+  },
+  {
+   "build": "70425",
+   "class": "hunter",
+   "name": "Strider Kick",
+   "add": [
+    "buff",
+    "Strider Kick",
+    "ability_hunter_pet_tallstrider",
+    "Survival talent",
+    "Can now be used while disarmed or while no weapon is equipped in your Main Hand.",
+    ""
+   ],
+   "why": "12.1.5 patch notes; not a tooltip change"
   }
  ]
 }
