@@ -1204,6 +1204,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-sec.collapsed>.parch{display:none}
 .rc-cols{display:block;column-width:305px;column-gap:18px}   /* spell lists read down each column */
 .rc-cols>.rc-it{break-inside:avoid;margin-bottom:4px}
+.rc-list.rc-across{row-gap:4px}   /* four entries: three across, the fourth below on the left (balanced columns gave 2 + 2 and an empty third) */
 /* spells: a brown leather button each, like the class list in the sidebar, with the count beside it */
 .rc-it.sp{padding:1px 0;min-height:35px;font-size:15px}
 .rc-pill img.si{width:24px;height:24px}
@@ -2123,6 +2124,7 @@ const rcCountSpell=i=>{ const e=RC_SP[i], f=rcFilled(); return [f.filter(si=>rcH
 // a category: players who bring one of its spells, and players who could with a talent from another tree
 const rcCountCat=c=>{ const f=rcFilled(), sure=f.filter(si=>c.s.some(i=>rcHas(si,RC_SP[i])));
   return [sure.length,f.filter(si=>!sure.includes(si)&&c.s.some(i=>rcMay(si,RC_SP[i]))).length]; };
+const rcColsCls=n=>n===4?"rc-across":"rc-cols";   // the one count where reading down the columns leaves a column empty
 const rcN=([a,b])=>`<span class="n">${a}</span>`;
 const rcN2=([a,b])=>`<span class="n2">(${a})</span>`;   // phones: the count after the name instead of in a column
 const RC_COULD=`<svg class="rc-mk rc-could" viewBox="0 0 16 16" overflow="visible" aria-label="Someone here could talent into it"><circle class="mk-o" stroke="#000" stroke-linejoin="round" cx="8" cy="8" r="5.6" fill="none" stroke-width="3.8" stroke-dasharray="3.6 0.8" stroke-dashoffset="0.5"/><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2.6 1.8"/></svg>`;
@@ -2187,7 +2189,7 @@ function rcRenderSum(){
         return `<div class="rc-it${n[0]||n[1]?"":" zero"}" data-cat="${ci}">${rcN(n)}<img class="si" src="${IMG(RC_SP[c.s[0]].i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(c.n)}</span>${rcN2(n)}${rcCould(n)}</div>`; }).join("")}</div>`;
     else { const seen=new Set(), list=[];
       cats.forEach(([c])=>c.s.forEach(i=>{ if(!seen.has(i)){ seen.add(i); const n=rcCountSpell(i); if(n[0]||n[1]) list.push([i,n]); } }));
-      h+=list.length?`<div class="rc-list rc-cols">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`; }
+      h+=list.length?`<div class="rc-list ${rcColsCls(list.length)}">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`; }
   }
   $("rcSum").innerHTML=h;
 }
@@ -2196,7 +2198,7 @@ const rcFold=new Set((()=>{ try{ return JSON.parse(localStorage.getItem("rcFold"
 function rcRenderSecs(){
   $("rcSecs").innerHTML=RAIDCOMP.secs.map(s=>{ const list=s.s.map(i=>[i,rcCountSpell(i)]).filter(x=>x[1][0]||x[1][1]);
     const shut=rcFold.has(s.n);
-    return `<section class="card wood rc-sec${shut?" collapsed":""}" data-sec="${esc(s.n)}"><button type="button" class="hdr ord-tog" aria-expanded="${!shut}"><span>${esc(s.n)}</span><span class="ord-caret" aria-hidden="true">&#9660;</span></button><div class="parch">${list.length?`<div class="rc-list rc-cols">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`}</div></section>`; }).join("");
+    return `<section class="card wood rc-sec${shut?" collapsed":""}" data-sec="${esc(s.n)}"><button type="button" class="hdr ord-tog" aria-expanded="${!shut}"><span>${esc(s.n)}</span><span class="ord-caret" aria-hidden="true">&#9660;</span></button><div class="parch">${list.length?`<div class="rc-list ${rcColsCls(list.length)}">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`}</div></section>`; }).join("");
 }
 $("rcLegend").innerHTML=`<span>${RC_MK.t} Talent</span><span>${RC_MK.p} Pet</span><span>${RC_MK.r} Priest racial</span><span>${RC_COULD} nobody has it yet, but someone here could talent into it (hover for who)</span><span><i>Assumed</i> stacking rules aren't confirmed for Forever yet: hover a category to see them</span>`;
 
