@@ -833,9 +833,11 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 .rt.sr-hl,.sb-sp.sr-hl{background:#3a200a2e;border-radius:2px}
 @keyframes srFlash{0%,40%{box-shadow:0 0 0 2px #ffd75a,0 0 14px #ffd75a}100%{box-shadow:0 0 0 2px #ffd75a00,0 0 14px #ffd75a00}}
 .sr-flash{animation:srFlash 1.6s ease-out}
-/* a row (Class Changes, Racials): the ring sits well outside it, clear of the icon frame (drawn 4px outside the icon) */
-@keyframes srFlashRt{0%,40%{outline-color:#ffd75a;box-shadow:0 0 14px #ffd75a}100%{outline-color:#ffd75a00;box-shadow:0 0 14px #ffd75a00}}
-.rt.sr-flash{outline:2px solid #ffd75a00;outline-offset:9px;border-radius:3px;animation-name:srFlashRt}
+/* a row (Class Changes, Racials): a square gold frame out to the parchment's torn edge, clear of the icon */
+@keyframes srFrameRt{0%,40%{border-color:#ffd75a;box-shadow:0 0 0 1px #2a1404aa}100%{border-color:#ffd75a00;box-shadow:0 0 0 1px #2a140400}}
+.rt.sr-flash{position:relative;animation:none}
+.rt.sr-flash::after{content:"";position:absolute;inset:-6px -8px;border:3px solid #ffd75a00;pointer-events:none;animation:srFrameRt 1.6s ease-out}
+@media (max-width:820px){.rt.sr-flash::after{inset:-1px -8px}}   /* phones: rows sit closer, so the frame keeps off the next row's icon */
 /* Build Code only means something on the talent pages */
 #app[data-mode="changes"] .code-grp,#app[data-mode="racials"] .code-grp,#app[data-mode="spellbook"] .code-grp{display:none}
 @media (max-width:820px){
