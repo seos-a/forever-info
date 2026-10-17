@@ -1161,14 +1161,14 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-slots{display:grid;gap:4px;padding:5px;border-radius:3px;background:#2b190a2e;box-shadow:inset 0 1px 4px #0006,0 1px 0 #f9eccb55}
 .rc-slot{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 7px 0 5px;border-radius:3px;min-width:0;
   box-shadow:inset 0 0 0 1px #5c3d1699;background:#1a0d0414}
-.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:16.25px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000;
+.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:16.25px;text-shadow:1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,0 1px 3px #000;
   background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#9a6f41,#7b5630 55%,#684626);box-shadow:inset 0 1px 0 #ffffff33,inset 0 0 0 1px #000,inset 0 0 6px #0003}
 .rc-slot.on:hover{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#aa7d4c,#8a6339 55%,#75512d)}
 .rc-slot.over{box-shadow:inset 0 0 0 2px #ffd75a,0 0 8px #ffd75a99}
 .rc-slot.drag{opacity:.45}
 .rc-slot .rc-si{width:30px;height:30px;flex:none;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #8a6a2a;overflow:hidden;background:#222}
 .rc-slot .rc-si img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
-.rc-slot .rc-sn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 3px 2px 1px;margin:-1px 0 -2px -1px}
+.rc-slot .rc-sn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 1px;margin:-1px -5px -3px -1px}   /* room on the right for the outline and its 3px halo, which overflow:hidden would clip */
 .rc-x{flex:none;width:22px;height:22px;padding:0;border:0;border-radius:2px;background:none;color:#f1e3c0;font:700 18px/1 var(--font);cursor:pointer;opacity:0;text-shadow:0 1px 2px #000}
 .rc-slot.on:hover .rc-x,.rc-x:focus-visible,body.touch .rc-x{opacity:1}
 .rc-x:hover{color:#ff8f84}
@@ -1181,13 +1181,13 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-tab{border:0;background:none;padding:3px 12px;font:inherit;letter-spacing:inherit;color:inherit;text-shadow:inherit;cursor:pointer;opacity:.5}   /* the title bar's own text (.hdr); the other tab dimmed */
 .rc-tab:hover{opacity:.8}
 .rc-tab[aria-selected="true"]{opacity:1}
-.rc-grp-t{font-family:var(--font);font-weight:700;font-size:15.75px;letter-spacing:.01em;color:#ffcf1a;margin:16px 0 7px;text-align:center;text-shadow:0 1px 0 #000,0 0 2px #000,0 0 3px #000c,1px 1px 2px #000}   /* the Class Changes spell names (#changes .rt .rn) */
+.rc-grp-t{font-family:var(--font);font-weight:700;font-size:15.75px;letter-spacing:.01em;color:#ffcf1a;margin:12px 0 5px;text-align:center;text-shadow:0 1px 0 #000,0 0 2px #000,0 0 3px #000c,1px 1px 2px #000}   /* the Class Changes spell names (#changes .rt .rn) */
 .rc-grp-t:first-child{margin-top:0}
-.rc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:4px 18px}
-.rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:30px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,15.5px);font-weight:700;color:#2b1a0a;cursor:default}
+.rc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:1px 18px}
+.rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:27px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,15.5px);font-weight:700;color:#2b1a0a;cursor:default}
 .rc-it:hover{background:#2b190a24}
-.rc-it .n{min-width:1.4ch;text-align:right;color:#1a0d04;font-variant-numeric:tabular-nums}
-.rc-it .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 3px 2px 1px;margin:-1px -3px -2px -1px}   /* room for the outline: overflow:hidden clipped the last letter's right edge */
+.rc-it .n{min-width:2.2ch;text-align:right;color:#1a0d04;font-variant-numeric:tabular-nums}
+.rc-it .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 1px;margin:-1px -5px -3px -1px}   /* room for the outline: overflow:hidden clipped the last letter's right edge */
 /* spell names: class colours with the black outline the sidebar's class buttons use */
 .rc-it.sp .t{color:var(--c);text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000}   /* the class picker's labels (.rn-ov): outline plus a soft black halo */
 .rc-it.sp .rc-mk{color:var(--c);filter:drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000) drop-shadow(0 1px 2px #000)}   /* the names' outline plus their soft halo (0 1px 3px) */
@@ -2097,7 +2097,8 @@ RC_SPECS.push({k:"druid",ti:1,name:"Feral (Cat)",icon:"ability_druid_catform",cl
 const RC_CODE="0123456789abcdefghijklmnopqr";   // one character per slot (spec index), "-" for an empty slot
 const RC_SP=RAIDCOMP.spells;
 let rcSlots=Array(40).fill(-1), rcTab="cats";
-const rcCol=k=>k==="shaman"?"#4ea6f7":k==="warlock"?"#a1a2ff":k==="warrior"?"#d7b285":MODEL[k].color;   // on dark: lighter Shaman and Warlock than the sidebar, the sidebar's lighter Warrior
+const RC_COL={shaman:"#3190ee",warlock:"#a1a2ff",warrior:"#d7b285"};   // on leather: the sidebar's Shaman and Warrior, a lighter Warlock
+const rcCol=k=>RC_COL[k]||MODEL[k].color;
 // on parchment: darker "ink" versions of the class colours, readable without an outline
 const RC_INK={druid:"#a84300",hunter:"#3f6b12",mage:"#0b6688",paladin:"#a8255f",priest:"#4d4d4d",rogue:"#7f6a00",shaman:"#0a52ad",warlock:"#5146b8",warrior:"#7a4f22"};
 const rcSpecsOf=k=>RC_SPECS.map((s,i)=>i).filter(i=>RC_SPECS[i].k===k).sort((a,b)=>RC_SPECS[a].ti-RC_SPECS[b].ti||a-b);   // a class's buttons, Cat right after Bear
