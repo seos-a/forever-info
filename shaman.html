@@ -1172,9 +1172,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-slot .rc-si{width:30px;height:30px;flex:none;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #8a6a2a;overflow:hidden;background:#222}
 .rc-slot .rc-si img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none}
 .rc-slot.on .rc-sn{cursor:text}
-.rc-in{width:100%;box-sizing:border-box;font:inherit;font-size:inherit;font-weight:700;color:#3d1a06;background:#fff7e0;border:1px solid #3a2410;border-radius:2px;padding:1px 4px;text-shadow:none;box-shadow:inset 0 1px 3px #8a5a2499,0 0 0 1px #c9a24c99;outline:none}
-.rc-in::placeholder{color:#9a7a55}
-@media (max-width:820px){.rc-in{font-size:16px;padding:0 4px}}   /* 16px: iPhones zoom the page into smaller text boxes */
+.rc-slot .rc-sn.edit{outline:none;text-overflow:clip;caret-color:#fff;cursor:text;user-select:text;-webkit-user-select:text}   /* editing in place: just a caret, the name keeps its look */
 .rc-slot .rc-sn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px 3px 2px;margin:-1px -5px -3px -2px}   /* room for the outline and its 3px halo, which overflow:hidden would clip */
 .rc-x{flex:none;width:22px;height:22px;padding:0;border:0;border-radius:2px;background:none;color:#f1e3c0;font:700 18px/1 var(--font);cursor:pointer;opacity:0;text-shadow:0 1px 2px #000}
 .rc-slot.on:hover .rc-x,.rc-x:focus-visible,body.touch .rc-x{opacity:1}
@@ -2194,13 +2192,20 @@ for(const k of RC_CLS){ const m=MODEL[k];
 function rcAdd(si,at){
   const i=at!=null?at:rcSlots.indexOf(-1); if(i<0){ rcToast("The raid is full"); return; }
   rcSlots[i]=si; rcAge[i]=++rcTick; rcName[i]=""; rcRender(); }
-// click (tap) a member's name to type a player's name over it: Enter or clicking away keeps it, Esc cancels, an empty name shows the spec again
-function rcRename(slot){ const i=+slot.dataset.i, sn=slot.querySelector(".rc-sn"); if(!sn||sn.querySelector("input")) return; hideTip();
-  slot.draggable=false; sn.innerHTML=`<input class="rc-in" maxlength="20" spellcheck="false" autocomplete="off" aria-label="Player name" placeholder="${esc(RC_SPECS[rcSlots[i]].name)}">`;
-  const inp=sn.firstChild; inp.value=rcName[i]; inp.focus(); inp.select(); let done=false;
-  const end=keep=>{ if(done) return; done=true; if(keep){ const v=rcClean(inp.value); rcName[i]=v===RC_SPECS[rcSlots[i]].name?"":v; } rcRender(); };
-  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); end(true); } else if(e.key==="Escape"){ e.preventDefault(); end(false); } });
-  inp.addEventListener("blur",()=>end(true)); }
+// click (tap) a member's name to edit it in place: a caret appears after the name, Enter or clicking away keeps it, Esc
+// cancels, and an empty name (or the spec's own) shows the spec again
+function rcRename(slot){ const i=+slot.dataset.i, sn=slot.querySelector(".rc-sn"); if(!sn||sn.isContentEditable) return; hideTip();
+  const spec=RC_SPECS[rcSlots[i]].name; slot.draggable=false; sn.classList.add("edit"); sn.contentEditable="plaintext-only";
+  if(sn.contentEditable!=="plaintext-only") sn.contentEditable="true";   // older browsers: plain "true" (paste is kept plain below)
+  sn.spellcheck=false; sn.focus();
+  const r=document.createRange(); r.selectNodeContents(sn); r.collapse(false); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r);   // caret at the end
+  let done=false;
+  const end=keep=>{ if(done) return; done=true; if(keep){ const v=rcClean(sn.textContent); rcName[i]=v===spec?"":v; } rcRender(); };
+  sn.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); end(true); } else if(e.key==="Escape"){ e.preventDefault(); end(false); } });
+  sn.addEventListener("input",()=>{ if(sn.textContent.length<=20) return; sn.textContent=sn.textContent.slice(0,20);   // 20 characters at most
+    const c=document.createRange(); c.selectNodeContents(sn); c.collapse(false); const s2=getSelection(); s2.removeAllRanges(); s2.addRange(c); });
+  sn.addEventListener("paste",e=>{ e.preventDefault(); const t=(e.clipboardData||window.clipboardData).getData("text").replace(/\s+/g," "); document.execCommand("insertText",false,t.slice(0,Math.max(0,20-sn.textContent.length))); });
+  sn.addEventListener("blur",()=>end(true)); }
 // right-click a spec: out goes the one of that spec added last (the highest slot when a link loaded them)
 function rcDrop(si){ let k=-1; rcSlots.forEach((x,j)=>{ if(x===si&&(k<0||rcAge[j]>=rcAge[k])) k=j; }); if(k>=0){ rcSlots[k]=-1; rcRender(); } }
 function rcToast(msg){ $("rcPrompt").textContent=msg; clearTimeout(rcToast.t); rcToast.t=setTimeout(rcPromptText,2200); }
@@ -2298,7 +2303,7 @@ function rcTipEl(el){
 const RC_TIPS=".rc-spec,.rc-slot.on,.rc-it,.rc-ic";
 function rcShowTip(el,ev){ const h=rcTipEl(el); if(!h) return; $("tip").innerHTML=h; tipFor=null;
   if(ev&&canHover) placeTipAt(ev.clientX,ev.clientY); else placeTip(el); }
-$("raid").addEventListener("mouseover",e=>{ if(!canHover||rcDrag&&e.buttons) return; const el=e.target.closest(RC_TIPS); if(el&&!e.target.closest(".rc-x,.rc-in")) rcShowTip(el,e); else hideTip(); });
+$("raid").addEventListener("mouseover",e=>{ if(!canHover||rcDrag&&e.buttons) return; const el=e.target.closest(RC_TIPS); if(el&&!e.target.closest(".rc-x,.rc-sn.edit")) rcShowTip(el,e); else hideTip(); });
 $("raid").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.target.closest(RC_TIPS)) placeTipAt(e.clientX,e.clientY); });
 $("raid").addEventListener("mouseout",e=>{ const el=e.target.closest(RC_TIPS); if(el&&canHover&&!el.contains(e.relatedTarget)) hideTip(); });
 
@@ -2310,7 +2315,7 @@ $("raid").addEventListener("click",e=>{
     sec.classList.toggle("collapsed",shut); fd.setAttribute("aria-expanded",String(!shut)); if(shut) rcFold.add(n); else rcFold.delete(n);
     try{ localStorage.setItem("rcFold",JSON.stringify([...rcFold])); }catch(err){} hideTip(); return; }
   const tb=e.target.closest(".rc-tab"); if(tb){ rcTab=tb.dataset.t; hideTip(); rcRenderSum(); if($("search").value.trim()) runSearch(); return; }
-  if(e.target.closest(".rc-in")) return;
+  if(e.target.closest(".rc-sn.edit")) return;
   const sn=e.target.closest(".rc-slot.on .rc-sn"); if(sn){ rcRename(sn.closest(".rc-slot")); return; }
   const el=e.target.closest(".rc-it,.rc-ic,.rc-slot.on"); if(el) rcShowTip(el,canHover?e:null);
 });
