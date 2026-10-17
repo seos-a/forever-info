@@ -1196,6 +1196,9 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-it.sp .rc-mk{color:var(--c);filter:drop-shadow(0 1px 2px #000b)}   /* the names' soft halo; their 1px outline is drawn into the symbol (.mk-o), since stacked drop-shadows came out lopsided or vanished */
 .rc-mk .mk-o{display:none}.rc-it.sp .rc-mk .mk-o{display:inline}   /* the black outline copy behind each symbol, only on the class-coloured names */
 .rc-it.zero{opacity:.42}
+.rc-it .n2{display:none;flex:none;margin-left:-3px;color:#6b4a24;font-variant-numeric:tabular-nums}
+.rc-it.sp .n2{color:#efe2c2;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000}   /* on the leather pill: parchment white with the names' outline */
+@media (max-width:820px){.rc-it .n{display:none}.rc-it .n2{display:inline}}   /* phones: "Stamina (6)", so the names start at the left edge */
 .rc-sec.collapsed>.parch{display:none}
 .rc-cols{display:block;column-width:305px;column-gap:18px}   /* spell lists read down each column */
 .rc-cols>.rc-it{break-inside:avoid;margin-bottom:4px}
@@ -1593,7 +1596,7 @@ function placeTipAt(x0,y0){
 }
 function hideTip(){ $("tip").hidden=true; tipFor=null; }
 addEventListener("scroll",hideTip,{passive:true});
-if(!canHover){ document.body.classList.add("touch"); document.addEventListener("click",e=>{ if(!e.target.closest(".tal,.gs span,.sb-sp,.order2 li,.ri-c,.rt[data-n]")) hideTip(); }); }
+if(!canHover){ document.body.classList.add("touch"); document.addEventListener("click",e=>{ if(!e.target.closest(".tal,.gs span,.sb-sp,.order2 li,.ri-c,.rt[data-n],#raid .rc-it,#raid .rc-ic,#raid .rc-slot.on")) hideTip(); }); }   // a tap elsewhere closes the tooltip (Raid Composition entries open their own)
 
 function render(){
   const spent=totalSpent();
@@ -2119,6 +2122,7 @@ const rcCountSpell=i=>{ const e=RC_SP[i], f=rcFilled(); return [f.filter(si=>rcH
 const rcCountCat=c=>{ const f=rcFilled(), sure=f.filter(si=>c.s.some(i=>rcHas(si,RC_SP[i])));
   return [sure.length,f.filter(si=>!sure.includes(si)&&c.s.some(i=>rcMay(si,RC_SP[i]))).length]; };
 const rcN=([a,b])=>`<span class="n">${a}</span>`;
+const rcN2=([a,b])=>`<span class="n2">(${a})</span>`;   // phones: the count after the name instead of in a column
 const RC_COULD=`<svg class="rc-mk rc-could" viewBox="0 0 16 16" overflow="visible" aria-label="Someone here could talent into it"><circle class="mk-o" stroke="#000" stroke-linejoin="round" cx="8" cy="8" r="5.6" fill="none" stroke-width="3.8" stroke-dasharray="3.6 0.8" stroke-dashoffset="0.5"/><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2.6 1.8"/></svg>`;
 const rcCould=([a,b])=>!a&&b?RC_COULD:"";
 const rcNT=([a,b])=>`<span class="n">${a}</span>${b?`<span class="mb">(+${b} could)</span>`:""}`;   // tooltips spell it out
@@ -2170,7 +2174,7 @@ function rcRender(){
 }
 const rcSort=list=>list.sort((a,b)=>RC_CLS.indexOf(RC_SP[a[0]].c)-RC_CLS.indexOf(RC_SP[b[0]].c)||RC_SP[a[0]].n.localeCompare(RC_SP[b[0]].n));
 const rcItem=(i,cnt)=>{ const e=RC_SP[i];
-  return `<div class="rc-it sp" data-sp="${i}" style="--c:${rcCol(e.c)};--tx:-${(i*137)%360}px -${(i*83+40)%360}px">${rcN(cnt)}<span class="rc-pill"><img class="si" src="${IMG(e.i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(e.n)}</span>${rcMark(e)}${rcCould(cnt)}</span></div>`; };
+  return `<div class="rc-it sp" data-sp="${i}" style="--c:${rcCol(e.c)};--tx:-${(i*137)%360}px -${(i*83+40)%360}px">${rcN(cnt)}<span class="rc-pill"><img class="si" src="${IMG(e.i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(e.n)}</span>${rcN2(cnt)}${rcMark(e)}${rcCould(cnt)}</span></div>`; };
 function rcRenderSum(){
   document.querySelectorAll(".rc-tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===rcTab)));
   let h="";
@@ -2178,7 +2182,7 @@ function rcRenderSum(){
     const cats=RAIDCOMP.cats.map((c,ci)=>[c,ci]).filter(([c])=>c.g===g);
     h+=`<div class="rc-grp-t">${g}</div>`;
     if(rcTab==="cats") h+=`<div class="rc-list">${cats.map(([c,ci])=>{ const n=rcCountCat(c);
-        return `<div class="rc-it${n[0]||n[1]?"":" zero"}" data-cat="${ci}">${rcN(n)}<img class="si" src="${IMG(RC_SP[c.s[0]].i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(c.n)}</span>${rcCould(n)}</div>`; }).join("")}</div>`;
+        return `<div class="rc-it${n[0]||n[1]?"":" zero"}" data-cat="${ci}">${rcN(n)}<img class="si" src="${IMG(RC_SP[c.s[0]].i)}" alt="" onerror="this.style.visibility='hidden'"><span class="t">${esc(c.n)}</span>${rcN2(n)}${rcCould(n)}</div>`; }).join("")}</div>`;
     else { const seen=new Set(), list=[];
       cats.forEach(([c])=>c.s.forEach(i=>{ if(!seen.has(i)){ seen.add(i); const n=rcCountSpell(i); if(n[0]||n[1]) list.push([i,n]); } }));
       h+=list.length?`<div class="rc-list rc-cols">${rcSort(list).map(([i,n])=>rcItem(i,n)).join("")}</div>`:`<p class="rc-empty">None in this raid yet</p>`; }
