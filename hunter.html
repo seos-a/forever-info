@@ -2136,6 +2136,7 @@ RC_SPECS.push({k:"druid",ti:1,name:"Feral (Cat)",icon:"ability_druid_catform",cl
 const RC_CODE="0123456789abcdefghijklmnopqr";   // one character per slot (spec index), "-" for an empty slot
 const RC_SP=RAIDCOMP.spells;
 let rcSlots=Array(40).fill(-1), rcTab="cats";
+let rcAge=Array(40).fill(0), rcTick=0;   // when each slot was filled, so right-clicking a spec takes out its latest copy (moves with its member)
 const RC_COL={shaman:"#3190ee",warlock:"#a1a2ff",warrior:"#d7b285"};   // on leather: the sidebar's Shaman and Warrior, a lighter Warlock
 const rcCol=k=>RC_COL[k]||MODEL[k].color;
 // on parchment: darker "ink" versions of the class colours, readable without an outline
@@ -2162,7 +2163,7 @@ const rcMark=e=>e.t?RC_MK.t:e.p?RC_MK.p:e.r?RC_MK.r:"";
 const rcTree=e=>MODEL[e.c].trees[e.s[0]].name;
 const rcWhy=e=>e.t?`${rcTree(e)} talent`+(e.o?` (other specs: ${e.need} points in ${rcTree(e)})`:""):e.p?`Needs the ${e.p} pet`:e.r?`${e.r} Priests only`:"";
 const rcEncode=()=>rcSlots.map(si=>si<0?"-":RC_CODE[si]).join("").replace(/-+$/,"");
-function rcDecode(code){ rcSlots=Array(40).fill(-1); [...(code||"").slice(0,40)].forEach((ch,i)=>{ const si=RC_CODE.indexOf(ch); if(si>=0) rcSlots[i]=si; }); }
+function rcDecode(code){ rcSlots=Array(40).fill(-1); rcAge=rcSlots.map((x,i)=>i+1); rcTick=40; [...(code||"").slice(0,40)].forEach((ch,i)=>{ const si=RC_CODE.indexOf(ch); if(si>=0) rcSlots[i]=si; }); }
 const rcLink=()=>{ const c=rcEncode(); return "raid"+(c?":"+c:""); };
 const rcHit=(e,q)=>(e.n+" "+e.d).toLowerCase().includes(q);
 
@@ -2174,7 +2175,9 @@ for(const k of RC_CLS){ const m=MODEL[k];
   if(k==="priest") $("rcBar").insertAdjacentHTML("beforeend",'<span class="rc-br"></span>'); }
 function rcAdd(si,at){
   const i=at!=null?at:rcSlots.indexOf(-1); if(i<0){ rcToast("The raid is full"); return; }
-  rcSlots[i]=si; rcRender(); }
+  rcSlots[i]=si; rcAge[i]=++rcTick; rcRender(); }
+// right-click a spec: out goes the one of that spec added last (the highest slot when a link loaded them)
+function rcDrop(si){ let k=-1; rcSlots.forEach((x,j)=>{ if(x===si&&(k<0||rcAge[j]>=rcAge[k])) k=j; }); if(k>=0){ rcSlots[k]=-1; rcRender(); } }
 function rcToast(msg){ $("rcPrompt").textContent=msg; clearTimeout(rcToast.t); rcToast.t=setTimeout(rcPromptText,2200); }
 function rcPromptText(){ $("rcPrompt").textContent=""; }   // the line only shows a message such as "The raid is full"
 
@@ -2236,6 +2239,7 @@ function rcSpecTip(si){
   for(const sec of RAIDCOMP.secs){ const l=sec.s.filter(i=>mine.includes(i));
     if(l.length) out.push(`<div class="rc-h">${esc(sec.n)}</div><div>${l.map(i=>rcMark(RC_SP[i])+esc(RC_SP[i].n)).join(", ")}</div>`); }
   const may=rcMaysOf(si).filter(i=>RAIDCOMP.cats.some(c=>c.s.includes(i))||RAIDCOMP.secs.some(c=>c.s.includes(i)));
+  if(canHover&&rcSlots.includes(si)) out.push(`<div class="hint rm">Right-click to remove one</div>`);
   if(may.length) out.push(`<div class="rc-note">Can also talent into: ${may.map(i=>{ const e=RC_SP[i]; return `${esc(e.n)} <span class="tk">(${e.need} in ${esc(rcTree(e))})</span>`; }).join(", ")}</div>`);
   return out.join("");
 }
@@ -2282,7 +2286,9 @@ $("raid").addEventListener("click",e=>{
   const tb=e.target.closest(".rc-tab"); if(tb){ rcTab=tb.dataset.t; hideTip(); rcRenderSum(); if($("search").value.trim()) runSearch(); return; }
   const el=e.target.closest(".rc-it,.rc-ic,.rc-slot.on"); if(el) rcShowTip(el,canHover?e:null);
 });
-$("raid").addEventListener("contextmenu",e=>{ const s=e.target.closest(".rc-slot.on"); if(!s) return; e.preventDefault(); rcSlots[+s.dataset.i]=-1; hideTip(); rcRender(); });   // right-click removes, as on the talent trees
+$("raid").addEventListener("contextmenu",e=>{   // right-click removes, as on the talent trees: a member, or a spec's latest copy
+  const sp=e.target.closest(".rc-spec"); if(sp){ e.preventDefault(); rcDrop(+sp.dataset.si); if(canHover) rcShowTip(sp,e); return; }
+  const s=e.target.closest(".rc-slot.on"); if(!s) return; e.preventDefault(); rcSlots[+s.dataset.i]=-1; hideTip(); rcRender(); });
 if(!canHover) document.addEventListener("click",e=>{ if(!e.target.closest("#raid .rc-it,#raid .rc-ic,#raid .rc-slot.on")&&!$("raid").hidden) hideTip(); });
 // drag a spec into a slot, a member to another slot (the two swap), or a member off the board to take it out
 let rcDrag=null;
@@ -2294,7 +2300,8 @@ $("raid").addEventListener("dragover",e=>{ const sl=rcDrag&&e.target.closest(".r
 $("raid").addEventListener("dragleave",e=>{ const sl=e.target.closest(".rc-slot"); if(sl&&!sl.contains(e.relatedTarget)) sl.classList.remove("over"); });
 $("raid").addEventListener("drop",e=>{ const sl=rcDrag&&e.target.closest(".rc-slot"); if(!sl) return; e.preventDefault();
   const to=+sl.dataset.i;
-  if(rcDrag.from!=null){ const a=rcSlots[rcDrag.from]; rcSlots[rcDrag.from]=rcSlots[to]; rcSlots[to]=a; } else rcSlots[to]=rcDrag.si;
+  if(rcDrag.from!=null){ const a=rcSlots[rcDrag.from], g=rcAge[rcDrag.from]; rcSlots[rcDrag.from]=rcSlots[to]; rcAge[rcDrag.from]=rcAge[to]; rcSlots[to]=a; rcAge[to]=g; }
+  else { rcSlots[to]=rcDrag.si; rcAge[to]=++rcTick; }
   rcDrag=null; rcRender(); });   // the board is redrawn, so the dragged member's dragend never arrives: the drag ends here
 document.addEventListener("dragend",()=>{ if(!rcDrag) return;
   if(rcDrag.from!=null){ rcSlots[rcDrag.from]=-1; rcRender(); }   // dropped outside the board: out of the raid
