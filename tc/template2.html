@@ -1253,7 +1253,7 @@ body.hallow .rc-pl,body.hallow .rc-pl b{color:#000;text-shadow:0 0 2px #ffb066,0
 .tip .rc-mk{color:#ffd75a;width:12px;height:12px}
 @media (max-width:599px){   /* phones: Wowhead's compact boxes in the site's style, three classes a row in even columns; the
      class shows in each box's border colour instead of a name */
-  #raid .rc-bar{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;justify-items:stretch;gap:7px 6px;padding:12px 6px}
+  #raid .rc-bar{display:grid;grid-template-columns:repeat(3,auto);justify-content:stretch;justify-items:stretch;gap:7px 8px;padding:12px 8px}   /* the columns share the bar's spare width, so the icons aren't squeezed together */
   #raid .rc-cls{padding:3px;gap:0;border-radius:3px;background:linear-gradient(180deg,#18181b,#0b0b0d);border:1px solid #000;
     box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,#000),0 1px 3px #000c}
   #raid .rc-cn{display:none}
