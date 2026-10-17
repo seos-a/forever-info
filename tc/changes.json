@@ -26,7 +26,7 @@
       "other",
       "Furor",
       "spell_holy_blessingofstamina",
-      "Restoration talent · reworded",
+      "Restoration talent · reworked",
       "Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per {*second*} spent outside {*Bear Form or Dire Bear*} Form, up to 100 Energy.",
       "Gives you a 100% chance to gain 10 Rage when shapeshifting into Bear Form or Dire Bear Form. Shapeshifting into Cat Form restores 100% of the Energy you had when last in Cat Form, plus 10 Energy per {~sec~} spent outside {~Cat~} Form, up to 100 Energy.\n{~Bear Form and Dire Bear Form forfeit this Energy and halt its restoration while active.~}",
       [
@@ -115,18 +115,18 @@
       "Rapid Recuperation",
       "ability_hunter_rapidregeneration",
       "Marksmanship talent · reworded",
-      "{*Afflicting*} a target with Serpent Sting {*allows*} 50% of your Mana {*Regeneration to continue*} while casting for 15 sec{*, increased to 100% when Rapid Killing is consumed*}.",
-      "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you~} 50{~% and consuming Rapid Killing grants you 100~}% of your Mana {~regeneration~} while casting for {~the next~} 15 sec.",
+      "{*Afflicting*} a target with Serpent Sting {*allows 50% of your Mana Regeneration to continue while casting for 15 sec, increased to 100% when Rapid Killing is consumed.*}",
+      "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you 50% and consuming Rapid Killing grants you 100% of your Mana regeneration while casting for the next 15 sec.~}",
       [
        [
         2,
-        "{*Afflicting*} a target with Serpent Sting {*allows*} 50% of your Mana {*Regeneration to continue*} while casting for 15 sec{*, increased to 100% when Rapid Killing is consumed*}.",
-        "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you~} 50{~% and consuming Rapid Killing grants you 100~}% of your Mana {~regeneration~} while casting for {~the next~} 15 sec."
+        "{*Afflicting*} a target with Serpent Sting {*allows 50% of your Mana Regeneration to continue while casting for 15 sec, increased to 100% when Rapid Killing is consumed.*}",
+        "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you 50% and consuming Rapid Killing grants you 100% of your Mana regeneration while casting for the next 15 sec.~}"
        ],
        [
         1,
-        "{*Afflicting*} a target with Serpent Sting {*allows*} 25% of your Mana {*Regeneration to continue*} while casting for 15 sec{*, increased to 50% when Rapid Killing is consumed*}.",
-        "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you~} 25{~% and consuming Rapid Killing grants you 50~}% of your Mana {~regeneration~} while casting for {~the next~} 15 sec."
+        "{*Afflicting*} a target with Serpent Sting {*allows 25% of your Mana Regeneration to continue while casting for 15 sec, increased to 50% when Rapid Killing is consumed.*}",
+        "{~Hitting~} a target with {~your~} Serpent Sting {~ability grants you 25% and consuming Rapid Killing grants you 50% of your Mana regeneration while casting for the next 15 sec.~}"
        ]
       ]
      ],
