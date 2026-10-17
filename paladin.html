@@ -1632,7 +1632,7 @@ function placeTipAt(x0,y0){
 }
 function hideTip(){ $("tip").hidden=true; tipFor=null; }
 addEventListener("scroll",hideTip,{passive:true});
-if(!canHover){ document.body.classList.add("touch"); document.addEventListener("click",e=>{ if(!e.target.closest(".tal,.gs span,.sb-sp,.order2 li,.ri-c,.rt[data-n],#raid .rc-it,#raid .rc-ic,#raid .rc-slot.on")) hideTip(); }); }   // a tap elsewhere closes the tooltip (Raid Composition entries open their own)
+if(!canHover){ document.body.classList.add("touch"); document.addEventListener("click",e=>{ if(!e.target.closest(".tal,.gs span,.sb-sp,.order2 li,.ri-c,.rt[data-n] .slot,.rt[data-n] .rn,#raid .rc-it,#raid .rc-ic,#raid .rc-slot.on")) hideTip(); }); }   // a tap elsewhere closes the tooltip (Raid Composition entries open their own)
 
 function render(){
   const spent=totalSpent();
@@ -2129,7 +2129,7 @@ const chgTip=(row,ev)=>{ const e=chgEntry(row); if(e) sbTipFor(e,row.querySelect
 $("changes").addEventListener("mouseover",e=>{ const r=e.target.closest(".rt[data-n]"); if(!r||!canHover) return; if(e.target.closest(".slot,.rn")) chgTip(r,e); else hideTip(); });   // only over the icon and the name, not the text beside them
 $("changes").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.target.closest(".rt[data-n] :is(.slot,.rn)")) placeTipAt(e.clientX,e.clientY); });
 $("changes").addEventListener("mouseout",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&canHover&&!r.contains(e.relatedTarget)) hideTip(); });
-$("changes").addEventListener("click",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&!canHover&&!e.target.closest(".chg-was,.chg-rk")) chgTip(r); });
+$("changes").addEventListener("click",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&!canHover&&e.target.closest(".slot,.rn")) chgTip(r); });   // phones: tap the icon or the name, as desktop hovers them
 
 // ---- Raid Composition: 8 groups of 5, filled from the spec bar; what the raid brings, from tc/raidcomp.json ----
 const RC_CLS=["druid","hunter","mage","paladin","priest","rogue","shaman","warlock","warrior"];
