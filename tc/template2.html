@@ -348,21 +348,21 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .order-parch.is-empty{background:var(--cobweb) center/100% 100% no-repeat,#050505!important;border-color:#2b2b30!important;
   box-shadow:inset 0 0 0 1px #000,inset 0 0 28px #000,0 0 0 1px #000!important;display:grid;place-items:center;aspect-ratio:1100/332;height:auto!important;min-height:0!important}   /* same shape as the image, so none of it is cropped */
 .order-parch.is-empty::after{display:none}
-/* desktop: the Talent Order always reserves the height of a full build (one 19px row per point / 3), so it never
+/* desktop: the Talent Order always reserves the height of a full build (one 28px row per point / 3), so it never
    changes size; when empty the cobweb image covers that space and the message sits in the middle */
 @media (min-width:821px){
-  #app .order2{grid-template-rows:repeat(var(--rows,17),19px)}
-  #app .order2 li{padding-top:0;padding-bottom:0;line-height:19px}
+  #app .order2{grid-template-rows:repeat(var(--rows,17),28px)}
+  #app .order2 li{padding-top:0;padding-bottom:0;line-height:28px}
   .order-parch.is-empty{aspect-ratio:auto!important;background-size:cover!important}
   .order-parch.is-empty .order-empty{position:absolute;inset:0;display:grid;place-items:center}
 }
 .order-parch.is-empty .order-empty{color:#f1efe9;font-size:15px;font-weight:400;text-shadow:0 1px 2px #000;text-align:center;letter-spacing:.02em}
 .order2{list-style:none;margin:0;padding:0 4px;display:grid;grid-auto-flow:column;grid-template-rows:repeat(var(--rows,17),auto);grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px}
 @media (max-width:820px){.order2{grid-auto-flow:row;grid-template-rows:none;grid-template-columns:1fr}}
-.order2 li{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:14px;min-width:0;white-space:nowrap}
+.order2 li{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:16px;min-width:0;white-space:nowrap}
 .order2 .onm{overflow:hidden;text-overflow:ellipsis}
 .order2 .on{width:22px;text-align:right;color:#120802;font-weight:700;text-shadow:none;font-variant-numeric:tabular-nums;font-size:12px}
-.order2 img{width:18px;height:18px;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #9a7a3a,2px 2px 3px #0007}
+.order2 img{width:21px;height:21px;border-radius:3px;border:1px solid #000;box-shadow:0 0 0 1px #9a7a3a,2px 2px 3px #0007}
 .order2 .onm{color:#a30f05;font-weight:700;text-shadow:0 1px 0 #fff4cf99}
 .order2 .ork{color:#120802;text-shadow:none;font-size:12px;font-weight:700}
 #app[data-mode="legacy"] .cls-only{display:none}
@@ -443,7 +443,7 @@ body.touch .tip .hint{display:none}
 #changes .race-meta,#changes .none-note{font-size:14px}
 #racials .gl .gn{font-size:15px}
 #racials .gl .gf{font-size:14px;font-weight:700;letter-spacing:.02em}
-#racials .gl .gs{font-size:12.5px;gap:8px;letter-spacing:0!important}
+#racials .gl .gs{font-size:13.5px;gap:8px;letter-spacing:0!important}
 #racials .gl{padding:6px 2px}
 #racials .gl .gs img{width:22px;height:22px}
 #racials .gl .gr{width:36px;height:36px}
@@ -1031,7 +1031,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .order-parch{background:linear-gradient(180deg,#6b4a2366,#4a2f1266),var(--parch-bg);box-shadow:inset 0 0 0 1px #f9eccb33,inset 0 0 14px #3a200aaa,inset 0 0 3px #3a2008,0 0 0 1px #000}
 .order2 li{padding:2px 6px 2px 2px;border-radius:2px}
 .order2 .onm{color:#3d1a06;text-shadow:none}
-.order2 .on,.order2 .ork{color:#4a3018;font-size:11.5px}
+.order2 .on,.order2 .ork{color:#4a3018;font-size:13.5px}
 /* hovering a Talent Order line: soft band on the row, thin gold outline on that talent in the trees */
 @media (hover:hover){.order2 li{transition:background-color .1s}.order2 li:hover{background:#3a200a2e}}
 .tal.ord-hl{outline:2px solid #ffd75a;outline-offset:2px}
@@ -1162,7 +1162,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-slots{display:grid;gap:4px;padding:5px;border-radius:3px;background:#2b190a2e;box-shadow:inset 0 1px 4px #0006,0 1px 0 #f9eccb55}
 .rc-slot{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 7px 0 5px;border-radius:3px;min-width:0;
   box-shadow:inset 0 0 0 1px #5c3d1699;background:#1a0d0414}
-.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:15.5px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000;
+.rc-slot.on{cursor:grab;color:var(--c);font-weight:700;font-size:16.25px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000;
   background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#9a6f41,#7b5630 55%,#684626);box-shadow:inset 0 1px 0 #ffffff33,inset 0 0 0 1px #000,inset 0 0 6px #0003}
 .rc-slot.on:hover{background:var(--tex-leather) var(--tx,0 0)/360px 360px,linear-gradient(180deg,#aa7d4c,#8a6339 55%,#75512d)}
 .rc-slot.over{box-shadow:inset 0 0 0 2px #ffd75a,0 0 8px #ffd75a99}
@@ -1182,16 +1182,16 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-tab{border:0;background:none;padding:3px 12px;font:inherit;letter-spacing:inherit;color:inherit;text-shadow:inherit;cursor:pointer;opacity:.5}   /* the title bar's own text (.hdr); the other tab dimmed */
 .rc-tab:hover{opacity:.8}
 .rc-tab[aria-selected="true"]{opacity:1}
-.rc-grp-t{font-family:var(--font);font-weight:700;font-size:15.5px;letter-spacing:.01em;color:#ffcf1a;margin:16px 0 7px;text-align:center;text-shadow:0 1px 0 #000,0 0 2px #000,0 0 3px #000c,1px 1px 2px #000}   /* the Class Changes spell names (#changes .rt .rn) */
+.rc-grp-t{font-family:var(--font);font-weight:700;font-size:15.75px;letter-spacing:.01em;color:#ffcf1a;margin:16px 0 7px;text-align:center;text-shadow:0 1px 0 #000,0 0 2px #000,0 0 3px #000c,1px 1px 2px #000}   /* the Class Changes spell names (#changes .rt .rn) */
 .rc-grp-t:first-child{margin-top:0}
 .rc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:4px 18px}
-.rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:30px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,15.25px);font-weight:700;color:#2b1a0a;cursor:default}
+.rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:30px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,15.5px);font-weight:700;color:#2b1a0a;cursor:default}
 .rc-it:hover{background:#2b190a24}
 .rc-it .n{min-width:1.4ch;text-align:right;color:#1a0d04;font-variant-numeric:tabular-nums}
 .rc-it .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 3px 2px 1px;margin:-1px -3px -2px -1px}   /* room for the outline: overflow:hidden clipped the last letter's right edge */
 /* spell names: class colours with the black outline the sidebar's class buttons use */
 .rc-it.sp .t{color:var(--c);text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 1px 3px #000}   /* the class picker's labels (.rn-ov): outline plus a soft black halo */
-.rc-it.sp .rc-mk{color:var(--c);filter:drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000)}
+.rc-it.sp .rc-mk{color:var(--c);filter:drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000) drop-shadow(0 1px 2px #000)}   /* the names' outline plus their soft halo (0 1px 3px) */
 .rc-it.zero{opacity:.42}
 .rc-sec.collapsed>.parch{display:none}
 .rc-cols{display:block;column-width:305px;column-gap:18px}   /* spell lists read down each column */
@@ -2098,7 +2098,7 @@ RC_SPECS.push({k:"druid",ti:1,name:"Feral (Cat)",icon:"ability_druid_catform",cl
 const RC_CODE="0123456789abcdefghijklmnopqr";   // one character per slot (spec index), "-" for an empty slot
 const RC_SP=RAIDCOMP.spells;
 let rcSlots=Array(40).fill(-1), rcTab="cats";
-const rcCol=k=>k==="shaman"?"#3190ee":k==="warrior"?"#d7b285":MODEL[k].color;   // on dark: the sidebar's lighter Warrior and Shaman
+const rcCol=k=>k==="shaman"?"#4ea6f7":k==="warlock"?"#a1a2ff":k==="warrior"?"#d7b285":MODEL[k].color;   // on dark: lighter Shaman and Warlock than the sidebar, the sidebar's lighter Warrior
 // on parchment: darker "ink" versions of the class colours, readable without an outline
 const RC_INK={druid:"#a84300",hunter:"#3f6b12",mage:"#0b6688",paladin:"#a8255f",priest:"#4d4d4d",rogue:"#7f6a00",shaman:"#0a52ad",warlock:"#5146b8",warrior:"#7a4f22"};
 const rcSpecsOf=k=>RC_SPECS.map((s,i)=>i).filter(i=>RC_SPECS[i].k===k).sort((a,b)=>RC_SPECS[a].ti-RC_SPECS[b].ti||a-b);   // a class's buttons, Cat right after Bear
