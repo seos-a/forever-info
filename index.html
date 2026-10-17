@@ -323,6 +323,7 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .legacy-link::before{content:none}
 .legacy-link{font-size:15px!important;white-space:nowrap;color:#ffd75a!important}
 .legacy-link .ci{margin-left:0}
+@media (min-width:821px){.side .cls{padding-block:5px}.side .cls .ci{width:28px;height:28px}}   /* desktop sidebar: taller buttons, bigger icons */
 .srch{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:8px;background:var(--parch-bg);border:1px solid #5c3d16;box-shadow:inset 0 0 0 1px #f9eccb66,inset 0 0 26px #6b3e12aa,0 0 0 1px #000;border-radius:2px}
 .srch-row{display:flex;gap:6px;min-width:0}
 .srch-row input{flex:1 1 0;width:0;min-width:0;font-size:13px;font-weight:700;background:#fff7e0;color:#3d1a06;border:1px solid #3a2410;border-radius:2px;padding:5px 7px;box-shadow:inset 0 1px 3px #8a5a2499,0 0 0 1px #c9a24c99}
@@ -1176,11 +1177,11 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-ic img{width:100%;height:100%;display:block;object-fit:cover;border-radius:1px}
 .rc-ic b{position:absolute;right:-3px;bottom:-4px;font-size:12.5px;line-height:1;color:#fff;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}
 /* Categories / Spells panel and the lists under it */
-.rc-tabs{justify-content:flex-start!important;gap:4px;padding-block:3px}
-.rc-tab{border:0;background:none;padding:3px 14px;font:inherit;font-size:16px;color:#d8b46a;cursor:pointer;border-radius:2px;text-shadow:inherit}
-.rc-tab:hover{color:#ffe592}
-.rc-tab[aria-selected="true"]{color:#ffe592;box-shadow:inset 0 -1px 0 #000,inset 0 -4px 0 #ffd75a,inset 0 -5px 0 #000a}   /* the selected sidebar button's gold band (3px, black edges) */
-.rc-grp-t{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.04em;color:var(--navy);margin:16px 0 7px;padding-bottom:3px;border-bottom:1px solid #5c3d1666;text-shadow:0 1px 0 #f4e4ba88}
+.rc-tabs{gap:6px;padding-block:3px}
+.rc-tab{border:0;background:none;padding:3px 12px;font:inherit;letter-spacing:inherit;color:inherit;text-shadow:inherit;cursor:pointer;opacity:.5}   /* the title bar's own text (.hdr); the other tab dimmed */
+.rc-tab:hover{opacity:.8}
+.rc-tab[aria-selected="true"]{opacity:1}
+.rc-grp-t{font-family:var(--font);font-weight:700;font-size:15.5px;letter-spacing:.01em;color:#ffcf1a;margin:16px 0 7px;text-align:center;text-shadow:0 1px 0 #000,0 0 2px #000,0 0 3px #000c,1px 1px 2px #000}   /* the Class Changes spell names (#changes .rt .rn) */
 .rc-grp-t:first-child{margin-top:0}
 .rc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:4px 18px}
 .rc-it{display:flex;align-items:center;gap:8px;min-width:0;min-height:30px;padding:2px 5px;border-radius:2px;font-family:var(--rc-ff,var(--font));font-size:var(--rc-fs,14.5px);font-weight:700;color:#2b1a0a;cursor:default}
@@ -1225,10 +1226,8 @@ body:not(.ally):not(.hallow) .rc-btns button:hover{background:radial-gradient(el
 /* Hallow's End: purple with slime-green text, like that theme's title-bar +/- buttons */
 body.hallow .rc-btns button{background:linear-gradient(180deg,#5a1f86,#3a0f5a 60%,#22063a)!important;color:#9be84a!important;text-shadow:0 1px 0 #000,0 0 4px #4dff1a55!important}
 body.hallow .rc-btns button:hover{background:linear-gradient(180deg,#6d2a9e,#4a146f 60%,#2c0848)!important;color:#c4ff7a!important}
-body.hallow .rc-pl,body.hallow .rc-pl b,body.hallow .rc-tab{color:#000;text-shadow:0 0 2px #ffb066,0 0 4px #ffa04d99}
-body.hallow .rc-tab:not([aria-selected="true"]){color:#000a}
-body.hallow .rc-tab:hover{color:#000}
-body.hallow .rc-tab[aria-selected="true"]{box-shadow:inset 0 -1px 0 #000,inset 0 -4px 0 #9be84a,inset 0 -5px 0 #000a}   /* Hallow's End: slime green (orange would vanish on the orange bar), like its +/- symbols */   /* the talent page's Reset All look (.status button), not the title bar's spacing */
+body.hallow .rc-pl,body.hallow .rc-pl b{color:#000;text-shadow:0 0 2px #ffb066,0 0 4px #ffa04d99}
+/* the talent page's Reset All look (.status button), not the title bar's spacing */
 .tip .rc-eff{margin:0 0 3px 38px;color:#c8c9d4;font-size:11px;line-height:1.35}
 .tip .rc-eff.off{opacity:.42}
 .rc-empty{margin:0;color:#6b5030;font-size:15px;font-style:italic}
