@@ -1542,6 +1542,17 @@ function runSearch(){
     const els=q?[...document.querySelectorAll("#racials .rt:not(.dim)")]:[];
     $("searchInfo").innerHTML=q?`<div class="sr-n"><b>${n}</b> ${n===1?"match":"matches"} here</div>`+hitList(els.map(el=>({el,icon:el.querySelector("img").src,name:el.querySelector(".rn").firstChild.textContent,sub:el.closest("#racePriest")?"Priest spell":"Racial trait",tip:()=>{ $("tip").innerHTML=el.querySelector(".rtip").innerHTML.replace('class="rn"','class="tn"').replace('class="rd"','class="td"').replace('class="rl"','class="tl2"'); }})))+other:""; return;
   }
+  if($("app").dataset.mode==="changes"){   // only what the update on show changed: its name or new text
+    const q=$("search").value.trim().toLowerCase(), upd=CHANGES.updates[chgUpd], mine=chgClass&&upd&&upd.classes[chgClass], items=[];
+    const hit=e=>(e[1]+" "+chgPlain(e[4])).toLowerCase().includes(q);
+    document.querySelectorAll("#changes .rt[data-n]").forEach((r,i)=>{ const e=mine&&chgShown[i], on=!q||!!e&&hit(e); r.classList.toggle("dim",!on);
+      if(q&&on&&e) items.push({el:r,icon:IMG(e[2]),name:e[1],sub:e[3],tip:()=>{ const x=chgEntry(r); if(x) sbTipFor(x,r.querySelector(".slot"));
+        else $("tip").innerHTML=`<div class="tn">${esc(e[1])}</div><div class="td">${esc(chgPlain(e[4]))}</div>`; }}); });
+    // the other classes in the same update
+    const elsewhere=q&&upd?Object.keys(upd.classes).filter(k=>k!==chgClass).map(k=>[k,upd.classes[k].filter(hit).length]).filter(x=>x[1]):[];
+    const other=elsewhere.length?`<div class="sr-also">Also found in:</div><div class="sr-list">`+elsewhere.map(([k,c],i)=>`<button type="button" class="cls srch-jump" data-key="${k}" data-chg="${k}" style="--c:${INK[k]||MODEL[k].color};--tx:-${i*137%360}px -${(i*83+40)%360}px"><span class="ci"><img src="${IMG("classicon_"+k)}" alt="" onerror="this.style.visibility='hidden'"></span><span>${esc(MODEL[k].name)}</span><i>${c}</i></button>`).join("")+`</div>`:"";
+    $("searchInfo").innerHTML=q?`<div class="sr-n"><b>${items.length}</b> ${items.length===1?"match":"matches"} in this update</div>`+hitList(items)+other:""; return;
+  }
   const q=$("search").value.trim().toLowerCase(), info=$("searchInfo");
   if(!cur) return;
   let hits=0;
@@ -1591,7 +1602,7 @@ document.addEventListener("click",e=>{ if(!e.composedPath().some(n=>n.classList&
 $("searchClear").onclick=()=>{ $("search").value=""; runSearch(); $("search").focus(); };
 $("codeClear").onclick=()=>{ $("code").value=""; $("code").focus(); };   // clears the box (e.g. to paste a code); the build itself is untouched
 $("searchInfo").addEventListener("click",e=>{ const b=e.target.closest(".srch-jump"); if(!b) return;
-  if(b.dataset.sb) showSpellbook(b.dataset.sb,b.dataset.sbrace,+b.dataset.sbtab); else if(b.dataset.race) showRacials(b.dataset.race); else selectClass(b.dataset.key); });
+  if(b.dataset.chg) showChanges(b.dataset.chg); else if(b.dataset.sb) showSpellbook(b.dataset.sb,b.dataset.sbrace,+b.dataset.sbtab); else if(b.dataset.race) showRacials(b.dataset.race); else selectClass(b.dataset.key); });
 
 // Page addresses. On the website each page has its own address: foreverinfo.io/rogue, a build as /rogue?05-0-55002,
 // /spellbook?rogue:human, /changes?rogue:70291 (GitHub Pages serves rogue.html etc. for /rogue; build.py writes them).
@@ -1854,6 +1865,7 @@ for(const k of SBORD){ const m=MODEL[k];
 const chgDate=d=>{ const [y,m,dd]=d.split("-").map(Number); return new Date(Date.UTC(y,m-1,dd)).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric",timeZone:"UTC"}); };
 // {+15%} = got better (green), {-150} = got worse (red)
 // {*words*} = added by a rewording, {~words~} = removed (shown in the previous version)
+const chgPlain=t=>t.replace(/\{[*~+-]|[*~]?\}/g,"");   // the text without its change markup
 const chgText=t=>esc(t).replace(/\{\*([^{}]*?)\*\}/g,'<ins class="chg-add">$1</ins>').replace(/\{~([^{}]*?)~\}/g,'<del class="chg-del">$1</del>')
   .replace(/\{([+-])([^{}]+)\}/g,(_,s,v)=>`<span class="${s==="+"?"chg-up":"chg-dn"}">${v}</span>`);
 const chgList=a=>a.length<2?String(a[0]):a.length>2&&a.every((x,j)=>!j||x===a[j-1]+1)?`${a[0]}–${a[a.length-1]}`:a.slice(0,-1).join(", ")+" and "+a[a.length-1];
@@ -1897,6 +1909,7 @@ function showChanges(k,build){
     $("chgOtherCard").hidden=!other.length; $("chgOther").innerHTML=chgRows(other); requestAnimationFrame(chgMatch); }
   if(!isPhone()){ document.title=chgClass?`Forever ${m.name} Changes`:"Forever Class Changes";
     setLink("changes"+(chgClass?":"+chgClass+(chgUpd&&upd?":"+upd.build:""):"")); }
+  if($("search").value.trim()) runSearch();   // the search covers only this class and update
 }
 $("chgPrompt").addEventListener("change",e=>{ if(e.target.id==="chgUpd"){ chgUpd=+e.target.value; showChanges(chgClass); } });
 // picking another rank shows that rank's change, and the tooltip follows it
@@ -1927,8 +1940,8 @@ function chgEntry(row){
   return {n,ic,sub:rk||"",d,lv,id};
 }
 const chgTip=(row,ev)=>{ const e=chgEntry(row); if(e) sbTipFor(e,row.querySelector(".slot")||row,ev); };
-$("changes").addEventListener("mouseover",e=>{ const r=e.target.closest(".rt[data-n]"); if(!r||!canHover) return; if(e.target.closest(".chg-was,.chg-rk")) hideTip(); else chgTip(r,e); });   // no current-version tooltip over the previous version
-$("changes").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.target.closest(".rt[data-n]")&&!e.target.closest(".chg-was,.chg-rk")) placeTipAt(e.clientX,e.clientY); });
+$("changes").addEventListener("mouseover",e=>{ const r=e.target.closest(".rt[data-n]"); if(!r||!canHover) return; if(e.target.closest(".slot,.rn")) chgTip(r,e); else hideTip(); });   // only over the icon and the name, not the text beside them
+$("changes").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.target.closest(".rt[data-n] :is(.slot,.rn)")) placeTipAt(e.clientX,e.clientY); });
 $("changes").addEventListener("mouseout",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&canHover&&!r.contains(e.relatedTarget)) hideTip(); });
 $("changes").addEventListener("click",e=>{ const r=e.target.closest(".rt[data-n]"); if(r&&!canHover&&!e.target.closest(".chg-was,.chg-rk")) chgTip(r); });
 
