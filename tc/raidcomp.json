@@ -59,6 +59,8 @@
      "note": "Since Oct 16 Salvation is no longer a Blessing, so a Paladin can give Salvation and a Blessing to the same player (patch notes)."},
     {"g": "Buffs", "n": "Reduced Damage Taken", "s": ["Stoneskin Totem", "Windwall Totem"], "status": "confirmed",
      "note": "Physical (Stoneskin, Earth) and ranged (Windwall, Air); caster's group only."},
+    {"g": "Buffs", "n": "Damage to Attackers", "s": ["Thorns", "Retribution Aura"], "status": "assumed",
+     "note": "Thorns (Druid, one target) and Retribution Aura (Paladin, the caster's group) hurt whoever strikes the player; different spells, assumed to stack as in Classic."},
     {"g": "Buffs", "n": "Healing Received", "s": ["Greater Blessing of Light"], "status": "confirmed", "note": "One source."},
     {"g": "Buffs", "n": "Shadow Resist", "s": ["Prayer of Shadow Protection", "Shadow Resistance Aura"], "status": "assumed",
      "note": "Treated as not stacking (the higher applies), as in Classic. Gift of the Wild's resistances stack with both."},
