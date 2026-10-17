@@ -374,10 +374,16 @@ def apply_fixes(log):
     wrong (checked in game) is dropped, or its kind / where / text / was / ranks replaced, or a sentence appended to it and its ranks
     ("append": a cooldown change Wowhead's change page leaves out); "add" is a whole entry Wowhead's change pages
     don't have (Sonic Blast, Oct 15: the patch notes' nerf, missing from the Hunter page). Each fix names the
-    update's build, the class and the talent or spell, and says why."""
+    update's build, the class and the talent or spell, and says why. An entry whose words were written by hand from
+    the patch notes ("add", "append", or "own": true beside a "text") is listed in the update's "hand", and the page
+    puts an asterisk by its name."""
     try: fixes = now('changes_fixes.json')['fixes']
     except FileNotFoundError: return
+    for u in log['updates']: u.pop('hand', None)
     for fx in fixes:
+        if 'add' in fx or 'append' in fx or fx.get('own'):
+            for u in log['updates']:
+                if u['build'] == fx['build']: u.setdefault('hand', {}).setdefault(fx['class'], []).append(fx['name'])
         for u in log['updates']:
             if u['build'] != fx['build']: continue
             if 'add' in fx:

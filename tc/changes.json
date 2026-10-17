@@ -453,7 +453,7 @@
       "Increases the damage done by your Fire spells by 10%."
      ],
      [
-      "buff",
+      "other",
       "Improved Frostbolt",
       "spell_frost_frostbolt02",
       "Frost talent · reworded",
@@ -495,7 +495,7 @@
       "Deals 28 to 32 Frost damage to an enemy target. Deals {-200%} (down from 300%) increased damage to Frozen targets."
      ],
      [
-      "buff",
+      "other",
       "Arctic Reach",
       "spell_shadow_darkritual",
       "Frost talent · reworded",
@@ -1639,6 +1639,33 @@
        ]
       ]
      ]
+    ]
+   },
+   "hand": {
+    "hunter": [
+     "Sonic Blast",
+     "Dismember",
+     "Mine!",
+     "Auto Shot",
+     "Traps",
+     "Summon Hawk",
+     "Strider Kick"
+    ],
+    "druid": [
+     "Faerie Fire"
+    ],
+    "paladin": [
+     "Salvation",
+     "Mass Salvation",
+     "Consecration",
+     "Sanctified Judgement"
+    ],
+    "priest": [
+     "Vampiric Embrace"
+    ],
+    "shaman": [
+     "Stormstrike",
+     "Water Shield"
     ]
    }
   },
