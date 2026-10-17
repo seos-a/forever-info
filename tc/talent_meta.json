@@ -432,7 +432,7 @@
     ],
     [
      "Instant",
-     "1 min cooldown"
+     "30 sec cooldown"
     ]
    ]
   ]
@@ -539,7 +539,7 @@
   "Lava Burst": [
    [
     [
-     "165 Mana",
+     "135 Mana",
      "30 yd range"
     ],
     [
@@ -587,7 +587,7 @@
   "Stormstrike": [
    [
     [
-     "125 Mana",
+     "8% of base mana",
      "Melee Range"
     ],
     [
