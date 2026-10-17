@@ -833,9 +833,9 @@ img[src*="race_skyborne_male"],img[src*="race_bloodelf_male_tbc"]{transform:scal
 .rt.sr-hl,.sb-sp.sr-hl{background:#3a200a2e;border-radius:2px}
 @keyframes srFlash{0%,40%{box-shadow:0 0 0 2px #ffd75a,0 0 14px #ffd75a}100%{box-shadow:0 0 0 2px #ffd75a00,0 0 14px #ffd75a00}}
 .sr-flash{animation:srFlash 1.6s ease-out}
-/* a row (Class Changes, Racials): the ring sits a little outside it, clear of the icon at its edge */
+/* a row (Class Changes, Racials): the ring sits well outside it, clear of the icon frame (drawn 4px outside the icon) */
 @keyframes srFlashRt{0%,40%{outline-color:#ffd75a;box-shadow:0 0 14px #ffd75a}100%{outline-color:#ffd75a00;box-shadow:0 0 14px #ffd75a00}}
-.rt.sr-flash{outline:2px solid #ffd75a00;outline-offset:4px;border-radius:3px;animation-name:srFlashRt}
+.rt.sr-flash{outline:2px solid #ffd75a00;outline-offset:9px;border-radius:3px;animation-name:srFlashRt}
 /* Build Code only means something on the talent pages */
 #app[data-mode="changes"] .code-grp,#app[data-mode="racials"] .code-grp,#app[data-mode="spellbook"] .code-grp{display:none}
 @media (max-width:820px){
@@ -1096,7 +1096,6 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
   #changes .card.collapsed>.parch,#racials .card.collapsed>.parch{display:none}
   #changes .chg-fold,#racials .chg-fold{display:inline-grid;position:absolute;right:10px;top:50%;margin-top:-9px}
 }
-#changes .chg-hand{margin-left:2px}
 #changes .chg-note{margin:8px 4px 0;color:#d8c9a8;font-size:12.5px;text-shadow:0 1px 2px #000}
 #changes .chg-empty{margin:0;color:#f1efe9;font-size:15px;font-weight:400;text-shadow:0 1px 2px #000;text-align:center;letter-spacing:.02em}
 /* a reworked talent or spell: its old text folds out under "Previous version" */
@@ -1185,7 +1184,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
           <section class="card wood"><div class="hdr" id="chgNerfHead">Nerfs</div><div class="parch" id="chgNerfs"></div></section>
         </div>
         <section class="card wood glance-card" id="chgOtherCard"><div class="hdr" id="chgOtherHead">Other Changes</div><div class="parch" id="chgOther"></div></section>
-        <p class="chg-note" id="chgNote" hidden>* Worded by hand from Blizzard's patch notes; not in Wowhead's tooltip data.</p>
+        <p class="chg-note" id="chgNote" hidden>* Not in the game's tooltips: from Blizzard's patch notes.</p>
       </div>
     </section>
     <section class="racials spellbook" id="spellbook" hidden>
@@ -1884,12 +1883,12 @@ const chgAlso=(ranks,r,kind)=>{ const o=ranks.map(x=>x[0]).filter(x=>x!==r).sort
 const chgBody=(text,was,open)=>`<div class="rd">${chgText(text)}</div>`
   +(was?`<details class="chg-was"${open?" open":""}><summary>Previous version</summary><div class="rd">${chgText(was)}</div></details>`:"");
 // a spell with ranks: ranks = [[rank, text, was], ...] for each rank that changed, highest first, with a picker when there are several
-let chgShown=[], chgHand=new Set();   // chgHand: names worded by hand from the patch notes (an asterisk)
+let chgShown=[];
 const chgRow=([kind,name,icon,where,text,was,ranks],i)=>{ const r=ranks&&ranks[0][0];
   const rk=!ranks?"":ranks.length<2?` · Rank ${r}`:` · <select class="chg-rk" data-i="${i}" aria-label="${esc(name)} rank">`
     +ranks.map(([n])=>`<option value="${n}">Rank ${n}</option>`).join("")+`</select>`;
   return `<div class="rt" data-n="${esc(name)}" data-w="${esc(where)}"${r?` data-rank="${r}"`:""}><span class="slot"><img src="${IMG(icon)}" alt="" onerror="this.style.visibility='hidden'"></span><div class="rtip">`
-  +`<div class="tx"><span class="rn">${esc(name)}${chgHand.has(name)?`<span class="chg-hand">*</span>`:""}</span></div><div class="rw">${esc(where)}${rk}</div><div class="chg-body">${chgBody(chgJoin(text,ranks?chgAlso(ranks,r,kind):""),was)}</div></div></div>`; };
+  +`<div class="tx"><span class="rn">${esc(name)}</span></div><div class="rw">${esc(where)}${rk}</div><div class="chg-body">${chgBody(chgJoin(text,ranks?chgAlso(ranks,r,kind):""),was)}</div></div></div>`; };
 const chgRows=list=>list.map(e=>chgRow(e,chgShown.push(e)-1)).join("");
 function showChanges(k,build){
   hideTip(); $("changes").hidden=false;
@@ -1908,7 +1907,7 @@ function showChanges(k,build){
     const buffs=of("buff"), nerfs=of("nerf"), other=of("other");
     const none=`<span class="fold-caret chg-fold" aria-hidden="true"></span>`;   // phones: an empty side folds to its title bar
     $("chgBuffHead").innerHTML=`${esc(m.name)} Buffs${none}`; $("chgNerfHead").innerHTML=`${esc(m.name)} Nerfs${none}`; $("chgOtherHead").innerHTML=`Other ${esc(m.name)} Changes<span class="fold-caret chg-fold" aria-hidden="true"></span>`;
-    chgShown=[]; chgHand=new Set((upd.hand||{})[chgClass]||[]); $("chgNote").hidden=!all.some(e=>chgHand.has(e[1]));
+    chgShown=[]; $("chgNote").hidden=!all.some(e=>chgPlain(e[4]).includes("*"));   // a "*" after words that are in no tooltip
     $("chgBuffs").innerHTML=buffs.length?chgRows(buffs):`<p class="chg-empty">No ${m.name} buffs in this update</p>`;
     $("chgNerfs").innerHTML=nerfs.length?chgRows(nerfs):`<p class="chg-empty">No ${m.name} nerfs in this update</p>`;
     $("chgBuffs").classList.toggle("is-empty",!buffs.length); $("chgNerfs").classList.toggle("is-empty",!nerfs.length);
