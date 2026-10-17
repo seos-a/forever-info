@@ -1180,7 +1180,7 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .rc-x:hover{color:#ff8f84}
 .rc-pb{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .rc-pb:empty{margin-top:0}   /* no party buffs: the next row of groups moves up (a row with buffs in either group keeps their room) */
-.rc-ic{position:relative;width:27px;height:27px;flex:none;border-radius:2px;border:1px solid #000;box-shadow:0 0 0 1px #8a6a2a;overflow:visible;background:#222;cursor:default}
+.rc-ic{position:relative;width:27px;height:27px;flex:none;border-radius:2px;border:1px solid #000;box-shadow:0 0 0 1px var(--c,#8a6a2a);overflow:visible;background:#222;cursor:default}   /* the ring in the colour of the class that brings it, as on Wowhead */
 .rc-ic img{width:100%;height:100%;display:block;object-fit:cover;border-radius:1px}
 .rc-ic b{position:absolute;right:-3px;bottom:-4px;font-size:12.5px;line-height:1;color:#fff;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000}
 /* Categories / Spells panel and the lists under it */
@@ -2193,7 +2193,7 @@ function rcRender(){
     const pb=new Map(); members.forEach(si=>{ if(si<0) return;
       RC_SP.forEach((e,i)=>{ if(!e.b) return; const has=rcHas(si,e), may=rcMay(si,e); if(!has&&!may) return;
         const v=pb.get(i)||[0,0]; v[has?0:1]++; pb.set(i,v); }); });
-    h+=`</div><div class="rc-pb">${[...pb].map(([i,[a,b]])=>`<span class="rc-ic${a?"":" may"}" data-sp="${i}" data-grp="${g}"><img src="${IMG(RC_SP[i].i)}" alt="${esc(RC_SP[i].n)}">${a>1?`<b>${a}</b>`:""}</span>`).join("")}</div></div>`;
+    h+=`</div><div class="rc-pb">${[...pb].map(([i,[a,b]])=>`<span class="rc-ic${a?"":" may"}" data-sp="${i}" data-grp="${g}" style="--c:${rcCol(RC_SP[i].c)}"><img src="${IMG(RC_SP[i].i)}" alt="${esc(RC_SP[i].n)}">${a>1?`<b>${a}</b>`:""}</span>`).join("")}</div></div>`;
   }
   $("rcBoard").innerHTML=h;
   rcRenderSum(); rcRenderSecs();
