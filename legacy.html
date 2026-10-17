@@ -885,12 +885,12 @@ body.hallow{--tex-weather:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3
 body.hallow.has-bg{background:linear-gradient(#0000 300px,#000000b8 380px,#000000cc 440px,#000000de 460px,var(--black) 488px) 0 0/100% 540px no-repeat,url("images/hallow-bg2.jpg") center calc(540px - max(100vw,1298px)*.4162)/max(100%,1298px) auto no-repeat,var(--black)}   /* one copy, no repeat, widened to fill wide screens so there are no seams. Its bottom stays on the 540px line where the usual background ends (.4162 = the picture's height/width), so wider screens trim sky off the top instead. A fade to black over its last stretch hides the edge */
 @media (max-width:820px){body.hallow.has-bg{background-position:0 0,calc(50% - 55px) calc(540px - max(100vw,1298px)*.4162),0 0}}   /* phones: slide the picture left so the spire at its left edge is off screen */
 body.hallow .hdr,body.hallow .tree-h h2,body.hallow .tree-h .pts,body.hallow .ord-tog,body.hallow .status button,body.hallow .rc-btns button,body.hallow .share button,
-body.hallow .det-btns button,body.hallow .srch-row button,body.hallow .bgctl button{color:#000!important;text-shadow:0 0 2px #ffb066,0 0 4px #ffa04d99!important}
+body.hallow .det-btns button,body.hallow .srch-row button,body.hallow .bgctl button{color:#4e1478!important;text-shadow:1px 1px 0 #12021c,0 0 3px #ffb06699!important}   /* the fold buttons' deep purple, with a dark drop shadow that black text couldn't show */
 body.hallow .hdr,body.hallow .tree-h,body.hallow .status button,body.hallow .rc-btns button,body.hallow .share button,body.hallow .det-btns button,body.hallow .srch-row button,body.hallow .bgctl button{
   box-shadow:inset 0 0 0 1px #000,inset 0 0 8px #3a100488,inset 0 1px 0 #ffc07a55,0 0 0 1px #c9a24c,0 0 0 2px #7a5618,0 0 0 3px #000,0 2px 5px #000!important}
 body.hallow .status.wood{box-shadow:inset 0 1px 0 #ffffff55,inset 0 0 0 1px #4a4d55,inset 0 0 0 4px #1a1b1f,inset 0 0 0 5px #8cff3a,inset 0 0 0 6px #1f4d06,inset 0 0 0 7px #0b0b0d,inset 0 0 8px 7px #7cff2a2e,inset 0 0 16px #000a,0 0 0 1px #2a2a2e,0 8px 22px #000}   /* stats bars: neon slime trim instead of gold, glowing faintly inward */
 body.hallow .hdr,body.hallow .tree-h{box-shadow:inset 0 0 0 1px #000,inset 0 0 8px #3a100488,inset 0 1px 0 #ffc07a55,0 0 0 1px #8cff3a,0 0 0 2px #1f4d06,0 0 0 3px #000,0 2px 5px #000!important}   /* title bars get the stats bars' neon slime ring instead of gold */
-body.hallow .status button:hover,body.hallow .rc-btns button:hover,body.hallow .share button:hover,body.hallow .srch-row button:hover{color:#000!important}
+body.hallow .status button:hover,body.hallow .rc-btns button:hover,body.hallow .share button:hover,body.hallow .srch-row button:hover{color:#6a1fa0!important}
 body.hallow .faction-pick button#thHallow[aria-pressed="true"]{box-shadow:0 0 0 2px #ff9a1f,0 0 12px #ff9a1fbb,0 3px 8px #000c}
 body.hallow .status .stat b,body.hallow .status select,body.hallow .status select option,body.hallow .status select::picker-icon{color:#9be84a}   /* slime green numbers, a lighter cut of the logo's green shadow */
 /* Hallow's End: WoW's own skull raid target marker (art/raid-skull.png: Interface/TargetingFrame/UI-RaidTargetingIcon_8, via warcraft.wiki.gg) */
@@ -1228,7 +1228,7 @@ body:not(.ally):not(.hallow) .rc-btns button:hover{background:radial-gradient(el
 /* Hallow's End: purple with slime-green text, like that theme's title-bar +/- buttons */
 body.hallow .rc-btns button{background:linear-gradient(180deg,#5a1f86,#3a0f5a 60%,#22063a)!important;color:#9be84a!important;text-shadow:0 1px 0 #000,0 0 4px #4dff1a55!important}
 body.hallow .rc-btns button:hover{background:linear-gradient(180deg,#6d2a9e,#4a146f 60%,#2c0848)!important;color:#c4ff7a!important}
-body.hallow .rc-pl,body.hallow .rc-pl b{color:#000;text-shadow:0 0 2px #ffb066,0 0 4px #ffa04d99}
+body.hallow .rc-pl,body.hallow .rc-pl b{color:#4e1478;text-shadow:1px 1px 0 #12021c,0 0 3px #ffb06699}
 /* the talent page's Reset All look (.status button), not the title bar's spacing */
 .tip .rc-eff{margin:0 0 3px 38px;color:#c8c9d4;font-size:11px;line-height:1.35}
 .tip .rc-eff.off{opacity:.42}
