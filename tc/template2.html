@@ -448,6 +448,7 @@ body.touch .tip .hint{display:none}
 #racials .gl .gs img{width:22px;height:22px}
 #racials .gl .gr{width:36px;height:36px}
 #racials .race-bar.wood{background-position:61px 23px,198px 84px,0 0,0 0,0 0}
+#raid .rc-bar.wood{background:var(--tex-steel) 0 0/320px 320px,linear-gradient(180deg,#ffffff1c 0,#ffffff00 12%),linear-gradient(180deg,#414348 0%,#303236 35%,#222326 75%,#161719 100%)}   /* the iron panel without its chips: a speck between the class boxes read as a stray dot */
 #racials .glance{grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px 10px}
 /* races that can't be Priests: narrow screens show only the traits; wide ones keep the traits in the left page with the right page left blank */
 @media (max-width:1000px){.race-cols.solo{grid-template-columns:minmax(0,680px);justify-content:center}.race-cols.solo>section:nth-child(2){display:none}}
@@ -1254,7 +1255,7 @@ body.hallow .rc-pl,body.hallow .rc-pl b{color:#000;text-shadow:0 0 2px #ffb066,0
 .tip .rc-mk{color:#ffd75a;width:12px;height:12px}
 @media (max-width:599px){   /* phones: Wowhead's compact boxes in the site's style, three classes a row in even columns; the
      class shows in each box's border colour instead of a name */
-  #raid .rc-bar{display:grid;grid-template-columns:repeat(3,auto);justify-content:stretch;justify-items:stretch;gap:9px 8px;padding:14px 8px}   /* the columns share the bar's spare width, so the icons aren't squeezed together */
+  #raid .rc-bar{display:grid;grid-template-columns:repeat(3,auto);justify-content:stretch;justify-items:stretch;gap:9px 8px;padding:14px 15px;margin:0 -4px}   /* as wide as the tab menu above; the columns share the spare width, so the icons aren't squeezed together and the outer boxes clear the gold trim */
   #raid .rc-cls{padding:10px 4px;gap:0;border-radius:3px;background:linear-gradient(180deg,#18181b,#0b0b0d);
     border:1px solid color-mix(in srgb,var(--c) 55%,#000);box-shadow:0 0 0 1px #000,0 1px 3px #000c}   /* the class colour as the border itself: borders snap to whole pixels, an inset ring inside a zoomed border did not and its top edge came out faint */
   #raid .rc-cn{display:none}
