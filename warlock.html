@@ -288,9 +288,10 @@ ol.order li span{color:#7a6a52;font-size:11px}
   .lp-a{font-size:calc(var(--u)*9);box-sizing:border-box;justify-content:center;padding:0;height:calc(var(--u)*24.6)}
   /* each box keeps the size it had with 10px text, so the row still lines up with the class icons */
   /* two rows as wide as the class icons above (400 units): Class Changes and Raid Composition, then the other three */
-  .lp-ql{flex-wrap:wrap!important;width:calc(var(--u)*400);margin-inline:auto;row-gap:calc(var(--u)*10)}
-  .lp-a[data-h="changes"],.lp-a[data-h="raid"]{width:calc(var(--u)*193.35)}
-  .lp-a[data-h="spellbook"],.lp-a[data-h="racials"],.lp-a[data-h="legacy"]{width:calc(var(--u)*124.47)}
+  /* a six-column grid (each of the first two spans three, the other three span two), so rounding never pushes one to the next row */
+  .lp-ql{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));width:calc(var(--u)*400);margin-inline:auto;gap:calc(var(--u)*10) calc(var(--u)*13.3)}
+  .lp-a{grid-column:span 2;min-width:0}
+  .lp-a[data-h="changes"],.lp-a[data-h="raid"]{grid-column:span 3}
   .lp-a .lp-i{display:none}}
 .pk{display:grid;justify-items:center;gap:8px;background:none;border:0;cursor:pointer;padding:6px;border-radius:6px;
   font-family:var(--font);font-weight:700;font-size:14px;color:var(--c);text-shadow:0 1px 0 #000,0 0 8px #000,0 0 3px #000}
