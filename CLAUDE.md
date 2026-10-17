@@ -32,7 +32,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       text newer than the spellbook's. Spells are named as in the spellbook or a talent tree; `raidcomp.py` works out each
       one's class, icon, text and specs (a talent: its tree; a trainer spell: all three) and `build.py` prints
       `raid comp problems: [...]` (should be `[]`) for a name that no longer matches. The page's link is one character
-      per raid slot (`/raid?036-9ce`: spec index 0-9a-q in class order, `r` for Feral (Cat) (Feral is split into Bear and Cat buttons; `1` is Bear), `-` empty)
+      per raid slot (`/raid?036-9ce`: spec index 0-9a-q in class order, `r` for Feral (Cat) (Feral is split into Bear and Cat buttons; `1` is Bear), `-` empty),
+      then optionally `~` and the player names typed over the slots, comma-separated in slot order, spaces as `_` (`/raid?036~Bob,,Ann_Lee`)
   - Beta sync scripts (run from `tc/`, need internet):
     - `sync_talents.py`: updates the `<class>.json` files from Wowhead's WoW Forever talent feed
       (position, ranks, icon, prerequisite and each rank's full text, stored as a 9th field
