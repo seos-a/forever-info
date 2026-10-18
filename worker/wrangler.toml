@@ -1,0 +1,16 @@
+# Cloudflare Worker for raid-link previews: see worker/README.md for setup.
+name = "foreverinfo-raid-preview"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Only the Raid Composition page and its preview picture go through the Worker; the rest of the site is untouched.
+routes = [{ pattern = "foreverinfo.io/raid*", zone_name = "foreverinfo.io" }]
+
+[vars]
+ORIGIN = "https://foreverinfo.io"   # where the page and icons are fetched from (GitHub Pages, behind Cloudflare)
+
+# the font file is bundled as raw bytes
+[[rules]]
+type = "Data"
+globs = ["**/*.ttf"]
+fallthrough = true
