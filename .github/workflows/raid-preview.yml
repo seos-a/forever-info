@@ -11,6 +11,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # Publish samples (test branches only)
     defaults:
       run:
         working-directory: worker
@@ -32,13 +34,18 @@ jobs:
         run: |
           npx wrangler dev --port 8787 > dev.log 2>&1 &
           for i in $(seq 60); do curl -s -o /dev/null http://localhost:8787/ && break; sleep 2; done
+          note(){ printf '::notice title=%s::%s
+' "$1" "$(printf '%s' "$2" | head -c 3000 | sed ':a;N;$!ba;s/%/%25/g;s//%0D/g;s/
+/%0A/g')"; }
+          ok=1
           curl -s "http://localhost:8787/raid?1pg4jae09k~Happy_Gilmore" > out/page.html
-          grep -o '<meta property="og:[a-z:]*" content="[^"]*"' out/page.html | tee out/tags.txt
-          grep -q 'raid-preview.png?1pg4jae09k' out/tags.txt
+          tags=$(grep -o '<meta property="og:[a-z:]*" content="[^"]*"' out/page.html); note "Preview tags" "$tags"
+          echo "$tags" | grep -q 'raid-preview.png?1pg4jae09k' || ok=0
           curl -s -D out/headers.txt -o out/worker-ten.png "http://localhost:8787/raid-preview.png?1pg4jae09k~Happy_Gilmore&v=1"
-          cat out/headers.txt
-          file out/worker-ten.png | grep -q 'PNG image data, 1200 x 630'
-          curl -s "http://localhost:8787/raid" | grep -q 'images/og.png'   # no roster: the usual picture
+          note "Preview picture" "$(cat out/headers.txt; file out/worker-ten.png)"
+          file out/worker-ten.png | grep -q 'PNG image data, 1200 x 630' || ok=0
+          curl -s "http://localhost:8787/raid" | grep -q 'images/og.png' || { ok=0; note "Plain /raid" "missing the usual og.png"; }
+          [ $ok = 1 ] || { note "wrangler dev log" "$(tail -c 3000 dev.log)"; exit 1; }
       - if: always()
         run: cat dev.log || true
       - if: always()
@@ -46,6 +53,14 @@ jobs:
         with:
           name: raid-previews
           path: worker/out/
+      # test branches: the sample pictures on a branch of their own, to look at without signing in
+      - if: always() && github.ref != 'refs/heads/main'
+        name: Publish samples
+        working-directory: worker/out
+        run: |
+          git init -q -b raid-preview-samples && git add *.png
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "samples from ${GITHUB_SHA::7}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" raid-preview-samples
 
   deploy:
     needs: test
