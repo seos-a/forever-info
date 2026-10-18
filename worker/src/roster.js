@@ -6,7 +6,7 @@ import { RC_CODE, SPECS, CLASS_ORDER } from "./specs.js";
 
 // The link's query, as the page reads it (tc/template2.html: rcDecode / rcClean): one character per slot, then
 // optionally "~" and each slot's player name, comma-separated, spaces as "_".
-const clean = v => v.normalize("NFC").replace(/[^\p{L}\p{N} '-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 20);
+const clean = v => v.normalize("NFC").replace(/[^\p{L}\p{N} '-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 25);   // 25: a WoW first and last name, 12 letters each
 
 export function parseRoster(query) {
   let code = query || "";
@@ -46,8 +46,15 @@ export const iconsOf = ({ slots }) => [...new Set(slots.filter(si => si >= 0).ma
 const W = 1200, H = 630, M = 32;   // picture size, outer margin
 const BG = "#121212", ROW = "#1e1e1e", ROW_EDGE = "#343434", TITLE = "#c8c8c8";
 const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-// Roboto Condensed ExtraBold runs about 0.45em a character (0.48 to be safe); shorten a name that won't fit
-const fit = (s, px, size) => { const max = Math.floor(px / (size * 0.48)); return s.length <= max ? s : s.slice(0, Math.max(1, max - 1)) + "…"; };
+// Roboto Condensed ExtraBold runs about 0.45em a character (0.48 to be safe). A name too long for its row is drawn
+// smaller (down to 75%), and only cut short with an ellipsis if it still doesn't fit: [text, font size]
+const EM = 0.48;
+const fit = (s, px, size) => {
+  if (s.length * size * EM <= px) return [s, size];
+  const small = Math.max(Math.round(size * 0.75), Math.floor(px / (s.length * EM)));
+  if (s.length * small * EM <= px) return [s, small];
+  const max = Math.floor(px / (small * EM)); return [s.slice(0, Math.max(1, max - 1)) + "…", small];
+};
 
 // Roboto Condensed ExtraBold with a black outline (about size/14 wide, at least 2px): the stroke is drawn under the
 // fill (paint-order), so only its outer half shows
@@ -89,7 +96,8 @@ export function rosterSvg(roster, icons = {}) {
         const sp = SPECS[si], pad = (h - isz) / 2;
         body += icon(gx + pad, ry + pad, isz, icons[sp.icon]);
         const tx = gx + pad + isz + Math.round(isz * 0.3);
-        body += text(tx, ry + h / 2 + fs * 0.36, fs, sp.color, fit(names[i] || sp.name, gx + cw - tx - 12, fs));
+        const [label, size] = fit(names[i] || sp.name, gx + cw - tx - 12, fs);
+        body += text(tx, ry + h / 2 + size * 0.36, size, sp.color, label);
       }
     });
   } else {

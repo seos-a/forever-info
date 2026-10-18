@@ -11,7 +11,7 @@ import resvgWasm from "@resvg/resvg-wasm/index_bg.wasm";
 import fontData from "./RobotoCondensed-ExtraBold.ttf";   // made by fetch-font.sh
 import { parseRoster, encodeRoster, playerCount, describe, iconsOf, rosterSvg } from "./roster.js";
 
-const PREVIEW_VERSION = "3";   // bump when the picture's design changes, so chat apps fetch the new one
+const PREVIEW_VERSION = "4";   // bump when the picture's design changes, so chat apps fetch the new one
 
 let wasmReady;
 const ready = () => (wasmReady ||= initWasm(resvgWasm));
