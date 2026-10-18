@@ -46,6 +46,7 @@ jobs:
           curl -s -D out/headers.txt -o out/worker-ten.png "http://127.0.0.1:8787/raid-preview.png?1pg4jae09k~Happy_Gilmore&v=1"
           note "Preview picture" "$(cat out/headers.txt; file out/worker-ten.png)"
           file out/worker-ten.png | grep -q 'PNG image data, 1200 x 630' || ok=0
+          [ "$(stat -c %s out/worker-ten.png)" -gt 100000 ] || { ok=0; note "Preview picture" "too small: no players or icons drawn?"; }   # 10 icons make it ~250 KB
           curl -s --compressed "http://127.0.0.1:8787/raid" | grep -q 'images/og.png' || { ok=0; note "Plain /raid" "missing the usual og.png"; }
           [ $ok = 1 ] || { note "wrangler dev log" "$(tail -c 3000 dev.log)"; exit 1; }
       - if: always()

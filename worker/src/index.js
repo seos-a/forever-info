@@ -17,6 +17,7 @@ const ready = () => (wasmReady ||= initWasm(resvgWasm));
 function rosterQuery(url) {
   let q = url.search.slice(1);
   try { q = decodeURIComponent(q); } catch { return ""; }
+  q = q.replace(/&v=\d+$/, "");   // the picture's own version tag (PREVIEW_VERSION)
   return q.includes("=") ? "" : q;
 }
 
