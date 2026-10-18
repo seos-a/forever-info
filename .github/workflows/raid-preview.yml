@@ -35,7 +35,7 @@ jobs:
         run: |
           # results as public annotations (a run's logs need a GitHub sign-in): newlines become %0A
           note(){ printf '::notice title=%s::%s\n' "$1" "$(printf '%s' "$2" | tail -c 3000 | tr -d '\r' | sed 's/\x1b\[[0-9;]*m//g' | awk 'BEGIN{ORS="%0A"}{gsub(/%/,"%25");print}')"; }
-          npx wrangler dev --port 8787 --ip 127.0.0.1 > dev.log 2>&1 &
+          npx wrangler dev --env test --port 8787 --ip 127.0.0.1 > dev.log 2>&1 &
           up=0; for i in $(seq 90); do curl -s -o /dev/null http://127.0.0.1:8787/raid && { up=1; break; }; sleep 2; done
           [ $up = 1 ] || { note "wrangler dev did not start" "$(cat dev.log)"; exit 1; }
           set +e
@@ -48,6 +48,17 @@ jobs:
           file out/worker-ten.png | grep -q 'PNG image data, 1200 x 630' || ok=0
           [ "$(stat -c %s out/worker-ten.png)" -gt 100000 ] || { ok=0; note "Preview picture" "too small: no players or icons drawn?"; }   # 10 icons make it ~250 KB
           curl -s --compressed "http://127.0.0.1:8787/raid" | grep -q 'images/og.png' || { ok=0; note "Plain /raid" "missing the usual og.png"; }
+          # short links: the same roster twice gives the same id, and the id leads back to the roster (names and all)
+          s1=$(curl -s -X POST --data '1pg4jae09k~Séos_the_Bold,Real_American' "http://127.0.0.1:8787/raid-share")
+          s2=$(curl -s -X POST --data '1pg4jae09k~Séos_the_Bold,Real_American' "http://127.0.0.1:8787/raid-share")
+          id=$(echo "$s2" | sed -n 's#.*/raid/\([0-9A-Za-z]*\)".*#\1#p')
+          loc=$(curl -s -o /dev/null -w '%{redirect_url}' "http://127.0.0.1:8787/raid/$id")
+          bad=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "http://127.0.0.1:8787/raid/zzzzzzz")
+          empty=$(curl -s -w ' %{http_code}' -X POST --data '' "http://127.0.0.1:8787/raid-share")
+          note "Short links" "$(printf 'share: %s\nshare: %s\nopen %s -> %s\nunknown id -> %s\nempty raid -> %s' "$s1" "$s2" "$id" "$loc" "$bad" "$empty")"
+          [ -n "$id" ] && [ "$s1" = "$s2" ] && echo "$loc" | grep -q 'raid?1pg4jae09k~S%C3%A9os_the_Bold,Real_American$' || ok=0
+          echo "$bad" | grep -q '302 https://foreverinfo.io/raid$' || ok=0
+          echo "$empty" | grep -q '400$' || ok=0
           [ $ok = 1 ] || { note "wrangler dev log" "$(tail -c 3000 dev.log)"; exit 1; }
       - if: always()
         run: cat dev.log || true

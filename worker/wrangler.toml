@@ -9,8 +9,18 @@ routes = [{ pattern = "foreverinfo.io/raid*", zone_name = "foreverinfo.io" }]
 [vars]
 ORIGIN = "https://foreverinfo.io"   # where the page and icons are fetched from (GitHub Pages, behind Cloudflare)
 
+# Short links (Copy Link): rosters stored by id. Uncomment with the namespace's ID once it exists (worker/README.md).
+# [[kv_namespaces]]
+# binding = "RAID_LINKS"
+# id = ""
+
 # the font file is bundled as raw bytes
 [[rules]]
 type = "Data"
 globs = ["**/*.ttf"]
 fallthrough = true
+
+# `wrangler dev --env test` (the GitHub Actions check): a local stand-in for the short-link store
+[env.test]
+vars = { ORIGIN = "https://foreverinfo.io" }
+kv_namespaces = [{ binding = "RAID_LINKS", id = "local-test" }]

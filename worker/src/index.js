@@ -2,13 +2,16 @@
 //  - /raid?<code> (or /raid.html?<code>): the page from GitHub Pages, with its link-preview tags pointing at a picture
 //    of that roster, so a shared raid link shows the raid instead of the site logo
 //  - /raid-preview.png?<code>: that picture, drawn here and kept in Cloudflare's cache
+//  - POST /raid-share (body: a raid code): stores the roster in KV under a short id and answers {"url": ".../raid/<id>"},
+//    for the page's Copy Link; the same roster always gets the same id
+//  - /raid/<id>: sends the visitor (or a chat app) on to /raid?<code>
 // If anything goes wrong the visitor still gets the normal page.
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import resvgWasm from "@resvg/resvg-wasm/index_bg.wasm";
 import fontData from "./DejaVuSans-Bold.ttf";
-import { parseRoster, playerCount, describe, iconsOf, rosterSvg } from "./roster.js";
+import { parseRoster, encodeRoster, playerCount, describe, iconsOf, rosterSvg } from "./roster.js";
 
-const PREVIEW_VERSION = "1";   // bump when the picture's design changes, so chat apps fetch the new one
+const PREVIEW_VERSION = "2";   // bump when the picture's design changes, so chat apps fetch the new one
 
 let wasmReady;
 const ready = () => (wasmReady ||= initWasm(resvgWasm));
@@ -57,12 +60,39 @@ function withPreview(page, url, roster) {
     .transform(page);
 }
 
+// a short id for a roster: 7 letters and digits from its SHA-256, so sharing the same raid twice gives the same link
+const B62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+async function shortId(code) {
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)));
+  let id = ""; for (let i = 0; i < 7; i++) id += B62[h[i] % 62];
+  return id;
+}
+
+async function share(request, env) {
+  if (!env.RAID_LINKS) return Response.json({ error: "short links aren't set up" }, { status: 503 });   // the page then copies the long link
+  const body = (await request.text()).slice(0, 2000);
+  const roster = parseRoster(body.trim());
+  if (!playerCount(roster)) return Response.json({ error: "empty raid" }, { status: 400 });
+  const code = encodeRoster(roster), id = await shortId(code);
+  if ((await env.RAID_LINKS.get(id)) !== code) await env.RAID_LINKS.put(id, code);
+  return Response.json({ url: `https://foreverinfo.io/raid/${id}` }, { headers: { "cache-control": "no-store" } });
+}
+
+async function openShort(id, env) {
+  const code = env.RAID_LINKS && /^[0-9A-Za-z]{7}$/.test(id) ? await env.RAID_LINKS.get(id) : null;
+  // names may hold any letters: percent-encode them for the address, as the page's own links do
+  return Response.redirect(code ? `https://foreverinfo.io/raid?${encodeURIComponent(code).replace(/%2C/g, ",").replace(/%7E/gi, "~")}` : "https://foreverinfo.io/raid", 302);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const origin = new URL(url.pathname + url.search, env.ORIGIN);
     try {
       if (url.pathname === "/raid-preview.png") return await previewPng(url, env, ctx);
+      if (url.pathname === "/raid-share" && request.method === "POST") return await share(request, env);
+      const short = url.pathname.match(/^\/raid\/([0-9A-Za-z]{7})\/?$/);
+      if (short) return await openShort(short[1], env);
       if (url.pathname === "/raid" || url.pathname === "/raid.html") {
         const roster = parseRoster(rosterQuery(url));
         const page = await fetch(origin, request);

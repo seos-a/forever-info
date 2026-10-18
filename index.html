@@ -2340,8 +2340,20 @@ document.addEventListener("dragend",()=>{ if(!rcDrag) return;
   if(rcDrag.from!=null){ rcSlots[rcDrag.from]=-1; rcRender(); }   // dropped outside the board: out of the raid
   rcDrag=null; document.querySelectorAll(".rc-slot.over,.rc-slot.drag").forEach(x=>x.classList.remove("over","drag")); });
 $("rcReset").onclick=()=>{ rcSlots=Array(40).fill(-1); hideTip(); rcRender(); };
-$("rcCopy").onclick=async()=>{ setLink(rcLink()); const u=location.href;
-  try{ await navigator.clipboard.writeText(u); rcToast("Link copied"); }catch(e){ rcToast(u); } };
+// Copy Link: on the website, a short link (foreverinfo.io/raid/k3Xa9Q) from the Cloudflare Worker (worker/), which keeps
+// the roster; anywhere else, or if the Worker doesn't answer within 4 seconds, the long link with the roster in it
+function rcShortLink(code,long){
+  if(!rcFilled().length||location.hostname!=="foreverinfo.io") return Promise.resolve([long,false]);
+  const ac=new AbortController(), t=setTimeout(()=>ac.abort(),4000);
+  return fetch("/raid-share",{method:"POST",body:code,signal:ac.signal}).then(r=>r.ok?r.json():null)
+    .then(j=>j&&/^https:\/\/foreverinfo\.io\/raid\/\w+$/.test(j.url)?[j.url,true]:[long,false]).catch(()=>[long,false]).finally(()=>clearTimeout(t)); }
+$("rcCopy").onclick=async()=>{ setLink(rcLink()); const long=location.href, got=rcShortLink(rcEncode(),long);
+  const done=([u,short])=>rcToast(short?"Short link copied":"Link copied");
+  try{
+    // Safari only copies during the click itself: hand the clipboard a promise of the link rather than waiting for it
+    if(window.ClipboardItem&&navigator.clipboard.write){ await navigator.clipboard.write([new ClipboardItem({"text/plain":got.then(([u])=>new Blob([u],{type:"text/plain"}))})]); done(await got); }
+    else { const r=await got; await navigator.clipboard.writeText(r[0]); done(r); }
+  }catch(e){ const [u]=await got; try{ await navigator.clipboard.writeText(u); rcToast("Link copied"); }catch(e2){ rcToast(u); } } };
 // the search box on this page: categories, spells and specs that match a spell's name or text stay lit, the rest fade
 function rcSearch(q){
   const els=[];
