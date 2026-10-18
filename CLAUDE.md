@@ -148,7 +148,8 @@ without it the workflow does nothing.
 ## Raid link previews (Cloudflare Worker)
 
 `worker/` is a Cloudflare Worker on `foreverinfo.io/raid*` only: it gives a shared raid link a picture of its roster
-(`/raid-preview.png?<code>`, drawn by `worker/src/roster.js`) in the page's link-preview tags. `worker/src/specs.js`
+(`/raid-preview.png?<code>`, drawn by `worker/src/roster.js`) in the page's link-preview tags, and makes the page's
+Copy Link short links (`/raid/<id>`, rosters kept in Cloudflare KV; anywhere else Copy Link copies the long link). `worker/src/specs.js`
 copies the page's specs (link-code order, icons, class colours) from `tc/template2.html`: change both together.
 `.github/workflows/raid-preview.yml` tests it on every push to `worker/` and deploys from `main` once the
 `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` secrets exist. Setup (moving DNS to Cloudflare) is in `worker/README.md`.

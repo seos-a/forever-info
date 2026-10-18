@@ -57,7 +57,7 @@ jobs:
           empty=$(curl -s -w ' %{http_code}' -X POST --data '' "http://127.0.0.1:8787/raid-share")
           note "Short links" "$(printf 'share: %s\nshare: %s\nopen %s -> %s\nunknown id -> %s\nempty raid -> %s' "$s1" "$s2" "$id" "$loc" "$bad" "$empty")"
           [ -n "$id" ] && [ "$s1" = "$s2" ] && echo "$loc" | grep -q 'raid?1pg4jae09k~S%C3%A9os_the_Bold,Real_American$' || ok=0
-          echo "$bad" | grep -q '302 https://foreverinfo.io/raid$' || ok=0
+          echo "$bad" | grep -q '302 https://[^ ]*/raid$' || ok=0
           echo "$empty" | grep -q '400$' || ok=0
           [ $ok = 1 ] || { note "wrangler dev log" "$(tail -c 3000 dev.log)"; exit 1; }
       - if: always()

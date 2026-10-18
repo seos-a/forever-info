@@ -1,11 +1,16 @@
 # Raid link previews (Cloudflare Worker)
 
-When someone shares a Raid Composition link (`https://foreverinfo.io/raid?1pg4jae09k~Happy_Gilmore`), Discord,
-iMessage and other apps show a picture of that roster instead of the Forever Info logo:
+When someone shares a Raid Composition link, Discord, iMessage and other apps show a picture of that roster instead of
+the Forever Info logo, in Wowhead's flat dark style with nothing but the groups:
 
 - 20 players or fewer, in at most 4 groups: each group's members by name (the player's name typed on the page, or
   the spec's name), with spec icons, in class colours.
 - Bigger raids: all 8 groups as columns of spec icons ringed in their class colour.
+
+The page's **Copy Link** copies a short link (`https://foreverinfo.io/raid/k3Xa9Q`): the Worker keeps the roster in
+Cloudflare KV under a 7-character id made from the roster itself (the same raid always gets the same link) and sends
+anyone opening it on to the full `/raid?<code>` address. Without KV (or anywhere but the website) Copy Link copies the
+long link, which holds the whole roster.
 
 GitHub Pages can't do this alone: it serves the same `raid.html` for every `/raid?...` address, and chat apps don't run
 the page's JavaScript. So a small Cloudflare Worker sits in front of `foreverinfo.io/raid*` only:
@@ -14,6 +19,7 @@ the page's JavaScript. So a small Cloudflare Worker sits in front of `foreverinf
   `/raid-preview.png?<code>`.
 - `/raid-preview.png?<code>`: draws that picture (`src/roster.js` builds an SVG, resvg turns it into a PNG) and keeps
   it in Cloudflare's cache for a week.
+- `POST /raid-share`: stores a roster for Copy Link; `/raid/<id>`: redirects to that roster.
 - Every other address on the site never touches the Worker. If the Worker has a problem, it serves the normal page.
 
 ## Files
@@ -76,7 +82,15 @@ stays registered at Porkbun; only its nameservers change. Allow about an hour, m
 4. GitHub → **Actions → Raid link previews → Run workflow** (on `main`). The deploy job publishes the Worker and adds
    its route `foreverinfo.io/raid*`.
 
-### 6. Check it
+### 6. Short links (Cloudflare KV)
+
+1. Cloudflare → **Storage & databases → Workers KV → Create instance** (or **Create namespace**) → name it
+   `RAID_LINKS` → create.
+2. Copy its **ID** (32 letters and digits; not secret) and give it to whoever edits the repo: it goes into
+   `worker/wrangler.toml` under `[[kv_namespaces]]` (uncomment the three lines and fill in `id`). The next deploy
+   connects the store; until then Copy Link copies the long link.
+
+### 7. Check it
 
 1. Open `https://foreverinfo.io/raid-preview.png?1pg4jae09k` in a browser: you should see a 10-player roster picture.
 2. Paste a raid link into Discord. Discord caches previews per address, so test with a link you haven't shared before.
