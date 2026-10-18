@@ -145,6 +145,14 @@ requests): once GitHub Pages has published, it tells IndexNow (Bing, Yandex...) 
 needs the IndexNow key file in the repo root, `<32 hex characters>.txt` containing that same key (public on purpose);
 without it the workflow does nothing.
 
+## Raid link previews (Cloudflare Worker)
+
+`worker/` is a Cloudflare Worker on `foreverinfo.io/raid*` only: it gives a shared raid link a picture of its roster
+(`/raid-preview.png?<code>`, drawn by `worker/src/roster.js`) in the page's link-preview tags. `worker/src/specs.js`
+copies the page's specs (link-code order, icons, class colours) from `tc/template2.html`: change both together.
+`.github/workflows/raid-preview.yml` tests it on every push to `worker/` and deploys from `main` once the
+`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` secrets exist. Setup (moving DNS to Cloudflare) is in `worker/README.md`.
+
 ## Automatic beta sync
 
 `.github/workflows/beta-sync.yml` runs twice a day, 10:00 PM and 10:30 AM US Eastern (and on demand from the Actions tab): it runs the
