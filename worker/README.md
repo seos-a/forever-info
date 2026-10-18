@@ -87,8 +87,8 @@ stays registered at Porkbun; only its nameservers change. Allow about an hour, m
 1. Cloudflare → **Storage & databases → Workers KV → Create instance** (or **Create namespace**) → name it
    `RAID_LINKS` → create.
 2. Copy its **ID** (32 letters and digits; not secret) and give it to whoever edits the repo: it goes into
-   `worker/wrangler.toml` under `[[kv_namespaces]]` (uncomment the three lines and fill in `id`). The next deploy
-   connects the store; until then Copy Link copies the long link.
+   `worker/wrangler.toml` under `[[kv_namespaces]]` (done: `a8b2ffbe...`). The next deploy connects the store;
+   without it Copy Link copies the long link.
 
 ### 7. Check it
 
