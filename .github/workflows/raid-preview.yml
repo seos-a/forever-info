@@ -32,18 +32,20 @@ jobs:
         run: npx wrangler deploy --dry-run --outdir dist
       - name: Run the Worker locally against the live site
         run: |
-          npx wrangler dev --port 8787 > dev.log 2>&1 &
-          for i in $(seq 60); do curl -s -o /dev/null http://localhost:8787/ && break; sleep 2; done
           # results as public annotations (a run's logs need a GitHub sign-in): newlines become %0A
-          note(){ printf '::notice title=%s::%s\n' "$1" "$(printf '%s' "$2" | head -c 3000 | tr -d '\r' | awk 'BEGIN{ORS="%0A"}{gsub(/%/,"%25");print}')"; }
+          note(){ printf '::notice title=%s::%s\n' "$1" "$(printf '%s' "$2" | tail -c 3000 | tr -d '\r' | sed 's/\x1b\[[0-9;]*m//g' | awk 'BEGIN{ORS="%0A"}{gsub(/%/,"%25");print}')"; }
+          npx wrangler dev --port 8787 --ip 127.0.0.1 > dev.log 2>&1 &
+          up=0; for i in $(seq 90); do curl -s -o /dev/null http://127.0.0.1:8787/raid && { up=1; break; }; sleep 2; done
+          [ $up = 1 ] || { note "wrangler dev did not start" "$(cat dev.log)"; exit 1; }
+          set +e
           ok=1
-          curl -s "http://localhost:8787/raid?1pg4jae09k~Happy_Gilmore" > out/page.html
+          curl -s "http://127.0.0.1:8787/raid?1pg4jae09k~Happy_Gilmore" > out/page.html
           tags=$(grep -o '<meta property="og:[a-z:]*" content="[^"]*"' out/page.html); note "Preview tags" "$tags"
           echo "$tags" | grep -q 'raid-preview.png?1pg4jae09k' || ok=0
-          curl -s -D out/headers.txt -o out/worker-ten.png "http://localhost:8787/raid-preview.png?1pg4jae09k~Happy_Gilmore&v=1"
+          curl -s -D out/headers.txt -o out/worker-ten.png "http://127.0.0.1:8787/raid-preview.png?1pg4jae09k~Happy_Gilmore&v=1"
           note "Preview picture" "$(cat out/headers.txt; file out/worker-ten.png)"
           file out/worker-ten.png | grep -q 'PNG image data, 1200 x 630' || ok=0
-          curl -s "http://localhost:8787/raid" | grep -q 'images/og.png' || { ok=0; note "Plain /raid" "missing the usual og.png"; }
+          curl -s "http://127.0.0.1:8787/raid" | grep -q 'images/og.png' || { ok=0; note "Plain /raid" "missing the usual og.png"; }
           [ $ok = 1 ] || { note "wrangler dev log" "$(tail -c 3000 dev.log)"; exit 1; }
       - if: always()
         run: cat dev.log || true

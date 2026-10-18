@@ -63,7 +63,7 @@ export function rosterSvg(roster, icons = {}) {
   if (named) {
     const shown = groups.length ? groups : [0];
     const cols = shown.length === 1 ? 1 : 2, rows = Math.ceil(shown.length / 2);
-    const top = 104, bottom = 606, gapX = 40, gapY = 18;
+    const top = 104, bottom = 588, gapX = 40, gapY = 16;   // bottom: clear of the foreverinfo.io footer
     const cw = cols === 1 ? 640 : (W - 80 - gapX) / 2;
     const x0 = cols === 1 ? (W - cw) / 2 : 40;
     const bh = (bottom - top - (rows - 1) * gapY) / rows;       // one group's block: title, then 5 member rows
