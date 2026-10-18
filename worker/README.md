@@ -28,8 +28,9 @@ the page's JavaScript. So a small Cloudflare Worker sits in front of `foreverinf
   link-code order, with icons and class colours, copied from `tc/template2.html` (change both together).
 - `test/render.mjs`: draws sample pictures to `out/` (`npm test`).
 - `wrangler.toml`: the Worker's name, its route (`foreverinfo.io/raid*`) and settings.
-- The font (DejaVu Sans Bold, free to redistribute) isn't committed: the workflow copies it from Ubuntu's fonts into
-  `src/` before building.
+- The font (Roboto Condensed ExtraBold, SIL Open Font License) isn't committed: `fetch-font.sh` downloads Google
+  Fonts' variable Roboto Condensed and cuts the ExtraBold weight out of it (resvg can't pick a weight inside a
+  variable font); the workflow runs it before building.
 - `.github/workflows/raid-preview.yml`: on every push that changes `worker/`, draws the samples (in the run's
   Artifacts), runs the Worker locally against the live site, and on `main` deploys it once the Cloudflare secrets
   below exist. Until then the deploy step just says it's skipping.

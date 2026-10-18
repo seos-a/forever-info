@@ -1,5 +1,5 @@
 node_modules/
 .wrangler/
 out/
-# copied from the DejaVu fonts at build time (see .github/workflows/raid-preview.yml)
-src/DejaVuSans-Bold.ttf
+# made at build time by fetch-font.sh
+src/RobotoCondensed-ExtraBold.ttf

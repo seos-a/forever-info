@@ -8,10 +8,10 @@
 // If anything goes wrong the visitor still gets the normal page.
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import resvgWasm from "@resvg/resvg-wasm/index_bg.wasm";
-import fontData from "./DejaVuSans-Bold.ttf";
+import fontData from "./RobotoCondensed-ExtraBold.ttf";   // made by fetch-font.sh
 import { parseRoster, encodeRoster, playerCount, describe, iconsOf, rosterSvg } from "./roster.js";
 
-const PREVIEW_VERSION = "2";   // bump when the picture's design changes, so chat apps fetch the new one
+const PREVIEW_VERSION = "3";   // bump when the picture's design changes, so chat apps fetch the new one
 
 let wasmReady;
 const ready = () => (wasmReady ||= initWasm(resvgWasm));
@@ -38,7 +38,7 @@ async function previewPng(url, env, ctx) {
   }));
   await ready();
   const png = new Resvg(rosterSvg(roster, icons), {
-    font: { fontBuffers: [new Uint8Array(fontData)], loadSystemFonts: false, defaultFontFamily: "DejaVu Sans" },
+    font: { fontBuffers: [new Uint8Array(fontData)], loadSystemFonts: false, defaultFontFamily: "Roboto Condensed" },
   }).render().asPng();
   const res = new Response(png, { headers: { "content-type": "image/png", "cache-control": "public, max-age=604800" } });
   ctx.waitUntil(cache.put(key, res.clone()));

@@ -21,10 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Font (DejaVu Sans Bold, free to redistribute)
-        run: |
-          [ -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf ] || sudo apt-get install -y fonts-dejavu-core
-          cp /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf src/
+      - name: Font (Roboto Condensed ExtraBold, from Google Fonts)
+        run: sh fetch-font.sh
       - run: npm install --no-audit --no-fund
       - name: Draw sample previews
         run: npm test
@@ -94,7 +92,6 @@ jobs:
       - name: Deploy (skipped until the Cloudflare secrets are set)
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "No Cloudflare secrets yet: not deploying."; exit 0; fi
-          [ -f /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf ] || sudo apt-get install -y fonts-dejavu-core
-          cp /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf src/
+          sh fetch-font.sh
           npm install --no-audit --no-fund
           npx wrangler deploy

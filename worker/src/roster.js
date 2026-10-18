@@ -1,5 +1,5 @@
 // Reads a Raid Composition link and draws the roster as a 1200x630 PNG-ready SVG for link previews (Discord,
-// iMessage...), in Wowhead's flat dark style: just the groups, nothing else.
+// iMessage...), in Wowhead's flat dark style: just the groups, nothing else, in Roboto Condensed ExtraBold with a black outline.
 // Up to 20 players in at most 4 groups: each group's members by name (the player's name, or the spec's), with the spec
 // icon. Bigger raids: all 8 groups as columns of spec icons ringed in their class colour.
 import { RC_CODE, SPECS, CLASS_ORDER } from "./specs.js";
@@ -46,13 +46,13 @@ export const iconsOf = ({ slots }) => [...new Set(slots.filter(si => si >= 0).ma
 const W = 1200, H = 630, M = 32;   // picture size, outer margin
 const BG = "#121212", ROW = "#1e1e1e", ROW_EDGE = "#343434", TITLE = "#c8c8c8";
 const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-// DejaVu Sans Bold runs about 0.69em a character; shorten a name that won't fit, with an ellipsis
-const fit = (s, px, size) => { const max = Math.floor(px / (size * 0.69)); return s.length <= max ? s : s.slice(0, Math.max(1, max - 1)) + "…"; };
+// Roboto Condensed ExtraBold runs about 0.45em a character (0.48 to be safe); shorten a name that won't fit
+const fit = (s, px, size) => { const max = Math.floor(px / (size * 0.48)); return s.length <= max ? s : s.slice(0, Math.max(1, max - 1)) + "…"; };
 
-// plain bold text with a faint dark shadow, as on Wowhead
+// Roboto Condensed ExtraBold with a black outline (about size/14 wide, at least 2px): the stroke is drawn under the
+// fill (paint-order), so only its outer half shows
 const text = (x, y, size, color, s, anchor = "start") =>
-  `<text x="${x + 1}" y="${y + 2}" font-size="${size}" font-family="DejaVu Sans" font-weight="bold" fill="#000" fill-opacity=".75" text-anchor="${anchor}">${esc(s)}</text>` +
-  `<text x="${x}" y="${y}" font-size="${size}" font-family="DejaVu Sans" font-weight="bold" fill="${color}" text-anchor="${anchor}">${esc(s)}</text>`;
+  `<text x="${x}" y="${y}" font-size="${size}" font-family="Roboto Condensed" font-weight="800" fill="${color}" stroke="#000" stroke-width="${2 * Math.max(2, Math.round(size / 14))}" stroke-linejoin="round" paint-order="stroke" text-anchor="${anchor}">${esc(s)}</text>`;
 
 // an icon (a data: URI, or a grey square when missing) with a black border; ring > 0 adds a class-coloured ring
 const icon = (x, y, size, href, color = "", ring = 0) =>
