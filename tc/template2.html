@@ -2189,9 +2189,9 @@ function rcRender(){
       const s=RC_SPECS[si];
       h+=`<div class="rc-slot on" draggable="true" data-i="${i}" data-si="${si}" style="--c:${rcCol(s.k)};--tx:-${(i*137)%360}px -${(i*83+40)%360}px"><span class="rc-si"><img src="${IMG(s.icon)}" alt="" onerror="this.style.visibility='hidden'"></span><span class="rc-sn${rcName[i]?" named":""}" title="${canHover?"Click to rename":""}">${esc(rcName[i]||s.name)}</span><button type="button" class="rc-x" aria-label="Remove ${esc(s.name)} ${esc(s.cls)}">×</button></div>`; });
     // the group's own buffs (party-only stat, armor and regen buffs; raid-wide ones aren't repeated per group), with how
-    // many members bring each; faded when a member could only bring it with a talent from another tree
+    // many members bring each; only what the members bring now, not what they could with a talent from another tree
     const pb=new Map(); members.forEach(si=>{ if(si<0) return;
-      RC_SP.forEach((e,i)=>{ if(!e.b) return; const has=rcHas(si,e), may=rcMay(si,e); if(!has&&!may) return;
+      RC_SP.forEach((e,i)=>{ if(!e.b) return; const has=rcHas(si,e); if(!has) return;
         const v=pb.get(i)||[0,0]; v[has?0:1]++; pb.set(i,v); }); });
     h+=`</div><div class="rc-pb">${[...pb].map(([i,[a,b]])=>`<span class="rc-ic${a?"":" may"}" data-sp="${i}" data-grp="${g}" style="--c:${rcCol(RC_SP[i].c)}"><img src="${IMG(RC_SP[i].i)}" alt="${esc(RC_SP[i].n)}">${a>1?`<b>${a}</b>`:""}</span>`).join("")}</div></div>`;
   }
