@@ -348,12 +348,13 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .order-parch.is-empty{background:var(--cobweb) center/100% 100% no-repeat,#050505!important;border-color:#2b2b30!important;
   box-shadow:inset 0 0 0 1px #000,inset 0 0 28px #000,0 0 0 1px #000!important;display:grid;place-items:center;aspect-ratio:1100/332;height:auto!important;min-height:0!important}   /* same shape as the image, so none of it is cropped */
 .order-parch.is-empty::after{display:none}
-/* desktop: the Talent Order always reserves the height of a full build (one 28px row per point / 3), so it never
-   changes size; when empty the cobweb image covers that space and the message sits in the middle */
+/* desktop: with points spent the Talent Order reserves the height of a full build (one 28px row per point / 3), so
+   it doesn't grow with each point; empty, it takes the cobweb picture's own shape (the base rule above), so the
+   picture is shown whole and unstretched, with the message in the middle */
 @media (min-width:821px){
   #app .order2{grid-template-rows:repeat(var(--rows,17),28px)}
   #app .order2 li{padding-top:0;padding-bottom:0;line-height:28px}
-  .order-parch.is-empty{aspect-ratio:auto!important;background-size:cover!important}
+  .order-parch.is-empty .order2{display:none}
   .order-parch.is-empty .order-empty{position:absolute;inset:0;display:grid;place-items:center}
 }
 .order-parch.is-empty .order-empty{color:#f1efe9;font-size:15px;font-weight:400;text-shadow:0 1px 2px #000;text-align:center;letter-spacing:.02em}
@@ -1434,7 +1435,7 @@ for(const [key,cls] of Object.entries(DATA)){
   MODEL[key]={key,name:cls.name,color:key==="shaman"?"#3190ee":cls.color,legacy,max:cls.max||51,rows,trees,all,order:[]};
   all.forEach(t=>t.m=MODEL[key]);
 }
-let cur=null, tipFor=null, lastClass=null;
+let cur=null, tipFor=null, lastClass=null, copiedCode=null;   // copiedCode: the build code Copy just copied (the button says "Copied")
 // Talented (Legacy perk): each rank starts talent points one level earlier; the total is still capped at 51
 const talented=()=>+$("talented").value;
 const cap=(m=cur)=>m.legacy?m.max:Math.min(51,+$("cap").value-9+talented());
@@ -1621,7 +1622,9 @@ function render(){
       if(!cur.legacy){ trim(); return; } } }
   sideBtns().forEach(b=>b.classList.toggle("has",!!MODEL[b.dataset.key]&&totalSpent(MODEL[b.dataset.key])>0));
   renderOrder(); if(window.ordAutoOpen) window.ordAutoOpen();
-  const code=spent?buildCode():""; $("code").value=code; $("code").closest(".sgrp").classList.toggle("empty",!code);
+  const code=spent?buildCode():""; $("code").value=code;
+  $("code").closest(".sgrp").classList.toggle("empty",!code);
+  if(code!==copiedCode){ copiedCode=null; $("copy").textContent="Copy"; }   // "Copied" lasts until the build or class changes
   const otherTab=isPhone()&&$("app").dataset.mtab&&$("app").dataset.mtab!=="talents";   // phones: another tab keeps its own link
   if(!otherTab) setLink(code||cur.key);
   if(tipFor) showTip(tipFor,!canHover);
@@ -1806,7 +1809,8 @@ $("talented").addEventListener("change",()=>{ try{ localStorage.setItem("fta-tal
 try{ const v=localStorage.getItem("fta-talented"); if(v) $("talented").value=v; }catch(e){}
 $("resetAll").onclick=()=>{ cur.all.forEach(t=>t.pts=0); cur.order=[]; render(); };
 function toast(msg){ $("toast").textContent=msg; clearTimeout(toast.t); toast.t=setTimeout(()=>{$("toast").textContent="";},2500); }
-$("copy").onclick=async()=>{ const v=$("code").value; try{ await navigator.clipboard.writeText(v); toast("Copied"); }catch(e){ $("code").select(); toast("Selected. Press Ctrl+C to copy."); } };
+$("copy").onclick=async()=>{ const v=$("code").value; try{ await navigator.clipboard.writeText(v); copiedCode=v; $("copy").textContent="Copied"; $("toast").textContent=""; }catch(e){ $("code").select(); toast("Selected. Press Ctrl+C to copy."); } };
+new MutationObserver(()=>{ copiedCode=null; $("copy").textContent="Copy"; }).observe($("app"),{attributes:true,attributeFilter:["data-mode","hidden"]});   // leaving the trees (another page, home) resets "Copied" too
 $("load").onclick=()=>{ if(loadCode($("code").value)) toast("Build loaded"); else toast("That code doesn't match. It should look like priest:05-0-55002"); };
 
 // Background: the built-in screenshot, repeated across the top
