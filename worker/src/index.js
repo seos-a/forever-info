@@ -9,9 +9,9 @@
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import resvgWasm from "@resvg/resvg-wasm/index_bg.wasm";
 import fontData from "./RobotoCondensed-ExtraBold.ttf";   // made by fetch-font.sh
-import { parseRoster, encodeRoster, playerCount, describe, iconsOf, rosterSvg } from "./roster.js";
+import { parseRoster, encodeRoster, playerCount, describe, iconsOf, rosterSvg, previewSize } from "./roster.js";
 
-const PREVIEW_VERSION = "4";   // bump when the picture's design changes, so chat apps fetch the new one
+const PREVIEW_VERSION = "5";   // bump when the picture's design changes, so chat apps fetch the new one
 
 let wasmReady;
 const ready = () => (wasmReady ||= initWasm(resvgWasm));
@@ -53,6 +53,8 @@ function withPreview(page, url, roster) {
   const set = v => ({ element(el) { el.setAttribute("content", v); } });
   return new HTMLRewriter()
     .on('meta[property="og:image"]', set(img))
+    .on('meta[property="og:image:width"]', set(String(previewSize(roster)[0])))
+    .on('meta[property="og:image:height"]', set(String(previewSize(roster)[1])))
     .on('meta[property="og:image:alt"]', set(`Raid roster: ${desc}`))
     .on('meta[property="og:description"]', set(`${desc}. Plan a WoW Forever raid on Forever Info.`))
     .on('meta[property="og:url"]', set(`https://foreverinfo.io/raid?${q}`))

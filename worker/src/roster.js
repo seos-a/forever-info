@@ -43,7 +43,14 @@ export function describe(roster) {
 // every spec icon the roster needs, so the caller can fetch them once
 export const iconsOf = ({ slots }) => [...new Set(slots.filter(si => si >= 0).map(si => SPECS[si].icon))];
 
-const W = 1200, H = 630, M = 32;   // picture size, outer margin
+const W = 1200, M = 32;   // picture width, outer margin
+const groupsOf = ({ slots }) => [...Array(8).keys()].filter(g => slots.slice(g * 5, g * 5 + 5).some(si => si >= 0));
+// the picture's size: 1200x630, or 1200x900 for 3-4 named groups (two rows of groups), so chat apps, which show a
+// preview at most about 400x300, show those rows bigger instead of shrinking a wide picture
+export function previewSize(roster) {
+  const g = groupsOf(roster).length;
+  return [W, playerCount(roster) <= 20 && g > 2 && g <= 4 ? 900 : 630];
+}
 const BG = "#121212", ROW = "#1e1e1e", ROW_EDGE = "#343434", TITLE = "#c8c8c8";
 const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 // Roboto Condensed ExtraBold runs about 0.45em a character (0.48 to be safe). A name too long for its row is drawn
@@ -73,8 +80,7 @@ const row = (x, y, w, h, filled) =>
 // icons: { iconName: "data:image/jpeg;base64,..." }
 export function rosterSvg(roster, icons = {}) {
   const { slots, names } = roster;
-  const n = playerCount(roster);
-  const groups = [...Array(8).keys()].filter(g => slots.slice(g * 5, g * 5 + 5).some(si => si >= 0));
+  const n = playerCount(roster), groups = groupsOf(roster), H = previewSize(roster)[1];
   let body = "";
 
   if (n <= 20 && groups.length <= 4) {
@@ -84,7 +90,7 @@ export function rosterSvg(roster, icons = {}) {
     const gapX = 32, gapY = 28;
     const cw = cols === 1 ? 640 : (W - 2 * M - gapX) / 2, x0 = cols === 1 ? (W - cw) / 2 : M;
     const bh = (H - 2 * M - (rows - 1) * gapY) / rows;            // one group: its title, then 5 rows
-    const th = rows === 1 ? 50 : 36, rh = (bh - th) / 5, gap = rows === 1 ? 10 : 6;
+    const th = rows === 1 ? 50 : 40, rh = (bh - th) / 5, gap = rows === 1 ? 10 : 8;
     const fs = Math.min(42, Math.round((rh - gap) * 0.5)), isz = Math.round((rh - gap) * 0.72);
     shown.forEach((g, k) => {
       const gx = x0 + (k % cols) * (cw + gapX), gy = M + Math.floor(k / cols) * (bh + gapY);
