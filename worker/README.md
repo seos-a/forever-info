@@ -91,7 +91,19 @@ stays registered at Porkbun; only its nameservers change. Allow about an hour, m
    `worker/wrangler.toml` under `[[kv_namespaces]]` (done: `a8b2ffbe...`). The next deploy connects the store;
    without it Copy Link copies the long link.
 
-### 7. Check it
+### 7. Image caching (Cache Rule)
+
+Without this, Cloudflare hands browsers icons marked "good for 4 hours" but already older than that (the `Age` it
+passes on), so they arrive stale and the page's icon preloading doesn't stick: switching class re-checks every icon.
+
+1. Cloudflare → `foreverinfo.io` → **Caching → Cache Rules → Create rule → Cache Rules**, name `Images`.
+2. **Custom filter expression** → **Edit expression**:
+   `(starts_with(http.request.uri.path, "/images/icons/") or starts_with(http.request.uri.path, "/images/backgrounds/") or starts_with(http.request.uri.path, "/images/models/"))`
+   (only pictures whose content never changes under the same name; pages, logo and favicons keep their short cache).
+3. **Eligible for cache**; **Edge TTL**: ignore cache-control header, **1 day**; **Browser TTL**: override origin,
+   **1 month** → **Deploy**. An icon should then answer `Cache-Control: max-age=2678400`.
+
+### 8. Check it
 
 1. Open `https://foreverinfo.io/raid-preview.png?1pg4jae09k` in a browser: you should see a 10-player roster picture.
 2. Paste a raid link into Discord. Discord caches previews per address, so test with a link you haven't shared before.
