@@ -1,16 +1,19 @@
 {
  "2481": {
   "name": "Find Treasure",
+  "icon": "racial_dwarf_findtreasure",
   "cells": [],
   "text": "Allows the dwarf to sense nearby treasure, making it appear on the minimap. Lasts until canceled."
  },
  "5227": {
   "name": "Underwater Breathing",
+  "icon": "spell_shadow_demonbreath",
   "cells": [],
   "text": "Underwater breath lasts 300% longer than normal."
  },
  "7744": {
   "name": "Will of the Forsaken",
+  "icon": "spell_shadow_raisedead",
   "cells": [
    "Instant",
    "2 min cooldown"
@@ -19,6 +22,7 @@
  },
  "20549": {
   "name": "War Stomp",
+  "icon": "ability_warstomp",
   "cells": [
    "0.5 sec cast",
    "1.5 min cooldown"
@@ -27,16 +31,19 @@
  },
  "20550": {
   "name": "Endurance",
+  "icon": "spell_nature_unyeildingstamina",
   "cells": [],
   "text": "Total Health increased by 5% and critical strike bonus to damage and healing increased by 2%."
  },
  "20552": {
   "name": "Cultivation",
+  "icon": "inv_misc_flower_01",
   "cells": [],
   "text": "Cultivate a nearby herb, growing a duplicate you can harvest without requiring Herbalism skill. Each herb may only be cultivated once."
  },
  "20554": {
   "name": "Berserking",
+  "icon": "racial_troll_berserk",
   "cells": [
    "Instant",
    "3 min cooldown"
@@ -45,34 +52,40 @@
  },
  "20555": {
   "name": "Regeneration",
+  "icon": "spell_nature_regenerate",
   "cells": [],
   "text": "Health regeneration rate increased by 20%. In addition, 20% of total Health regeneration will continue during combat."
  },
  "20557": {
   "name": "Beast Slaying",
+  "icon": "inv_misc_pelt_bear_ruin_02",
   "cells": [],
   "text": "Damage dealt versus Beasts increased by 5%."
  },
  "20572": {
   "name": "Blood Fury",
+  "icon": "racial_orc_berserkerstrength",
   "cells": [
    "Instant",
-   "2 min cooldown"
+   "3 min cooldown"
   ],
   "text": "Increases Attack Power and Spell Power by 10% for 15 sec."
  },
  "20573": {
   "name": "Hardiness",
+  "icon": "inv_helmet_23",
   "cells": [],
   "text": "Duration of Stun effects on you reduced by 20%."
  },
  "20574": {
   "name": "Savage",
+  "icon": "inv_axe_02",
   "cells": [],
   "text": "Increases your critical strike chance with all spells and abilities by 1%."
  },
  "20577": {
   "name": "Cannibalize",
+  "icon": "ability_racial_cannibalize",
   "cells": [
    "Instant",
    "2 min cooldown"
@@ -81,6 +94,7 @@
  },
  "20580": {
   "name": "Shadowmeld",
+  "icon": "ability_ambush",
   "cells": [
    "Instant",
    "10 sec cooldown"
@@ -89,16 +103,19 @@
  },
  "20582": {
   "name": "Quickness",
+  "icon": "ability_racial_shadowmeld",
   "cells": [],
   "text": "Dodge chance increased by 1% and movement speed increased by 2%. Night Elf Rogues and Druids are harder to detect in Stealth as if they were 1 level higher."
  },
  "20585": {
   "name": "Wisp Spirit",
+  "icon": "spell_nature_wispsplode",
   "cells": [],
   "text": "Transform into a wisp upon death, increasing movement speed by 75%."
  },
  "20589": {
   "name": "Escape Artist",
+  "icon": "ability_rogue_trip",
   "cells": [
    "Instant",
    "2 min cooldown"
@@ -107,16 +124,19 @@
  },
  "20591": {
   "name": "Expansive Mind",
+  "icon": "inv_enchant_essenceeternallarge",
   "cells": [],
   "text": "Maximum Mana increased by 5%."
  },
  "20593": {
   "name": "Engineering Specialization",
+  "icon": "inv_misc_gear_01",
   "cells": [],
   "text": "Your gnomish ingenuity reduces the rate of engineering devices failing or backfiring when you use them by 20%."
  },
  "20594": {
   "name": "Stoneform",
+  "icon": "spell_shadow_unholystrength",
   "cells": [
    "Instant",
    "3 min cooldown"
@@ -125,16 +145,19 @@
  },
  "20597": {
   "name": "Ruthless",
+  "icon": "ability_rogue_eviscerate",
   "cells": [],
   "text": "Increases your critical strike chance with all spells and attacks by 2%."
  },
  "20598": {
   "name": "The Human Spirit",
+  "icon": "inv_enchant_shardbrilliantsmall",
   "cells": [],
   "text": "Spirit increased by 5%."
  },
  "20600": {
   "name": "Perception",
+  "icon": "spell_nature_sleep",
   "cells": [
    "Instant",
    "3 min cooldown"
@@ -143,6 +166,7 @@
  },
  "1259416": {
   "name": "Walk on Air",
+  "icon": "inv_elemental_primal_air",
   "cells": [
    "Instant",
    "1.5 min cooldown"
@@ -151,6 +175,7 @@
  },
  "1259686": {
   "name": "Skysight",
+  "icon": "ability_skyreach_lens_flare",
   "cells": [
    "0.5 sec cast",
    "2 min cooldown"
@@ -159,6 +184,7 @@
  },
  "1259705": {
   "name": "Read Leyline",
+  "icon": "ability_mage_incantersabsorbtion",
   "cells": [
    "2 sec cast",
    "2 min cooldown"
@@ -167,16 +193,19 @@
  },
  "1259707": {
   "name": "Elemental Insight",
+  "icon": "achievement_raidprimalist_windelemental",
   "cells": [],
   "text": "Damage dealt versus Elementals increased by 5%."
  },
  "1259710": {
   "name": "Wind Blessed",
+  "icon": "inv_misc_volatileair",
   "cells": [],
   "text": "Increases your spellcasting, melee, and ranged Haste by 3%."
  },
  "1259718": {
   "name": "Will to Survive",
+  "icon": "spell_shadow_charm",
   "cells": [
    "Instant",
    "3 min cooldown"
@@ -185,16 +214,19 @@
  },
  "1259719": {
   "name": "Earth Fury",
+  "icon": "spell_shaman_unleashweapon_earth",
   "cells": [],
   "text": "Increases your critical strike bonus to damage and healing by 2%."
  },
  "1259721": {
   "name": "Big Game Hunter",
+  "icon": "inv_weapon_rifle_05",
   "cells": [],
   "text": "Damage dealt versus Beasts increased by 5%."
  },
  "1259799": {
   "name": "Elune's Light",
+  "icon": "spell_nature_moonglow",
   "cells": [
    "Instant",
    "3 min cooldown"
@@ -203,71 +235,82 @@
  },
  "1259802": {
   "name": "Expansive Mind",
+  "icon": "inv_enchant_essenceeternallarge",
   "cells": [],
   "text": "Maximum Rage increased by 5%."
  },
  "1259803": {
   "name": "Expansive Mind",
+  "icon": "inv_enchant_essenceeternallarge",
   "cells": [],
   "text": "Maximum Energy increased by 5%."
  },
  "1259812": {
   "name": "Eureka!",
+  "icon": "inv_gnometoy",
   "cells": [
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage."
+  "text": "Your non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage for 8 sec."
  },
  "1259813": {
   "name": "Eureka!",
+  "icon": "inv_gnometoy",
   "cells": [
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your non-periodic damaging abilities have their Rage cost reduced by 10% and deal 10% more damage."
+  "text": "Your non-periodic damaging abilities have their Rage cost reduced by 10% and deal 10% more damage for 8 sec."
  },
  "1259817": {
   "name": "Eureka!",
+  "icon": "inv_gnometoy",
   "cells": [
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
+  "text": "Your damaging abilities have their Mana cost reduced by 10% and deal 10% more damage for 8 sec."
  },
  "1259821": {
   "name": "Eureka!",
+  "icon": "inv_gnometoy",
   "cells": [
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your non-periodic damaging abilities have their Mana cost reduced by 10% and deal 10% more damage."
+  "text": "Your non-periodic damaging abilities have their Mana cost reduced by 10% and deal 10% more damage for 8 sec."
  },
  "1259823": {
   "name": "Eureka!",
+  "icon": "inv_gnometoy",
   "cells": [
    "Instant",
    "2 min cooldown"
   ],
-  "text": "Your non-periodic damaging or healing abilities have their Mana cost reduced by 10% and deal 10% more damage or healing."
+  "text": "Your non-periodic damaging or healing abilities have their Mana cost reduced by 10% and deal 10% more damage or healing for 8 sec."
  },
  "1259918": {
   "name": "Plainsrunning",
+  "icon": "achievement_zone_barrens_01",
   "cells": [],
   "text": "Gain 1% increased movement speed every 5 sec spent moving, up to a maximum of 30% increase. Taking damage or standing still will reduce this effect. In addition, you move 3% faster while mounted."
  },
  "1260189": {
   "name": "Touch of the Grave",
+  "icon": "spell_shadow_fingerofdeath",
   "cells": [],
   "text": "Your spells and attacks have a 20% chance to drain Health from the target, up to 5% of your maximum Health."
  },
  "1260201": {
   "name": "Touch of the Grave",
+  "icon": "spell_shadow_fingerofdeath",
   "cells": [],
   "text": "Your spells and attacks have a 30% chance to drain Health from the target, up to 5% of your maximum Health."
  },
  "1260270": {
   "name": "Rapid Regeneration",
+  "icon": "ability_racial_regeneratin",
   "cells": [
    "Channeled (6 sec cast)",
    "3 min cooldown"
@@ -276,6 +319,7 @@
  },
  "1299026": {
   "name": "Shatter Curse",
+  "icon": "spell_nature_removecurse",
   "cells": [
    "Instant",
    "3 min cooldown"
