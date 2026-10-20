@@ -1,6 +1,430 @@
 {
  "updates": [
   {
+   "date": "2026-10-20",
+   "version": "1.60.1",
+   "build": "70450",
+   "classes": {
+    "druid": [
+     [
+      "other",
+      "Nature's Focus",
+      "spell_nature_healingwavegreater",
+      "Restoration talent · reworded",
+      "Gives {*your Arcane and Nature spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+      "Gives {~you~} a 70% chance to {~avoid interruption caused by damage while~} casting {~Arcane and Nature spells~}.",
+      [
+       [
+        5,
+        "Gives {*your Arcane and Nature spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 70% chance to {~avoid interruption caused by damage while~} casting {~Arcane and Nature spells~}."
+       ],
+       [
+        4,
+        "Gives {*your Arcane and Nature spells*} a 56% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 56% chance to {~avoid interruption caused by damage while~} casting {~Arcane and Nature spells~}."
+       ],
+       [
+        3,
+        "Gives {*your Arcane and Nature spells*} a 42% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 42% chance to {~avoid interruption caused by damage while~} casting {~Arcane and Nature spells~}."
+       ],
+       [
+        2,
+        "Gives {*your Arcane and Nature spells*} a 28% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 28% chance to {~avoid interruption caused by damage while~} casting {~Arcane and Nature spells~}."
+       ],
+       [
+        1,
+        "Gives {*your Arcane and Nature spells*} a 14% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 14% chance to {~avoid interruption caused by damage while~} casting {~Arcane and Nature spells~}."
+       ]
+      ]
+     ]
+    ],
+    "mage": [
+     [
+      "other",
+      "Improved Channeling",
+      "spell_nature_starfall",
+      "Arcane talent · reworded",
+      "Gives {*your Arcane Missiles spell*} a 100% chance {*and your*} Arcane {*Blast*} and {*Arcane Wrath spells*} a 70% chance {*to not lose*} casting {*time when you take damage*}.",
+      "Gives {~you~} a 100% chance {~to avoid interruption caused by damage while channeling~} Arcane {~Missiles~} and a 70% chance {~while~} casting {~Arcane Blast or Arcane Wrath~}.",
+      [
+       [
+        5,
+        "Gives {*your Arcane Missiles spell*} a 100% chance {*and your*} Arcane {*Blast*} and {*Arcane Wrath spells*} a 70% chance {*to not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 100% chance {~to avoid interruption caused by damage while channeling~} Arcane {~Missiles~} and a 70% chance {~while~} casting {~Arcane Blast or Arcane Wrath~}."
+       ],
+       [
+        4,
+        "Gives {*your Arcane Missiles spell*} a 80% chance {*and your*} Arcane {*Blast*} and {*Arcane Wrath spells*} a 56% chance {*to not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 80% chance {~to avoid interruption caused by damage while channeling~} Arcane {~Missiles~} and a 56% chance {~while~} casting {~Arcane Blast or Arcane Wrath~}."
+       ],
+       [
+        3,
+        "Gives {*your Arcane Missiles spell*} a 60% chance {*and your*} Arcane {*Blast*} and {*Arcane Wrath spells*} a 42% chance {*to not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 60% chance {~to avoid interruption caused by damage while channeling~} Arcane {~Missiles~} and a 42% chance {~while~} casting {~Arcane Blast or Arcane Wrath~}."
+       ],
+       [
+        2,
+        "Gives {*your Arcane Missiles spell*} a 40% chance {*and your*} Arcane {*Blast*} and {*Arcane Wrath spells*} a 28% chance {*to not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 40% chance {~to avoid interruption caused by damage while channeling~} Arcane {~Missiles~} and a 28% chance {~while~} casting {~Arcane Blast or Arcane Wrath~}."
+       ],
+       [
+        1,
+        "Gives {*your Arcane Missiles spell*} a 20% chance {*and your*} Arcane {*Blast*} and {*Arcane Wrath spells*} a 14% chance {*to not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 20% chance {~to avoid interruption caused by damage while channeling~} Arcane {~Missiles~} and a 14% chance {~while~} casting {~Arcane Blast or Arcane Wrath~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Missile Barrage",
+      "ability_mage_missilebarrage",
+      "Arcane talent · reworked",
+      "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt{*, Frost Blast*}, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+      "Gives your Arcane Blast spell a 40% chance, {~your Arcane Missile hits a 10% chance,~} and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+      [
+       [
+        2,
+        "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt{*, Frost Blast*}, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+        "Gives your Arcane Blast spell a 40% chance, {~your Arcane Missile hits a 10% chance,~} and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+       ],
+       [
+        1,
+        "Gives your Arcane Blast spell a 20% chance, and your Arcane Wrath, Fireball, Frostbolt{*, Frost Blast*}, and Frostfire Bolt spells a 10% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+        "Gives your Arcane Blast spell a 20% chance, {~your Arcane Missile hits a 5% chance,~} and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 10% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Improved Scorch",
+      "spell_fire_soulburn",
+      "Fire talent",
+      "New icon.",
+      "",
+      [
+       [
+        3,
+        "New icon.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Frost Warding",
+      "spell_frost_frostward",
+      "Frost talent · reworked",
+      "Increases the Armor and {*resistances granted*} by your Frost Armor and Ice Armor spells by 30%, gives your Frost Ward a 20% chance to {*negate the warded damage spell, and increases the amount absorbed by your Ice Barrier and*} Frost {*Ward by 20%*}.",
+      "Increases the Armor and {~resistance given~} by your Frost Armor and Ice Armor spells by 30%{~. In addition~}, gives your Frost Ward a 20% chance to {~reflect~} Frost {~spells and effects while active~}.",
+      [
+       [
+        2,
+        "Increases the Armor and {*resistances granted*} by your Frost Armor and Ice Armor spells by 30%, gives your Frost Ward a 20% chance to {*negate the warded damage spell, and increases the amount absorbed by your Ice Barrier and*} Frost {*Ward by 20%*}.",
+        "Increases the Armor and {~resistance given~} by your Frost Armor and Ice Armor spells by 30%{~. In addition~}, gives your Frost Ward a 20% chance to {~reflect~} Frost {~spells and effects while active~}."
+       ],
+       [
+        1,
+        "Increases the Armor and {*resistances granted*} by your Frost Armor and Ice Armor spells by 15%, gives your Frost Ward a 10% chance to {*negate the warded damage spell, and increases the amount absorbed by your Ice Barrier and*} Frost {*Ward by 10%*}.",
+        "Increases the Armor and {~resistance given~} by your Frost Armor and Ice Armor spells by 15%{~. In addition~}, gives your Frost Ward a 10% chance to {~reflect~} Frost {~spells and effects while active~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Elemental Precision",
+      "spell_ice_magicdamage",
+      "Frost talent",
+      "Improves your chance to hit with Frost and Fire spells by {+6%} (up from 5%). Now has 3 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Winter's Chill",
+      "spell_frost_chillingblast",
+      "Frost talent · reworked",
+      "Gives your {*Frostbolt,*} Frost {*Blast, and Fingers of Frost empowered Ice Lance*} spells a 100% chance to apply Winter's Chill, {*increasing*} the {*target's*} damage {*taken from*} your {*next*} Cone of Cold {*by 5% and it gains an additional 7% of your*} spell {*damage*}, stacking up to 5 times.",
+      "Gives your Frost {~damage~} spells a 100% chance to apply {~the~} Winter's Chill {~effect~}, {~which increases~} the damage {~done by~} your Cone of Cold spell {~to the target by 40%~}, stacking up to 5 times.",
+      [
+       [
+        5,
+        "Gives your {*Frostbolt,*} Frost {*Blast, and Fingers of Frost empowered Ice Lance*} spells a 100% chance to apply Winter's Chill, {*increasing*} the {*target's*} damage {*taken from*} your {*next*} Cone of Cold {*by 5% and it gains an additional 7% of your*} spell {*damage*}, stacking up to 5 times.",
+        "Gives your Frost {~damage~} spells a 100% chance to apply {~the~} Winter's Chill {~effect~}, {~which increases~} the damage {~done by~} your Cone of Cold spell {~to the target by 40%~}, stacking up to 5 times."
+       ],
+       [
+        4,
+        "Gives your {*Frostbolt,*} Frost {*Blast, and Fingers of Frost empowered Ice Lance*} spells a 80% chance to apply Winter's Chill, {*increasing*} the {*target's*} damage {*taken from*} your {*next*} Cone of Cold {*by 5% and it gains an additional 7% of your*} spell {*damage*}, stacking up to 5 times.",
+        "Gives your Frost {~damage~} spells a 80% chance to apply {~the~} Winter's Chill {~effect~}, {~which increases~} the damage {~done by~} your Cone of Cold spell {~to the target by 40%~}, stacking up to 5 times."
+       ],
+       [
+        3,
+        "Gives your {*Frostbolt,*} Frost {*Blast, and Fingers of Frost empowered Ice Lance*} spells a 60% chance to apply Winter's Chill, {*increasing*} the {*target's*} damage {*taken from*} your {*next*} Cone of Cold {*by 5% and it gains an additional 7% of your*} spell {*damage*}, stacking up to 5 times.",
+        "Gives your Frost {~damage~} spells a 60% chance to apply {~the~} Winter's Chill {~effect~}, {~which increases~} the damage {~done by~} your Cone of Cold spell {~to the target by 40%~}, stacking up to 5 times."
+       ],
+       [
+        2,
+        "Gives your {*Frostbolt,*} Frost {*Blast, and Fingers of Frost empowered Ice Lance*} spells a 40% chance to apply Winter's Chill, {*increasing*} the {*target's*} damage {*taken from*} your {*next*} Cone of Cold {*by 5% and it gains an additional 7% of your*} spell {*damage*}, stacking up to 5 times.",
+        "Gives your Frost {~damage~} spells a 40% chance to apply {~the~} Winter's Chill {~effect~}, {~which increases~} the damage {~done by~} your Cone of Cold spell {~to the target by 40%~}, stacking up to 5 times."
+       ],
+       [
+        1,
+        "Gives your {*Frostbolt,*} Frost {*Blast, and Fingers of Frost empowered Ice Lance*} spells a 20% chance to apply Winter's Chill, {*increasing*} the {*target's*} damage {*taken from*} your {*next*} Cone of Cold {*by 5% and it gains an additional 7% of your*} spell {*damage*}, stacking up to 5 times.",
+        "Gives your Frost {~damage~} spells a 20% chance to apply {~the~} Winter's Chill {~effect~}, {~which increases~} the damage {~done by~} your Cone of Cold spell {~to the target by 40%~}, stacking up to 5 times."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Ice Barrier",
+      "spell_ice_lament",
+      "Frost talent · reworked",
+      "Shield yourself, absorbing 448 (plus 10% of your Frost spell power) damage and increasing your Frost damage by 3% for 1 min. While shielded, your Frost damage is increased by an additional 3% and you do not lose casting time when you take damage.",
+      "Instantly shields you, absorbing 448 damage. Lasts 1 min. While the shield holds, your spellcasts will not be interrupted or delayed from taking damage."
+     ],
+     [
+      "other",
+      "Piercing Ice",
+      "spell_frost_frostbolt",
+      "Frost talent · removed",
+      "Removed from the talent tree.",
+      "Increases the damage done by your Frost spells by 6%."
+     ],
+     [
+      "other",
+      "Frost Ward",
+      "spell_frost_frostward",
+      "Spell · reworked",
+      "Absorbs 913 {*(plus 10% of your Frost spell power)*} Frost damage [Frost Warding: and grants a 0% chance to {*negate*} Frost {*damage*}]. Lasts 30 sec.",
+      "Absorbs 913 Frost damage [Frost Warding: and grants a 0% chance to {~reflect~} Frost {~spells and effects~}]. Lasts 30 sec.",
+      [
+       [
+        5,
+        "Absorbs 913 {*(plus 10% of your Frost spell power)*} Frost damage [Frost Warding: and grants a 0% chance to {*negate*} Frost {*damage*}]. Lasts 30 sec.",
+        "Absorbs 913 Frost damage [Frost Warding: and grants a 0% chance to {~reflect~} Frost {~spells and effects~}]. Lasts 30 sec."
+       ],
+       [
+        4,
+        "Absorbs 668 {*(plus 10% of your Frost spell power)*} Frost damage [Frost Warding: and grants a 0% chance to {*negate*} Frost {*damage*}]. Lasts 30 sec.",
+        "Absorbs 668 Frost damage [Frost Warding: and grants a 0% chance to {~reflect~} Frost {~spells and effects~}]. Lasts 30 sec."
+       ],
+       [
+        3,
+        "Absorbs 463 {*(plus 10% of your Frost spell power)*} Frost damage [Frost Warding: and grants a 0% chance to {*negate*} Frost {*damage*}]. Lasts 30 sec.",
+        "Absorbs 463 Frost damage [Frost Warding: and grants a 0% chance to {~reflect~} Frost {~spells and effects~}]. Lasts 30 sec."
+       ],
+       [
+        2,
+        "Absorbs 284 {*(plus 10% of your Frost spell power)*} Frost damage [Frost Warding: and grants a 0% chance to {*negate*} Frost {*damage*}]. Lasts 30 sec.",
+        "Absorbs 284 Frost damage [Frost Warding: and grants a 0% chance to {~reflect~} Frost {~spells and effects~}]. Lasts 30 sec."
+       ],
+       [
+        1,
+        "Absorbs 162 {*(plus 10% of your Frost spell power)*} Frost damage [Frost Warding: and grants a 0% chance to {*negate*} Frost {*damage*}]. Lasts 30 sec.",
+        "Absorbs 162 Frost damage [Frost Warding: and grants a 0% chance to {~reflect~} Frost {~spells and effects~}]. Lasts 30 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Frost Blast",
+      "spell_ice_magicdamage",
+      "Spell",
+      "New icon.",
+      "",
+      [
+       [
+        3,
+        "New icon.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "paladin": [
+     [
+      "buff",
+      "Champion of the Light",
+      "ability_paladin_enlightenedjudgements",
+      "Retribution talent",
+      "Increases your spell damage by up to {+60%} (up from 30%) of your Intellect.",
+      "",
+      [
+       [
+        3,
+        "Increases your spell damage by up to {+60%} (up from 30%) of your Intellect.",
+        ""
+       ],
+       [
+        2,
+        "Increases your spell damage by up to {+40%} (up from 20%) of your Intellect.",
+        ""
+       ],
+       [
+        1,
+        "Increases your spell damage by up to {+20%} (up from 10%) of your Intellect.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "priest": [
+     [
+      "other",
+      "Twilight Focus",
+      "spell_holy_healingfocus",
+      "Holy talent · reworded",
+      "Gives {*your spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+      "Gives {~you~} a 70% chance to {~avoid interruption caused by damage while~} casting {~any spell~}.",
+      [
+       [
+        3,
+        "Gives {*your spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 70% chance to {~avoid interruption caused by damage while~} casting {~any spell~}."
+       ],
+       [
+        2,
+        "Gives {*your spells*} a 47% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 47% chance to {~avoid interruption caused by damage while~} casting {~any spell~}."
+       ],
+       [
+        1,
+        "Gives {*your spells*} a 23% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 23% chance to {~avoid interruption caused by damage while~} casting {~any spell~}."
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Holy Fire",
+      "spell_holy_searinglight",
+      "Spell",
+      "Consumes the enemy in holy flames that cause {-53} (down from 57) to {-65} (down from 70) Holy damage and an additional 20 Holy damage over 10 sec.",
+      "",
+      [
+       [
+        1,
+        "Consumes the enemy in holy flames that cause {-53} (down from 57) to {-65} (down from 70) Holy damage and an additional 20 Holy damage over 10 sec.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "shaman": [
+     [
+      "other",
+      "Eye of the Storm",
+      "spell_nature_eyeofthestorm",
+      "Elemental talent · reworded",
+      "{*Gives your*} Lightning Bolt, Chain Lightning, and Lava Burst {*spells a*} 70% {*chance to not lose casting time when you take damage*}.",
+      "{~Reduces the pushback suffered from damaging attacks while casting~} Lightning Bolt, Chain Lightning, and Lava Burst {~by~} 70%.",
+      [
+       [
+        3,
+        "{*Gives your*} Lightning Bolt, Chain Lightning, and Lava Burst {*spells a*} 70% {*chance to not lose casting time when you take damage*}.",
+        "{~Reduces the pushback suffered from damaging attacks while casting~} Lightning Bolt, Chain Lightning, and Lava Burst {~by~} 70%."
+       ],
+       [
+        2,
+        "{*Gives your*} Lightning Bolt, Chain Lightning, and Lava Burst {*spells a*} 47% {*chance to not lose casting time when you take damage*}.",
+        "{~Reduces the pushback suffered from damaging attacks while casting~} Lightning Bolt, Chain Lightning, and Lava Burst {~by~} 47%."
+       ],
+       [
+        1,
+        "{*Gives your*} Lightning Bolt, Chain Lightning, and Lava Burst {*spells a*} 23% {*chance to not lose casting time when you take damage*}.",
+        "{~Reduces the pushback suffered from damaging attacks while casting~} Lightning Bolt, Chain Lightning, and Lava Burst {~by~} 23%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Healing Focus",
+      "spell_nature_healingwavelesser",
+      "Restoration talent · reworded",
+      "Gives {*your healing spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+      "Gives {~you~} a 70% chance to {~avoid interruption caused by damage while~} casting {~any healing spell~}.",
+      [
+       [
+        3,
+        "Gives {*your healing spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 70% chance to {~avoid interruption caused by damage while~} casting {~any healing spell~}."
+       ],
+       [
+        2,
+        "Gives {*your healing spells*} a 47% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 47% chance to {~avoid interruption caused by damage while~} casting {~any healing spell~}."
+       ],
+       [
+        1,
+        "Gives {*your healing spells*} a 23% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 23% chance to {~avoid interruption caused by damage while~} casting {~any healing spell~}."
+       ]
+      ]
+     ]
+    ],
+    "warlock": [
+     [
+      "other",
+      "Fel Concentration",
+      "spell_shadow_fingerofdeath",
+      "Affliction talent · reworded",
+      "Gives your Drain Life, Drain Mana, Drain Soul, and Wrack spells a 70% chance to not lose casting time when you take damage.",
+      "Gives you a 70% chance to avoid interruption caused by damage while channeling or casting your Drain Life, Drain Mana, Drain Soul, or Wrack spells.",
+      [
+       [
+        3,
+        "Gives your Drain Life, Drain Mana, Drain Soul, and Wrack spells a 70% chance to not lose casting time when you take damage.",
+        "Gives you a 70% chance to avoid interruption caused by damage while channeling or casting your Drain Life, Drain Mana, Drain Soul, or Wrack spells."
+       ],
+       [
+        2,
+        "Gives your Drain Life, Drain Mana, Drain Soul, and Wrack spells a 47% chance to not lose casting time when you take damage.",
+        "Gives you a 47% chance to avoid interruption caused by damage while channeling or casting your Drain Life, Drain Mana, Drain Soul, or Wrack spells."
+       ],
+       [
+        1,
+        "Gives your Drain Life, Drain Mana, Drain Soul, and Wrack spells a 23% chance to not lose casting time when you take damage.",
+        "Gives you a 23% chance to avoid interruption caused by damage while channeling or casting your Drain Life, Drain Mana, Drain Soul, or Wrack spells."
+       ]
+      ]
+     ],
+     [
+      "nerf",
+      "Amplify Curse",
+      "spell_shadow_contagion",
+      "Affliction talent",
+      "Increases the effect of your next Curse of Weakness or Bane of Agony by 50%, or your next Curse of Exhaustion by {-20%} (down from 50%). Lasts 30 sec."
+     ],
+     [
+      "other",
+      "Intensity",
+      "spell_fire_lavaspawn",
+      "Destruction talent · reworded",
+      "Gives {*your Destruction spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+      "Gives {~you~} a 70% chance to {~resist interruption caused by damage while~} casting {~or channeling any Destruction spell~}.",
+      [
+       [
+        3,
+        "Gives {*your Destruction spells*} a 70% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 70% chance to {~resist interruption caused by damage while~} casting {~or channeling any Destruction spell~}."
+       ],
+       [
+        2,
+        "Gives {*your Destruction spells*} a 47% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 47% chance to {~resist interruption caused by damage while~} casting {~or channeling any Destruction spell~}."
+       ],
+       [
+        1,
+        "Gives {*your Destruction spells*} a 23% chance to {*not lose*} casting {*time when you take damage*}.",
+        "Gives {~you~} a 23% chance to {~resist interruption caused by damage while~} casting {~or channeling any Destruction spell~}."
+       ]
+      ]
+     ]
+    ]
+   }
+  },
+  {
    "date": "2026-10-16",
    "version": "1.60.1",
    "build": "70425",
