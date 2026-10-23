@@ -26,7 +26,7 @@ KNOWN_EXTRA = {'warrior': {'Improved Cleave', 'Improved Overpower', 'Toughness'}
                'mage': {'Improved Blink', 'Magic Attunement'}}
 # Spells whose first rank comes from a talent, so the beta's trainer list starts later. These are the levels the
 # beta listed when reviewed; if it lists different ones later, the spell is flagged again.
-KNOWN_LEVELS = {('paladin', 'Flash of Light'): [20, 26, 34, 42, 50, 58], ('paladin', 'Righteous Fury'): [16],
+KNOWN_LEVELS = {('paladin', 'Flash of Light'): [20, 26, 34, 42, 50, 58], ('paladin', 'Righteous Fury'): [10],
                 ('rogue', 'Mutilate'): [40, 50, 60], ('priest', 'Shadow Word: Death'): [32, 40, 48, 56],
                 ('priest', 'Penance'): [40, 50, 60], ('priest', 'Prayer of Mending'): [50, 60],
                 ('shaman', 'Lava Burst'): [50, 60], ('druid', 'Lacerate'): [42, 50, 58],
