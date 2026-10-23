@@ -2624,7 +2624,7 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
   const idle=f=>window.requestIdleCallback?requestIdleCallback(f,{timeout:3000}):setTimeout(f,300);
   if(document.readyState==="complete") setTimeout(()=>idle(go),800); else addEventListener("load",()=>setTimeout(()=>idle(go),800)); })();
 /* the beta version, bottom left like the WoW login screen (tc/version.json, kept up to date by tc/changelog.py) */
-(function(){ const V={"version": "1.60.1", "build": "70450", "date": "2026-10-20"}, el=$("buildStamp"); if(!el||!V||!V.version) return;
+(function(){ const V={"version": "1.60.1", "build": "70532", "date": "2026-10-23"}, el=$("buildStamp"); if(!el||!V||!V.version) return;
   const [y,m,d]=(V.date||"").split("-").map(Number), mon=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1];
   el.innerHTML=`Version ${esc(V.version)}${V.build?` (${esc(V.build)})`:""} (Beta)`+(mon?`<br>${mon} ${d} ${y}`:""); })();
 /* faction theme toggle (remembered per visitor) */
