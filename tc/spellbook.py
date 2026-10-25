@@ -79,10 +79,9 @@ def build():
         sp=[]
         for n,ic,s,lv,rk,d,i in raw[c]:
             if n in DROP: continue
-            sp.append([n,ic,sk.index(s) if s in sk else 0,lv,rk,clean(d),i,ranks(c,n,d)])
+            rks=ranks(c,n,d); tip=None if rks else RKD.get(c,{}).get(n,{}).get('1')   # a single-rank spell's cost / range / cast / cooldown
+            sp.append([n,ic,sk.index(s) if s in sk else 0,lv,rk,clean(d),i,rks]+([tip] if tip else []))
         out[c]={'spells':sp,'general':gen(c),'tabs':EXTRA_TABS.get(c,[])}
-    import os
-    out['det']=json.load(open('details.json', encoding='utf-8')) if os.path.exists('details.json') else {}
     out['priestRacial']=sorted({p[0] for r in R for p in r['priest']})
     return out
 if __name__=='__main__':

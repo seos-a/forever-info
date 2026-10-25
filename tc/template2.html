@@ -236,7 +236,6 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .tip .tr{color:#e4e5ee}
 .tip .tx{display:flex;justify-content:space-between;align-items:baseline;gap:16px;color:#fff}
 .tip .tk{color:#9d9d9d;font-size:12px}
-.tip .tc{color:#1eff00;margin-top:4px;font-size:11.5px}
 .tip .tl2{color:#9d9d9d;margin-top:5px;font-size:11.5px}
 .tip .tl{color:#ffd100}
 .tip .dt{margin-top:7px;padding-top:6px;border-top:1px solid #ffffff22;font-size:11.5px;color:#e4e5ee}
@@ -1958,10 +1957,10 @@ function sbEntries(cls=sbClass,race=sbRace,tab=sbTab){
   const talents=(tree?tree.talents:[]).filter(t=>t.meta&&!have.has(t.name))
     .map(t=>({n:t.name,ic:t.icon,sub:"Talent",d:textAt(t,t.max),talent:t}));
   const out=[];
-  if(!$("sbRanks").checked) out.push(...list.map(([n,ic,_,lv,rk,d,id,rks])=>({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id,rt:rks&&rks.length?rks[rks.length-1][3]:undefined})));   // top rank's cost / cast / cooldown, as in Show All Ranks
-  else for(const [n,ic,_,lv,rk,d,id,rks] of list){
+  if(!$("sbRanks").checked) out.push(...list.map(([n,ic,_,lv,rk,d,id,rks,tip])=>({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id,rt:rks&&rks.length?rks[rks.length-1][3]:tip})));   // top rank's cost / cast / cooldown, as in Show All Ranks
+  else for(const [n,ic,_,lv,rk,d,id,rks,tip] of list){
     if(rks) rks.forEach(([r,l,rd,rt],i)=>out.push({n,ic,sub:(others.has(n)?"Racial · ":"")+"Rank "+r,d:rd,lv:[l],id,low:i<rks.length-1,rt}));
-    else out.push({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id}); }
+    else out.push({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id,rt:tip}); }
   out.push(...talents);
   return out.sort((a,b)=>a.n.localeCompare(b.n));   // stable, so a spell's ranks stay in order
 }
@@ -1979,25 +1978,20 @@ function renderSpellbook(){
     :`<p class="sb-empty">No spells listed for this tab.</p>`;
   runSearch();
 }
-function wowRange(r){ if(!r) return ""; if(/Self/.test(r)) return ""; if(/Combat/.test(r)) return "Melee Range"; if(/Anywhere|50000/.test(r)) return "Unlimited range"; const m=r.match(/^([\d\s-]+?)\s*yards/); return m?m[1].replace(/\s/g,"")+" yd range":r; }
-function wowCast(c){ if(!c) return ""; if(c==="Instant"||c==="Channeled") return c; const m=c.match(/([\d.]+)\s*(second|millisecond)/); if(!m) return c; const v=m[2]==="millisecond"?+m[1]/1000:+m[1]; return `${v} sec cast`; }
-function wowCd(c){ if(!c) return ""; const m=c.match(/([\d.]+)\s*(second|minute|hour)/); return m?`${m[1]} ${m[2]==="second"?"sec":m[2]==="minute"?"min":"hr"} cooldown`:c; }
 function sbTip(el,ev){ const e=__sb[+el.dataset.i]; if(e) sbTipFor(e,el,ev); }
 // the Spellbook's tooltip for one entry (also used by Class Changes)
 function sbTipFor(e,el,ev){
   if(e.talent){   // talent ability: name, "Talent", cost/range and cast/cooldown rows, max-rank text
     $("tip").innerHTML=`<div class="tn">${esc(e.n)}</div><div class="tr">Talent</div>`+metaRows(e.talent,e.talent.max)+`<div class="td">${esc(e.d)}</div>`;
     tipFor=null; if(ev&&canHover) placeTipAt(ev.clientX,ev.clientY); else placeTip(el); return; }
-  const D=(e.id&&SB.det[e.id])||{};
-  const RT=e.rt||{}; const cost=RT.c||(D.Cost&&!(e.low&&/Mana|Health/.test(D.Cost))?D.Cost.replace(/ \/ 1 to 5 Combo Points/,""):"");
+  const RT=e.rt||{};   // cost / range / cast time / cooldown (tc/rank_tips.json)
   const row=(l,r)=>l||r?`<div class="tx"><span>${esc(l||"")}</span><span>${esc(r||"")}</span></div>`:"";
   const rk=/Rank \d+/.test(e.sub||"")?e.sub.match(/Rank \d+/)[0]:(/Passive/.test(e.sub||"")?"Passive":"");
   const lv=e.lv&&e.lv.length?(e.lv.length>1?`Ranks learned at level ${e.lv.join(", ")}`:`Learned at level ${e.lv[0]}`):"";
-  const coef=!e.low&&D.eff&&D.eff.length?D.eff.map(x=>`<div class="tc">${esc(x)}</div>`).join(""):"";
   $("tip").innerHTML=`<div class="tx"><span class="tn">${esc(e.n)}</span><span class="tk">${esc(rk)}</span></div>`
     +(/Racial/.test(e.sub||"")?`<div class="tr">Racial</div>`:"")
-    +row(cost,RT.r||wowRange(D.Range))+row(RT.t||wowCast(D["Cast time"])||(e.meta||""),RT.cd||wowCd(D.Cooldown))
-    +(e.d?`<div class="td">${esc(e.d)}</div>`:"")+coef+(lv?`<div class="tl2">${lv}</div>`:"");
+    +row(RT.c,RT.r)+row(RT.t||(e.meta||""),RT.cd)
+    +(e.d?`<div class="td">${esc(e.d)}</div>`:"")+(lv?`<div class="tl2">${lv}</div>`:"");
   tipFor=null; if(ev&&canHover) placeTipAt(ev.clientX,ev.clientY); else placeTip(el); }
 $("sbGrid").addEventListener("mouseover",e=>{ const el=e.target.closest(".sb-sp"); if(el&&canHover) sbTip(el,e); });
 $("sbGrid").addEventListener("mousemove",e=>{ if(canHover&&!$("tip").hidden&&e.target.closest(".sb-sp")) placeTipAt(e.clientX,e.clientY); });
@@ -2094,9 +2088,9 @@ function chgEntry(row){
   if(/talent/.test(w)){ const t=m.trees.flatMap(tr=>tr.talents).find(x=>x.name===n); if(!t||/removed/.test(w)) return null;
     const k=+row.dataset.rank||t.max; return {n,ic:t.icon,sub:t.max>1?`Talent · Rank ${Math.min(k,t.max)}/${t.max}`:"Talent",d:textAt(t,k),talent:t}; }   // the rank shown
   const sp=(SB[chgClass]&&SB[chgClass].spells||[]).find(x=>x[0]===n); if(!sp) return null;
-  const [,ic,,lv,rk,d,id,rks]=sp;
+  const [,ic,,lv,rk,d,id,rks,tip]=sp;
   if(rks&&rks.length){ const want=+row.dataset.rank, [r,l,rd,rt]=rks.find(x=>x[0]===want)||rks[rks.length-1]; return {n,ic,sub:"Rank "+r,d:rd,lv,id,rt}; }
-  return {n,ic,sub:rk||"",d,lv,id};
+  return {n,ic,sub:rk||"",d,lv,id,rt:tip};
 }
 const chgTip=(row,ev)=>{ const e=chgEntry(row); if(e) sbTipFor(e,row.querySelector(".slot")||row,ev); };
 $("changes").addEventListener("mouseover",e=>{ const r=e.target.closest(".rt[data-n]"); if(!r||!canHover) return; if(e.target.closest(".slot,.rn")) chgTip(r,e); else hideTip(); });   // only over the icon and the name, not the text beside them

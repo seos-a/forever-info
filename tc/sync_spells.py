@@ -7,7 +7,7 @@ The talent feed lists every trainable spell rank (id + level) per class. This fe
 the ranks by spell name, and for every spell already in the spellbook updates:
   spells_raw.json  levels, "Rank N" label, top-rank id and description
   ranks_raw.json   each rank's description (written as full text when it changed)
-  rank_tips.json   each rank's cost / range / cast time / cooldown
+  rank_tips.json   each rank's cost / range / cast time / cooldown (a single-rank spell's as rank 1)
 A spell the beta's trainers teach that the spellbook doesn't have yet is added when Wowhead's spellbook page says which
 tab it's on (a Classic spell); a brand-new Forever spell comes without a tab there, so it's listed for placing by hand.
 Rank counts and levels of spells already in the spellbook are listed too, not changed. Prints what changed.
@@ -109,9 +109,10 @@ def main():
                 check.append(f'{cls} {name}: spellbook levels {levels}, beta lists {beta_levels}')
             # each rank: the beta entry at that level whose wording matches (numbers aside)
             cur = spellbook.ranks(cls, name, s[5]) or []
-            if len(cur) < 2: continue
+            single = len(cur) < 2
             texts, tipmap, moved = [], {}, False
-            for row in cur:
+            if single and top and top[3]: tipmap['1'] = top[3]   # one rank: the top rank's header, stored as rank 1
+            for row in [] if single else cur:
                 r, lv, text = row[0], row[1], row[2]
                 cand = [e for e in g if e[0] == lv]
                 pick = [e for e in cand if spellbook.norm(spellbook.clean(e[2])) == spellbook.norm(text)] or (cand if len(cand) == 1 else [])
@@ -122,7 +123,7 @@ def main():
                 rk.setdefault(cls, {})[name] = {'r': texts}
                 changes.append(f'{cls} {name}: per-rank text')
             old = rt.get(cls, {}).get(name, {})
-            new = {r: {**old.get(r, {}), **v} for r, v in {**{r: {} for r in old}, **tipmap}.items()}   # fill in, never drop
+            new = tipmap if single else {r: {**old.get(r, {}), **v} for r, v in {**{r: {} for r in old}, **tipmap}.items()}   # fill in, never drop
             if tipmap and new != old:
                 rt.setdefault(cls, {})[name] = new
                 changes.append(f'{cls} {name}: per-rank cost / range / cast time / cooldown')
