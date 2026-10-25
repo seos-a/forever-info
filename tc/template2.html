@@ -1958,7 +1958,7 @@ function sbEntries(cls=sbClass,race=sbRace,tab=sbTab){
   const talents=(tree?tree.talents:[]).filter(t=>t.meta&&!have.has(t.name))
     .map(t=>({n:t.name,ic:t.icon,sub:"Talent",d:textAt(t,t.max),talent:t}));
   const out=[];
-  if(!$("sbRanks").checked) out.push(...list.map(([n,ic,_,lv,rk,d,id])=>({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id})));
+  if(!$("sbRanks").checked) out.push(...list.map(([n,ic,_,lv,rk,d,id,rks])=>({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id,rt:rks&&rks.length?rks[rks.length-1][3]:undefined})));   // top rank's cost / cast / cooldown, as in Show All Ranks
   else for(const [n,ic,_,lv,rk,d,id,rks] of list){
     if(rks) rks.forEach(([r,l,rd,rt],i)=>out.push({n,ic,sub:(others.has(n)?"Racial · ":"")+"Rank "+r,d:rd,lv:[l],id,low:i<rks.length-1,rt}));
     else out.push({n,ic,sub:others.has(n)?"Racial":(rk||""),d,lv,id}); }
