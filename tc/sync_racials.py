@@ -26,13 +26,13 @@ RACE_PAGES = {'human': 1, 'orc': 2, 'dwarf': 3, 'nightelf': 4, 'undead': 5, 'tau
 # racials.json trait name -> Wowhead spell ids (several when the site merges per-class versions into one line)
 TRAIT_IDS = {
     'Perception': [20600], 'Will to Survive': [1259718], 'Ruthless': [20597], 'The Human Spirit': [20598],
-    'Find Treasure': [2481], 'Stoneform': [20594], 'Big Game Hunter': [1259721], 'Earth Fury': [1259719],
+    'Find Treasure': [2481], 'Stoneform': [20594], 'Big Game Hunter': [1259721],
     "Elune's Light": [1259799], 'Shadowmeld': [20580], 'Quickness': [20582], 'Wisp Spirit': [20585],
     'Escape Artist': [20589], 'Eureka!': [1259813, 1259812, 1259817, 1259823, 1259821],
     'Engineering Specialization': [20593], 'Expansive Mind': [20591, 1259802, 1259803],
     'Read Leyline': [1259705], 'Skysight': [1259686], 'Walk on Air': [1259416], 'Elemental Insight': [1259707],
     'Wind Blessed': [1259710],
-    'Blood Fury': [20572], 'Shatter Curse': [1299026], 'Savage': [20574], 'Hardiness': [20573],
+    'Blood Fury': [20572], 'Shatter Curse': [1299026], 'Hardiness': [20573],
     'Cannibalize': [20577], 'Will of the Forsaken': [7744], 'Touch of the Grave': [1260201, 1260189],
     'Underwater Breathing': [5227],
     'Cultivation': [20552], 'War Stomp': [20549], 'Endurance': [20550], 'Plainsrunning': [1259918],
