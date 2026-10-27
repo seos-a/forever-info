@@ -387,7 +387,7 @@ function drawMatrix(p, rows, overall) {
     ext[h] = [Math.min(...v), Math.max(...v)];
   }
   table($('.lx-matrix'), cols, sortRows(list, sorts.matrix, cols), sorts.matrix,
-    (c) => toggle('matrix', c, (c) => (c.field === 'race' ? 'asc' : 'desc')),
+    (c) => { colRace = null; toggle('matrix', c, (c) => (c.field === 'race' ? 'asc' : 'desc')); },  // a column sort clears the picked race
     (c, r) => {
       if (c.field === 'race') {
         const td = raceCell(r);
@@ -407,7 +407,8 @@ function drawMatrix(p, rows, overall) {
       return td;
     });
   $('.lx-metricnote').textContent = m.note + ' Click a healer to sort by it, or a race to order the healers by its results.';
-  const pick = (td) => { colRace = colRace === td.dataset.race ? null : td.dataset.race; redraw(); };
+  // Picking a race clears the column sort, so its results alone order the table.
+  const pick = (td) => { colRace = colRace === td.dataset.race ? null : td.dataset.race; sorts.matrix = { field: null, dir: 'desc' }; redraw(); };
   const body = $('.lx-matrix').tBodies[0];
   body.onclick = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td) pick(td); };
   body.onkeydown = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(td); } };
