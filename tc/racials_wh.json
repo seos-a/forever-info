@@ -77,12 +77,6 @@
   "cells": [],
   "text": "Duration of Stun effects on you reduced by 20%."
  },
- "20574": {
-  "name": "Savage",
-  "icon": "inv_axe_02",
-  "cells": [],
-  "text": "Increases your critical strike chance with all spells and abilities by 1%."
- },
  "20577": {
   "name": "Cannibalize",
   "icon": "ability_racial_cannibalize",
@@ -211,12 +205,6 @@
    "3 min cooldown"
   ],
   "text": "Instantly removes all Stun effects."
- },
- "1259719": {
-  "name": "Earth Fury",
-  "icon": "spell_shaman_unleashweapon_earth",
-  "cells": [],
-  "text": "Increases your critical strike bonus to damage and healing by 2%."
  },
  "1259721": {
   "name": "Big Game Hunter",
