@@ -2934,7 +2934,14 @@ function setup(b) {
   const panel = document.querySelector(`[data-tab-panel="${b.tab}"]`), card = panel && panel.querySelector('#' + b.id);
   if (!card) return;
   const seg = card.querySelector('.lx-cmpmode'), box = card.querySelector('.lx-apm'), h2 = card.querySelector('h2'), title = h2.textContent;
-  seg.addEventListener('click', (e) => { const t = e.target.closest('button[data-v]'); if (t) dash.setParams({ [b.mode]: t.dataset.v }); });
+  // Show the chosen chart before the page redraws, so the ranking is measured (and drawn) at its real width.
+  card.classList.toggle('apm-on', dash.params()[b.mode] === 'apm');
+  seg.addEventListener('click', (e) => {
+    const t = e.target.closest('button[data-v]');
+    if (!t) return;
+    card.classList.toggle('apm-on', t.dataset.v === 'apm');
+    dash.setParams({ [b.mode]: t.dataset.v });
+  });
   dash.onData(() => {
     const on = dash.params()[b.mode] === 'apm', fight = String(dash.params()[b.fight] || 'all');
     seg.querySelectorAll('button').forEach((e) => e.setAttribute('aria-pressed', String(e.dataset.v === (on ? 'apm' : 'rank'))));
