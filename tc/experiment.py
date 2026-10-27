@@ -59,7 +59,6 @@ CSS = """
 html{background:var(--color-bg)}
 body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
 .xp-top{max-width:1400px;margin:0 auto;padding:14px 16px 0;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.xp-top h1{margin:0;font-family:var(--font-anthropic-serif);font-weight:500;font-size:1.5rem}
 .xp-top a{color:var(--color-fg-muted);text-decoration:none;font-size:.8125rem}
 .xp-top a:hover{color:var(--color-fg)}
 #dash-root{max-width:1400px;margin:0 auto;padding:16px 16px 40px;box-sizing:border-box}
@@ -97,7 +96,7 @@ def build(head_extra=''):
 <script>{RUNTIME}</script>
 {head_extra}</head>
 <body>
-<header class="xp-top"><h1>Forever Race/Spec Comparison</h1><a href="/">&larr; Forever Info</a></header>
+<header class="xp-top"><a href="/">&larr; Forever Info</a></header>
 <div id="dash-root">
 {markup}
 </div>
