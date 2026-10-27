@@ -410,10 +410,6 @@
 
 <div id="panel-dps" role="tabpanel" aria-labelledby="tab-dps" data-tab-panel="dps">
 <div class="rr">
-  <header class="rr-head" id="overview">
-    <p class="rr-sub">WoWSims race sims with the 27 October racials, on every DPS spec's preset builds. "% of best" is a race's DPS as a share of the best race for that build and fight length; filtering by faction compares races only against their own faction.</p>
-  </header>
-
   <div class="rr-filters" role="group" aria-label="Filters">
     <div class="rr-filter"><span>Faction</span><div class="rr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
@@ -432,6 +428,14 @@
     <p class="rr-note lx-specnote" data-source="breakdown"></p>
     <div class="rr-chart lx-speccmp" data-source="scoped"></div>
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
+  </section>
+
+  <section class="rr-card" id="apm">
+    <div class="rr-cardhead"><h2>Actions per Minute by Spec</h2>
+      <div class="rr-tools"><div class="rr-seg lx-apmfight" role="group" aria-label="Fight length"></div></div>
+    </div>
+    <p class="rr-note lx-apmnote">Every button press per minute in WoWSims, at 1 target: abilities, buffs, cooldowns, stances, totems, shapeshifts, potions, runes, explosives and trinkets. Auto attacks and procs don't count. Each spec on its best build, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players manage. Hover a spec for what it presses.</p>
+    <div class="rr-chart lx-apm" data-source="apm"></div>
   </section>
 
   <section class="rr-card" id="matrix">
@@ -538,6 +542,14 @@
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
     <div class="hr-chart lx-speccmp" data-source="healRunHps"></div>
     <div class="hr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
+  </section>
+
+  <section class="rr-card" id="h-apm">
+    <div class="rr-cardhead"><h2>Actions per Minute by Spec</h2>
+      <div class="rr-tools"><div class="rr-seg lx-apmfight" role="group" aria-label="Fight length"></div></div>
+    </div>
+    <p class="rr-note lx-apmnote">Spell casts per minute in the healing sim's healing-limited test fight, with no racials. It only records heals, so cooldowns and potions aren't counted, and healers here cast nearly non-stop. Hover a healer for what it casts.</p>
+    <div class="rr-chart lx-apm" data-source="healApm"></div>
   </section>
 
   <section class="hr-card lx-sitcard" id="h-situations">
@@ -663,6 +675,14 @@
     <p class="rr-note lx-specnote" data-source="tankBreakdown"></p>
     <div class="rr-chart lx-speccmp" data-source="tankScoped"></div>
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
+  </section>
+
+  <section class="rr-card" id="t-apm">
+    <div class="rr-cardhead"><h2>Actions per Minute by Spec</h2>
+      <div class="rr-tools"><div class="rr-seg lx-apmfight" role="group" aria-label="Fight length"></div></div>
+    </div>
+    <p class="rr-note lx-apmnote">Every button press per minute in WoWSims, at 1 target: abilities, buffs, cooldowns, stances, totems, shapeshifts, potions, runes, explosives and trinkets. Auto attacks and procs don't count. Each tank on its best gear set, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players manage. Hover a spec for what it presses.</p>
+    <div class="rr-chart lx-apm" data-source="apm"></div>
   </section>
 
   <section class="rr-card" id="t-matrix">
@@ -1725,6 +1745,7 @@ const named = document.getElementById(location.hash.slice(1));
 if (named) setTimeout(() => named.scrollIntoView(), 0);
 </script>
 <script src="healing.js"></script>
+<script src="apm.js"></script>
 <script>
 const ROOT = document.querySelector('[data-tab-panel="tanks"]');
 

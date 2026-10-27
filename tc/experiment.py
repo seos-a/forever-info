@@ -48,21 +48,28 @@ let w = innerWidth, t; addEventListener('resize', () => { if (innerWidth === w) 
 
 CSS = """
 :root{color-scheme:dark;--rem:1;
-  --color-bg:#1f1e1d;--color-panel:#2a2927;--color-fg:#f0eee6;--color-fg-muted:#a29f95;--color-border-line:#ffffff1f;
+  --color-bg:#0a0a09;--color-panel:#141413;--color-fg:#ecebe4;--color-fg-muted:#9a978e;--color-border-line:#ffffff17;
   --color-ok:#6dbb6a;--color-warn:#e0a83c;--color-bad:#e05a4f;
   --font-anthropic-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-anthropic-serif:ui-serif,Georgia,"Times New Roman",serif;
-  --cds-border:#ffffff1f;--cds-chart-grid:#ffffff1a;--cds-chart-muted:#5f5e5a;--cds-chart-reference:#97958d;--cds-chart-status-critical:#d03b3b;
+  --cds-border:#ffffff17;--cds-chart-grid:#ffffff14;--cds-chart-muted:#5f5e5a;--cds-chart-reference:#97958d;--cds-chart-status-critical:#d03b3b;
   --cds-dur-slow:.45s;--cds-font-size-body:.875rem;--cds-font-size-caption:.75rem;--cds-font-size-heading:.9375rem;--cds-font-size-title:1.375rem;
   --cds-font-weight-medium:500;--cds-gap-xs:.375rem;--cds-gap-sm:.5rem;--cds-gap-md:1rem;--cds-gap-lg:1.75rem;
   --cds-pad-xs:.25rem;--cds-pad-sm:.5rem;--cds-pad-md:.75rem;--cds-pad-lg:1rem;--cds-radius:.5rem;
-  --cds-shadow-popover:0 8px 24px #00000052,0 2px 6px #0003;--cds-surface-popover:#30302e;--cds-text-secondary:#c3c2b7}
+  --cds-shadow-popover:0 8px 24px #00000052,0 2px 6px #0003;--cds-surface-popover:#1f1e1c;--cds-text-secondary:#c3c2b7}
 html{background:var(--color-bg)}
 body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
 .xp-top{max-width:1400px;margin:0 auto;padding:14px 16px 0;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .xp-top a{color:var(--color-fg-muted);text-decoration:none;font-size:.8125rem}
 .xp-top a:hover{color:var(--color-fg)}
 #dash-root{max-width:1400px;margin:0 auto;padding:16px 16px 40px;box-sizing:border-box}
+/* the WoWSims build the sims ran on, bottom left like the main site's beta version (the WoW login screen) */
+.xp-stamp{position:fixed;left:10px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap}
+@media (max-width:820px){.xp-stamp{position:static;display:block;text-align:center;margin:0 0 10px}}
 """
+
+# The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown bottom left). WoWSims has no release
+# number for it: its version tags stop at v0.0.140 (September), on another line of history.
+SIMS_BUILD, SIMS_DATE = '5d4dd1c', 'Oct 27 2026'
 
 
 def build(head_extra=''):
@@ -100,6 +107,7 @@ def build(head_extra=''):
 <div id="dash-root">
 {markup}
 </div>
+<div class="xp-stamp">WoWSims Version {SIMS_BUILD} (Beta)<br>{SIMS_DATE}</div>
 {js}</body>
 </html>
 """
