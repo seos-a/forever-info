@@ -1,5 +1,6 @@
-// Actions per Minute by Spec: one box on each tab. DPS and Tanks read the `apm` dataset (WoWSims runs counting every
-// press, each build's best race at 1 target); Healing works its APM out from the healing sim's spell casts.
+// Actions per Minute by Spec, shown in each tab's ranking box when its DPS / APM switch is on APM (it uses the box's
+// fight length buttons). DPS and Tanks read the `apm` dataset (WoWSims runs counting every press, each build's best race
+// at 1 target); Healing works its APM out from the healing sim's spell casts.
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const CLASS_OF = { Druid: 'druid', Hunter: 'hunter', Mage: 'mage', Paladin: 'paladin', Rogue: 'rogue', Shaman: 'shaman', Warlock: 'warlock', Warrior: 'warrior', Bear: 'druid' };
 const CLASS_COLOR = { druid: '#FF7C0A', hunter: '#AAD372', mage: '#3FC7EB', paladin: '#F48CBA', rogue: '#FFF468', shaman: '#0070DD', warlock: '#8788EE', warrior: '#C69B6D' };
@@ -18,11 +19,12 @@ dash.calc('healApm', {
   }),
 });
 
-// One box per tab: where it sits, its dataset, its fight lengths and how it picks each spec's build.
+// One ranking box per tab: its dataset, its fight lengths, how it picks each spec's build, and the filters it reads
+// (each tab's own: the Healing and Tanks tabs prefix theirs with h and t).
 const BOXES = [
-  { tab: 'dps', id: 'apm', param: 'apmFight', source: 'apm', role: 'dps', fights: [60, 120, 180, 300], by: 'dps' },
-  { tab: 'tanks', id: 't-apm', param: 'tApmFight', source: 'apm', role: 'tank', fights: [60, 120, 180, 300], by: 'tps' },
-  { tab: 'healing', id: 'h-apm', param: 'hApmFight', source: 'healApm', fights: [120, 180, 300, 420] },
+  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', source: 'apm', role: 'dps', by: 'dps' },
+  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', source: 'apm', role: 'tank', by: 'tps' },
+  { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', source: 'healApm' },
 ];
 
 // Each spec at the chosen fight length (All: averaged over the four), on the build that does most damage (tanks: threat).
@@ -51,13 +53,15 @@ function specItems(b, rows, fight) {
 function setup(b) {
   const panel = document.querySelector(`[data-tab-panel="${b.tab}"]`), card = panel && panel.querySelector('#' + b.id);
   if (!card) return;
-  const seg = card.querySelector('.lx-apmfight'), box = card.querySelector('.lx-apm'), note = card.querySelector('.lx-apmnote');
-  seg.replaceChildren(...[['all', 'All'], ...b.fights.map((f) => [String(f), f / 60 + ' min'])].map(([v, label]) => { const e = el('button', null, label); e.type = 'button'; e.dataset.v = v; return e; }));
-  seg.addEventListener('click', (e) => { const t = e.target.closest('button[data-v]'); if (t) dash.setParams({ [b.param]: t.dataset.v }); });
+  const seg = card.querySelector('.lx-cmpmode'), box = card.querySelector('.lx-apm'), h2 = card.querySelector('h2'), title = h2.textContent;
+  seg.addEventListener('click', (e) => { const t = e.target.closest('button[data-v]'); if (t) dash.setParams({ [b.mode]: t.dataset.v }); });
   dash.onData(() => {
-    const fight = String(dash.params()[b.param] || 'all');
-    seg.querySelectorAll('button').forEach((e) => e.setAttribute('aria-pressed', String(e.dataset.v === fight)));
+    const on = dash.params()[b.mode] === 'apm', fight = String(dash.params()[b.fight] || 'all');
+    seg.querySelectorAll('button').forEach((e) => e.setAttribute('aria-pressed', String(e.dataset.v === (on ? 'apm' : 'rank'))));
+    card.classList.toggle('apm-on', on);
+    h2.textContent = on ? 'Actions per Minute by Spec' : title;
     box.replaceChildren();
+    if (!on) return;
     const res = dash.data(b.source);
     if (res.status !== 'ok') { box.textContent = '—'; return; }
     const items = specItems(b, b.role ? res.data.filter((r) => r.role === b.role) : res.data, fight);

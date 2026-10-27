@@ -400,6 +400,10 @@
   .rr-bdsw[data-kind="auto"] { background: color-mix(in srgb, var(--c) 18%, #ffffff); }
   .rr-bdsw[data-kind="proc"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
+  /* Ranking boxes: the DPS / APM switch shows the Actions per Minute chart (apm.js) in place of the ranking */
+  .lx-apm, .lx-apmnote { display: none; }
+  .apm-on .lx-apm, .apm-on .lx-apmnote { display: block; }
+  .apm-on .lx-speccmp, .apm-on .lx-specnote, .apm-on .lx-cmpgrip, .apm-on .lx-targets { display: none !important; }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -419,6 +423,7 @@
   <section class="rr-card" id="speccmp">
     <div class="rr-cardhead"><h2>DPS Ranking by Spec</h2>
       <div class="rr-tools">
+        <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank">DPS</button><button type="button" data-v="apm">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="targets">
           <button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button>
         </div>
@@ -427,15 +432,9 @@
     </div>
     <p class="rr-note lx-specnote" data-source="breakdown"></p>
     <div class="rr-chart lx-speccmp" data-source="scoped"></div>
-    <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
-  </section>
-
-  <section class="rr-card" id="apm">
-    <div class="rr-cardhead"><h2>Actions per Minute by Spec</h2>
-      <div class="rr-tools"><div class="rr-seg lx-apmfight" role="group" aria-label="Fight length"></div></div>
-    </div>
     <p class="rr-note lx-apmnote">Every button press per minute in WoWSims, at 1 target: abilities, buffs, cooldowns, stances, totems, shapeshifts, potions, runes, explosives and trinkets. Auto attacks and procs don't count. Each spec on its best build, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players manage. Hover a spec for what it presses.</p>
     <div class="rr-chart lx-apm" data-source="apm"></div>
+    <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
   </section>
 
   <section class="rr-card" id="matrix">
@@ -533,19 +532,13 @@
 
   <section class="hr-card" id="h-speccmp">
     <div class="hr-cardhead"><h2>HPS Ranking by Spec</h2>
-      <div class="hr-tools"><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
+      <div class="hr-tools"><div class="hr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank">HPS</button><button type="button" data-v="apm">APM</button></div><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
     </div>
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
     <div class="hr-chart lx-speccmp" data-source="healRunHps"></div>
+    <p class="hr-note lx-apmnote">Spell casts per minute in the healing sim's healing-limited test fight, with no racials. It only records heals, so cooldowns and potions aren't counted, and healers here cast nearly non-stop. Hover a healer for what it casts.</p>
+    <div class="hr-chart lx-apm" data-source="healApm"></div>
     <div class="hr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
-  </section>
-
-  <section class="rr-card" id="h-apm">
-    <div class="rr-cardhead"><h2>Actions per Minute by Spec</h2>
-      <div class="rr-tools"><div class="rr-seg lx-apmfight" role="group" aria-label="Fight length"></div></div>
-    </div>
-    <p class="rr-note lx-apmnote">Spell casts per minute in the healing sim's healing-limited test fight, with no racials. It only records heals, so cooldowns and potions aren't counted, and healers here cast nearly non-stop. Hover a healer for what it casts.</p>
-    <div class="rr-chart lx-apm" data-source="healApm"></div>
   </section>
 
   <section class="hr-card lx-sitcard" id="h-situations">
@@ -658,6 +651,7 @@
   <section class="rr-card" id="t-speccmp">
     <div class="rr-cardhead"><h2>Tank Ranking by Spec</h2>
       <div class="rr-tools">
+        <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank">Ranking</button><button type="button" data-v="apm">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="tankTargets">
           <button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button>
         </div>
@@ -666,15 +660,9 @@
     </div>
     <p class="rr-note lx-specnote" data-source="tankBreakdown"></p>
     <div class="rr-chart lx-speccmp" data-source="tankScoped"></div>
-    <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
-  </section>
-
-  <section class="rr-card" id="t-apm">
-    <div class="rr-cardhead"><h2>Actions per Minute by Spec</h2>
-      <div class="rr-tools"><div class="rr-seg lx-apmfight" role="group" aria-label="Fight length"></div></div>
-    </div>
     <p class="rr-note lx-apmnote">Every button press per minute in WoWSims, at 1 target: abilities, buffs, cooldowns, stances, totems, shapeshifts, potions, runes, explosives and trinkets. Auto attacks and procs don't count. Each tank on its best gear set, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players manage. Hover a spec for what it presses.</p>
     <div class="rr-chart lx-apm" data-source="apm"></div>
+    <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
   </section>
 
   <section class="rr-card" id="t-matrix">
