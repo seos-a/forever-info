@@ -1027,7 +1027,7 @@ $('.lx-build').addEventListener('change', (e) => dash.setParams({ build: e.targe
 $('.lx-q').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); draw(); });
 $('.lx-cards').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-spec]');
-  if (b) { dash.setParams({ lineSpec: b.dataset.spec, gainSpec: b.dataset.spec, detailSpec: b.dataset.spec, build: 'all' }); $('#spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('spec'); }
+  if (b) pickSpec(b.dataset.spec);
 });
 
 // Sortable table: cols = [{field, label, num, fmt, cls, title}]
@@ -1359,7 +1359,9 @@ const targetScale = (p, rows, spec, build) => [1, 2, 3, 4, 5].map((n) => {
   const v = rows.filter((r) => r.spec === spec && r.build === build && +r.targets === n && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
   return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
 });
-const pickSpec = (s) => { dash.setParams({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); $('#spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('spec'); };
+// Picking a spec opens its two charts if they were folded.
+const unfold = (sel) => $(sel).querySelectorAll('.collapsed > .rr-cardhead .rr-fold').forEach((f) => f.click());
+const pickSpec = (s) => { unfold('#spec'); dash.setParams({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); $('#spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('spec'); };
 
 // Spec comparison: every spec at its best race, ranked. The bar is solid up to the spec's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between specs.
@@ -1996,7 +1998,7 @@ $('.lx-build').addEventListener('change', (e) => setP({ build: e.target.value })
 $('.lx-q').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); draw(); });
 $('.lx-cards').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-spec]');
-  if (b) { setP({ lineSpec: b.dataset.spec, gainSpec: b.dataset.spec, detailSpec: b.dataset.spec, build: 'all' }); $('#t-spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('t-spec'); }
+  if (b) pickSpec(b.dataset.spec);
 });
 
 // Sortable table: cols = [{field, label, num, fmt, cls, title}]
@@ -2328,7 +2330,9 @@ const targetScale = (p, rows, spec, build) => [1, 2, 3, 4, 5].map((n) => {
   const v = rows.filter((r) => r.spec === spec && r.build === build && +r.targets === n && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
   return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
 });
-const pickSpec = (s) => { setP({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); $('#t-spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('t-spec'); };
+// Picking a spec opens its two charts if they were folded.
+const unfold = (sel) => $(sel).querySelectorAll('.collapsed > .rr-cardhead .rr-fold').forEach((f) => f.click());
+const pickSpec = (s) => { unfold('#t-spec'); setP({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); $('#t-spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('t-spec'); };
 
 // Spec comparison: every spec at its best race, ranked. The bar is solid up to the spec's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between specs.
