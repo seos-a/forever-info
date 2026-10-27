@@ -210,6 +210,9 @@ for k,t,d in PAGES:
         pg=pg.replace(old,new)
     pg=_re.sub(r'<meta name="description" content="[^"]*">',f'<meta name="description" content="{d}">',pg,count=1)
     open(f'../web/{k}.html','w',encoding='utf-8',newline='\n').write(pg)
+# ---- the Experiment page (foreverinfo.io/experiment): the race sims dashboard, standalone (experiment.py) ----
+import experiment
+open('../web/experiment.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC))
 A=_json.load(open('assets.json', encoding='utf-8'))
 models=sorted(set(_re.findall(r'images/models/(\d+)\.png',web)))
 # every icon the data uses (so a new talent, spell or tab from a beta sync gets its icon), plus the hand list in assets.json

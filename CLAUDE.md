@@ -69,6 +69,11 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       of the pull request. Wowhead's data is sometimes wrong (Thick Hide, Oct 8: 180 armor per level at every rank, in
       game 1 / 2 / 3): once checked in game, a wrong Class Changes entry is corrected in `changes_fixes.json` (applied on
       every run, so rebuilds keep it) and a wrong talent text in `TEXT_FIXES` in `build.py`
+  - `experiment.py` + `experiment/`: the Experiment page (`/experiment`, linked faintly bottom right on every page): the
+    "Forever Race/Spec Comparison" dashboard artifact (https://claude.ai/artifact/KhLhWEBf6f1ceiUyotPXUB, DPS / Healing /
+    Tanks race sims) as a standalone page. `experiment/` holds a copy of the dashboard's files (`page.html` is its
+    `index.html`) and its datasets (`data/<id>.json`); `experiment.py` stands in for the dashboard runtime and `build.py`
+    writes `web/experiment.html` (not indexed). When the dashboard changes, copy its files and datasets in again and rebuild
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.
