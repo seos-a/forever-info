@@ -125,7 +125,7 @@ document.head.appendChild(t);})();
   .rr { position: relative; }
   .rr-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .2em; margin: 0 -.2em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-pick:hover, .rr-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
-  .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
+  .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .rr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-menu button:hover, .rr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
   .rr-menu button[aria-checked="true"] { font-weight: 600; background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
@@ -267,7 +267,7 @@ document.head.appendChild(t);})();
   .hr { position: relative; }
   .hr-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .2em; margin: 0 -.2em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .hr-pick:hover, .hr-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
-  .hr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
+  .hr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .hr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .hr-menu button:hover, .hr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
   .hr-menu button[aria-checked="true"] { font-weight: 600; background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
@@ -390,7 +390,7 @@ document.head.appendChild(t);})();
   .rr { position: relative; }
   .rr-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .2em; margin: 0 -.2em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-pick:hover, .rr-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
-  .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
+  .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .rr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-menu button:hover, .rr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
   .rr-menu button[aria-checked="true"] { font-weight: 600; background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
@@ -899,6 +899,11 @@ document.querySelectorAll('img[data-spec-icon]').forEach((img) => { if (!img.src
 
 // Tabs: one panel at a time, chosen by the `tab` filter; the link follows the tab.
 const TABS = ['dps', 'healing', 'tanks'];
+// Scrolling a spec menu never scrolls the page, even at the menu's top or bottom (or when it is too short to scroll).
+document.addEventListener('wheel', (e) => {
+  const m = e.target.closest && e.target.closest('.rr-menu, .hr-menu');
+  if (m && (e.deltaY < 0 ? m.scrollTop <= 0 : m.scrollTop + m.clientHeight >= m.scrollHeight - 1)) e.preventDefault();
+}, { passive: false });
 const nav = document.querySelector('.rr-tabs');
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-tab]');
