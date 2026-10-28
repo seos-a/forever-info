@@ -416,7 +416,8 @@
   /* the race/spec tables: each race's portrait with a faction-coloured border in place of the dot (scales with the table) */
   .lx-matrix td.lx-raceface::before { display: none; }
   .lx-matrix td.lx-raceface img { width: 1.5em; height: 1.5em; vertical-align: middle; margin: -.2em .5em -.2em 1px; }
-  .rr-spec .s, .hr-spec .s { font-size: 12.5px; }
+  .rr-spec .s, .hr-spec .s { font-size: 12.5px; font-weight: 600; }
+  .rr-spec .r, .hr-spec .r { font-size: 12px; }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -1167,7 +1168,9 @@ function drawCards(p, rows, specs) {
     pic.append(specIcon(s), raceIcon(r.best === 'Skyborne' ? 'Horde Skyborne' : r.best, r.faction)); // the two Skyborne tied get a plain border
     const best = el('span', 'r', r.best.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')')); // short enough for the card
     best.dataset.source = 'bestBySpec'; best.dataset.field = 'best'; best.dataset.where = where;
-    if (r.faction === 'Alliance' || r.faction === 'Horde') best.style.color = `color-mix(in srgb, var(--rr-${r.faction.toLowerCase()}) 70%, #fff)`;
+    // Alliance a light blue; Horde the red of the Racial Bonus box's negative bars
+    if (r.faction === 'Alliance') best.style.color = 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)';
+    else if (r.faction === 'Horde') best.style.color = 'var(--rr-down)';
     b.append(best);
     return b;
   }));
@@ -1496,8 +1499,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for the spec info, click for ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click for ability breakdown.') : '');
+    ? 'Solid Bar = Weakest Race. Hover for spec info, click for ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for spec info, click for ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
@@ -2141,7 +2144,9 @@ function drawCards(p, rows, specs) {
     pic.append(specIcon(s), raceIcon(r.best === 'Skyborne' ? 'Horde Skyborne' : r.best, r.faction)); // the two Skyborne tied get a plain border
     const best = el('span', 'r', r.best.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')')); // short enough for the card
     best.dataset.source = 'tankBest'; best.dataset.field = 'best'; best.dataset.where = where;
-    if (r.faction === 'Alliance' || r.faction === 'Horde') best.style.color = `color-mix(in srgb, var(--rr-${r.faction.toLowerCase()}) 70%, #fff)`;
+    // Alliance a light blue; Horde the red of the Racial Bonus box's negative bars
+    if (r.faction === 'Alliance') best.style.color = 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)';
+    else if (r.faction === 'Horde') best.style.color = 'var(--rr-down)';
     b.append(best);
     return b;
   }));
@@ -2475,8 +2480,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for the spec info, click for ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click for ability breakdown.') : '');
+    ? 'Solid Bar = Weakest Race. Hover for spec info, click for ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for spec info, click for ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);

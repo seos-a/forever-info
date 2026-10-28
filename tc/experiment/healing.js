@@ -428,7 +428,9 @@ function drawCards(p, rows, healers) {
     pic.append(specIcon(name), raceIcon(r.best === 'Skyborne' ? 'Horde Skyborne' : r.best, r.faction)); // the two Skyborne tied get a plain border
     const best = el('span', 'r', r.best.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')')); // short enough for the card
     best.dataset.source = 'healBest'; best.dataset.field = 'best'; best.dataset.where = where;
-    if (r.faction === 'Alliance' || r.faction === 'Horde') best.style.color = `color-mix(in srgb, var(--hr-${r.faction.toLowerCase()}) 70%, #fff)`;
+    // Alliance a light blue; Horde the red of the Racial Bonus box's negative bars
+    if (r.faction === 'Alliance') best.style.color = 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
+    else if (r.faction === 'Horde') best.style.color = 'var(--hr-down)';
     b.append(best);
     return b;
   }));
