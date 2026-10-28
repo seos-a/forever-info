@@ -386,7 +386,8 @@ function drawMatrix(p, rows, overall) {
     best[h] = Math.max(...v);
     ext[h] = [Math.min(...v), Math.max(...v)];
   }
-  table($('.lx-matrix'), cols, sortRows(list, sorts.matrix, cols), sorts.matrix,
+  const kept = !sorts.matrix.field && sorts.matrix.races, at = (r) => kept.indexOf(r.race) + 1 || 99;
+  table($('.lx-matrix'), cols, kept ? list.slice().sort((a, b) => at(a) - at(b)) : sortRows(list, sorts.matrix, cols), sorts.matrix,
     (c) => { colRace = null; toggle('matrix', c, (c) => (c.field === 'race' ? 'asc' : 'desc')); },  // a column sort clears the picked race
     (c, r) => {
       if (c.field === 'race') {
@@ -409,7 +410,8 @@ function drawMatrix(p, rows, overall) {
     });
   $('.lx-metricnote').textContent = m.note + ' Click a healer to sort by it, or a race to order the healers by its results.';
   // Picking a race clears the column sort, so its results alone order the table.
-  const pick = (td) => { colRace = colRace === td.dataset.race ? null : td.dataset.race; sorts.matrix = { field: null, dir: 'desc' }; redraw(); };
+  // The rows stay where they are (their order kept in races), so only the columns move.
+  const pick = (td) => { const races = [...body.querySelectorAll('td.lx-pickrace')].map((t) => t.dataset.race); colRace = colRace === td.dataset.race ? null : td.dataset.race; sorts.matrix = { field: null, dir: 'desc', races }; redraw(); };
   const body = $('.lx-matrix').tBodies[0];
   body.onclick = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td) pick(td); };
   body.onkeydown = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(td); } };
