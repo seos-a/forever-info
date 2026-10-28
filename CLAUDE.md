@@ -75,8 +75,10 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     written for and `build.py` writes `web/experiment.html` (not indexed). The page began as the "Forever Race/Spec
     Comparison" dashboard artifact (https://claude.ai/artifact/KhLhWEBf6f1ceiUyotPXUB), which is now an archive (last
     synced Oct 28, 2026, before the build renames): don't update it or copy from it. The DPS tab's Gear switch
-    ("Classic pre-raid") reads `data/pb_<id>.json` in place of `<id>` (sims, targets, breakdown, apm, regear); those
-    come from the race-sims harness (`C:\Users\austi\Documents\GitHub\race-sims-harness`, README "Classic pre-raid gear")
+    ("Classic pre-raid") reads `data/pb_<id>.json` in place of `<id>` (sims, targets, breakdown, apm, regear, setup); those
+    come from the race-sims harness (`C:\Users\austi\Documents\GitHub\race-sims-harness`, README "Classic pre-raid gear"). `data/setup.json` / `pb_setup.json` hold each build's gear, talents, consumables, buffs and
+    settings for the ability breakdown's "Character setup" view (item icons saved in `images/icons/`), written by the harness's
+    `scripts/shape_setup.py`
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.

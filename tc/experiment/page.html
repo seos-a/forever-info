@@ -138,6 +138,28 @@
   .rr-bdsw[data-kind="auto"] { background: color-mix(in srgb, var(--c) 18%, #ffffff); }
   .rr-bdsw[data-kind="proc"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
+  /* Character setup: the gear, talents, consumables and buffs a spec's breakdown was simmed with. */
+  .rr-bdbar .rr-seg { margin-right: var(--cds-gap-xs); }
+  .su { display: grid; align-content: start; gap: var(--cds-gap-md); font-size: .8125rem; }
+  .su-head { color: var(--color-fg-muted); }
+  .su-head b { color: var(--color-fg); font-weight: 600; }
+  .su-head a { color: var(--color-fg); }
+  .su h3 { margin: 0 0 var(--cds-gap-xs); font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--color-fg-muted); }
+  .su-gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px var(--cds-gap-md); }
+  .su-item { display: grid; grid-template-columns: 32px 1fr; gap: 0 8px; align-items: center; min-width: 0; }
+  .su-item img { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #ffffff2e; background: #000; grid-row: span 3; }
+  .su-slot { font-size: .6875rem; color: var(--color-fg-muted); line-height: 1.2; }
+  .su-name { text-decoration: none; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .su-name:hover { text-decoration: underline; }
+  .su-ench { font-size: .6875rem; color: #1eff00; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .su-tag { font-size: .625rem; color: var(--color-fg-muted); border: 1px solid var(--color-border-line); border-radius: 3px; padding: 0 3px; margin-left: 4px; vertical-align: 1px; }
+  .su-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .su-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px 2px 2px; border: 1px solid var(--color-border-line); border-radius: 6px; color: var(--color-fg); text-decoration: none; }
+  .su-chip img { width: 22px; height: 22px; border-radius: 4px; background: #000; }
+  a.su-chip:hover { border-color: #ffffff40; }
+  .su-opts { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); color: var(--color-fg-muted); }
+  .su-opts b { color: var(--color-fg); font-weight: 500; }
+  .su-note { margin-top: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 
   /* Layout: patched notice, header + filters, best race per healer, ranking, race-by-healer table, one healer's charts and runs */
   .hr { --hr-alliance: #3f7fd9; --hr-horde: #d2423b; --hr-none: #8a8a8a; --hr-gold: #e2b23c; --hr-up: #4a8fe0; --hr-down: #d2463f; display: flex; flex-direction: column; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
@@ -472,7 +494,7 @@
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
     </div></div>
     <div class="rr-filter"><div class="rr-seg lx-gear" role="group" aria-label="Gear">
-      <button type="button" data-v="sims" title="Each build's WoWSims preset gear">WoWSims presets</button><button type="button" data-v="classic" title="Classic Phase 1 pre-raid best in slot (wowisclassic.com), on Forever's engine">Classic pre-raid</button>
+      <button type="button" data-v="sims" title="Each build's WoWSims preset gear">WoWSims presets</button><button type="button" data-v="classic" title="Classic Phase 1 pre-raid best in slot, on Forever's engine">Classic pre-raid</button>
     </div></div>
   </div>
 
@@ -568,7 +590,7 @@
       <p><b>Things to keep in mind</b></p>
       <ul>
         <li><b>Gear is not re-optimized per race.</b> Most physical presets are already hit capped, so Dwarf's 1% hit (Artisan's Precision) adds nothing there and its lower Agility shows as a loss. A separate run gave Dwarf gear with 1% less hit and 1% more crit (spell hit and spell crit for casters), as a Dwarf would gear. That adds about 1 point on Hunters and Arms, 0.7 on Fury, 0.5 on Enhancement, 0.3 on Ret, and almost nothing on Rogues (dual-wield white hits still miss well past the 8% cap) or Shadow (7% hit against a 17% spell miss chance); on Elemental it's a loss, so a Dwarf would keep the hit. It lifts Dwarf from 9th to 4th of 10 on Arms and from 4th to 2nd on Enhancement, but it isn't the top race on any spec. The tables show the presets as they are.</li>
-        <li><b>Classic pre-raid gear</b> (the Gear switch): the same builds, talents, rotations, consumables and buffs, in each spec's Phase 1 pre-raid best-in-slot list from wowisclassic.com. Most of those items are not in Forever's item database, so they are added to the sim with their Classic stats (10 hit rating per 1% hit, 14 crit rating per 1% crit); where Forever has its own version of an item, that version is used. Hand of Justice is left out: Hunters wear Royal Seal of Eldre'Thalas in its place, everyone else Rune of the Guard Captain. Item swaps are off, both Moonkin presets become one build, Frost Mage wears the mage list with Frozen Wrath suffixes, and effects the sim doesn't model (Second Wind's mana, the Dwarven Hand Cannon's cannonball) are left out.</li>
+        <li><b>Classic pre-raid gear</b> (the Gear switch): the same builds, talents, rotations, consumables and buffs, in each spec's Phase 1 pre-raid best-in-slot list. Most of those items are not in Forever's item database, so they are added to the sim with their Classic stats (10 hit rating per 1% hit, 14 crit rating per 1% crit); where Forever has its own version of an item, that version is used. Hand of Justice is left out: Hunters wear Royal Seal of Eldre'Thalas in its place, everyone else Rune of the Guard Captain. Item swaps are off, both Moonkin presets become one build, Frost Mage wears the mage list with Frozen Wrath suffixes, and effects the sim doesn't model (Second Wind's mana, the Dwarven Hand Cannon's cannonball) are left out.</li>
         <li><b>Dwarf in Classic pre-raid gear.</b> Artisan's Precision gives Dwarf 1% hit, so a Dwarf can leave one 1%-hit piece of the list behind for a piece without hit from another Classic pre-raid list (same slot, one it can wear) and still have the hit every other race has. The sim tried every such swap and kept the best one only where it beat the plain list: Blackstone Ring for Magni's Will (Arms, ranged Survival) or Maiden's Circle (Enhancement), and Slashclaw Bracers for Deepfury Bracers (Marksmanship and Survival weave). Every other build wears the plain list as Dwarf too.</li>
         <li><b>Placeholder presets.</b> Elemental Shaman, Enhancement Shaman and Shadow Priest run WoWSims' developer test presets (named "Testing" there, named after the spec here), so treat those specs with more caution.</li>
         <li><b>Specs.</b> Each build counts toward its talent tree: Frostfire Bolt (29 Fire points) as Fire, SM/Ruin (31 Affliction points) as Affliction. WoWSims' Smite Priest build is left out, as it isn't a competitive DPS spec; Ret Paladin's Holy Shock and Twist of Light builds are both Retribution.</li>
@@ -1024,7 +1046,7 @@ const METRIC = {
   gain: { label: 'Gain over no racials', fmt: (v) => sign(v, 2) + '%', high: true, note: 'DPS gained over the same builds with no race, as a percentage. Bold is the largest gain in each column.' },
   gapDps: { label: 'DPS behind best', fmt: (v) => fx(v, 1), high: false, note: 'Average DPS behind the best race on each build. 0 is the best race; bold is the smallest gap in each column.' },
 };
-const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', gainFight: 'all', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
+const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', gainFight: 'all', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
 const sorts = { overall: { field: 'pct', dir: 'desc' }, matrix: { field: null, dir: 'desc' }, detail: { field: null, dir: 'desc' } };
 let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 
@@ -1498,10 +1520,20 @@ function drawBreakdown(p, item, data, fitH) {
   // The spec's name opens the spec menu, to switch to another spec's breakdown.
   const title = el('span', 'rr-bdtitle');
   title.append(specPicker(item.key, 'specView'));
-  bar.append(back, title, open);
+  // Abilities (the damage meter) or the character setup it was simmed with.
+  const tabs = el('div', 'rr-seg');
+  tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
+  for (const [v, text] of [['abilities', 'Abilities'], ['setup', 'Character setup']]) {
+    const b = el('button', null, text);
+    b.type = 'button'; b.setAttribute('aria-pressed', String((p.specTab || 'abilities') === v));
+    b.addEventListener('click', () => dash.setParams({ specTab: v }));
+    tabs.append(b);
+  }
+  bar.append(back, title, tabs, open);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
   const rows = data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight));
+  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
   const acc = new Map();
@@ -1582,6 +1614,61 @@ function drawBreakdown(p, item, data, fitH) {
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
+}
+
+// Character setup: what a build was simmed with, from the `setup` dataset (the Gear switch's pb_setup for Classic
+// pre-raid gear): gear and enchants, talents (linked to the talent calculator), consumables, buffs, debuffs on the
+// target and the build's other settings.
+const QUALITY = { 0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d9bff', 4: '#b866ff', 5: '#ff8000' };
+const suIcon = (name) => { const i = el('img'); i.alt = ''; i.loading = 'lazy'; if (name) i.src = 'images/icons/' + name + '.jpg'; return i; };
+const suJson = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
+function drawSetup(p, item, race, minH) {
+  const box = $('.lx-speccmp'), S = rrData(dash.data('setup'));
+  const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
+  $('.lx-specnote').textContent = s ? '' : `No setup for ${item.name} (${item.build}) here.`;
+  if (!s) return;
+  const wrap = el('div', 'su');
+  wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
+  const classic = p.gear === 'classic', gear = suJson(s.gear), pts = suJson(s.points);
+  const head = el('div', 'su-head'), cal = el('a', null, pts.join(' / '));
+  cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
+  head.append(el('b', null, item.build), ` · ${race ? race + ' (its best race) · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
+  wrap.append(head);
+  const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
+  const itemRow = (g) => {
+    const row = el('div', 'su-item'), name = el('a', 'su-name', g.name);
+    name.href = g.url; name.target = '_blank'; name.rel = 'noopener'; name.style.color = QUALITY[g.q] || QUALITY[1];
+    name.title = g.name + (g.enchant ? ' · ' + g.enchant : '');
+    const slot = el('div', 'su-slot', g.slot);
+    if (g.classic) { const t = el('span', 'su-tag', 'Classic'); t.title = "Not in Forever's item database: simmed with its Classic stats"; slot.append(t); }
+    row.append(suIcon(g.icon), slot, name);
+    if (g.enchant) row.append(el('div', 'su-ench', g.enchant));
+    return row;
+  };
+  const list = el('div', 'su-gear');
+  list.append(...gear.map(itemRow));
+  const extra = [], swap = suJson(s.swap), dwarf = suJson(s.dwarf);
+  if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
+  if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
+  section('Gear', list, ...extra);
+  const chips = (rows, withLink) => {
+    const c = el('div', 'su-chips');
+    for (const r of rows) {
+      const chip = el(withLink && r.url ? 'a' : 'span', 'su-chip');
+      if (withLink && r.url) { chip.href = r.url; chip.target = '_blank'; chip.rel = 'noopener'; }
+      if (r.kind) chip.title = r.kind;
+      chip.append(suIcon(r.icon), r.name);
+      c.append(chip);
+    }
+    return c;
+  };
+  section('Consumables', chips(suJson(s.consumables), true));
+  section('Buffs', chips(suJson(s.buffs)));
+  section('Debuffs on the target', chips(suJson(s.debuffs)));
+  const opts = el('div', 'su-opts');
+  for (const [k, v] of suJson(s.options)) { const o = el('span', null, k + ': '); o.append(el('b', null, v)); opts.append(o); }
+  section('Settings', opts);
+  box.append(wrap);
 }
 
 const CMP_MIN_H = () => 0;

@@ -9,7 +9,7 @@ datasets into experiment/ again and rebuild. Called by build.py, which adds the 
 import json, os, re
 
 # the dashboard's params document (dash/params): every filter's starting value
-PARAMS = {"bestFight": "all", "gear": "sims", "build": "all", "detailFight": "all", "detailMark": "all", "detailRace": "all", "detailSpec": "Beast Mastery Hunter",
+PARAMS = {"bestFight": "all", "gear": "sims", "specTab": "abilities", "build": "all", "detailFight": "all", "detailMark": "all", "detailRace": "all", "detailSpec": "Beast Mastery Hunter",
           "faction": "All", "gainFight": "all", "gainSpec": "Beast Mastery Hunter", "hBestFight": "all", "hDetailCls": "priest", "hDetailFight": "all",
           "hDetailMark": "all", "hDetailRace": "all", "hFaction": "All", "hGainCls": "priest", "hGainFight": "all", "hLineCls": "priest",
           "hMatrixFight": "all", "hMetric": "pct", "hRankFight": "all", "lineSpec": "Beast Mastery Hunter", "matrixFight": "all", "metric": "pct",
