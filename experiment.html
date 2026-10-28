@@ -3916,7 +3916,7 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
     ? 'Solid Bar = Weakest Race. Hover for spec info, click for ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for spec info, click for ability breakdown.') : '');
+    : `${p.measure === 'tmi' ? 'How spiky a tank’s incoming damage is. ' : ''}Lower is better. Solid Bar = Best Race. Hover for spec info, click for ability breakdown.`) : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
