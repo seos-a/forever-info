@@ -191,8 +191,12 @@
   .rr .tl-table th.n, .tl-table td.n { text-align: right; }
   .rr .tl-table th { cursor: pointer; user-select: none; }
   .rr .tl-table th:hover { color: var(--color-fg); }
-  .rr .tl-table th[aria-sort="ascending"]::after { content: ' ▲'; font-size: 9px; }
-  .rr .tl-table th[aria-sort="descending"]::after { content: ' ▼'; font-size: 9px; }
+  /* Every header keeps room for its arrow, so sorting doesn't shift the columns. */
+  .rr .tl-table th::after { content: ' ▼'; font-size: 9px; visibility: hidden; }
+  .rr .tl-table th[aria-sort="ascending"]::after { content: ' ▲'; visibility: visible; }
+  .rr .tl-table th[aria-sort="descending"]::after { visibility: visible; }
+  .rr .tl-table th:focus:not(:focus-visible) { outline: none; }
+  .tl-wh { display: inline-flex; line-height: 0; }
   .tl-table tr:hover td { background: #ffffff08; }
   .tl-name { display: flex; align-items: center; gap: 8px; }
   .tl-name img { width: 20px; height: 20px; border-radius: 3px; background: #000; }
@@ -658,7 +662,7 @@
     <div class="hr-filter"><div class="hr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
     </div></div>
-    <p class="hr-patched" id="h-patched"><b>TESTING:</b>This page displays ForeverHealing-TC's October 16th sim run by Claude with the October 26th racial changes patched in, in a healing-limited test fight. Pally is currently broken. Take with a grain of salt.</p>
+    <p class="hr-patched" id="h-patched"><b>TESTING:</b>This page displays ForeverHealing-TC's October 16th with the October 27th racial changes patched in, in a healing-limited test fight. Pally is currently broken. Take with a grain of salt.</p>
   </div>
 
   <section class="hr-card" id="h-speccmp" data-label="HPS Ranking by Spec">
@@ -741,16 +745,18 @@
     <h2>Methods and Caveats</h2>
     <div class="hr-notes">
       <p><b>The sim.</b> ForeverHealing-TC's experimental raid sim (game build 1.60.1.70425, data of 16 October 2026), with each healer's default level 60 setup, gear and priority list from the tool. Results for Holy Priest, Restoration Druid and Restoration Shaman. The default raid: 2 tanks, 5 healers (2 Restoration Shamans on the tanks, Priest, Paladin and Druid on the raid), 6 melee and 7 ranged, steady tank damage and a raid-wide hit every 20 sec.</p>
-      <p><b>Racials patched to the 26 October notes</b> (the sim still has the 15 October versions):</p>
+      <p><b>Racials patched to the 26 and 27 October notes</b> (the sim still has the 15 October versions):</p>
       <ul>
         <li>Human: Ruthless 1% crit (was 2%); The Human Spirit 10% Spirit (was 5%).</li>
         <li>Dwarf: Earth Fury (2% stronger crits) replaced by Artisan's Precision (1% hit), which does nothing for heals.</li>
         <li>Tauren: Endurance no longer makes crits stronger.</li>
         <li>Orc: Savage (1% crit) replaced by Command (pet damage), which does nothing for heals.</li>
+        <li>Troll: Berserking lasts 15 sec (was 10; 27 October).</li>
+        <li>Orc: Blood Fury on a 2 min cooldown (was 3; 27 October).</li>
         <li>Skyborne: Wind Blessed 2% haste (was 3%). The sim did not apply this haste at all, so it is now applied to cast times through the sim's own cast speed hook.</li>
       </ul>
       <p><b>Haste doesn't show up in this sim.</b> The sim moves in 0.05 sec steps, so a cast made 2% faster (2.50 to 2.45 sec) still ends on the same step, and Skyborne and Troll come out exactly level with no racials. A check at 0.01 sec steps didn't change the picture: the healers' priority lists pace their casts to their mana, so the Shamans cast the same number of spells either way. Read Skyborne's and Troll's results as "haste not measured", not as "haste is worthless".</p>
-      <p><b>Racial cooldowns</b> are averaged over the fight, assuming each is used on cooldown from the pull: Elune's Light (+10% crit, 15 sec, 3 min), Berserking (+10% cast speed, 10 sec, 3 min), Eureka! (+10% healing, 8 sec, 2 min) and Blood Fury (+10% healing power, 15 sec, 3 min). On a 2 minute fight Elune's Light counts as +1.25% crit. The sim can't time them, so lining them up with heavy damage would be worth more than shown. Eureka!'s cost reduction isn't known yet and is left out.</p>
+      <p><b>Racial cooldowns</b> are averaged over the fight, assuming each is used on cooldown from the pull: Elune's Light (+10% crit, 15 sec, 3 min), Berserking (+10% cast speed, 15 sec, 3 min), Eureka! (+10% healing, 8 sec, 2 min) and Blood Fury (+10% healing power, 15 sec, 2 min). On a 2 minute fight Elune's Light counts as +1.25% crit. The sim can't time them, so lining them up with heavy damage would be worth more than shown. Eureka!'s cost reduction isn't known yet and is left out.</p>
       <p><b>A healing-limited fight.</b> In the default fight the healers keep up with the damage, so a better race mostly overheals and the five healers compete for the same heals. That made race differences unmeasurable (about ±2% noise against 0.5–1% effects). So raid health is raised 100× and damage 2.5×: there is always more to heal, nobody dies, overhealing nearly vanishes, and each healer's effective healing is what its spells and mana allow. Real fights are rarely like this: there, crit and haste racials are worth less (more of the extra healing is overheal) and mana racials matter only when mana runs out.</p>
       <p><b>Holy Paladin is left out.</b> Its priority list waits for someone to drop below a share of their health before casting, and with 100× health that almost never happens: it healed about 5,000 in 2 minutes (about 46,000 in the sim's normal fight) and sat idle three quarters of the time, so its race results were meaningless. The other healers also wait for low health on some rules and idle more than in the normal fight (Shamans about 45% of the time instead of under 10%), so heal size and mana count for more here than speed.</p>
       <p><b>Runs.</b> 40 runs per race, healer and fight length, every race on the same random seeds, at 2, 3, 5 and 7 minutes. Only the measured healer's race changes; the other healers keep their default races (Undead Priest and Paladin, Night Elf Druid, Dwarf Shamans). Both Shamans take the race being measured and their results are averaged.</p>
@@ -1751,7 +1757,10 @@ function drawTimeline(p, item, minH) {
     const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir; });
     tbody.replaceChildren(...list.map(([name, n, up]) => {
       const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
-      ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
+      ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src;
+      const wh = (window.ABILITY_LINKS || {})[name];  // the icon shows Wowhead's tooltip
+      if (wh) { const a = el('a', 'tl-wh'); a.href = 'https://www.wowhead.com/forever/' + wh; a.target = '_blank'; a.rel = 'noopener'; a.append(ic); d.append(a, name); } else d.append(ic, name);
+      nm.append(d);
       bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
       tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
       return tr;
@@ -3080,7 +3089,10 @@ function drawTimeline(p, item, minH) {
     const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir; });
     tbody.replaceChildren(...list.map(([name, n, up]) => {
       const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
-      ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
+      ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src;
+      const wh = (window.ABILITY_LINKS || {})[name];  // the icon shows Wowhead's tooltip
+      if (wh) { const a = el('a', 'tl-wh'); a.href = 'https://www.wowhead.com/forever/' + wh; a.target = '_blank'; a.rel = 'noopener'; a.append(ic); d.append(a, name); } else d.append(ic, name);
+      nm.append(d);
       bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
       tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
       return tr;

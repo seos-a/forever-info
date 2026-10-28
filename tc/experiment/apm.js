@@ -86,7 +86,7 @@ function setup(b) {
     const items = specItems(b, b.role ? res.data.filter((r) => r.role === b.role) : res.data, fight);
     if (!items.length) { box.textContent = '—'; return; }
     const view = q[b.view] && items.find((d) => d.spec === q[b.view]);
-    if (view) drawBreakdown(b, box, note, view, fight);
+    if (view) drawBreakdown(b, box, note, view, fight, items.map((d) => d.spec));
     else draw(b, box, items);
   };
   dash.onData(render);
@@ -162,7 +162,38 @@ function kinds(b, spec) {
 }
 
 const KIND_LABEL = { direct: 'Direct', dot: 'Over time', channel: 'Channel', utility: 'Utility (no damage)', heal: 'Heal', hot: 'Heal over time', absorb: 'Absorb' };
-function drawBreakdown(b, box, note, item, fight) {
+// The spec's name opens a menu of the other specs, to switch breakdowns as the DPS view does.
+let apmMenu = null;
+const closeApmMenu = () => { if (apmMenu) { apmMenu.btn.setAttribute('aria-expanded', 'false'); apmMenu.el.remove(); apmMenu = null; } };
+document.addEventListener('pointerdown', (e) => { if (apmMenu && !apmMenu.el.contains(e.target) && e.target !== apmMenu.btn) closeApmMenu(); });
+document.addEventListener('keydown', (e) => { if (apmMenu && e.key === 'Escape') { const btn = apmMenu.btn; closeApmMenu(); btn.focus(); } });
+function apmPicker(b, spec, specs) {
+  const btn = el('button', 'rr-pick', spec);
+  btn.type = 'button'; btn.style.color = specColor(spec); btn.title = 'Choose a spec';
+  btn.setAttribute('aria-haspopup', 'menu'); btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (apmMenu && apmMenu.btn === btn) { closeApmMenu(); return; }
+    closeApmMenu();
+    const root = btn.closest('[data-tab-panel]'), list = el('div', 'rr-menu');
+    list.setAttribute('role', 'menu');
+    for (const s of [...specs].sort()) {
+      const it = el('button', null, s);
+      it.type = 'button'; it.setAttribute('role', 'menuitemradio'); it.setAttribute('aria-checked', String(s === spec)); it.style.color = specColor(s);
+      it.addEventListener('click', () => { closeApmMenu(); dash.setParams({ [b.view]: s }); });
+      list.append(it);
+    }
+    root.append(list);
+    const rb = root.getBoundingClientRect(), bb = btn.getBoundingClientRect();
+    list.style.left = Math.max(0, Math.min(rb.width - list.offsetWidth, bb.left - rb.left)) + 'px';
+    list.style.top = bb.bottom - rb.top + 4 + 'px';
+    btn.setAttribute('aria-expanded', 'true');
+    apmMenu = { el: list, btn };
+    (list.querySelector('[aria-checked="true"]') || list.firstChild).focus();
+  });
+  return btn;
+}
+function drawBreakdown(b, box, note, item, fight, specs) {
   const healer = !b.role, cls = healer ? specColor(item.spec) : null, K = kinds(b, item.spec);
   const rows = item.presses.map((p) => {
     if (healer) {
@@ -174,10 +205,10 @@ function drawBreakdown(b, box, note, item, fight) {
   });
   const total = rows.reduce((t, a) => t + a.v, 0);
   note.textContent = '';
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), title = el('span', 'rr-bdtitle', item.spec);
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), title = el('span', 'rr-bdtitle');
   back.type = 'button';
   back.addEventListener('click', () => dash.setParams({ [b.view]: '' }));
-  title.style.color = specColor(item.spec);
+  title.append(apmPicker(b, item.spec, specs));
   bar.append(back, title);
   const col = (a) => (healer ? cls : SCHOOL_COLOR[a.school] || 'var(--color-fg-muted)');
   // Legend swatches reuse the damage breakdown's styles: over time as its stripes, utility as its grey, absorbs outlined.
