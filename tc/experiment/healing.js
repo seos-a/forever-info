@@ -551,7 +551,8 @@ function drawLines(p, rows) {
 }
 
 // Box plots: each row's box is the middle half of its runs, the line inside it the median, the whiskers the rest of
-// the runs within 1.5 boxes of it, and dots the extremes beyond them. Rows are [{label, color, icon, ring, ...stats}].
+// the runs within 1.5 boxes of it. Runs beyond the whiskers aren't drawn (the tooltip gives the lowest and highest run),
+// and the scale spans the whiskers. Rows are [{label, color, icon, ring, ...stats}].
 function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, zoomKey = '' }) {
   const W = Math.max(280, box.clientWidth), gap = 8, bh = Math.max(14, (H0 - 22) / rows.length - gap), H = rows.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
@@ -560,7 +561,7 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const narrow = narrowChart(W), lab = (r) => (narrow ? shortSpec(r.label) : r.label), val = (r) => (narrow ? value(r).split(' · ')[0].replace(/ HPS$/, '') : value(r));
   const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(lab(r)))) + 14, mr = Math.max(...rows.map((r) => textW(val(r)))) + 14;
   probe.remove();
-  const lo = Math.min(...rows.map((r) => r.min), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.max), zero ? 0 : -Infinity);
+  const lo = Math.min(...rows.map((r) => r.lo), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.hi), zero ? 0 : -Infinity);
   const x0 = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
   const grid = svg.append('g'), ticks = svg.append('g');
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${i * (bh + gap) + 2})`);
@@ -577,7 +578,6 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const ends = ['lo', 'hi'].map((end) => pg.append('line').attr('y1', mid - bh * 0.22).attr('y2', mid + bh * 0.22).attr('stroke', (r) => r.color).attr('stroke-width', 1.5).datum((r) => ({ r, end })));
   const boxes = pg.append('rect').attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3).style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
   const meds = pg.append('line').attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
-  const dots = ['min', 'max'].map((end) => pg.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi)).append('circle').attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color).datum((r) => ({ r, end })));
   const vals = pg.append('text').attr('y', mid + 4).text(val);
   const render = (x) => {
     grid.selectAll('line').data(x.ticks(narrow ? 3 : 6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
@@ -587,8 +587,7 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
     for (const e of ends) e.attr('x1', (d) => x(d.r[d.end])).attr('x2', (d) => x(d.r[d.end]));
     boxes.attr('x', (r) => x(r.q1)).attr('width', (r) => Math.max(2, x(r.q3) - x(r.q1)));
     meds.attr('x1', (r) => x(r.median)).attr('x2', (r) => x(r.median));
-    for (const d of dots) d.attr('cx', (o) => x(o.r[o.end]));
-    vals.attr('x', (r) => x(r.max) + 8);
+    vals.attr('x', (r) => x(r.hi) + 8);
   };
   render(x0);
   const t = el('div', 'hr-tip'); t.hidden = true; box.append(t);
@@ -631,7 +630,7 @@ function drawGains(p, rows, runRows) {
     zoomKey: [p.faction, p.cls, p.fight].join('|'),
     zero: true, fmt: (v) => sign(v, 1) + '%', value: (r) => sign(r.median, 2) + '%',
     tip: (r) => { const s = summary(r.race); return [el('div', 'h', r.race), tipLine('Median run', sign(r.median, 2) + '%'), tipLine('Middle half of runs', `${sign(r.q1, 2)}% to ${sign(r.q3, 2)}%`),
-      tipLine('All runs', `${sign(r.min, 2)}% to ${sign(r.max, 2)}%`), ...(s ? [tipLine('Healing per second', num(s.hps)), tipLine('Mana left at end', num(s.manaEnd))] : []), tipLine('Runs', String(r.n))]; },
+      tipLine('Lowest to highest run', `${sign(r.min, 2)}% to ${sign(r.max, 2)}%`), ...(s ? [tipLine('Healing per second', num(s.hps)), tipLine('Mana left at end', num(s.manaEnd))] : []), tipLine('Runs', String(r.n))]; },
   });
 }
 
@@ -938,7 +937,7 @@ function draw() {
     const most = Math.max(0, ...spellRows.map((r) => (typeof r.spells === 'string' ? JSON.parse(r.spells) : r.spells).length));
     const H0 = Math.max(rows.length * 44, most ? most * 18 + 22 + 56 : 0, healUserH);
     if (rows.length) drawBoxes(box, rows, H0, { zoomKey: [p.faction, p.specFight].join('|'), labelColor: true, fmt: (v) => num(Math.round(v)), value: (r) => `${num(Math.round(r.median))} HPS · ${r.race}`, onPick: (r) => setP({ cmpView: r.cls }),
-      tip: (r) => [Object.assign(el('div', 'h', r.label), { style: `color: ${r.color}` }), tipLine('Race', r.race), tipLine('Median run', num(Math.round(r.median)) + ' HPS'), tipLine('Middle half of runs', `${num(Math.round(r.q1))} to ${num(Math.round(r.q3))} HPS`), tipLine('All runs', `${num(Math.round(r.min))} to ${num(Math.round(r.max))} HPS`), tipLine('Runs', String(r.n))] });
+      tip: (r) => [Object.assign(el('div', 'h', r.label), { style: `color: ${r.color}` }), tipLine('Race', r.race), tipLine('Median run', num(Math.round(r.median)) + ' HPS'), tipLine('Middle half of runs', `${num(Math.round(r.q1))} to ${num(Math.round(r.q3))} HPS`), tipLine('Lowest to highest run', `${num(Math.round(r.min))} to ${num(Math.round(r.max))} HPS`), tipLine('Runs', String(r.n))] });
     // A healer picked from the boxes shows its spell breakdown over them, at their height, until "All healers" is clicked.
     const view = p.cmpView && rows.find((r) => r.cls === p.cmpView);
     if (view && SP.status === 'ok') drawHealBreakdown(p, view, spellRows, $('.lx-specnote').offsetHeight + box.offsetHeight);
