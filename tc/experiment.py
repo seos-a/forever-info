@@ -9,7 +9,7 @@ datasets into experiment/ again and rebuild. Called by build.py, which adds the 
 import json, os, re
 
 # the dashboard's params document (dash/params): every filter's starting value
-PARAMS = {"bestFight": "all", "build": "all", "detailFight": "all", "detailMark": "all", "detailRace": "all", "detailSpec": "Beast Mastery Hunter",
+PARAMS = {"bestFight": "all", "gear": "sims", "build": "all", "detailFight": "all", "detailMark": "all", "detailRace": "all", "detailSpec": "Beast Mastery Hunter",
           "faction": "All", "gainFight": "all", "gainSpec": "Beast Mastery Hunter", "hBestFight": "all", "hDetailCls": "priest", "hDetailFight": "all",
           "hDetailMark": "all", "hDetailRace": "all", "hFaction": "All", "hGainCls": "priest", "hGainFight": "all", "hLineCls": "priest",
           "hMatrixFight": "all", "hMetric": "pct", "hRankFight": "all", "lineSpec": "Beast Mastery Hunter", "matrixFight": "all", "metric": "pct",
@@ -27,12 +27,16 @@ const redraw = () => subs.forEach(run);
 window.dash = {
   colors: ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#c9805b', '#8a8fd6'],
   // like the dashboard: nested values reach the page as JSON text
+  // The DPS tab's gear switch: with "Classic pre-raid" picked, each dataset that has a pb_ copy (sims, targets,
+  // breakdown, apm) is read from it instead, and every calc built on them is worked out again.
   data(id) {
-    if (cache[id]) return cache[id];
-    if (raw[id]) return cache[id] = { status: 'ok', data: raw[id].map((r) => { const o = {}; for (const k in r) o[k] = r[k] !== null && typeof r[k] === 'object' ? JSON.stringify(r[k]) : r[k]; return o; }),
+    if (params.gear === 'classic' && raw['pb_' + id]) id = 'pb_' + id;
+    const key = params.gear === 'classic' ? 'classic|' + id : id;
+    if (cache[key]) return cache[key];
+    if (raw[id]) return cache[key] = { status: 'ok', data: raw[id].map((r) => { const o = {}; for (const k in r) o[k] = r[k] !== null && typeof r[k] === 'object' ? JSON.stringify(r[k]) : r[k]; return o; }),
       columns: Object.keys(raw[id][0] || {}), meta: [], refreshing: false };
     const c = calcs[id]; if (!c) return { status: 'missing', data: [], meta: [] };
-    return cache[id] = { status: 'ok', data: c.fn(...c.inputs.map((i) => dash.data(i).data)), meta: [] };
+    return cache[key] = { status: 'ok', data: c.fn(...c.inputs.map((i) => dash.data(i).data)), meta: [] };
   },
   calc(id, o) { calcs[id] = o; },
   loader() {},
