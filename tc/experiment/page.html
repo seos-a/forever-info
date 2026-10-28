@@ -2136,7 +2136,7 @@ const P = () => {
   // The Top Race, Racial Bonus and Race Standings boxes each have their own measure; the filter row's sets the rest.
   return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'tps', build: q.tBuild ?? 'all',
     bestMeasure: q.tBestMeasure ?? 'tps', gainMeasure: q.tGainMeasure ?? 'tps', lineMeasure: q.tLineMeasure ?? 'tps',
-    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', gainFight: q.tGainFight ?? 'all',
+    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', gainFight: q.tGainFight ?? 'all',
     detailFight: q.tDetailFight ?? 'all', detailTargets: q.tDetailTargets ?? '1', detailRace: q.tDetailRace ?? 'all', detailMark: q.tDetailMark ?? 'all',
     lineSpec: q.tLineSpec ?? d, gainSpec: q.tGainSpec ?? d, detailSpec: q.tDetailSpec ?? d };
 };
@@ -2587,10 +2587,20 @@ function drawBreakdown(p, item, data, fitH) {
   // The spec's name opens the spec menu, to switch to another spec's breakdown.
   const title = el('span', 'rr-bdtitle');
   title.append(specPicker(item.key, 'specView'));
-  bar.append(back, title, open);
+  // Abilities (the damage meter) or the character setup it was simmed with.
+  const tabs = el('div', 'rr-seg');
+  tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
+  for (const [v, text] of [['abilities', 'Abilities'], ['setup', 'Character setup']]) {
+    const b = el('button', null, text);
+    b.type = 'button'; b.setAttribute('aria-pressed', String((p.specTab || 'abilities') === v));
+    b.addEventListener('click', () => setP({ specTab: v }));
+    tabs.append(b);
+  }
+  bar.append(back, title, tabs, open);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
   const rows = data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight));
+  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
   const acc = new Map();
@@ -2671,6 +2681,60 @@ function drawBreakdown(p, item, data, fitH) {
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
+}
+
+// Character setup: what a tank build was simmed with, from the `tankSetup` dataset (as the DPS tab's: gear and
+// enchants, talents linked to the talent calculator, consumables, buffs, debuffs on the target and other settings).
+const QUALITY = { 0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d9bff', 4: '#b866ff', 5: '#ff8000' };
+const suIcon = (name) => { const i = el('img'); i.alt = ''; i.loading = 'lazy'; if (name) i.src = 'images/icons/' + name + '.jpg'; return i; };
+const suJson = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
+function drawSetup(p, item, race, minH) {
+  const box = $('.lx-speccmp'), S = rrData(dash.data('tankSetup'));
+  const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
+  $('.lx-specnote').textContent = s ? '' : `No setup for ${item.name} (${item.build}) here.`;
+  if (!s) return;
+  const wrap = el('div', 'su');
+  wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
+  const classic = p.gear === 'classic', gear = suJson(s.gear), pts = suJson(s.points);
+  const head = el('div', 'su-head'), cal = el('a', null, pts.join(' / '));
+  cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
+  head.append(el('b', null, item.build), ` · ${race ? race + ' (its best race) · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
+  wrap.append(head);
+  const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
+  const itemRow = (g) => {
+    const row = el('div', 'su-item'), name = el('a', 'su-name', g.name);
+    name.href = g.url; name.target = '_blank'; name.rel = 'noopener'; name.style.color = QUALITY[g.q] || QUALITY[1];
+    name.title = g.name + (g.enchant ? ' · ' + g.enchant : '');
+    const slot = el('div', 'su-slot', g.slot);
+    if (g.classic) { const t = el('span', 'su-tag', 'Classic'); t.title = "Not in Forever's item database: simmed with its Classic stats"; slot.append(t); }
+    row.append(suIcon(g.icon), slot, name);
+    if (g.enchant) row.append(el('div', 'su-ench', g.enchant));
+    return row;
+  };
+  const list = el('div', 'su-gear');
+  list.append(...gear.map(itemRow));
+  const extra = [], swap = suJson(s.swap), dwarf = suJson(s.dwarf);
+  if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
+  if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
+  section('Gear', list, ...extra);
+  const chips = (rows, withLink) => {
+    const c = el('div', 'su-chips');
+    for (const r of rows) {
+      const chip = el(withLink && r.url ? 'a' : 'span', 'su-chip');
+      if (withLink && r.url) { chip.href = r.url; chip.target = '_blank'; chip.rel = 'noopener'; }
+      if (r.kind) chip.title = r.kind;
+      chip.append(suIcon(r.icon), r.name);
+      c.append(chip);
+    }
+    return c;
+  };
+  section('Consumables', chips(suJson(s.consumables), true));
+  section('Buffs', chips(suJson(s.buffs)));
+  section('Debuffs on the target', chips(suJson(s.debuffs)));
+  const opts = el('div', 'su-opts');
+  for (const [k, v] of suJson(s.options)) { const o = el('span', null, k + ': '); o.append(el('b', null, v)); opts.append(o); }
+  section('Settings', opts);
+  box.append(wrap);
 }
 
 const CMP_MIN_H = () => {
