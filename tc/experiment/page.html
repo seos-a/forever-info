@@ -663,8 +663,8 @@
     <div class="rr-filter"><div class="rr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
     </div></div>
-    <div class="rr-filter"><div class="rr-seg lx-measure" role="group" aria-label="Measure">
-      <button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes (TMI)</button><button type="button" data-v="dps">DPS</button>
+    <div class="rr-filter"><div class="rr-seg lx-measure" data-p="measure" role="group" aria-label="Measure">
+      <button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes (TMI)</button>
     </div></div>
   </div>
 
@@ -701,7 +701,7 @@
 
   <section class="rr-card lx-bestcard" id="t-best">
     <div class="rr-cardhead"><h2>Top Race for Each Tank</h2>
-      <div class="rr-tools"><div class="rr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
+      <div class="rr-tools"><div class="rr-seg lx-measure" data-p="bestMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
     </div>
     <p class="rr-note">Click a spec to see its charts and builds below.</p>
     <div class="rr-specs lx-cards" data-source="tankBest"></div>
@@ -710,7 +710,7 @@
   <div class="rr-grid2" id="t-spec">
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-gainhead">Racial Bonus</h2>
-        <div class="rr-tools"><div class="rr-seg lx-measure" role="group" aria-label="Measure"><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button><button type="button" data-v="dps">DPS</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
+        <div class="rr-tools"><div class="rr-seg lx-measure" data-p="gainMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
       </div>
       <p class="rr-note">How much each race improves the chosen measure over the same builds with no race at all, stat differences included. For damage taken and spikes, a drop counts as a gain.</p>
       <div class="rr-chart lx-gains" data-source="tankBySpec"></div>
@@ -718,7 +718,7 @@
     </section>
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-lenhead">Race Standings over Time</h2>
-        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-measure" role="group" aria-label="Measure"><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button><button type="button" data-v="dps">DPS</button></div></div>
+        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-measure" data-p="lineMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div></div>
       </div>
       <p class="rr-note">How close each race comes to the top race (100%) at each fight length, averaged across this spec's builds.</p>
       <div class="rr-legend lx-legend"></div>
@@ -1955,7 +1955,9 @@ const METRIC = {
 };
 const P = () => {
   const q = dash.params(), d = 'Protection Warrior';
+  // The Top Race, Racial Bonus and Race Standings boxes each have their own measure; the filter row's sets the rest.
   return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'tps', build: q.tBuild ?? 'all',
+    bestMeasure: q.tBestMeasure ?? 'tps', gainMeasure: q.tGainMeasure ?? 'tps', lineMeasure: q.tLineMeasure ?? 'tps',
     bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', gainFight: q.tGainFight ?? 'all',
     detailFight: q.tDetailFight ?? 'all', detailTargets: q.tDetailTargets ?? '1', detailRace: q.tDetailRace ?? 'all', detailMark: q.tDetailMark ?? 'all',
     lineSpec: q.tLineSpec ?? d, gainSpec: q.tGainSpec ?? d, detailSpec: q.tDetailSpec ?? d };
@@ -1969,7 +1971,9 @@ let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 const seg = (sel, name) => {
   ROOT.querySelectorAll(sel).forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [name]: b.dataset.v }); }));
 };
-seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); seg('.lx-measure', 'measure'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets');
+seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets');
+// Each measure button row sets its own filter (data-p).
+ROOT.querySelectorAll('.lx-measure').forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [g.dataset.p]: b.dataset.v }); }));
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
@@ -2616,8 +2620,9 @@ function draw() {
   if (ROOT.hidden) return;
   const p = P();
   const d = { scoped: rrData(dash.data('tankScoped')), bySpec: rrData(dash.data('tankBySpec')), overall: rrData(dash.data('tankOverall')), matrix: rrData(dash.data('tankMatrix')), best: rrData(dash.data('tankBest')) };
-  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-measure', p.measure]])
+  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+  ROOT.querySelectorAll('.lx-measure').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
@@ -2635,11 +2640,11 @@ function draw() {
   $('.lx-gainhead').replaceChildren(specPicker(p.gainSpec, 'gainSpec'), ' Racial Bonus');
   $('.lx-dethead').replaceChildren(specPicker(p.detailSpec, 'detailSpec'), ' Sim Results by Build');
 
-  const M = (rows) => rows.filter((r) => r.measure === p.measure);
-  drawCards({ ...p, fight: p.bestFight }, M(d.best.data), specs);
+  const M = (rows, m = p.measure) => rows.filter((r) => r.measure === m);
+  drawCards({ ...p, fight: p.bestFight, measure: p.bestMeasure }, M(d.best.data, p.bestMeasure), specs);
   drawMatrix({ ...p, fight: p.matrixFight }, M(d.matrix.data), specs, M(d.overall.data));
-  drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight }, M(d.bySpec.data));
-  drawLines({ ...p, spec: p.lineSpec }, M(d.bySpec.data));
+  drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, measure: p.gainMeasure }, M(d.bySpec.data, p.gainMeasure));
+  drawLines({ ...p, spec: p.lineSpec, measure: p.lineMeasure }, M(d.bySpec.data, p.lineMeasure));
   const DT = rrData(dash.data('tankTargets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, M(d.scoped.data), DT.status === 'ok' ? M(DT.data) : []);
   {
