@@ -74,7 +74,9 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     (`data/<id>.json`); edit them there and rebuild. `experiment.py` stands in for the dashboard runtime the page was first
     written for and `build.py` writes `web/experiment.html` (not indexed). The page began as the "Forever Race/Spec
     Comparison" dashboard artifact (https://claude.ai/artifact/KhLhWEBf6f1ceiUyotPXUB), which is now an archive (last
-    synced Oct 28, 2026, before the build renames): don't update it or copy from it
+    synced Oct 28, 2026, before the build renames): don't update it or copy from it. The DPS tab's Gear switch
+    ("Classic pre-raid") reads `data/pb_<id>.json` in place of `<id>` (sims, targets, breakdown, apm, regear); those
+    come from the race-sims harness (`C:\Users\austi\Documents\GitHub\race-sims-harness`, README "Classic pre-raid gear")
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.
