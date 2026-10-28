@@ -1477,11 +1477,16 @@ function drawGains(p, rows, keepNote) {
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => (r.regear ? 'Dwarf (re-geared)' : r.race));
   // The bars, their values and the 0% line (no racials), clipped to the plot area.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
-  const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
+  // A faint line at each whole percent, behind the bars, like the Race Standings chart's grid.
+  const grid = plot.append('g').attr('class', 'grid');
+  const pg = plot.selectAll('g.row').data(list).join('g').attr('class', 'row').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
   const vals = pg.append('text').attr('y', bh / 2 + 4).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start')).text((r) => sign(r.gain, 2) + '%');
   const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
   const render = (x) => {
+    const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
+    grid.selectAll('line').data(whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
+    grid.selectAll('text').data(whole).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
     zero.attr('x1', x(0)).attr('x2', x(0));
@@ -2811,11 +2816,16 @@ function drawGains(p, rows, keepNote) {
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => (r.regear ? 'Dwarf (re-geared)' : r.race));
   // The bars, their values and the 0% line (no racials), clipped to the plot area.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
-  const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
+  // A faint line at each whole percent, behind the bars, like the Race Standings chart's grid.
+  const grid = plot.append('g').attr('class', 'grid');
+  const pg = plot.selectAll('g.row').data(list).join('g').attr('class', 'row').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
   const vals = pg.append('text').attr('y', bh / 2 + 4).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start')).text((r) => sign(r.gain, 2) + '%');
   const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
   const render = (x) => {
+    const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
+    grid.selectAll('line').data(whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
+    grid.selectAll('text').data(whole).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
     zero.attr('x1', x(0)).attr('x2', x(0));
