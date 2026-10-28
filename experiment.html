@@ -227,11 +227,13 @@ document.head.appendChild(t);})();
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
   /* Setup: the gear, talents, consumables and buffs a spec's breakdown was simmed with. */
   .rr-bdbar .rr-seg { margin-right: var(--cds-gap-xs); }
-  .su { display: grid; align-content: start; gap: var(--cds-gap-md); font-size: .8125rem; }
+  .su { display: grid; align-content: start; gap: var(--cds-gap-lg); font-size: .8125rem; }
+  /* Each section under a faint rule, its heading in the text colour; sub-groups are labelled in muted text beside their chips. */
+  .su > div + div { border-top: 1px solid #ffffff12; padding-top: var(--cds-gap-md); }
   .su-head { color: var(--color-fg-muted); }
   .su-head b { color: var(--color-fg); font-weight: 600; }
   .su-head a { color: var(--color-fg); }
-  .su h3 { margin: 0 0 var(--cds-gap-xs); font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--color-fg-muted); }
+  .su h3 { margin: 0 0 var(--cds-gap-sm); font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--color-fg); }
   .su-gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px var(--cds-gap-md); }
   .su-item { display: grid; grid-template-columns: 32px 1fr; gap: 0 8px; align-items: center; min-width: 0; }
   .su-ico { grid-row: span 3; display: block; line-height: 0; }
@@ -255,7 +257,10 @@ document.head.appendChild(t);})();
   .su-stat { display: flex; justify-content: space-between; gap: var(--cds-gap-md); padding: 1px 0; border-bottom: 1px solid #ffffff0a; font-variant-numeric: tabular-nums; }
   .su-stat span { color: var(--color-fg-muted); }
   .su-stat b { font-weight: 500; }
-  .su-congrp + .su-congrp { margin-top: var(--cds-gap-sm); }
+  .su-congrp { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: var(--cds-gap-sm); }
+  .su-congrp + .su-congrp { margin-top: 6px; }
+  .su-congrp .su-statgh { margin: 0; font-size: var(--cds-font-size-caption); }
+  @media (max-width: 600px) { .su-congrp { grid-template-columns: 1fr; gap: 4px; } }
   .su-stat.su-hasbd { cursor: help; }
   .su-stat.su-hasbd:hover { background: #ffffff08; }
   .su-tip .su-tipnote { max-width: 240px; white-space: normal; margin-top: 4px; color: var(--color-fg-muted); }
