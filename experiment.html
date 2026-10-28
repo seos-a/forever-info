@@ -2268,7 +2268,7 @@ function draw() {
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
-    ? "* Classic pre-raid gear carries Classic's spell power, less than Forever's items give, while Forever's spell coefficients are tuned around Forever's gear: casters come out lower than they would in Forever's gear."
+    ? "* Classic pre-raid gear has Classic's caster weapons (Witchblade: 14 spell power), while Forever's caster weapons of the same level carry about 70 (Clever Expeditionary's Spellblade: 72), so casters come out lower than they would in Forever's gear."
     : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
@@ -4902,7 +4902,7 @@ function draw() {
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
-    ? "* Classic pre-raid gear carries Classic's spell power, less than Forever's items give, while Forever's spell coefficients are tuned around Forever's gear: casters come out lower than they would in Forever's gear."
+    ? "* Classic pre-raid gear has Classic's caster weapons (Witchblade: 14 spell power), while Forever's caster weapons of the same level carry about 70 (Clever Expeditionary's Spellblade: 72), so casters come out lower than they would in Forever's gear."
     : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
