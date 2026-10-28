@@ -163,6 +163,11 @@
   .su-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px 2px 2px; border: 1px solid var(--color-border-line); border-radius: 6px; color: var(--color-fg); text-decoration: none; }
   .su-chip img { width: 22px; height: 22px; border-radius: 4px; background: #000; }
   a.su-chip:hover { border-color: #ffffff40; }
+  .su-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--cds-gap-sm) var(--cds-gap-lg); }
+  .su-statgh { color: var(--color-fg-muted); font-size: 11px; margin-bottom: 2px; }
+  .su-stat { display: flex; justify-content: space-between; gap: var(--cds-gap-md); padding: 1px 0; border-bottom: 1px solid #ffffff0a; font-variant-numeric: tabular-nums; }
+  .su-stat span { color: var(--color-fg-muted); }
+  .su-stat b { font-weight: 500; }
   .su-opts { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); color: var(--color-fg-muted); }
   .su-opts b { color: var(--color-fg); font-weight: 500; }
   .su-note { margin-top: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
@@ -546,6 +551,7 @@
     <div class="rr-chart lx-apm" data-source="apm"></div>
     <div class="rr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
+    <p class="rr-note lx-gearnote"></p>
   </section>
 
   <section class="rr-card" id="matrix">
@@ -1820,6 +1826,13 @@ const SETTING_TIPS = {
   Distance: 'How far from the target the character stands.',
   'Incoming healing': 'Healing per second the sim gives the tank, standing in for its healers.',
 };
+const STAT_TIPS = {
+  'Miss chance to cover': "The boss's base chance to make this character's attacks miss: hit past it does nothing (dual wielding's white-hit penalty aside).",
+  Hit: 'Chance to hit added by talents, gear and racials. The rating is the part from gear.',
+  Crit: 'Crit chance on the character sheet, with buffs. The rating is the part from gear.',
+  Haste: 'Attack or cast speed added by gear, talents and buffs.',
+  'Less chance to be crit': 'How much less likely the boss is to crit this tank, from defense and talents.',
+};
 function drawSetup(p, item, race, minH) {
   const box = $('.lx-speccmp'), S = rrData(dash.data('setup'));
   const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
@@ -1850,6 +1863,18 @@ function drawSetup(p, item, race, minH) {
   if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
   if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
   section('Gear', list, ...extra);
+  // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
+  const sheet = suJson(s.stats)[race];
+  if (sheet) {
+    const grid = el('div', 'su-stats'), groups = new Map();
+    for (const [grp, k, v] of sheet) {
+      if (!groups.has(grp)) { const g = el('div', 'su-statgrp'); g.append(el('div', 'su-statgh', grp)); groups.set(grp, g); grid.append(g); }
+      const row = el('div', 'su-stat'); row.append(el('span', null, k), el('b', null, v));
+      if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
+      groups.get(grp).append(row);
+    }
+    section('Stats', grid);
+  }
   const chips = (rows) => {
     const c = el('div', 'su-chips');
     for (const r of rows) {
@@ -2015,6 +2040,10 @@ function draw() {
   for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
+  // What to keep in mind about the gear shown (the DPS tab's Gear switch).
+  if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
+    ? "* Classic pre-raid gear has the old caster weapons, with little or no spell power, while Forever's spell coefficients are tuned around the spell power it adds to them: casters come out lower than they would in Forever's gear."
+    : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
   if (!ok) {
@@ -3053,6 +3082,13 @@ const SETTING_TIPS = {
   Distance: 'How far from the target the character stands.',
   'Incoming healing': 'Healing per second the sim gives the tank, standing in for its healers.',
 };
+const STAT_TIPS = {
+  'Miss chance to cover': "The boss's base chance to make this character's attacks miss: hit past it does nothing (dual wielding's white-hit penalty aside).",
+  Hit: 'Chance to hit added by talents, gear and racials. The rating is the part from gear.',
+  Crit: 'Crit chance on the character sheet, with buffs. The rating is the part from gear.',
+  Haste: 'Attack or cast speed added by gear, talents and buffs.',
+  'Less chance to be crit': 'How much less likely the boss is to crit this tank, from defense and talents.',
+};
 function drawSetup(p, item, race, minH) {
   const box = $('.lx-speccmp'), S = rrData(dash.data('tankSetup'));
   const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
@@ -3083,6 +3119,18 @@ function drawSetup(p, item, race, minH) {
   if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
   if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
   section('Gear', list, ...extra);
+  // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
+  const sheet = suJson(s.stats)[race];
+  if (sheet) {
+    const grid = el('div', 'su-stats'), groups = new Map();
+    for (const [grp, k, v] of sheet) {
+      if (!groups.has(grp)) { const g = el('div', 'su-statgrp'); g.append(el('div', 'su-statgh', grp)); groups.set(grp, g); grid.append(g); }
+      const row = el('div', 'su-stat'); row.append(el('span', null, k), el('b', null, v));
+      if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
+      groups.get(grp).append(row);
+    }
+    section('Stats', grid);
+  }
   const chips = (rows) => {
     const c = el('div', 'su-chips');
     for (const r of rows) {
@@ -3254,6 +3302,10 @@ function draw() {
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-measure').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
+  // What to keep in mind about the gear shown (the DPS tab's Gear switch).
+  if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
+    ? "* Classic pre-raid gear has the old caster weapons, with little or no spell power, while Forever's spell coefficients are tuned around the spell power it adds to them: casters come out lower than they would in Forever's gear."
+    : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
   if (!ok) {
