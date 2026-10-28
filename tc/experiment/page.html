@@ -863,7 +863,7 @@
       <ul>
         <li>WoWSims Forever at commit 5d4dd1c (27 October 2026, 12:01 PM CT), whose engine has the 26 October racials and the 27 October changes to Blood Fury, Berserking and Touch of the Grave. Run by Claude from the sims' own source with each tank spec's test-suite setup: talents, rotation, consumables and buffs, and the UI's gear presets. Protection Warrior has two (Defense Cap and Threat); Protection Paladin and Feral Bear have one each.</li>
         <li>The default level 63 boss hits the tank every 2 sec. Incoming healing is each spec's UI default (815 healing per second for Protection Warrior, 2,200 for Protection Paladin and Feral Bear), so no tank died in any run.</li>
-        <li>Dwarf tanks press Stoneform (10% less physical damage taken for 8 sec, 3 min cooldown) whenever it is ready. WoWSims' Prot Warrior rotation keeps it for below 50% health, which the steady healing never reaches, so it would never be used; the Prot Paladin rotation already uses it at the pull.</li>
+        <li>Dwarf tanks press Stoneform (10% less physical damage taken for 8 sec, 3 min cooldown) whenever it is ready. WoWSims' Prot Warrior rotation keeps it for below 50% health, which the steady healing never reaches, so it would never be used. The Prot Paladin's sim fires it at the pull together with Templar's Bulwark, whose 8 sec absorb shield soaks every hit while both last, so the Paladin presses it once the Bulwark drops.</li>
         <li>Fights of 1, 2, 3 and 5 minutes, 10,000 iterations each, with every race on the same random seed. Each figure is good to about 0.1–0.5%; <b>Tie</b> marks races within two standard errors of the best.</li>
         <li><b>Targets</b> (Tank Ranking by Spec): each build at 1 to 5 targets, run with the race that generates the most threat on it at one target. Only the first target attacks; the others take hits and add threat work but deal no damage, so damage taken and spikes stay one-target figures.</li>
         <li><b>Gain over no racials</b> compares against the same setup with no race: no racial abilities or passives and no race stat offset.</li>
@@ -1071,15 +1071,13 @@ const BELOW = {
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
-  'Protection Paladin|dtps|Dwarf': 'The Paladin uses Stoneform (10% less physical damage for 8 sec, every 3 min) at the pull, but in these sims it lowers the Paladin’s damage taken by only about 0.04% (1.4% for a Prot Warrior on a 1 minute fight), for a reason not yet found. Dwarf’s innate −4 Agility (slightly less dodge) is what shows.',
+  'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec, every 3 min) covers 8 of every 180 seconds; on 3 minute fights its one use (once Templar’s Bulwark drops) doesn’t quite make up for Dwarf’s innate −4 Agility (slightly less dodge).',
   'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
   'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
   'Protection Paladin|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
   'Protection Paladin|tmi|Undead': 'Undead racials provide no value to spikes, and its innate −2 Agility (slightly less dodge) is all that shows, mostly on 1 minute fights.',
   'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
   'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
-  'Protection Paladin|tps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so its threat swings around zero by fight length (below on 1 and 3 minute fights).',
-  'Protection Paladin|dps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so it dips below zero on 1 minute fights.',
 };
 const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
   || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
@@ -1841,10 +1839,9 @@ const SETTING_TIPS = {
   Ammo: 'The arrows or bullets the hunter fires.', Quiver: 'The quiver or ammo pouch worn, for its ranged attack speed.',
   Pet: 'The hunter pet the sim brings (None: the build plays without one, for Lone Wolf’s 20% more damage).', Demon: 'The demon the warlock keeps summoned.',
   'Sacrificed demon': "The demon sacrificed for Demonic Sacrifice's buff.",
-  Stance: 'The stance the warrior fights in.', 'Weapon imbue': 'The shaman weapon imbue on the main hand.',
+  'Weapon imbue': 'The shaman weapon imbue on the main hand.',
   Curse: 'The curse this warlock keeps on the target.', 'Starting rage': 'Rage at the start of the fight.',
   Professions: "The character's professions, which decide the profession-only items and enchants the build can use.",
-  Distance: 'How far from the target the character stands.',
   'Incoming healing': 'Healing per second the sim gives the tank, standing in for its healers.',
 };
 const STAT_TIPS = {
@@ -2385,15 +2382,13 @@ const BELOW = {
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
-  'Protection Paladin|dtps|Dwarf': 'The Paladin uses Stoneform (10% less physical damage for 8 sec, every 3 min) at the pull, but in these sims it lowers the Paladin’s damage taken by only about 0.04% (1.4% for a Prot Warrior on a 1 minute fight), for a reason not yet found. Dwarf’s innate −4 Agility (slightly less dodge) is what shows.',
+  'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec, every 3 min) covers 8 of every 180 seconds; on 3 minute fights its one use (once Templar’s Bulwark drops) doesn’t quite make up for Dwarf’s innate −4 Agility (slightly less dodge).',
   'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
   'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
   'Protection Paladin|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
   'Protection Paladin|tmi|Undead': 'Undead racials provide no value to spikes, and its innate −2 Agility (slightly less dodge) is all that shows, mostly on 1 minute fights.',
   'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
   'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
-  'Protection Paladin|tps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so its threat swings around zero by fight length (below on 1 and 3 minute fights).',
-  'Protection Paladin|dps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so it dips below zero on 1 minute fights.',
 };
 const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
   || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
@@ -3171,10 +3166,9 @@ const SETTING_TIPS = {
   Ammo: 'The arrows or bullets the hunter fires.', Quiver: 'The quiver or ammo pouch worn, for its ranged attack speed.',
   Pet: 'The hunter pet the sim brings (None: the build plays without one, for Lone Wolf’s 20% more damage).', Demon: 'The demon the warlock keeps summoned.',
   'Sacrificed demon': "The demon sacrificed for Demonic Sacrifice's buff.",
-  Stance: 'The stance the warrior fights in.', 'Weapon imbue': 'The shaman weapon imbue on the main hand.',
+  'Weapon imbue': 'The shaman weapon imbue on the main hand.',
   Curse: 'The curse this warlock keeps on the target.', 'Starting rage': 'Rage at the start of the fight.',
   Professions: "The character's professions, which decide the profession-only items and enchants the build can use.",
-  Distance: 'How far from the target the character stands.',
   'Incoming healing': 'Healing per second the sim gives the tank, standing in for its healers.',
 };
 const STAT_TIPS = {
