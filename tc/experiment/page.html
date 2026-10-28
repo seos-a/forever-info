@@ -1831,7 +1831,7 @@ const suJson = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
 const suLink = (cls, text, url) => { const a = el('a', cls, text); a.href = url; a.target = '_blank'; a.rel = 'noopener'; return a; };
 const SETTING_TIPS = {
   Ammo: 'The arrows or bullets the hunter fires.', Quiver: 'The quiver or ammo pouch worn, for its ranged attack speed.',
-  Pet: 'The hunter pet the sim brings (None: the build plays without one).', Demon: 'The demon the warlock keeps summoned.',
+  Pet: 'The hunter pet the sim brings (None: the build plays without one, for Lone Wolf's 20% more damage).', Demon: 'The demon the warlock keeps summoned.',
   'Sacrificed demon': "The demon sacrificed for Demonic Sacrifice's buff.",
   Stance: 'The stance the warrior fights in.', 'Weapon imbue': 'The shaman weapon imbue on the main hand.',
   Curse: 'The curse this warlock keeps on the target.', 'Starting rage': 'Rage at the start of the fight.',
@@ -3143,7 +3143,7 @@ const suJson = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
 const suLink = (cls, text, url) => { const a = el('a', cls, text); a.href = url; a.target = '_blank'; a.rel = 'noopener'; return a; };
 const SETTING_TIPS = {
   Ammo: 'The arrows or bullets the hunter fires.', Quiver: 'The quiver or ammo pouch worn, for its ranged attack speed.',
-  Pet: 'The hunter pet the sim brings (None: the build plays without one).', Demon: 'The demon the warlock keeps summoned.',
+  Pet: 'The hunter pet the sim brings (None: the build plays without one, for Lone Wolf's 20% more damage).', Demon: 'The demon the warlock keeps summoned.',
   'Sacrificed demon': "The demon sacrificed for Demonic Sacrifice's buff.",
   Stance: 'The stance the warrior fights in.', 'Weapon imbue': 'The shaman weapon imbue on the main hand.',
   Curse: 'The curse this warlock keeps on the target.', 'Starting rage': 'Rage at the start of the fight.',
