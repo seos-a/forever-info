@@ -676,7 +676,7 @@ document.head.appendChild(t);})();
       <div class="hr-cardhead"><h2 class="lx-gainhead">Racial Bonus</h2>
         <div class="hr-tools"><div class="hr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
       </div>
-      <p class="hr-note">Each run's extra effective healing over the matching run with no racials (same seed). The box is the middle half of the 40 runs, the white line the median, the whiskers the rest; a race whose box crosses zero isn't measurably better than no racials.</p>
+      <p class="hr-note">Each run's extra effective healing over the matching run with no racials (same seed). The box is the middle half of the 40 runs, the white line the median, the whiskers the rest (an arrow at the edge marks a run past the scale); a race whose box crosses zero isn't measurably better than no racials.</p>
       <div class="hr-chart lx-gains" data-source="healRunGains"></div>
       <p class="hr-note lx-gainnote" hidden></p>
     </section>
@@ -2458,15 +2458,17 @@ function drawLines(p, rows) {
 }
 
 // Box plots: each row's box is the middle half of its runs, the line inside it the median, the whiskers the rest of
-// the runs within 1.5 boxes of it, and dots the extremes beyond them. Rows are [{label, color, icon, ring, ...stats}].
+// the runs within 1.5 boxes of it, and dots the extremes beyond them. The scale spans the whiskers, so one far-off run
+// can't squeeze every box into a sliver: an extreme past the scale is an arrow at its edge (the tooltip has its value).
+// Rows are [{label, color, icon, ring, ...stats}].
 function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor }) {
   const W = Math.max(280, box.clientWidth), gap = 8, bh = Math.max(14, (H0 - 22) / rows.length - gap), H = rows.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab'), textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(r.label))) + 14, mr = Math.max(...rows.map((r) => textW(value(r)))) + 14;
   probe.remove();
-  const lo = Math.min(...rows.map((r) => r.min), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.max), zero ? 0 : -Infinity);
-  const x = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
+  const lo = Math.min(...rows.map((r) => r.lo), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.hi), zero ? 0 : -Infinity);
+  const x = d3.scaleLinear([lo, hi], [ml, W - mr]).nice(), [d0, d1] = x.domain(), inside = (v) => v >= d0 && v <= d1;
   svg.append('g').selectAll('line').data(x.ticks(6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
   svg.append('g').selectAll('text').data(x.ticks(6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
   // The 0% line (no racials), behind the boxes so a race at exactly 0% still shows its colour.
@@ -2481,8 +2483,13 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor })
   g.append('rect').attr('x', (r) => x(r.q1)).attr('width', (r) => Math.max(2, x(r.q3) - x(r.q1))).attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3)
     .style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
   g.append('line').attr('x1', (r) => x(r.median)).attr('x2', (r) => x(r.median)).attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
-  for (const end of ['min', 'max']) g.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi)).append('circle').attr('cx', (r) => x(r[end])).attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color);
-  g.append('text').attr('x', (r) => x(r.max) + 8).attr('y', mid + 4).text(value);
+  for (const end of ['min', 'max']) {
+    const out = g.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi));
+    out.filter((r) => inside(r[end])).append('circle').attr('cx', (r) => x(r[end])).attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color);
+    const e = end === 'min' ? x(d0) : x(d1), s = end === 'min' ? 1 : -1;  // past the scale: an arrow at its edge
+    out.filter((r) => !inside(r[end])).append('path').attr('d', `M${e},${mid} l${s * 6},-4 v8 z`).style('fill', (r) => r.color);
+  }
+  g.append('text').attr('x', (r) => x(Math.min(r.max, d1)) + (r.max > d1 ? 4 : 8)).attr('y', mid + 4).text(value);
   const t = el('div', 'hr-tip'); t.hidden = true; box.append(t);
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', onPick ? 'pointer' : null)
     .on('mousemove', (ev, r) => {
