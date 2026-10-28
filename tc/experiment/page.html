@@ -442,6 +442,9 @@
   }
   /* the tabs stay at the top of the screen while the page scrolls */
   .rr-tabs { position: sticky; top: 0; z-index: 15; background: var(--color-bg); }
+  /* the re-geared Dwarf sentence in the Hunters' Racial Bonus note: hover it to see that run in the chart */
+  .lx-regear { text-decoration: underline; text-underline-offset: 2px; cursor: help; }
+  .lx-regear.on { color: var(--color-fg); }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -503,7 +506,7 @@
         <div class="rr-tools"><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
       </div>
       <p class="rr-note">DPS each race adds over the same builds run with no race at all, stat differences included.</p>
-      <div class="rr-chart lx-gains" data-source="bySpec"></div>
+      <div class="rr-chart lx-gains" data-source="bySpec regear"></div>
       <p class="rr-note lx-gainnote" hidden></p>
     </section>
     <section class="rr-card">
@@ -549,9 +552,9 @@
       </ul>
       <p><b>Things to keep in mind</b></p>
       <ul>
-        <li><b>Gear is not re-optimized per race.</b> Most physical presets are already hit capped, so Dwarf's 1% hit (Artisan's Precision) adds nothing there and its lower Agility shows as a loss. A separate run gave Dwarf gear with 1% less hit and 1% more crit (spell hit and spell crit for casters), as a Dwarf would gear. That adds about 1 point on Hunters and Arms, 0.7 on Fury, 0.5 on Enhancement, 0.3 on Ret, and almost nothing on Rogues (dual-wield white hits still miss well past the 8% cap) or Shadow (7% hit against a 17% spell miss chance); on Elemental it's a loss, so a Dwarf would keep the hit. The Smite preset has no hit on its gear to trade. It lifts Dwarf from 9th to 4th of 10 on Arms and from 4th to 2nd on Enhancement, but it isn't the top race on any spec. The tables show the presets as they are.</li>
-        <li><b>Placeholder presets.</b> Elemental Shaman, Enhancement Shaman, Shadow Priest and Smite Priest run presets named "Testing", so treat those specs with more caution.</li>
-        <li><b>Specs.</b> Each build counts toward its talent tree: Frostfire Bolt (29 Fire points) as Fire, SM/Ruin (31 Affliction points) as Affliction. The Smite build is shown as Smite Priest, apart from Shadow; Ret Paladin's Holy Shock and Twist of Light builds are both Retribution.</li>
+        <li><b>Gear is not re-optimized per race.</b> Most physical presets are already hit capped, so Dwarf's 1% hit (Artisan's Precision) adds nothing there and its lower Agility shows as a loss. A separate run gave Dwarf gear with 1% less hit and 1% more crit (spell hit and spell crit for casters), as a Dwarf would gear. That adds about 1 point on Hunters and Arms, 0.7 on Fury, 0.5 on Enhancement, 0.3 on Ret, and almost nothing on Rogues (dual-wield white hits still miss well past the 8% cap) or Shadow (7% hit against a 17% spell miss chance); on Elemental it's a loss, so a Dwarf would keep the hit. It lifts Dwarf from 9th to 4th of 10 on Arms and from 4th to 2nd on Enhancement, but it isn't the top race on any spec. The tables show the presets as they are.</li>
+        <li><b>Placeholder presets.</b> Elemental Shaman, Enhancement Shaman and Shadow Priest run presets named "Testing", so treat those specs with more caution.</li>
+        <li><b>Specs.</b> Each build counts toward its talent tree: Frostfire Bolt (29 Fire points) as Fire, SM/Ruin (31 Affliction points) as Affliction. WoWSims' Smite Priest build is left out, as it isn't a competitive DPS spec; Ret Paladin's Holy Shock and Twist of Light builds are both Retribution.</li>
         <li>WoWSims' model of the Forever beta changes daily, and the gaps between the top races are often under 1%.</li>
       </ul>
     </div>
@@ -1306,14 +1309,46 @@ function drawLines(p, rows) {
 
 // Racial Bonus bars: the top race gold, other gains blue, losses red, no change grey.
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
-function drawGains(p, rows) {
+// The Hunters' Dwarf note says how a Dwarf geared for it (1% hit traded for 1% crit) would do. Hovering that sentence (or
+// tapping it) shows that run in the chart, from the "regear" dataset: the same builds and fight lengths with the regear.
+const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.';
+let regearOn = false, gainArgs = null;
+function withRegear(p, list) {
+  const R = rrData(dash.data('regear'));
+  const runs = R.status === 'ok' ? R.data.filter((r) => r.spec === p.spec && (p.fight === 'all' || String(r.fight) === p.fight)) : [];
+  const d = list.find((r) => r.race === 'Dwarf');
+  if (!runs.length || !d) return list;
+  const avg = (f) => runs.reduce((t, r) => t + f(r), 0) / runs.length, gain = avg((r) => +r.gain), dps = avg((r) => +r.dps);
+  const swap = { ...d, regear: true, gain, dps, gainDps: avg((r) => r.dps - r.base), gapDps: d.gapDps - (dps - d.dps) };
+  return list.map((r) => (r === d ? swap : r)).sort((a, b) => b.gain - a.gain);
+}
+function markRegear(note) {
+  for (const n of [...note.childNodes]) {
+    const i = n.nodeType === 3 ? n.textContent.indexOf(REGEAR_TEXT) : -1;
+    if (i < 0) continue;
+    const span = el('span', 'lx-regear', REGEAR_TEXT);
+    span.classList.toggle('on', regearOn);
+    span.title = 'Hover (or tap) to show the re-geared Dwarf in the chart';
+    const show = (on) => { regearOn = on; span.classList.toggle('on', on); if (gainArgs) drawGains(gainArgs[0], gainArgs[1], true); };
+    span.addEventListener('mouseenter', () => show(true));
+    span.addEventListener('mouseleave', () => show(false));
+    span.addEventListener('click', () => show(!regearOn));
+    n.replaceWith(n.textContent.slice(0, i), span, n.textContent.slice(i + REGEAR_TEXT.length));
+  }
+}
+function drawGains(p, rows, keepNote) {
+  gainArgs = [p, rows];
   const box = $('.lx-gains');
   box.replaceChildren();
-  const list = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight).sort((a, b) => b.gain - a.gain);
+  const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight).sort((a, b) => b.gain - a.gain);
   // Explain each race that lands below "no racials" in this view; hidden when none do.
-  const below = list.filter((r) => r.gain < 0), note = $('.lx-gainnote');
+  const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   note.hidden = !below.length;
-  note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? ' ' : '') + belowNote(p, r.race))] : []));
+  if (!keepNote) {
+    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? ' ' : '') + belowNote(p, r.race))] : []));
+    markRegear(note);
+  }
+  const list = regearOn ? withRegear(p, plain) : plain;
   // A fixed height, room for the 10 races the most a spec can have, so the box keeps its size from spec to spec;
   // a note below the bars takes its room from the bars.
   const gap = 6, noteH = note.hidden ? 0 : note.getBoundingClientRect().height + (parseFloat(getComputedStyle(box.parentElement).rowGap) || 0);
@@ -1323,7 +1358,7 @@ function drawGains(p, rows) {
   const bh = Math.max(14, (boxH - 20) / list.length - gap); // the bars fill the box, however many races
   const W = Math.max(280, box.clientWidth), H = list.length * (bh + gap) + 20;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
-  const probe = svg.append('text').attr('class', 'lab').text(list.reduce((a, r) => (r.race.length > a.length ? r.race : a), ''));
+  const probe = svg.append('text').attr('class', 'lab').text(list.reduce((a, r) => (r.race.length > a.length ? r.race : a), list.some((r) => r.regear) ? 'Dwarf (re-geared)' : ''));
   const iz = Math.min(34, bh), ix = iz + 8; // race portrait size, and where the name starts
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
@@ -1335,7 +1370,7 @@ function drawGains(p, rows) {
   g.append('image').attr('href', (r) => rrIcons()[r.race] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (r) => (r.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
-  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => r.race);
+  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => (r.regear ? 'Dwarf (re-geared)' : r.race));
   // The bars, their values and the 0% line (no racials), clipped to the plot area.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
   const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
@@ -1529,8 +1564,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for spec info, click for ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for spec info, click for ability breakdown.') : '');
+    ? 'Solid bar is the weakest race. Hover for spec info, click for ability breakdown.'
+    : 'Lower is better. Solid bar is the best race. Hover for spec info, click for ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
@@ -2535,8 +2570,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for spec info, click for ability breakdown.'
-    : `${p.measure === 'tmi' ? 'How spiky a tank’s incoming damage is. ' : ''}Lower is better. Solid Bar = Best Race. Hover for spec info, click for ability breakdown.`) : '');
+    ? 'Solid bar is the weakest race. Hover for spec info, click for ability breakdown.'
+    : `${p.measure === 'tmi' ? 'How spiky a tank’s incoming damage is. ' : ''}Lower is better. Solid bar is the best race. Hover for spec info, click for ability breakdown.`) : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
