@@ -1487,8 +1487,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for the spec info, click a spec for its ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click a spec for its ability breakdown.') : '');
+    ? 'Solid Bar = Weakest Race. Hover for the spec info, click for ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click for ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
@@ -2464,8 +2464,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for the spec info, click a spec for its ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click a spec for its ability breakdown.') : '');
+    ? 'Solid Bar = Weakest Race. Hover for the spec info, click for ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click for ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
