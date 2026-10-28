@@ -527,6 +527,8 @@ document.head.appendChild(t);})();
   /* the re-geared Dwarf sentence in the Hunters' Racial Bonus note: hover it to see that run in the chart */
   .lx-regear { text-decoration: underline; text-underline-offset: 2px; cursor: help; }
   .lx-regear.on { color: var(--color-fg); }
+  /* the Racial Bonus "Below zero" note: each race's explanation on its own line */
+  .lx-gnext { display: block; margin-top: .6em; }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -1156,33 +1158,32 @@ const UNIT = () => 'DPS';
 // spec and race, or spec, measure and race for the tank tab. Others get a sentence built from the base stats.
 const BASE_DIFF = { Orc: '−3 Agility, −3 Intellect', Dwarf: '−4 Agility', Undead: '−2 Agility, −2 Intellect', Tauren: '−5 Agility, −5 Intellect', Troll: '−4 Intellect', Gnome: '−5 Strength', 'Night Elf': '−3 Strength', 'Alliance Skyborne': '−1 Strength, −1 Stamina', 'Horde Skyborne': '−1 Strength, −1 Stamina' };
 const BELOW = {
-  'Feral Druid|Tauren': 'Tauren racials do nothing for Feral, and its −5 Agility lowers DPS more than its +5 Strength raises it.',
-  'Balance Druid|Tauren': 'Tauren racials do nothing for Balance, and its −5 Intellect costs a little spell crit.',
-  'Enhancement Shaman|Tauren': 'Tauren racials do nothing for Enhancement, and its −5 Agility costs crit that its +5 Strength doesn’t make up.',
-  'Elemental Shaman|Tauren': 'Tauren racials do nothing for Elemental, and its −5 Intellect costs only a sliver of spell crit, about as small as these sims can measure, so it sits right around zero.',
-  'Beast Mastery Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Marksmanship Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Survival Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Shadow Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec, used by the rotation) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
-  'Smite Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec) doesn’t quite make up for it on the Smite build, so Troll lands just below zero.',
-  'Feral Bear|dtps|Tauren': 'Tauren’s −5 Agility means a little less dodge, so it takes slightly more damage; Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken.',
-  'Protection Warrior|dtps|Tauren': 'Tauren’s −5 Agility means a little less dodge, so it takes slightly more damage; Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken.',
-  'Protection Warrior|dtps|Dwarf': 'Dwarf’s −4 Agility means slightly less dodge, and Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds.',
-  'Protection Paladin|dtps|Dwarf': 'Dwarf’s −4 Agility means slightly less dodge, and Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds.',
-  'Protection Warrior|dtps|Orc': 'Orc’s −3 Agility means slightly less dodge, and none of its racials reduce damage taken.',
-  'Protection Warrior|dtps|Undead': 'Undead’s −2 Agility means slightly less dodge; Touch of the Grave heals a little but doesn’t reduce damage taken.',
-  'Protection Paladin|dtps|Undead': 'Undead’s −2 Agility means slightly less dodge; Touch of the Grave heals a little but doesn’t reduce damage taken.',
-  'Protection Paladin|tmi|Undead': 'Undead’s −2 Agility means slightly less dodge, so spikes are a touch larger, mostly on 1 minute fights.',
-  'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne’s −1 Stamina means slightly less health, so spikes are a touch larger relative to it, and its haste doesn’t reduce damage.',
-  'Protection Warrior|tmi|Horde Skyborne': 'Skyborne’s −1 Stamina means slightly less health, so spikes are a touch larger relative to it, and its haste doesn’t reduce damage.',
-  'Protection Paladin|tps|Dwarf': 'Dwarf’s −4 Agility costs a little melee crit and its 1% hit helps more over longer fights, so its threat swings around zero by fight length (below on 1 and 3 minute fights).',
-  'Protection Paladin|dps|Dwarf': 'Dwarf’s −4 Agility costs a little melee crit and its 1% hit helps more over longer fights, so it dips below zero on 1 minute fights.',
+  'Feral Druid|Tauren': 'Tauren racials provide no value to Feral DPS. Its innate −5 Agility outweighs its +5 Strength, and that is all that shows.',
+  'Balance Druid|Tauren': 'Tauren racials provide no value to Balance DPS, and its innate −5 Intellect (a little spell crit) is all that shows.',
+  'Enhancement Shaman|Tauren': 'Tauren racials provide no value to Enhancement DPS. Its innate −5 Agility costs crit that its +5 Strength doesn’t make up, and that is all that shows.',
+  'Elemental Shaman|Tauren': 'Tauren racials provide no value to Elemental DPS, and its innate −5 Intellect (a sliver of spell crit) is all that shows, about as small as these sims can measure.',
+  'Beast Mastery Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  'Marksmanship Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  'Survival Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
+  'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Protection Warrior|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
+  'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
+  'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|tmi|Undead': 'Undead racials provide no value to spikes, and its innate −2 Agility (slightly less dodge) is all that shows, mostly on 1 minute fights.',
+  'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
+  'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
+  'Protection Paladin|tps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so its threat swings around zero by fight length (below on 1 and 3 minute fights).',
+  'Protection Paladin|dps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so it dips below zero on 1 minute fights.',
 };
 const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
-  || `${race}’s base stats are lower than the baseline’s (${BASE_DIFF[race] || 'see its race'}), and its racials don’t make up for it here.`;
+  || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
 const FIGHT = { all: 'all fight lengths', 60: '1 minute fights', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
 // WoW class colours; Priest uses the page's text colour so it reads on a light theme too.
@@ -1519,8 +1520,10 @@ function withRegear(p, list) {
   return list.map((r) => (r === d ? swap : r)).sort((a, b) => b.gain - a.gain);
 }
 function markRegear(note) {
-  for (const n of [...note.childNodes]) {
-    const i = n.nodeType === 3 ? n.textContent.indexOf(REGEAR_TEXT) : -1;
+  const walk = document.createTreeWalker(note, NodeFilter.SHOW_TEXT), texts = [];
+  while (walk.nextNode()) texts.push(walk.currentNode);
+  for (const n of texts) {
+    const i = n.textContent.indexOf(REGEAR_TEXT);
     if (i < 0) continue;
     const span = el('span', 'lx-regear', REGEAR_TEXT);
     span.classList.toggle('on', regearOn);
@@ -1541,7 +1544,7 @@ function drawGains(p, rows, keepNote) {
   const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   note.hidden = !below.length;
   if (!keepNote) {
-    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? ' ' : '') + belowNote(p, r.race))] : []));
+    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? el('span', 'lx-gnext', belowNote(p, r.race)) : belowNote(p, r.race)))] : []));
     markRegear(note);
   }
   const list = regearOn ? withRegear(p, plain) : plain;
@@ -3487,33 +3490,32 @@ const UNIT = (p) => MEASURE[p.measure].label;
 // spec and race, or spec, measure and race for the tank tab. Others get a sentence built from the base stats.
 const BASE_DIFF = { Orc: '−3 Agility, −3 Intellect', Dwarf: '−4 Agility', Undead: '−2 Agility, −2 Intellect', Tauren: '−5 Agility, −5 Intellect', Troll: '−4 Intellect', Gnome: '−5 Strength', 'Night Elf': '−3 Strength', 'Alliance Skyborne': '−1 Strength, −1 Stamina', 'Horde Skyborne': '−1 Strength, −1 Stamina' };
 const BELOW = {
-  'Feral Druid|Tauren': 'Tauren racials do nothing for Feral, and its −5 Agility lowers DPS more than its +5 Strength raises it.',
-  'Balance Druid|Tauren': 'Tauren racials do nothing for Balance, and its −5 Intellect costs a little spell crit.',
-  'Enhancement Shaman|Tauren': 'Tauren racials do nothing for Enhancement, and its −5 Agility costs crit that its +5 Strength doesn’t make up.',
-  'Elemental Shaman|Tauren': 'Tauren racials do nothing for Elemental, and its −5 Intellect costs only a sliver of spell crit, about as small as these sims can measure, so it sits right around zero.',
-  'Beast Mastery Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Marksmanship Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Survival Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Shadow Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec, used by the rotation) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
-  'Smite Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec) doesn’t quite make up for it on the Smite build, so Troll lands just below zero.',
-  'Feral Bear|dtps|Tauren': 'Tauren’s −5 Agility means a little less dodge, so it takes slightly more damage; Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken.',
-  'Protection Warrior|dtps|Tauren': 'Tauren’s −5 Agility means a little less dodge, so it takes slightly more damage; Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken.',
-  'Protection Warrior|dtps|Dwarf': 'Dwarf’s −4 Agility means slightly less dodge, and Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds.',
-  'Protection Paladin|dtps|Dwarf': 'Dwarf’s −4 Agility means slightly less dodge, and Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds.',
-  'Protection Warrior|dtps|Orc': 'Orc’s −3 Agility means slightly less dodge, and none of its racials reduce damage taken.',
-  'Protection Warrior|dtps|Undead': 'Undead’s −2 Agility means slightly less dodge; Touch of the Grave heals a little but doesn’t reduce damage taken.',
-  'Protection Paladin|dtps|Undead': 'Undead’s −2 Agility means slightly less dodge; Touch of the Grave heals a little but doesn’t reduce damage taken.',
-  'Protection Paladin|tmi|Undead': 'Undead’s −2 Agility means slightly less dodge, so spikes are a touch larger, mostly on 1 minute fights.',
-  'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne’s −1 Stamina means slightly less health, so spikes are a touch larger relative to it, and its haste doesn’t reduce damage.',
-  'Protection Warrior|tmi|Horde Skyborne': 'Skyborne’s −1 Stamina means slightly less health, so spikes are a touch larger relative to it, and its haste doesn’t reduce damage.',
-  'Protection Paladin|tps|Dwarf': 'Dwarf’s −4 Agility costs a little melee crit and its 1% hit helps more over longer fights, so its threat swings around zero by fight length (below on 1 and 3 minute fights).',
-  'Protection Paladin|dps|Dwarf': 'Dwarf’s −4 Agility costs a little melee crit and its 1% hit helps more over longer fights, so it dips below zero on 1 minute fights.',
+  'Feral Druid|Tauren': 'Tauren racials provide no value to Feral DPS. Its innate −5 Agility outweighs its +5 Strength, and that is all that shows.',
+  'Balance Druid|Tauren': 'Tauren racials provide no value to Balance DPS, and its innate −5 Intellect (a little spell crit) is all that shows.',
+  'Enhancement Shaman|Tauren': 'Tauren racials provide no value to Enhancement DPS. Its innate −5 Agility costs crit that its +5 Strength doesn’t make up, and that is all that shows.',
+  'Elemental Shaman|Tauren': 'Tauren racials provide no value to Elemental DPS, and its innate −5 Intellect (a sliver of spell crit) is all that shows, about as small as these sims can measure.',
+  'Beast Mastery Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  'Marksmanship Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  'Survival Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
+  'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Protection Warrior|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
+  'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
+  'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|tmi|Undead': 'Undead racials provide no value to spikes, and its innate −2 Agility (slightly less dodge) is all that shows, mostly on 1 minute fights.',
+  'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
+  'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
+  'Protection Paladin|tps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so its threat swings around zero by fight length (below on 1 and 3 minute fights).',
+  'Protection Paladin|dps|Dwarf': 'Dwarf’s innate −4 Agility costs a little melee crit, while its 1% hit (Artisan’s Precision) gains more value over longer fights, so it dips below zero on 1 minute fights.',
 };
 const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
-  || `${race}’s base stats are lower than the baseline’s (${BASE_DIFF[race] || 'see its race'}), and its racials don’t make up for it here.`;
+  || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
 const MEASURE = { tps: { label: 'TPS', name: 'threat per second' }, dtps: { label: 'DTPS', name: 'damage taken per second' }, tmi: { label: 'TMI', name: 'spikes (TMI)' }, dps: { label: 'DPS', name: 'damage per second' } };
 const FIGHT = { all: 'all fight lengths', 60: '1 minute fights', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
@@ -3860,7 +3862,7 @@ function drawGains(p, rows) {
   // Explain each race that lands below "no racials" in this view; hidden when none do.
   const below = list.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   note.hidden = !below.length;
-  note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? ' ' : '') + belowNote(p, r.race))] : []));
+  note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? el('span', 'lx-gnext', belowNote(p, r.race)) : belowNote(p, r.race)))] : []));
   // A fixed height, room for the 10 races the most a spec can have, so the box keeps its size from spec to spec;
   // a note below the bars takes its room from the bars.
   const gap = 6, noteH = note.hidden ? 0 : note.getBoundingClientRect().height + (parseFloat(getComputedStyle(box.parentElement).rowGap) || 0);
