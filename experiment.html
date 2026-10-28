@@ -186,6 +186,9 @@ document.head.appendChild(t);})();
   .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
   .rr-chart svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+  /* "← All specs": a plain text link like the page's "← Forever Info", no button border */
+  .rr-reset.rr-back { border: 0; background: none; padding: 0; color: var(--color-fg-muted); font-size: .8125rem; }
+  .rr-reset.rr-back:hover { color: var(--color-fg); }
   .rr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
   .rr-chart .lab { fill: var(--color-fg); }
   .rr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
@@ -331,6 +334,8 @@ document.head.appendChild(t);})();
   .hr-chart.lx-lines svg { touch-action: pan-y; cursor: grab; }
   .hr-chart.lx-lines svg:active { cursor: grabbing; }
   .hr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+  .hr-reset.hr-back { border: 0; background: none; padding: 0; color: var(--color-fg-muted); font-size: .8125rem; }
+  .hr-reset.hr-back:hover { color: var(--color-fg); }
   .hr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
   .hr-chart .lab { fill: var(--color-fg); }
   .hr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
@@ -451,6 +456,9 @@ document.head.appendChild(t);})();
   .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
   .rr-chart svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+  /* "← All specs": a plain text link like the page's "← Forever Info", no button border */
+  .rr-reset.rr-back { border: 0; background: none; padding: 0; color: var(--color-fg-muted); font-size: .8125rem; }
+  .rr-reset.rr-back:hover { color: var(--color-fg); }
   .rr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
   .rr-chart .lab { fill: var(--color-fg); }
   .rr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
@@ -1664,7 +1672,7 @@ const kindLabel = (a) => (a.kind === 'dot' && a.school === 'Physical' ? 'Bleed' 
 function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset', '← All specs'), open = el('button', 'rr-reset', 'Open in the boxes below');
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), open = el('button', 'rr-reset', 'Open in the boxes below');
   back.type = open.type = 'button';
   back.addEventListener('click', () => dash.setParams({ specView: '' }));
   open.addEventListener('click', () => pickSpec(item.key));
@@ -2852,7 +2860,7 @@ let healUserH = 0;
 function drawHealBreakdown(p, view, data, fitH) {
   const box = $('.lx-speccmp'), [school, c] = HEAL_SCHOOL[view.cls] || ['Holy', '#ffe680'];
   box.replaceChildren();
-  const bar = el('div', 'hr-bdbar'), back = el('button', 'hr-reset', '← All healers'), open = el('button', 'hr-reset', 'Open in the boxes below');
+  const bar = el('div', 'hr-bdbar'), back = el('button', 'hr-reset hr-back', '← All healers'), open = el('button', 'hr-reset', 'Open in the boxes below');
   back.type = open.type = 'button';
   back.addEventListener('click', () => setP({ cmpView: '' }));
   open.addEventListener('click', () => pickHealer(view.cls));
@@ -3274,7 +3282,7 @@ function drawBreakdown(b, box, note, item, fight) {
   });
   const total = rows.reduce((t, a) => t + a.v, 0);
   note.textContent = '';
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset', '← All specs'), title = el('span', 'rr-bdtitle', item.spec);
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), title = el('span', 'rr-bdtitle', item.spec);
   back.type = 'button';
   back.addEventListener('click', () => dash.setParams({ [b.view]: '' }));
   title.style.color = specColor(item.spec);
@@ -3979,7 +3987,7 @@ const kindLabel = (a) => (a.kind === 'dot' && a.school === 'Physical' ? 'Bleed' 
 function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset', '← All specs'), open = el('button', 'rr-reset', 'Open in the boxes below');
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), open = el('button', 'rr-reset', 'Open in the boxes below');
   back.type = open.type = 'button';
   back.addEventListener('click', () => setP({ specView: '' }));
   open.addEventListener('click', () => pickSpec(item.key));

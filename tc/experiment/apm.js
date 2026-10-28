@@ -174,7 +174,7 @@ function drawBreakdown(b, box, note, item, fight) {
   });
   const total = rows.reduce((t, a) => t + a.v, 0);
   note.textContent = '';
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset', '← All specs'), title = el('span', 'rr-bdtitle', item.spec);
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), title = el('span', 'rr-bdtitle', item.spec);
   back.type = 'button';
   back.addEventListener('click', () => dash.setParams({ [b.view]: '' }));
   title.style.color = specColor(item.spec);

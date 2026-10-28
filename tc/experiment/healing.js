@@ -824,7 +824,7 @@ let healUserH = 0;
 function drawHealBreakdown(p, view, data, fitH) {
   const box = $('.lx-speccmp'), [school, c] = HEAL_SCHOOL[view.cls] || ['Holy', '#ffe680'];
   box.replaceChildren();
-  const bar = el('div', 'hr-bdbar'), back = el('button', 'hr-reset', '← All healers'), open = el('button', 'hr-reset', 'Open in the boxes below');
+  const bar = el('div', 'hr-bdbar'), back = el('button', 'hr-reset hr-back', '← All healers'), open = el('button', 'hr-reset', 'Open in the boxes below');
   back.type = open.type = 'button';
   back.addEventListener('click', () => setP({ cmpView: '' }));
   open.addEventListener('click', () => pickHealer(view.cls));
