@@ -404,6 +404,12 @@
   .lx-apm, .lx-apmnote { display: none; }
   .apm-on .lx-apm, .apm-on .lx-apmnote { display: block; }
   .apm-on .lx-speccmp, .apm-on .lx-specnote, .apm-on .lx-cmpgrip, .apm-on .lx-targets { display: none !important; }
+  /* the APM view's own drag handle, and the race/spec tables' text size (--mz, set by dragging their handle: grips.js) */
+  .lx-apmgrip { display: none; }
+  .apm-on .lx-apmgrip { display: block; }
+  .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
+  .rr .lx-matrix td, .hr .lx-matrix td { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
+  .rr .lx-matrix th button, .hr .lx-matrix th button { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -420,10 +426,10 @@
     </div></div>
   </div>
 
-  <section class="rr-card" id="speccmp">
-    <div class="rr-cardhead"><h2>DPS Ranking by Spec</h2>
+  <section class="rr-card" id="speccmp" data-label="DPS Ranking by Spec">
+    <div class="rr-cardhead">
       <div class="rr-tools">
-        <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank">DPS</button><button type="button" data-v="apm">APM</button></div>
+        <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Damage Per Second">DPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="targets">
           <button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button>
         </div>
@@ -432,8 +438,9 @@
     </div>
     <p class="rr-note lx-specnote" data-source="breakdown"></p>
     <div class="rr-chart lx-speccmp" data-source="scoped"></div>
-    <p class="rr-note lx-apmnote">Every button press per minute in WoWSims, at 1 target: abilities, buffs, cooldowns, stances, totems, shapeshifts, potions, runes, explosives and trinkets. Auto attacks and procs don't count. Each spec on its best build, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players manage. Hover a spec for what it presses.</p>
+    <p class="rr-note lx-apmnote">Best build, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players typically manage. Click a spec for its ability breakdown.</p>
     <div class="rr-chart lx-apm" data-source="apm"></div>
+    <div class="rr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
   </section>
 
@@ -448,6 +455,7 @@
     </div>
     <div class="rr-scroll"><table class="lx-matrix" data-source="matrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
     <p class="rr-note lx-metricnote"></p>
+    <div class="rr-vgrip lx-mxgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the table" tabindex="0" title="Drag to make the table bigger or smaller; double-click to reset"></div>
   </section>
 
   <section class="rr-card lx-bestcard" id="best">
@@ -530,14 +538,15 @@
     </div></div>
   </div>
 
-  <section class="hr-card" id="h-speccmp">
-    <div class="hr-cardhead"><h2>HPS Ranking by Spec</h2>
-      <div class="hr-tools"><div class="hr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank">HPS</button><button type="button" data-v="apm">APM</button></div><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
+  <section class="hr-card" id="h-speccmp" data-label="HPS Ranking by Spec">
+    <div class="hr-cardhead">
+      <div class="hr-tools"><div class="hr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Healing Per Second">HPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
     </div>
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
     <div class="hr-chart lx-speccmp" data-source="healRunHps"></div>
-    <p class="hr-note lx-apmnote">Spell casts per minute in the healing sim's healing-limited test fight, with no racials. It only records heals, so cooldowns and potions aren't counted, and healers here cast nearly non-stop. Hover a healer for what it casts.</p>
+    <p class="hr-note lx-apmnote">Heals cast per minute in the healing sim's test fight, with no racials (the sim records only heals, so cooldowns and potions aren't counted). Healers here cast nearly non-stop. Click a healer for its spell breakdown.</p>
     <div class="hr-chart lx-apm" data-source="healApm"></div>
+    <div class="hr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="hr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
   </section>
 
@@ -562,6 +571,7 @@
     </div>
     <div class="hr-scroll"><table class="lx-matrix" data-source="healMatrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
     <p class="hr-note lx-metricnote"></p>
+    <div class="hr-vgrip lx-mxgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the table" tabindex="0" title="Drag to make the table bigger or smaller; double-click to reset"></div>
   </section>
 
   <section class="hr-card lx-bestcard" id="h-best">
@@ -648,10 +658,10 @@
     </div></div>
   </div>
 
-  <section class="rr-card" id="t-speccmp">
-    <div class="rr-cardhead"><h2>Tank Ranking by Spec</h2>
+  <section class="rr-card" id="t-speccmp" data-label="Tank Ranking by Spec">
+    <div class="rr-cardhead">
       <div class="rr-tools">
-        <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank">Ranking</button><button type="button" data-v="apm">APM</button></div>
+        <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Tank ranking (threat, damage taken, spikes or DPS)">Ranking</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="tankTargets">
           <button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button>
         </div>
@@ -660,8 +670,9 @@
     </div>
     <p class="rr-note lx-specnote" data-source="tankBreakdown"></p>
     <div class="rr-chart lx-speccmp" data-source="tankScoped"></div>
-    <p class="rr-note lx-apmnote">Every button press per minute in WoWSims, at 1 target: abilities, buffs, cooldowns, stances, totems, shapeshifts, potions, runes, explosives and trinkets. Auto attacks and procs don't count. Each tank on its best gear set, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players manage. Hover a spec for what it presses.</p>
+    <p class="rr-note lx-apmnote">Best build, played by its best race. The sim plays a perfect rotation, so these are the most a spec asks for, not what players typically manage. Click a spec for its ability breakdown.</p>
     <div class="rr-chart lx-apm" data-source="apm"></div>
+    <div class="rr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
   </section>
 
@@ -676,6 +687,7 @@
     </div>
     <div class="rr-scroll"><table class="lx-matrix" data-source="tankMatrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
     <p class="rr-note lx-metricnote"></p>
+    <div class="rr-vgrip lx-mxgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the table" tabindex="0" title="Drag to make the table bigger or smaller; double-click to reset"></div>
   </section>
 
   <section class="rr-card lx-bestcard" id="t-best">
@@ -930,9 +942,9 @@ const BELOW = {
   'Beast Mastery Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
   'Marksmanship Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
   'Survival Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, it gains about 0.8 to 1 point more.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, it gains about 0.8 to 1 point more.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, it gains about 0.8 to 1 point more.',
+  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
   'Shadow Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec, used by the rotation) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Smite Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec) doesn’t quite make up for it on the Smite build, so Troll lands just below zero.',
   'Feral Bear|dtps|Tauren': 'Tauren’s −5 Agility means a little less dodge, so it takes slightly more damage; Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken.',
@@ -1477,8 +1489,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? `Each spec with its best race${items.some((d) => d.builds > 1) ? ' on its best build' : ''}. The solid bar is the weakest race; the lighter end is what the best race adds. Hover for the numbers, click a spec for its ability breakdown.`
-    : `Each spec with its best race${items.some((d) => d.builds > 1) ? ' on its best build' : ''}; lower is better. The solid bar is the best race; the lighter end is the extra the weakest race takes. Hover for the numbers, click a spec for its ability breakdown.`) : '');
+    ? 'Solid Bar = Weakest Race. Hover for the numbers, click a spec for its ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for the numbers, click a spec for its ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
@@ -1733,6 +1745,8 @@ const named = document.getElementById(location.hash.slice(1));
 if (named) setTimeout(() => named.scrollIntoView(), 0);
 </script>
 <script src="healing.js"></script>
+<script src="grips.js"></script>
+<script src="apm_icons.js"></script>
 <script src="apm.js"></script>
 <script>
 const ROOT = document.querySelector('[data-tab-panel="tanks"]');
@@ -1892,9 +1906,9 @@ const BELOW = {
   'Beast Mastery Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
   'Marksmanship Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
   'Survival Hunter|Tauren': 'Tauren racials (Endurance’s health, War Stomp) do nothing for Hunter DPS, and its −5 Agility lowers it.',
-  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, it gains about 0.8 to 1 point more.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, it gains about 0.8 to 1 point more.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, it gains about 0.8 to 1 point more.',
+  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) does nothing because the Hunter presets are already hit capped, Big Game Hunter only works on Beasts (the boss is Mechanical), and Stoneform doesn’t add damage, so its −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
   'Shadow Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec, used by the rotation) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Smite Priest|Troll': 'Troll’s −4 Intellect costs a little spell crit, and Berserking (10% faster casting for 10 sec) doesn’t quite make up for it on the Smite build, so Troll lands just below zero.',
   'Feral Bear|dtps|Tauren': 'Tauren’s −5 Agility means a little less dodge, so it takes slightly more damage; Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken.',
@@ -2453,8 +2467,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? `Each spec with its best race${items.some((d) => d.builds > 1) ? ' on its best build' : ''}. The solid bar is the weakest race; the lighter end is what the best race adds. Hover for the numbers, click a spec for its ability breakdown.`
-    : `Each spec with its best race${items.some((d) => d.builds > 1) ? ' on its best build' : ''}; lower is better. The solid bar is the best race; the lighter end is the extra the weakest race takes. Hover for the numbers, click a spec for its ability breakdown.`) : '');
+    ? 'Solid Bar = Weakest Race. Hover for the numbers, click a spec for its ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for the numbers, click a spec for its ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
