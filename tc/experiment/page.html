@@ -2684,14 +2684,48 @@ function drawLines(p, rows) {
 
 // Racial Bonus bars: the top race gold, other gains blue, losses red, no change grey.
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
-function drawGains(p, rows) {
+// Prot Warrior's Threat build is already at the 8% melee hit cap, so Dwarf's 1% hit gains nothing there. Hovering the
+// sentence about a Dwarf geared for it (or tapping it) shows that run in the chart, from the "tankRegear" dataset: the
+// Threat build with 1% hit traded for 1% crit, and the Defense Cap build (under the cap) as it is.
+const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit on that build, as a Dwarf would gear, its bonus here is about 0.4 percentage points higher.';
+const REGEAR_LEAD = 'Dwarf: the Threat build is already at the 8% hit cap, so Dwarf’s 1% hit (Artisan’s Precision) gains nothing there. ';
+const hasRegear = (p) => p.spec === 'Protection Warrior' && (p.measure === 'tps' || p.measure === 'dps');
+let regearOn = false, gainArgs = null;
+function withRegear(p, list) {
+  const R = rrData(dash.data('tankRegear'));
+  const runs = R.status === 'ok' ? R.data.filter((r) => r.spec === p.spec && r.measure === p.measure && (p.fight === 'all' || String(r.fight) === p.fight)) : [];
+  const d = list.find((r) => r.race === 'Dwarf');
+  if (!runs.length || !d) return list;
+  const avg = (f) => runs.reduce((t, r) => t + f(r), 0) / runs.length, gain = avg((r) => +r.gain), dps = avg((r) => +r.value);
+  const swap = { ...d, regear: true, gain, dps, gainDps: avg((r) => r.value - r.base), gapDps: d.gapDps - (dps - d.dps) };
+  return list.map((r) => (r === d ? swap : r)).sort((a, b) => b.gain - a.gain);
+}
+function regearSpan() {
+  const span = el('span', 'lx-regear', REGEAR_TEXT);
+  span.classList.toggle('on', regearOn);
+  span.title = 'Hover (or tap) to show the re-geared Dwarf in the chart';
+  const show = (on) => { regearOn = on; span.classList.toggle('on', on); if (gainArgs) drawGains(gainArgs[0], gainArgs[1], true); };
+  span.addEventListener('mouseenter', () => show(true));
+  span.addEventListener('mouseleave', () => show(false));
+  span.addEventListener('click', () => show(!regearOn));
+  return span;
+}
+function drawGains(p, rows, keepNote) {
+  gainArgs = [p, rows];
   const box = $('.lx-gains');
   box.replaceChildren();
-  const list = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight).sort((a, b) => b.gain - a.gain);
-  // Explain each race that lands below "no racials" in this view; hidden when none do.
-  const below = list.filter((r) => r.gain < 0), note = $('.lx-gainnote');
-  note.hidden = !below.length;
-  note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? el('span', 'lx-gnext', belowNote(p, r.race)) : belowNote(p, r.race)))] : []));
+  const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight).sort((a, b) => b.gain - a.gain);
+  // Explain each race that lands below "no racials" in this view, and Dwarf's hit on Prot Warrior; hidden when neither applies.
+  const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
+  const dwarf = hasRegear(p) && plain.some((r) => r.race === 'Dwarf');
+  if (!dwarf) regearOn = false;
+  note.hidden = !below.length && !dwarf;
+  if (!keepNote) {
+    const parts = below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? el('span', 'lx-gnext', belowNote(p, r.race)) : belowNote(p, r.race)))] : [];
+    if (dwarf) { const d = el('span', below.length ? 'lx-gnext' : null, REGEAR_LEAD); d.append(regearSpan()); parts.push(d); }
+    note.replaceChildren(...parts);
+  }
+  const list = regearOn ? withRegear(p, plain) : plain;
   // A fixed height, room for the 10 races the most a spec can have, so the box keeps its size from spec to spec;
   // a note below the bars takes its room from the bars.
   const gap = 6, noteH = note.hidden ? 0 : note.getBoundingClientRect().height + (parseFloat(getComputedStyle(box.parentElement).rowGap) || 0);
@@ -2701,7 +2735,7 @@ function drawGains(p, rows) {
   const bh = Math.max(14, (boxH - 20) / list.length - gap); // the bars fill the box, however many races
   const W = Math.max(280, box.clientWidth), H = list.length * (bh + gap) + 20;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
-  const probe = svg.append('text').attr('class', 'lab').text(list.reduce((a, r) => (r.race.length > a.length ? r.race : a), ''));
+  const probe = svg.append('text').attr('class', 'lab').text(list.reduce((a, r) => (r.race.length > a.length ? r.race : a), list.some((r) => r.regear) ? 'Dwarf (re-geared)' : ''));
   const iz = Math.min(34, bh), ix = iz + 8; // race portrait size, and where the name starts
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
@@ -2713,7 +2747,7 @@ function drawGains(p, rows) {
   g.append('image').attr('href', (r) => rrIcons()[r.race] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (r) => (r.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
-  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => r.race);
+  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => (r.regear ? 'Dwarf (re-geared)' : r.race));
   // The bars, their values and the 0% line (no racials), clipped to the plot area.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
   const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
