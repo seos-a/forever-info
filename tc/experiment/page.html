@@ -168,6 +168,9 @@
   .su-stat { display: flex; justify-content: space-between; gap: var(--cds-gap-md); padding: 1px 0; border-bottom: 1px solid #ffffff0a; font-variant-numeric: tabular-nums; }
   .su-stat span { color: var(--color-fg-muted); }
   .su-stat b { font-weight: 500; }
+  .su-stat.su-hasbd { cursor: help; }
+  .su-stat.su-hasbd:hover { background: #ffffff08; }
+  .su-tip .su-tipnote { max-width: 240px; white-space: normal; margin-top: 4px; color: var(--color-fg-muted); }
   .su-opts { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); color: var(--color-fg-muted); }
   .su-opts b { color: var(--color-fg); font-weight: 500; }
   .su-note { margin-top: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
@@ -1866,14 +1869,27 @@ function drawSetup(p, item, race, minH) {
   // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
   const sheet = suJson(s.stats)[race];
   if (sheet) {
-    const grid = el('div', 'su-stats'), groups = new Map();
-    for (const [grp, k, v] of sheet) {
+    // Hover a stat for where it comes from: base stats (class and race), gear, talents, buffs and consumables.
+    const grid = el('div', 'su-stats'), groups = new Map(), tip = el('div', 'rr-tip su-tip');
+    tip.hidden = true;
+    const line = (k, v) => { const r = el('div', 'row'); r.append(el('span', null, k), el('b', null, v)); return r; };
+    for (const [grp, k, v, parts] of sheet) {
       if (!groups.has(grp)) { const g = el('div', 'su-statgrp'); g.append(el('div', 'su-statgh', grp)); groups.set(grp, g); grid.append(g); }
       const row = el('div', 'su-stat'); row.append(el('span', null, k), el('b', null, v));
-      if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
+      if (parts && parts.length) {
+        row.classList.add('su-hasbd');
+        row.addEventListener('mousemove', (ev) => {
+          tip.replaceChildren(el('div', 'h', `${k} · ${v}`), ...parts.map(([a, b]) => line(a, b)), ...(STAT_TIPS[k] ? [el('div', 'su-tipnote', STAT_TIPS[k])] : []));
+          tip.hidden = false;
+          const bx = box.getBoundingClientRect(), tw = tip.offsetWidth, mx = ev.clientX - bx.left, my = ev.clientY - bx.top;
+          tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+        });
+        row.addEventListener('mouseleave', () => { tip.hidden = true; });
+      } else if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
       groups.get(grp).append(row);
     }
     section('Stats', grid);
+    box.append(tip);
   }
   const chips = (rows) => {
     const c = el('div', 'su-chips');
@@ -3156,14 +3172,27 @@ function drawSetup(p, item, race, minH) {
   // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
   const sheet = suJson(s.stats)[race];
   if (sheet) {
-    const grid = el('div', 'su-stats'), groups = new Map();
-    for (const [grp, k, v] of sheet) {
+    // Hover a stat for where it comes from: base stats (class and race), gear, talents, buffs and consumables.
+    const grid = el('div', 'su-stats'), groups = new Map(), tip = el('div', 'rr-tip su-tip');
+    tip.hidden = true;
+    const line = (k, v) => { const r = el('div', 'row'); r.append(el('span', null, k), el('b', null, v)); return r; };
+    for (const [grp, k, v, parts] of sheet) {
       if (!groups.has(grp)) { const g = el('div', 'su-statgrp'); g.append(el('div', 'su-statgh', grp)); groups.set(grp, g); grid.append(g); }
       const row = el('div', 'su-stat'); row.append(el('span', null, k), el('b', null, v));
-      if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
+      if (parts && parts.length) {
+        row.classList.add('su-hasbd');
+        row.addEventListener('mousemove', (ev) => {
+          tip.replaceChildren(el('div', 'h', `${k} · ${v}`), ...parts.map(([a, b]) => line(a, b)), ...(STAT_TIPS[k] ? [el('div', 'su-tipnote', STAT_TIPS[k])] : []));
+          tip.hidden = false;
+          const bx = box.getBoundingClientRect(), tw = tip.offsetWidth, mx = ev.clientX - bx.left, my = ev.clientY - bx.top;
+          tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+        });
+        row.addEventListener('mouseleave', () => { tip.hidden = true; });
+      } else if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
       groups.get(grp).append(row);
     }
     section('Stats', grid);
+    box.append(tip);
   }
   const chips = (rows) => {
     const c = el('div', 'su-chips');
