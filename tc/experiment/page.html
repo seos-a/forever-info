@@ -565,9 +565,9 @@
     <div class="rr-chart lx-speccmp" data-source="scoped"></div>
     <p class="rr-note lx-apmnote">Best build, best race, perfect rotation. This is not what players typically manage. Click a spec for its ability breakdown.</p>
     <div class="rr-chart lx-apm" data-source="apm"></div>
+    <p class="rr-note lx-gearnote"></p>
     <div class="rr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
-    <p class="rr-note lx-gearnote"></p>
   </section>
 
   <section class="rr-card" id="matrix">
@@ -2099,7 +2099,7 @@ function draw() {
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
-    ? "* Classic pre-raid gear has Classic's caster weapons (Witchblade: 14 spell power), while Forever's caster weapons of the same level carry about 70 (Clever Expeditionary's Spellblade: 72), so casters come out lower than they would in Forever's gear."
+    ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear."
     : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
@@ -3436,7 +3436,7 @@ function draw() {
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
-    ? "* Classic pre-raid gear has Classic's caster weapons (Witchblade: 14 spell power), while Forever's caster weapons of the same level carry about 70 (Clever Expeditionary's Spellblade: 72), so casters come out lower than they would in Forever's gear."
+    ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear."
     : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
