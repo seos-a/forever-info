@@ -105,6 +105,9 @@ def build(head_extra=''):
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <style>{CSS}</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<!-- Wowhead's tooltips on the Character setup's item, enchant and buff links (left as the page draws them) -->
+<script>const whTooltips = {{colorLinks: false, iconizeLinks: false, renameLinks: false}};</script>
+<script src="https://wow.zamimg.com/js/tooltips.js" async></script>
 <script>window.__PARAMS = {json.dumps(PARAMS)}; window.__DATA = {blob};</script>
 <script>{RUNTIME}</script>
 {head_extra}</head>

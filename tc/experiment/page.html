@@ -151,6 +151,9 @@
   .su-slot { font-size: .6875rem; color: var(--color-fg-muted); line-height: 1.2; }
   .su-name { text-decoration: none; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .su-name:hover { text-decoration: underline; }
+  .su-ench a { color: inherit; text-decoration: none; }
+  .su-ench a:hover { text-decoration: underline; }
+  .su-opt[title] { cursor: help; text-decoration: underline dotted #ffffff40; text-underline-offset: 3px; }
   .su-ench { font-size: .6875rem; color: #1eff00; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .su-tag { font-size: .625rem; color: var(--color-fg-muted); border: 1px solid var(--color-border-line); border-radius: 3px; padding: 0 3px; margin-left: 4px; vertical-align: 1px; }
   .su-chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1622,6 +1625,19 @@ function drawBreakdown(p, item, data, fitH) {
 const QUALITY = { 0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d9bff', 4: '#b866ff', 5: '#ff8000' };
 const suIcon = (name) => { const i = el('img'); i.alt = ''; i.loading = 'lazy'; if (name) i.src = 'images/icons/' + name + '.jpg'; return i; };
 const suJson = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
+// Gear, enchants, consumables and buffs link to Wowhead, whose tooltip script (loaded in the page head) shows their
+// tooltips on hover. Settings have no Wowhead page, so they say what they mean in a plain tooltip.
+const suLink = (cls, text, url) => { const a = el('a', cls, text); a.href = url; a.target = '_blank'; a.rel = 'noopener'; return a; };
+const SETTING_TIPS = {
+  Ammo: 'The arrows or bullets the hunter fires.', Quiver: 'The quiver or ammo pouch worn, for its ranged attack speed.',
+  Pet: 'The hunter pet the sim brings (None: the build plays without one).', Demon: 'The demon the warlock keeps summoned.',
+  'Sacrificed demon': "The demon sacrificed for Demonic Sacrifice's buff.", Armor: 'The armor self-buff kept up.',
+  Stance: 'The stance the warrior fights in.', 'Weapon imbue': 'The shaman weapon imbue on the main hand.',
+  Curse: 'The curse this warlock keeps on the target.', 'Starting rage': 'Rage at the start of the fight.',
+  Professions: "The character's professions, which decide the profession-only items and enchants the build can use.",
+  Distance: 'How far from the target the character stands.',
+  'Incoming healing': 'Healing per second the sim gives the tank, standing in for its healers.',
+};
 function drawSetup(p, item, race, minH) {
   const box = $('.lx-speccmp'), S = rrData(dash.data('setup'));
   const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
@@ -1636,13 +1652,12 @@ function drawSetup(p, item, race, minH) {
   wrap.append(head);
   const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
   const itemRow = (g) => {
-    const row = el('div', 'su-item'), name = el('a', 'su-name', g.name);
-    name.href = g.url; name.target = '_blank'; name.rel = 'noopener'; name.style.color = QUALITY[g.q] || QUALITY[1];
-    name.title = g.name + (g.enchant ? ' · ' + g.enchant : '');
+    const row = el('div', 'su-item'), name = suLink('su-name', g.name, g.url);
+    name.style.color = QUALITY[g.q] || QUALITY[1];
     const slot = el('div', 'su-slot', g.slot);
     if (g.classic) { const t = el('span', 'su-tag', 'Classic'); t.title = "Not in Forever's item database: simmed with its Classic stats"; slot.append(t); }
     row.append(suIcon(g.icon), slot, name);
-    if (g.enchant) row.append(el('div', 'su-ench', g.enchant));
+    if (g.enchant) { const e = el('div', 'su-ench'); e.append(g.eurl ? suLink(null, g.enchant, g.eurl) : g.enchant); row.append(e); }
     return row;
   };
   const list = el('div', 'su-gear');
@@ -1651,22 +1666,20 @@ function drawSetup(p, item, race, minH) {
   if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
   if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
   section('Gear', list, ...extra);
-  const chips = (rows, withLink) => {
+  const chips = (rows) => {
     const c = el('div', 'su-chips');
     for (const r of rows) {
-      const chip = el(withLink && r.url ? 'a' : 'span', 'su-chip');
-      if (withLink && r.url) { chip.href = r.url; chip.target = '_blank'; chip.rel = 'noopener'; }
-      if (r.kind) chip.title = r.kind;
+      const chip = r.url ? suLink('su-chip', null, r.url) : el('span', 'su-chip');
       chip.append(suIcon(r.icon), r.name);
       c.append(chip);
     }
     return c;
   };
-  section('Consumables', chips(suJson(s.consumables), true));
+  section('Consumables', chips(suJson(s.consumables)));
   section('Buffs', chips(suJson(s.buffs)));
   section('Debuffs on the target', chips(suJson(s.debuffs)));
   const opts = el('div', 'su-opts');
-  for (const [k, v] of suJson(s.options)) { const o = el('span', null, k + ': '); o.append(el('b', null, v)); opts.append(o); }
+  for (const [k, v] of suJson(s.options)) { const o = el('span', 'su-opt', k + ': '); o.append(el('b', null, v)); if (SETTING_TIPS[k]) o.title = SETTING_TIPS[k]; opts.append(o); }
   section('Settings', opts);
   box.append(wrap);
 }
@@ -2688,6 +2701,19 @@ function drawBreakdown(p, item, data, fitH) {
 const QUALITY = { 0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d9bff', 4: '#b866ff', 5: '#ff8000' };
 const suIcon = (name) => { const i = el('img'); i.alt = ''; i.loading = 'lazy'; if (name) i.src = 'images/icons/' + name + '.jpg'; return i; };
 const suJson = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
+// Gear, enchants, consumables and buffs link to Wowhead, whose tooltip script (loaded in the page head) shows their
+// tooltips on hover. Settings have no Wowhead page, so they say what they mean in a plain tooltip.
+const suLink = (cls, text, url) => { const a = el('a', cls, text); a.href = url; a.target = '_blank'; a.rel = 'noopener'; return a; };
+const SETTING_TIPS = {
+  Ammo: 'The arrows or bullets the hunter fires.', Quiver: 'The quiver or ammo pouch worn, for its ranged attack speed.',
+  Pet: 'The hunter pet the sim brings (None: the build plays without one).', Demon: 'The demon the warlock keeps summoned.',
+  'Sacrificed demon': "The demon sacrificed for Demonic Sacrifice's buff.", Armor: 'The armor self-buff kept up.',
+  Stance: 'The stance the warrior fights in.', 'Weapon imbue': 'The shaman weapon imbue on the main hand.',
+  Curse: 'The curse this warlock keeps on the target.', 'Starting rage': 'Rage at the start of the fight.',
+  Professions: "The character's professions, which decide the profession-only items and enchants the build can use.",
+  Distance: 'How far from the target the character stands.',
+  'Incoming healing': 'Healing per second the sim gives the tank, standing in for its healers.',
+};
 function drawSetup(p, item, race, minH) {
   const box = $('.lx-speccmp'), S = rrData(dash.data('tankSetup'));
   const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
@@ -2702,13 +2728,12 @@ function drawSetup(p, item, race, minH) {
   wrap.append(head);
   const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
   const itemRow = (g) => {
-    const row = el('div', 'su-item'), name = el('a', 'su-name', g.name);
-    name.href = g.url; name.target = '_blank'; name.rel = 'noopener'; name.style.color = QUALITY[g.q] || QUALITY[1];
-    name.title = g.name + (g.enchant ? ' · ' + g.enchant : '');
+    const row = el('div', 'su-item'), name = suLink('su-name', g.name, g.url);
+    name.style.color = QUALITY[g.q] || QUALITY[1];
     const slot = el('div', 'su-slot', g.slot);
     if (g.classic) { const t = el('span', 'su-tag', 'Classic'); t.title = "Not in Forever's item database: simmed with its Classic stats"; slot.append(t); }
     row.append(suIcon(g.icon), slot, name);
-    if (g.enchant) row.append(el('div', 'su-ench', g.enchant));
+    if (g.enchant) { const e = el('div', 'su-ench'); e.append(g.eurl ? suLink(null, g.enchant, g.eurl) : g.enchant); row.append(e); }
     return row;
   };
   const list = el('div', 'su-gear');
@@ -2717,22 +2742,20 @@ function drawSetup(p, item, race, minH) {
   if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
   if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
   section('Gear', list, ...extra);
-  const chips = (rows, withLink) => {
+  const chips = (rows) => {
     const c = el('div', 'su-chips');
     for (const r of rows) {
-      const chip = el(withLink && r.url ? 'a' : 'span', 'su-chip');
-      if (withLink && r.url) { chip.href = r.url; chip.target = '_blank'; chip.rel = 'noopener'; }
-      if (r.kind) chip.title = r.kind;
+      const chip = r.url ? suLink('su-chip', null, r.url) : el('span', 'su-chip');
       chip.append(suIcon(r.icon), r.name);
       c.append(chip);
     }
     return c;
   };
-  section('Consumables', chips(suJson(s.consumables), true));
+  section('Consumables', chips(suJson(s.consumables)));
   section('Buffs', chips(suJson(s.buffs)));
   section('Debuffs on the target', chips(suJson(s.debuffs)));
   const opts = el('div', 'su-opts');
-  for (const [k, v] of suJson(s.options)) { const o = el('span', null, k + ': '); o.append(el('b', null, v)); opts.append(o); }
+  for (const [k, v] of suJson(s.options)) { const o = el('span', 'su-opt', k + ': '); o.append(el('b', null, v)); if (SETTING_TIPS[k]) o.title = SETTING_TIPS[k]; opts.append(o); }
   section('Settings', opts);
   box.append(wrap);
 }
