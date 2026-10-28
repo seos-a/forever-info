@@ -1,5 +1,5 @@
 // The race-by-spec tables' size: each table's text and cells are as big as its box's width allows without a sideways
-// scrollbar (1.5 times at most, so the narrow Tanks and Healing tables don't get huge), and follow the window as it
+// scrollbar (1.2 times at most, so the narrow Tanks and Healing tables don't get huge), and follow the window as it
 // changes. The size is a CSS variable (--mz) on the table's box, so it stays through the table's redraws.
 document.querySelectorAll('.lx-matrix').forEach((table) => {
   const card = table.closest('section'), wrap = table.parentElement;
@@ -13,7 +13,7 @@ document.querySelectorAll('.lx-matrix').forEach((table) => {
     const w = table.offsetWidth / scale();
     table.style.width = prev;
     if (!w) return;
-    const v = Math.max(1, Math.min(1.5, Math.floor(((wrap.clientWidth - 2) / w) * 100) / 100));
+    const v = Math.max(1, Math.min(1.2, Math.floor(((wrap.clientWidth - 2) / w) * 100) / 100));
     if (Math.abs(v - scale()) > 0.005) card.style.setProperty('--mz', String(v));
   };
   new ResizeObserver(apply).observe(wrap);

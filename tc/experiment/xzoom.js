@@ -16,3 +16,8 @@ window.xZoomClip = (svg, left, right, height) => {
   svg.append('defs').append('clipPath').attr('id', id).append('rect').attr('x', left).attr('y', -4).attr('width', right - left).attr('height', height + 8);
   return `url(#${id})`;
 };
+// On a narrow screen (a phone), charts shorten spec names so their bars keep room: "Prot Warrior", "Resto Druid".
+window.shortSpec = (n) => n.replace(/^Protection /, 'Prot ').replace(/^Restoration /, 'Resto ').replace(/^Beast Mastery /, 'BM ')
+  .replace(/^Marksmanship /, 'MM ').replace(/^Enhancement /, 'Enh ').replace(/^Assassination /, 'Assassin ').replace(/^Demonology /, 'Demo ')
+  .replace(/^Destruction /, 'Destro ').replace(/^Affliction /, 'Affli ').replace(/^Elemental /, 'Ele ').replace(/^Retribution /, 'Ret ').replace(/^Subtlety /, 'Sub ');
+window.narrowChart = (W) => W < 560;

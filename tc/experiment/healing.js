@@ -556,7 +556,9 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const W = Math.max(280, box.clientWidth), gap = 8, bh = Math.max(14, (H0 - 22) / rows.length - gap), H = rows.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab'), textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(r.label))) + 14, mr = Math.max(...rows.map((r) => textW(value(r)))) + 14;
+  // A phone: short healer names and only the number after each box, so the boxes keep room.
+  const narrow = narrowChart(W), lab = (r) => (narrow ? shortSpec(r.label) : r.label), val = (r) => (narrow ? value(r).split(' · ')[0].replace(/ HPS$/, '') : value(r));
+  const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(lab(r)))) + 14, mr = Math.max(...rows.map((r) => textW(val(r)))) + 14;
   probe.remove();
   const lo = Math.min(...rows.map((r) => r.min), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.max), zero ? 0 : -Infinity);
   const x0 = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
@@ -564,7 +566,7 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (r) => r.icon || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.filter((r) => r.ring).append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5).attr('stroke', (r) => r.ring);
-  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).style('fill', (r) => (labelColor ? r.color : null)).text((r) => r.label);
+  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).style('fill', (r) => (labelColor ? r.color : null)).text(lab);
   // The boxes, the 0% line (no racials, behind the boxes so a race at exactly 0% still shows its colour) and the grid
   // zoom (xzoom.js); the names and portraits don't.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml - 4, W, H - 18));
@@ -576,10 +578,10 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const boxes = pg.append('rect').attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3).style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
   const meds = pg.append('line').attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
   const dots = ['min', 'max'].map((end) => pg.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi)).append('circle').attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color).datum((r) => ({ r, end })));
-  const vals = pg.append('text').attr('y', mid + 4).text(value);
+  const vals = pg.append('text').attr('y', mid + 4).text(val);
   const render = (x) => {
-    grid.selectAll('line').data(x.ticks(6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-    ticks.selectAll('text').data(x.ticks(6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
+    grid.selectAll('line').data(x.ticks(narrow ? 3 : 6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+    ticks.selectAll('text').data(x.ticks(narrow ? 3 : 6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
     if (zl) zl.attr('x1', x(0)).attr('x2', x(0));
     whisk.attr('x1', (r) => x(r.lo)).attr('x2', (r) => x(r.hi));
     for (const e of ends) e.attr('x1', (d) => x(d.r[d.end])).attr('x2', (d) => x(d.r[d.end]));

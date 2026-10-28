@@ -433,6 +433,13 @@
   .lx-wide .rr-spec .l, .lx-wide .hr-spec .l { font-size: 12px; margin-top: 2px; }
   .lx-wide .l .ru { font-weight: 600; }
   @media (max-width: 700px) { .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: wrap; } .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; } }
+  /* phones: slimmer boxes, and the Top Race cards two to a row */
+  @media (max-width: 600px) {
+    .rr-card, .hr-card { padding: 10px; }
+    .rr-vgrip, .hr-vgrip { margin: 0 -10px -10px; }   /* the drag handles follow the slimmer padding */
+    .rr-specs .rr-spec, .hr-specs .hr-spec { flex: 1 1 calc(50% - var(--cds-gap-sm)); }
+    .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; }
+  }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -1469,7 +1476,8 @@ function drawBreakdown(p, item, data, fitH) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`;
+  const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
+  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
   const iz = Math.min(20, Math.max(14, bh)), ml = iz + 6 + Math.max(...list.map((a) => textW(label(a)))) + 14, mr = Math.max(...list.map((a) => textW(valText(a)))) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, list[0].v], [ml, W - mr]);
@@ -1534,17 +1542,19 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(d.best); }
-  const ml = iz + 8 + Math.max(...items.map((d) => textW(d.name))) + 12;
+  // A phone: short spec names and no race name after the bar (its portrait stays), so the bars keep room.
+  const narrow = narrowChart(W), nm = (d) => (narrow ? shortSpec(d.name) : d.name), rn = (d) => (narrow ? '' : d.best);
+  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(rn(d)); }
+  const ml = iz + 8 + Math.max(...items.map((d) => textW(nm(d)))) + 12;
   const mr = 8 + Math.max(...items.map((d) => d.vw + 6 + iz + 6 + d.rw)) + 4;
   probe.remove();
   const lo = (d) => Math.min(d.top, d.worst), hi = (d) => Math.max(d.top, d.worst);
   const x = d3.scaleLinear([0, Math.max(...items.map(hi))], [ml, W - mr]);
-  svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
+  svg.append('g').selectAll('line').data(x.ticks(narrow ? 3 : 5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(x.ticks(narrow ? 3 : 5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.icon] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text((d) => d.name);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(hi(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.35);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(lo(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
   const ex = (d) => x(hi(d)) + 8;
@@ -1552,7 +1562,7 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('image').attr('href', (d) => rrIcons()[d.best] || null).attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (d) => (d.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
-  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text((d) => d.best);
+  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text(rn);
   // Hover a row for its numbers; click it to show that spec in the boxes below.
   const tip = el('div', 'rr-tip');
   tip.hidden = true; box.append(tip);
@@ -2467,7 +2477,8 @@ function drawBreakdown(p, item, data, fitH) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`;
+  const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
+  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
   const iz = Math.min(20, Math.max(14, bh)), ml = iz + 6 + Math.max(...list.map((a) => textW(label(a)))) + 14, mr = Math.max(...list.map((a) => textW(valText(a)))) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, list[0].v], [ml, W - mr]);
@@ -2537,17 +2548,19 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(d.best); }
-  const ml = iz + 8 + Math.max(...items.map((d) => textW(d.name))) + 12;
+  // A phone: short spec names and no race name after the bar (its portrait stays), so the bars keep room.
+  const narrow = narrowChart(W), nm = (d) => (narrow ? shortSpec(d.name) : d.name), rn = (d) => (narrow ? '' : d.best);
+  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(rn(d)); }
+  const ml = iz + 8 + Math.max(...items.map((d) => textW(nm(d)))) + 12;
   const mr = 8 + Math.max(...items.map((d) => d.vw + 6 + iz + 6 + d.rw)) + 4;
   probe.remove();
   const lo = (d) => Math.min(d.top, d.worst), hi = (d) => Math.max(d.top, d.worst);
   const x = d3.scaleLinear([0, Math.max(...items.map(hi))], [ml, W - mr]);
-  svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
+  svg.append('g').selectAll('line').data(x.ticks(narrow ? 3 : 5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(x.ticks(narrow ? 3 : 5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.icon] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text((d) => d.name);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(hi(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.35);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(lo(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
   const ex = (d) => x(hi(d)) + 8;
@@ -2555,7 +2568,7 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('image').attr('href', (d) => rrIcons()[d.best] || null).attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (d) => (d.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
-  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text((d) => d.best);
+  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text(rn);
   // Hover a row for its numbers; click it to show that spec in the boxes below.
   const tip = el('div', 'rr-tip');
   tip.hidden = true; box.append(tip);

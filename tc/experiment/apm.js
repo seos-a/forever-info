@@ -113,9 +113,11 @@ function draw(b, box, items) {
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const label = (d) => d.apm.toFixed(1);
-  const side = (d) => (b.role ? `${d.build} · ${RACE_NAME[d.race] || d.race}` : '');
+  // A phone: short spec names, no build and race after the bar (the hover has them), so the bars keep room.
+  const narrow = narrowChart(W), nm = (d) => (narrow ? shortSpec(d.spec) : d.spec);
+  const side = (d) => (b.role && !narrow ? `${d.build} · ${RACE_NAME[d.race] || d.race}` : '');
   for (const d of items) d.lw = textW(label(d));
-  const ml = iz + 8 + Math.max(...items.map((d) => textW(d.spec))) + 12;
+  const ml = iz + 8 + Math.max(...items.map((d) => textW(nm(d)))) + 12;
   const mr = 8 + Math.max(...items.map((d) => d.lw + 8 + textW(side(d)))) + 4;
   probe.remove();
   const x = d3.scaleLinear([0, d3.max(items, (d) => d.apm)], [ml, W - mr]).nice();
@@ -123,7 +125,7 @@ function draw(b, box, items) {
   svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => t);
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.spec] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => specColor(d.spec)).text((d) => d.spec);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => specColor(d.spec)).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.apm) - x(0))).style('fill', (d) => specColor(d.spec)).attr('fill-opacity', 0.85);
   g.append('text').attr('class', 'lab').attr('x', (d) => x(d.apm) + 8).attr('y', bh / 2 + 4).text(label);
   g.append('text').attr('x', (d) => x(d.apm) + 8 + d.lw + 8).attr('y', bh / 2 + 4).text(side);
@@ -192,7 +194,7 @@ function drawBreakdown(b, box, note, item, fight) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const valText = (a) => `${a.v.toFixed(a.v < 1 ? 2 : 1)} / min · ${((a.v / total) * 100).toFixed(1)}%`;
+  const valText = (a) => (narrowChart(W) ? `${a.v.toFixed(a.v < 1 ? 2 : 1)}` : `${a.v.toFixed(a.v < 1 ? 2 : 1)} / min · ${((a.v / total) * 100).toFixed(1)}%`);
   const ml = iz + 6 + Math.max(...rows.map((a) => textW(a.name))) + 14, mr = Math.max(...rows.map((a) => textW(valText(a)))) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, rows[0].v], [ml, W - mr]);

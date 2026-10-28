@@ -62,6 +62,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .xp-top a{color:var(--color-fg-muted);text-decoration:none;font-size:.8125rem}
 .xp-top a:hover{color:var(--color-fg)}
 #dash-root{max-width:1400px;margin:0 auto;padding:16px 16px 52px;box-sizing:border-box}
+@media (max-width:600px){#dash-root{padding:10px 10px 52px}.xp-top{padding:10px 10px 0}}
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
 .xp-stamp{position:absolute;left:10px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap}

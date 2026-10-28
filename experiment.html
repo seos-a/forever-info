@@ -22,6 +22,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .xp-top a{color:var(--color-fg-muted);text-decoration:none;font-size:.8125rem}
 .xp-top a:hover{color:var(--color-fg)}
 #dash-root{max-width:1400px;margin:0 auto;padding:16px 16px 52px;box-sizing:border-box}
+@media (max-width:600px){#dash-root{padding:10px 10px 52px}.xp-top{padding:10px 10px 0}}
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
 .xp-stamp{position:absolute;left:10px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap}
@@ -512,6 +513,13 @@ document.head.appendChild(t);})();
   .lx-wide .rr-spec .l, .lx-wide .hr-spec .l { font-size: 12px; margin-top: 2px; }
   .lx-wide .l .ru { font-weight: 600; }
   @media (max-width: 700px) { .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: wrap; } .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; } }
+  /* phones: slimmer boxes, and the Top Race cards two to a row */
+  @media (max-width: 600px) {
+    .rr-card, .hr-card { padding: 10px; }
+    .rr-vgrip, .hr-vgrip { margin: 0 -10px -10px; }   /* the drag handles follow the slimmer padding */
+    .rr-specs .rr-spec, .hr-specs .hr-spec { flex: 1 1 calc(50% - var(--cds-gap-sm)); }
+    .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; }
+  }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -949,6 +957,11 @@ window.xZoomClip = (svg, left, right, height) => {
   svg.append('defs').append('clipPath').attr('id', id).append('rect').attr('x', left).attr('y', -4).attr('width', right - left).attr('height', height + 8);
   return `url(#${id})`;
 };
+// On a narrow screen (a phone), charts shorten spec names so their bars keep room: "Prot Warrior", "Resto Druid".
+window.shortSpec = (n) => n.replace(/^Protection /, 'Prot ').replace(/^Restoration /, 'Resto ').replace(/^Beast Mastery /, 'BM ')
+  .replace(/^Marksmanship /, 'MM ').replace(/^Enhancement /, 'Enh ').replace(/^Assassination /, 'Assassin ').replace(/^Demonology /, 'Demo ')
+  .replace(/^Destruction /, 'Destro ').replace(/^Affliction /, 'Affli ').replace(/^Elemental /, 'Ele ').replace(/^Retribution /, 'Ret ').replace(/^Subtlety /, 'Sub ');
+window.narrowChart = (W) => W < 560;
 
 })();
 </script>
@@ -1646,7 +1659,8 @@ function drawBreakdown(p, item, data, fitH) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`;
+  const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
+  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
   const iz = Math.min(20, Math.max(14, bh)), ml = iz + 6 + Math.max(...list.map((a) => textW(label(a)))) + 14, mr = Math.max(...list.map((a) => textW(valText(a)))) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, list[0].v], [ml, W - mr]);
@@ -1711,17 +1725,19 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(d.best); }
-  const ml = iz + 8 + Math.max(...items.map((d) => textW(d.name))) + 12;
+  // A phone: short spec names and no race name after the bar (its portrait stays), so the bars keep room.
+  const narrow = narrowChart(W), nm = (d) => (narrow ? shortSpec(d.name) : d.name), rn = (d) => (narrow ? '' : d.best);
+  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(rn(d)); }
+  const ml = iz + 8 + Math.max(...items.map((d) => textW(nm(d)))) + 12;
   const mr = 8 + Math.max(...items.map((d) => d.vw + 6 + iz + 6 + d.rw)) + 4;
   probe.remove();
   const lo = (d) => Math.min(d.top, d.worst), hi = (d) => Math.max(d.top, d.worst);
   const x = d3.scaleLinear([0, Math.max(...items.map(hi))], [ml, W - mr]);
-  svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
+  svg.append('g').selectAll('line').data(x.ticks(narrow ? 3 : 5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(x.ticks(narrow ? 3 : 5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.icon] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text((d) => d.name);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(hi(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.35);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(lo(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
   const ex = (d) => x(hi(d)) + 8;
@@ -1729,7 +1745,7 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('image').attr('href', (d) => rrIcons()[d.best] || null).attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (d) => (d.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
-  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text((d) => d.best);
+  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text(rn);
   // Hover a row for its numbers; click it to show that spec in the boxes below.
   const tip = el('div', 'rr-tip');
   tip.hidden = true; box.append(tip);
@@ -2515,7 +2531,9 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const W = Math.max(280, box.clientWidth), gap = 8, bh = Math.max(14, (H0 - 22) / rows.length - gap), H = rows.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab'), textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(r.label))) + 14, mr = Math.max(...rows.map((r) => textW(value(r)))) + 14;
+  // A phone: short healer names and only the number after each box, so the boxes keep room.
+  const narrow = narrowChart(W), lab = (r) => (narrow ? shortSpec(r.label) : r.label), val = (r) => (narrow ? value(r).split(' · ')[0].replace(/ HPS$/, '') : value(r));
+  const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(lab(r)))) + 14, mr = Math.max(...rows.map((r) => textW(val(r)))) + 14;
   probe.remove();
   const lo = Math.min(...rows.map((r) => r.min), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.max), zero ? 0 : -Infinity);
   const x0 = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
@@ -2523,7 +2541,7 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (r) => r.icon || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.filter((r) => r.ring).append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5).attr('stroke', (r) => r.ring);
-  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).style('fill', (r) => (labelColor ? r.color : null)).text((r) => r.label);
+  g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).style('fill', (r) => (labelColor ? r.color : null)).text(lab);
   // The boxes, the 0% line (no racials, behind the boxes so a race at exactly 0% still shows its colour) and the grid
   // zoom (xzoom.js); the names and portraits don't.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml - 4, W, H - 18));
@@ -2535,10 +2553,10 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const boxes = pg.append('rect').attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3).style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
   const meds = pg.append('line').attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
   const dots = ['min', 'max'].map((end) => pg.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi)).append('circle').attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color).datum((r) => ({ r, end })));
-  const vals = pg.append('text').attr('y', mid + 4).text(value);
+  const vals = pg.append('text').attr('y', mid + 4).text(val);
   const render = (x) => {
-    grid.selectAll('line').data(x.ticks(6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-    ticks.selectAll('text').data(x.ticks(6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
+    grid.selectAll('line').data(x.ticks(narrow ? 3 : 6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+    ticks.selectAll('text').data(x.ticks(narrow ? 3 : 6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
     if (zl) zl.attr('x1', x(0)).attr('x2', x(0));
     whisk.attr('x1', (r) => x(r.lo)).attr('x2', (r) => x(r.hi));
     for (const e of ends) e.attr('x1', (d) => x(d.r[d.end])).attr('x2', (d) => x(d.r[d.end]));
@@ -2991,7 +3009,7 @@ if (named) setTimeout(() => named.scrollIntoView(), 0);
 <script>
 (() => {
 // The race-by-spec tables' size: each table's text and cells are as big as its box's width allows without a sideways
-// scrollbar (1.5 times at most, so the narrow Tanks and Healing tables don't get huge), and follow the window as it
+// scrollbar (1.2 times at most, so the narrow Tanks and Healing tables don't get huge), and follow the window as it
 // changes. The size is a CSS variable (--mz) on the table's box, so it stays through the table's redraws.
 document.querySelectorAll('.lx-matrix').forEach((table) => {
   const card = table.closest('section'), wrap = table.parentElement;
@@ -3005,7 +3023,7 @@ document.querySelectorAll('.lx-matrix').forEach((table) => {
     const w = table.offsetWidth / scale();
     table.style.width = prev;
     if (!w) return;
-    const v = Math.max(1, Math.min(1.5, Math.floor(((wrap.clientWidth - 2) / w) * 100) / 100));
+    const v = Math.max(1, Math.min(1.2, Math.floor(((wrap.clientWidth - 2) / w) * 100) / 100));
     if (Math.abs(v - scale()) > 0.005) card.style.setProperty('--mz', String(v));
   };
   new ResizeObserver(apply).observe(wrap);
@@ -3139,9 +3157,11 @@ function draw(b, box, items) {
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const label = (d) => d.apm.toFixed(1);
-  const side = (d) => (b.role ? `${d.build} · ${RACE_NAME[d.race] || d.race}` : '');
+  // A phone: short spec names, no build and race after the bar (the hover has them), so the bars keep room.
+  const narrow = narrowChart(W), nm = (d) => (narrow ? shortSpec(d.spec) : d.spec);
+  const side = (d) => (b.role && !narrow ? `${d.build} · ${RACE_NAME[d.race] || d.race}` : '');
   for (const d of items) d.lw = textW(label(d));
-  const ml = iz + 8 + Math.max(...items.map((d) => textW(d.spec))) + 12;
+  const ml = iz + 8 + Math.max(...items.map((d) => textW(nm(d)))) + 12;
   const mr = 8 + Math.max(...items.map((d) => d.lw + 8 + textW(side(d)))) + 4;
   probe.remove();
   const x = d3.scaleLinear([0, d3.max(items, (d) => d.apm)], [ml, W - mr]).nice();
@@ -3149,7 +3169,7 @@ function draw(b, box, items) {
   svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => t);
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.spec] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => specColor(d.spec)).text((d) => d.spec);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => specColor(d.spec)).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.apm) - x(0))).style('fill', (d) => specColor(d.spec)).attr('fill-opacity', 0.85);
   g.append('text').attr('class', 'lab').attr('x', (d) => x(d.apm) + 8).attr('y', bh / 2 + 4).text(label);
   g.append('text').attr('x', (d) => x(d.apm) + 8 + d.lw + 8).attr('y', bh / 2 + 4).text(side);
@@ -3218,7 +3238,7 @@ function drawBreakdown(b, box, note, item, fight) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const valText = (a) => `${a.v.toFixed(a.v < 1 ? 2 : 1)} / min · ${((a.v / total) * 100).toFixed(1)}%`;
+  const valText = (a) => (narrowChart(W) ? `${a.v.toFixed(a.v < 1 ? 2 : 1)}` : `${a.v.toFixed(a.v < 1 ? 2 : 1)} / min · ${((a.v / total) * 100).toFixed(1)}%`);
   const ml = iz + 6 + Math.max(...rows.map((a) => textW(a.name))) + 14, mr = Math.max(...rows.map((a) => textW(valText(a)))) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, rows[0].v], [ml, W - mr]);
@@ -3950,7 +3970,8 @@ function drawBreakdown(p, item, data, fitH) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`;
+  const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
+  const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
   const iz = Math.min(20, Math.max(14, bh)), ml = iz + 6 + Math.max(...list.map((a) => textW(label(a)))) + 14, mr = Math.max(...list.map((a) => textW(valText(a)))) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, list[0].v], [ml, W - mr]);
@@ -4020,17 +4041,19 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(d.best); }
-  const ml = iz + 8 + Math.max(...items.map((d) => textW(d.name))) + 12;
+  // A phone: short spec names and no race name after the bar (its portrait stays), so the bars keep room.
+  const narrow = narrowChart(W), nm = (d) => (narrow ? shortSpec(d.name) : d.name), rn = (d) => (narrow ? '' : d.best);
+  for (const d of items) { d.vw = textW(fmt(d.top)); d.rw = textW(rn(d)); }
+  const ml = iz + 8 + Math.max(...items.map((d) => textW(nm(d)))) + 12;
   const mr = 8 + Math.max(...items.map((d) => d.vw + 6 + iz + 6 + d.rw)) + 4;
   probe.remove();
   const lo = (d) => Math.min(d.top, d.worst), hi = (d) => Math.max(d.top, d.worst);
   const x = d3.scaleLinear([0, Math.max(...items.map(hi))], [ml, W - mr]);
-  svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
+  svg.append('g').selectAll('line').data(x.ticks(narrow ? 3 : 5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(x.ticks(narrow ? 3 : 5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.icon] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text((d) => d.name);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(hi(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.35);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(lo(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
   const ex = (d) => x(hi(d)) + 8;
@@ -4038,7 +4061,7 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('image').attr('href', (d) => rrIcons()[d.best] || null).attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (d) => (d.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
-  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text((d) => d.best);
+  g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text(rn);
   // Hover a row for its numbers; click it to show that spec in the boxes below.
   const tip = el('div', 'rr-tip');
   tip.hidden = true; box.append(tip);
