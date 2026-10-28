@@ -433,6 +433,8 @@
   .lx-wide .rr-spec .l, .lx-wide .hr-spec .l { font-size: 12px; margin-top: 2px; }
   .lx-wide .l .ru { font-weight: 600; }
   @media (max-width: 700px) { .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: wrap; } .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; } }
+  /* the Top Race cards: as wide as the longest spec name ("Marksmanship") needs, beside the icon */
+  .rr-specs .rr-spec, .hr-specs .hr-spec { flex-basis: 9.25rem; }
   /* phones: slimmer boxes, and the Top Race cards two to a row */
   @media (max-width: 600px) {
     .rr-card, .hr-card { padding: 10px; }
