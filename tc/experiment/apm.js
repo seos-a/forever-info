@@ -213,7 +213,8 @@ function drawBreakdown(b, box, note, item, fight) {
   }
   const fill = (a) => (a.kind === 'utility' ? 'var(--color-fg-muted)' : a.kind === 'dot' || a.kind === 'hot' ? `url(#${pid(col(a), 'dot')})` : a.kind === 'channel' ? `url(#${pid(col(a), 'ch')})` : col(a));
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (a, i) => `translate(0,${i * slot + 2})`);
-  g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.raw] || (window.ABILITY_ICONS || {})[a.name] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
+  const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.raw] || (window.ABILITY_ICONS || {})[a.name] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
+  window.abilityLinks(box, abIcons.nodes(), (a) => [a.raw, a.name]);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).text((a) => a.name);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'utility' ? 0.5 : a.kind === 'absorb' ? 0.25 : 0.9))
