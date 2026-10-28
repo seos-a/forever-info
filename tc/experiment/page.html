@@ -194,6 +194,7 @@
   .tl-tablewrap { overflow-x: auto; }
   .tl-scroll { margin-top: calc(6px - var(--cds-gap-md)); overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
   .tl-scroll svg { display: block; }
+  .rr-tip .row.tl-ticks b { white-space: normal; max-width: 220px; text-align: right; }
   .tl-svg text { fill: var(--color-fg-muted); font-size: 11px; }
   .tl-svg .lab { fill: var(--color-fg); font-size: 12px; }
   .tl-legend { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
@@ -1792,14 +1793,18 @@ function drawTimeline(p, item, minH) {
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   const fmtN = d3.format(',');
-  for (const [i, t, ct, dmg, out, tick, nt] of tl) {
+  for (const [i, t, ct, dmg, out, ticks] of tl) {
     if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
     rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
       .on('mousemove', (ev) => {
         tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
-          // Damage over time: its average tick, with what the whole dot did (and its direct hit, if any).
-          ...(nt ? [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), line('Damage', `${fmtN(Math.round(tick / nt))} per tick (${fmtN(dmg)} total)`)]
-            : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
+          // Damage over time: each tick (or the one amount when they're all the same), with what the whole dot did
+          // and its direct hit, if any.
+          ...(ticks ? (() => {
+            const tick = ticks.reduce((a, b) => a + b, 0), same = ticks.every((v) => v === ticks[0]), row = ticks.length === 1 ? line('Tick', fmtN(ticks[0])) : line('Ticks', same ? `${fmtN(ticks[0])} each` : ticks.map(fmtN).join(', '));
+            row.classList.add('tl-ticks');
+            return [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), row, line('Total', fmtN(dmg))];
+          })() : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
         tip.hidden = false;
         const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
         tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
@@ -3099,14 +3104,18 @@ function drawTimeline(p, item, minH) {
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   const fmtN = d3.format(',');
-  for (const [i, t, ct, dmg, out, tick, nt] of tl) {
+  for (const [i, t, ct, dmg, out, ticks] of tl) {
     if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
     rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
       .on('mousemove', (ev) => {
         tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
-          // Damage over time: its average tick, with what the whole dot did (and its direct hit, if any).
-          ...(nt ? [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), line('Damage', `${fmtN(Math.round(tick / nt))} per tick (${fmtN(dmg)} total)`)]
-            : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
+          // Damage over time: each tick (or the one amount when they're all the same), with what the whole dot did
+          // and its direct hit, if any.
+          ...(ticks ? (() => {
+            const tick = ticks.reduce((a, b) => a + b, 0), same = ticks.every((v) => v === ticks[0]), row = ticks.length === 1 ? line('Tick', fmtN(ticks[0])) : line('Ticks', same ? `${fmtN(ticks[0])} each` : ticks.map(fmtN).join(', '));
+            row.classList.add('tl-ticks');
+            return [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), row, line('Total', fmtN(dmg))];
+          })() : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
         tip.hidden = false;
         const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
         tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
