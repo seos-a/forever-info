@@ -184,7 +184,7 @@
   .tl-amt span { width: 46px; text-align: right; color: var(--color-fg-muted); }
   .tl-amt i { display: block; height: 10px; border-radius: 2px; background: #c9b37e; }
   .tl-tablewrap { overflow-x: auto; }
-  .tl-scroll { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
+  .tl-scroll { margin-top: calc(6px - var(--cds-gap-md)); overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
   .tl-scroll svg { display: block; }
   .tl-svg text { fill: var(--color-fg-muted); font-size: 11px; }
   .tl-svg .lab { fill: var(--color-fg); font-size: 12px; }
@@ -1680,7 +1680,7 @@ function drawTimeline(p, item, minH) {
   const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
   const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
-  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median).`);
+  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline below is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median): hover a cast for its damage and result.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
   box.append(wrap);
   const W = Math.max(280, box.clientWidth);
@@ -1757,12 +1757,13 @@ function drawTimeline(p, item, minH) {
   tw.append(table);
   wrap.append(tw);
   // Timeline of one run: a row per ability, its casts as icons (a bar for a cast time), its buff as a band behind.
-  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pps = Math.max((W - lw - 16) / (fight - start), 14);
-  const TW = Math.ceil(lw + (fight - start) * pps + 16), TH = names.length * rowH + 24;
+  // pad keeps the first cast's icon clear of the pinned ability names.
+  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, pps = Math.max((W - lw - pad - 16) / (fight - start), 14);
+  const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
   const sc = el('div', 'tl-scroll');
-  wrap.append(el('h3', 'tl-note', 'Cast timeline (one run)'), sc);
+  wrap.append(sc);
   const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
-  const x = (t) => lw + (t - start) * pps;
+  const x = (t) => lw + pad + (t - start) * pps;
   if (start < 0) {
     svg.append('rect').attr('x', x(start)).attr('y', 20).attr('width', x(0) - x(start)).attr('height', TH - 20).attr('fill', '#ffffff08');
     svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
@@ -1778,10 +1779,20 @@ function drawTimeline(p, item, minH) {
     g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
   });
   for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
-  for (const [i, t, ct] of tl) {
+  // Hover a cast for what it did: its damage and its hits, crits, misses and ticks.
+  const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
+  const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
+  for (const [i, t, ct, dmg, out] of tl) {
     if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
-    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14)
-      .append('title').text(`${names[i]} · ${t < 0 ? 'pre-pull ' : ''}${mmss(t)}${ct ? ` · ${ct} s cast` : ''}`);
+    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
+      .on('mousemove', (ev) => {
+        tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
+          ...(dmg ? [line('Damage', d3.format(',')(dmg))] : []), ...(out ? [line('Result', out)] : []));
+        tip.hidden = false;
+        const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
+        tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+      })
+      .on('mouseleave', () => { tip.hidden = true; });
   }
   // The labels stay in view while the timeline scrolls.
   const labels = svg.append('g');
@@ -2903,7 +2914,7 @@ function drawTimeline(p, item, minH) {
   const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
   const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
-  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median).`);
+  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline below is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median): hover a cast for its damage and result.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
   box.append(wrap);
   const W = Math.max(280, box.clientWidth);
@@ -2980,12 +2991,13 @@ function drawTimeline(p, item, minH) {
   tw.append(table);
   wrap.append(tw);
   // Timeline of one run: a row per ability, its casts as icons (a bar for a cast time), its buff as a band behind.
-  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pps = Math.max((W - lw - 16) / (fight - start), 14);
-  const TW = Math.ceil(lw + (fight - start) * pps + 16), TH = names.length * rowH + 24;
+  // pad keeps the first cast's icon clear of the pinned ability names.
+  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, pps = Math.max((W - lw - pad - 16) / (fight - start), 14);
+  const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
   const sc = el('div', 'tl-scroll');
-  wrap.append(el('h3', 'tl-note', 'Cast timeline (one run)'), sc);
+  wrap.append(sc);
   const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
-  const x = (t) => lw + (t - start) * pps;
+  const x = (t) => lw + pad + (t - start) * pps;
   if (start < 0) {
     svg.append('rect').attr('x', x(start)).attr('y', 20).attr('width', x(0) - x(start)).attr('height', TH - 20).attr('fill', '#ffffff08');
     svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
@@ -3001,10 +3013,20 @@ function drawTimeline(p, item, minH) {
     g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
   });
   for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
-  for (const [i, t, ct] of tl) {
+  // Hover a cast for what it did: its damage and its hits, crits, misses and ticks.
+  const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
+  const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
+  for (const [i, t, ct, dmg, out] of tl) {
     if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
-    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14)
-      .append('title').text(`${names[i]} · ${t < 0 ? 'pre-pull ' : ''}${mmss(t)}${ct ? ` · ${ct} s cast` : ''}`);
+    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
+      .on('mousemove', (ev) => {
+        tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
+          ...(dmg ? [line('Damage', d3.format(',')(dmg))] : []), ...(out ? [line('Result', out)] : []));
+        tip.hidden = false;
+        const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
+        tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+      })
+      .on('mouseleave', () => { tip.hidden = true; });
   }
   // The labels stay in view while the timeline scrolls.
   const labels = svg.append('g');
