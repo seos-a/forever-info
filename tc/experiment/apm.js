@@ -128,7 +128,8 @@ function draw(b, box, items) {
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
-      tip.replaceChildren(el('div', 'h', d.spec), line('Actions per minute', d.apm.toFixed(1)),
+      const head = el('div', 'h', d.spec); head.style.color = specColor(d.spec);
+      tip.replaceChildren(head, line('Actions per minute', d.apm.toFixed(1)),
         ...(b.role ? [line('Build', d.builds > 1 ? `${d.build} (best of ${d.builds})` : d.build), line('Race', RACE_NAME[d.race] || d.race)] : []),
         line('Most pressed', d.presses[0] ? d.presses[0].name : '–'));
       tip.hidden = false;
@@ -166,9 +167,7 @@ function drawBreakdown(b, box, note, item, fight) {
     return { ...p, school: k.school, kind: k.kind === 'auto' || k.kind === 'proc' ? 'direct' : k.kind };
   });
   const total = rows.reduce((t, a) => t + a.v, 0);
-  note.textContent = healer
-    ? `What ${item.spec} casts: heals per minute with no racials, ${fightText(fight, b.lens)}. ${total.toFixed(1)} APM in all.`
-    : `What ${item.spec} presses: ${item.build} with ${RACE_NAME[item.race] || item.race} at 1 target, ${fightText(fight, b.lens)}. ${total.toFixed(1)} APM in all.`;
+  note.textContent = '';
   const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset', '← All specs'), title = el('span', 'rr-bdtitle', item.spec);
   back.type = 'button';
   back.addEventListener('click', () => dash.setParams({ [b.view]: '' }));

@@ -655,7 +655,8 @@ function drawSpecCompare(p, items, up, unit, onPick) {
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const spread = (Math.abs(d.top - d.worst) / (up ? d.worst : d.top)) * 100;
-      tip.replaceChildren(el('div', 'h', d.name), line('Best race', `${d.best}, ${fmt(d.top)} ${unit}`), line('Weakest race', `${d.worstRace}, ${fmt(d.worst)} ${unit}`),
+      const head = el('div', 'h', d.name); head.style.color = d.color;  // the healer in its class colour
+      tip.replaceChildren(head, line('Best race', `${d.best}, ${fmt(d.top)} ${unit}`), line('Weakest race', `${d.worstRace}, ${fmt(d.worst)} ${unit}`),
         line(up ? 'Best race adds' : 'Weakest race takes', `${fx(spread, 2)}%${up ? '' : ' more'}`), ...(d.build ? [line('Build', d.builds > 1 ? `${d.build} (best of ${d.builds})` : d.build)] : []));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
@@ -812,7 +813,7 @@ function drawHealBreakdown(p, view, data, fitH) {
   const list = [...acc.values()].filter((a) => a.hps + a.over > 0.05).sort((a, b) => b.hps - a.hps);
   const total = list.reduce((s2, a) => s2 + a.hps, 0), totalOver = list.reduce((s2, a) => s2 + a.over, 0);
   const fightText = p.specFight === 'all' ? 'averaged over 2, 3, 5 and 7 minute fights' : `${p.specFight / 60} minute fights`;
-  $('.lx-specnote').textContent = `Where ${view.label}’s healing comes from, with ${view.race}, ${fightText}: ${num(Math.round(total))} effective healing per second in all, plus ${num(Math.round(totalOver))} overhealing (the faint end of each bar). This is the healing-limited test fight (raid health 100×), where overhealing is rare; see "Methods and Caveats".`;
+  $('.lx-specnote').textContent = '';
   const sw = (kind) => { const e = el('span', 'hr-bdsw'); e.dataset.kind = kind; e.style.setProperty('--c', c); return e; };
   const key2 = (e, text) => { const k = el('span', 'hr-bdkey'); k.append(e, text); return k; };
   const isAbsorb = (a) => a.type === 'absorb', isChannel = (a) => String(a.type).startsWith('channel');
@@ -904,7 +905,7 @@ function draw() {
     const most = Math.max(0, ...spellRows.map((r) => (typeof r.spells === 'string' ? JSON.parse(r.spells) : r.spells).length));
     const H0 = Math.max(rows.length * 44, most ? most * 18 + 22 + 56 : 0, healUserH);
     if (rows.length) drawBoxes(box, rows, H0, { labelColor: true, fmt: (v) => num(Math.round(v)), value: (r) => `${num(Math.round(r.median))} HPS · ${r.race}`, onPick: (r) => setP({ cmpView: r.cls }),
-      tip: (r) => [el('div', 'h', r.label), tipLine('Race', r.race), tipLine('Median run', num(Math.round(r.median)) + ' HPS'), tipLine('Middle half of runs', `${num(Math.round(r.q1))} to ${num(Math.round(r.q3))} HPS`), tipLine('All runs', `${num(Math.round(r.min))} to ${num(Math.round(r.max))} HPS`), tipLine('Runs', String(r.n))] });
+      tip: (r) => [Object.assign(el('div', 'h', r.label), { style: `color: ${r.color}` }), tipLine('Race', r.race), tipLine('Median run', num(Math.round(r.median)) + ' HPS'), tipLine('Middle half of runs', `${num(Math.round(r.q1))} to ${num(Math.round(r.q3))} HPS`), tipLine('All runs', `${num(Math.round(r.min))} to ${num(Math.round(r.max))} HPS`), tipLine('Runs', String(r.n))] });
     // A healer picked from the boxes shows its spell breakdown over them, at their height, until "All healers" is clicked.
     const view = p.cmpView && rows.find((r) => r.cls === p.cmpView);
     if (view && SP.status === 'ok') drawHealBreakdown(p, view, spellRows, $('.lx-specnote').offsetHeight + box.offsetHeight);

@@ -1416,9 +1416,7 @@ function drawBreakdown(p, item, data, fitH) {
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fights`;
-  $('.lx-specnote').textContent = `Where ${item.name}’s ${key === 'tps' ? 'threat' : 'damage'} comes from: ${item.build} with ${race} at ${p.targets} target${+p.targets > 1 ? 's' : ''}, ${fightText}. ${fx(total, 1)} ${unit} in all; pets are listed by name.`
-    + (item.best && item.best !== race ? ` Breakdowns were run with each build’s best race at one target (${race}), so the total can differ a little from the bar for ${item.best}.` : '')
-    + (key === 'tps' && p.measure && p.measure !== 'tps' ? ' Damage taken and spikes have no per-ability breakdown, so this shows threat.' : '');
+  $('.lx-specnote').textContent = '';
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -1489,8 +1487,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for the numbers, click a spec for its ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for the numbers, click a spec for its ability breakdown.') : '');
+    ? 'Solid Bar = Weakest Race. Hover for the spec info, click a spec for its ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click a spec for its ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
@@ -1529,7 +1527,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const spread = (Math.abs(d.top - d.worst) / (up ? d.worst : d.top)) * 100;
-      tip.replaceChildren(el('div', 'h', d.name), line(d.single ? 'Race' : 'Best race', `${d.best}, ${fmt(d.top)} ${unit}`),
+      const head = el('div', 'h', d.name); head.style.color = d.color;  // the spec in its class colour
+      tip.replaceChildren(head, line(d.single ? 'Race' : 'Best race', `${d.best}, ${fmt(d.top)} ${unit}`),
         ...(d.single ? [] : [line('Weakest race', `${d.worstRace}, ${fmt(d.worst)} ${unit}`), line(up ? 'Best race adds' : 'Weakest race takes', `${fx(spread, 2)}%${up ? '' : ' more'}`)]),
         ...(d.build ? [line('Build', d.builds > 1 ? `${d.build} (best of ${d.builds})` : d.build)] : []),
         ...(d.scale ? [line('1 / 2 / 3 / 4 / 5 targets', d.scale.map((v) => (v == null ? '–' : Math.round(v))).join(' / '))] : []));
@@ -2389,9 +2388,7 @@ function drawBreakdown(p, item, data, fitH) {
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fights`;
-  $('.lx-specnote').textContent = `Where ${item.name}’s ${key === 'tps' ? 'threat' : 'damage'} comes from: ${item.build} with ${race} at ${p.targets} target${+p.targets > 1 ? 's' : ''}, ${fightText}. ${fx(total, 1)} ${unit} in all; pets are listed by name.`
-    + (item.best && item.best !== race ? ` Breakdowns were run with each build’s best race at one target (${race}), so the total can differ a little from the bar for ${item.best}.` : '')
-    + (key === 'tps' && p.measure && p.measure !== 'tps' ? ' Damage taken and spikes have no per-ability breakdown, so this shows threat.' : '');
+  $('.lx-specnote').textContent = '';
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -2467,8 +2464,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
   $('.lx-specnote').textContent = note || (items.length > 1 ? (up
-    ? 'Solid Bar = Weakest Race. Hover for the numbers, click a spec for its ability breakdown.'
-    : 'Lower is better. Solid Bar = Best Race. Hover for the numbers, click a spec for its ability breakdown.') : '');
+    ? 'Solid Bar = Weakest Race. Hover for the spec info, click a spec for its ability breakdown.'
+    : 'Lower is better. Solid Bar = Best Race. Hover for the spec info, click a spec for its ability breakdown.') : '');
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
@@ -2507,7 +2504,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const spread = (Math.abs(d.top - d.worst) / (up ? d.worst : d.top)) * 100;
-      tip.replaceChildren(el('div', 'h', d.name), line(d.single ? 'Race' : 'Best race', `${d.best}, ${fmt(d.top)} ${unit}`),
+      const head = el('div', 'h', d.name); head.style.color = d.color;  // the spec in its class colour
+      tip.replaceChildren(head, line(d.single ? 'Race' : 'Best race', `${d.best}, ${fmt(d.top)} ${unit}`),
         ...(d.single ? [] : [line('Weakest race', `${d.worstRace}, ${fmt(d.worst)} ${unit}`), line(up ? 'Best race adds' : 'Weakest race takes', `${fx(spread, 2)}%${up ? '' : ' more'}`)]),
         ...(d.build ? [line('Build', d.builds > 1 ? `${d.build} (best of ${d.builds})` : d.build)] : []),
         ...(d.scale ? [line('1 / 2 / 3 / 4 / 5 targets', d.scale.map((v) => (v == null ? '–' : Math.round(v))).join(' / '))] : []));
