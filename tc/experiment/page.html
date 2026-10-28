@@ -138,7 +138,7 @@
   .rr-bdsw[data-kind="auto"] { background: color-mix(in srgb, var(--c) 18%, #ffffff); }
   .rr-bdsw[data-kind="proc"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
-  /* Character setup: the gear, talents, consumables and buffs a spec's breakdown was simmed with. */
+  /* Setup: the gear, talents, consumables and buffs a spec's breakdown was simmed with. */
   .rr-bdbar .rr-seg { margin-right: var(--cds-gap-xs); }
   .su { display: grid; align-content: start; gap: var(--cds-gap-md); font-size: .8125rem; }
   .su-head { color: var(--color-fg-muted); }
@@ -166,13 +166,17 @@
   .su-opts { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); color: var(--color-fg-muted); }
   .su-opts b { color: var(--color-fg); font-weight: 500; }
   .su-note { margin-top: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
-  /* Casts (a table and a timeline of one run) and Damage over time, like Warcraft Logs' cast and damage views. */
+  /* Casts (a table and a timeline of one run) and Timeline (damage over time), like Warcraft Logs' cast and damage views. */
   .tl { display: grid; gap: var(--cds-gap-md); font-size: .8125rem; }
   .tl-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
   .tl-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
   .rr .tl-table th { position: static; background: none; text-align: left; font-weight: 600; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); padding: 4px 8px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
   .tl-table td { padding: 3px 8px; border-bottom: 1px solid #ffffff0a; white-space: nowrap; }
   .rr .tl-table th.n, .tl-table td.n { text-align: right; }
+  .rr .tl-table th { cursor: pointer; user-select: none; }
+  .rr .tl-table th:hover { color: var(--color-fg); }
+  .rr .tl-table th[aria-sort="ascending"]::after { content: ' ▲'; font-size: 9px; }
+  .rr .tl-table th[aria-sort="descending"]::after { content: ' ▼'; font-size: 9px; }
   .tl-table tr:hover td { background: #ffffff08; }
   .tl-name { display: flex; align-items: center; gap: 8px; }
   .tl-name img { width: 20px; height: 20px; border-radius: 3px; background: #000; }
@@ -1538,29 +1542,39 @@ const SCHOOL_COLOR = { Physical: '#f0d24a', Holy: '#ffe680', Fire: '#ff8a1f', Na
 const KIND_LABEL = { direct: 'Direct', dot: 'Over time', channel: 'Channel', auto: 'Auto attack', proc: 'Proc', resource: 'Resource gained' };
 // Physical damage over time is a bleed: it ignores armor (so armor debuffs don't raise it), and some bosses are immune.
 const kindLabel = (a) => (a.kind === 'dot' && a.school === 'Physical' ? 'Bleed' : KIND_LABEL[a.kind]);
+// The breakdown, Timeline, Casts and Setup views have each build run with its best race overall and with its best race
+// in the other faction: of a build's rows, those of the ranking's race when it was run, else of the faction picked's
+// best race (the best run when the filter is All).
+const ALLIANCE = new Set(['Human', 'Dwarf', 'Night Elf', 'Gnome', 'Alliance Skyborne']);
+function raceRows(p, item, list) {
+  const races = [...new Set(list.slice().sort((a, b) => b.dps - a.dps).map((r) => r.race))];
+  const race = races.includes(item.best) ? item.best : races.find((r) => p.faction === 'All' || (ALLIANCE.has(r) ? 'Alliance' : 'Horde') === p.faction) || races[0];
+  return list.filter((r) => r.race === race);
+}
 function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), open = el('button', 'rr-reset', 'Open in the boxes below');
-  back.type = open.type = 'button';
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs');
+  back.type = 'button';
   back.addEventListener('click', () => dash.setParams({ specView: '' }));
-  open.addEventListener('click', () => pickSpec(item.key));
   // The spec's name opens the spec menu, to switch to another spec's breakdown.
   const title = el('span', 'rr-bdtitle');
   title.append(specPicker(item.key, 'specView'));
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
-  for (const [v, text] of [['abilities', 'Abilities'], ['dot', 'Damage over time'], ['casts', 'Casts'], ['setup', 'Character setup']]) {
+  for (const [v, text] of [['abilities', 'Abilities'], ['dot', 'Timeline'], ['casts', 'Casts'], ['setup', 'Setup']]) {
     const b = el('button', null, text);
     b.type = 'button'; b.setAttribute('aria-pressed', String((p.specTab || 'abilities') === v));
     b.addEventListener('click', () => dash.setParams({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(back, title, tabs, open);
+  bar.append(back, title, tabs);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
-  const rows = data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight));
+  // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
+  $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
+  const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
   if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
@@ -1645,10 +1659,11 @@ function drawBreakdown(p, item, data, fitH) {
     .on('mouseleave', () => { tip.hidden = true; });
 }
 
-// Damage over time and Casts: from the `timeline` dataset (the Gear switch's pb_timeline for Classic pre-raid gear):
-// each build's best race at one target, run 10 times as single fights with the sim's combat log. Damage over time
+// Timeline (damage over time) and Casts: from the `timeline` dataset (the Gear switch's pb_timeline for Classic pre-raid gear):
+// each build's best race at one target (and its other faction's best), run 10 times as single fights with the sim's combat log. Timeline
 // averages the 10 runs' damage per second (in 2-second steps, smoothed over 6 seconds), stacked by ability. Casts
 // counts each pressed ability per fight (averaged) with its buff's uptime, and draws one run's casts as a timeline.
+let tlSort = { i: 1, dir: -1 };  // the casts table's sort: column index, 1 ascending / -1 descending
 const TL_DATA = 'timeline';
 // Nine colours apart from each other for the stacked damage (the dashboard's eight has two near-oranges).
 const TL_COLORS = ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#e0628f', '#8a8fd6', '#a7c95b'];
@@ -1657,7 +1672,7 @@ const mmss = (t) => `${t < 0 ? '-' : ''}${Math.floor(Math.abs(t) / 60)}:${String
 function drawTimeline(p, item, minH) {
   const box = $('.lx-speccmp'), T = rrData(dash.data(TL_DATA));
   const fight = p.fight === 'all' ? 180 : +p.fight;
-  const r = T.status === 'ok' && T.data.find((x) => x.spec === item.key && x.build === item.build && +x.fight === fight);
+  const r = T.status === 'ok' && raceRows(p, item, T.data.filter((x) => x.spec === item.key && x.build === item.build && +x.fight === fight))[0];
   $('.lx-specnote').textContent = r ? '' : `No combat logs for ${item.name} (${item.build}) here.`;
   if (!r) return;
   const wrap = el('div', 'tl');
@@ -1676,7 +1691,7 @@ function drawTimeline(p, item, minH) {
     const series = damage.map(([name, pet, vals], i) => ({ name: pet ? `${name} (${pet})` : name, raw: name, vals: smooth(vals), color: name === 'Other' ? '#6b6a64' : TL_COLORS[i % TL_COLORS.length] }));
     const pts = d3.range(n).map((i) => { const o = { t: i * step }; series.forEach((s, k) => { o[k] = s.vals[i] || 0; }); return o; });
     const stack = d3.stack().keys(series.map((_, k) => k))(pts);
-    const H = Math.max(220, Math.min(380, minH - 120)), m = { l: 48, r: 12, t: 8, b: 22 };
+    const H = Math.max(220, cmpUserH ? minH - 120 : Math.min(380, minH - 120)), m = { l: 48, r: 12, t: 8, b: 22 };
     const x = d3.scaleLinear([0, fight], [m.l, W - m.r]), y = d3.scaleLinear([0, d3.max(stack[stack.length - 1], (d) => d[1]) * 1.05], [H - m.b, m.t]).nice();
     const chart = el('div', 'tl-chart');
     wrap.append(chart);
@@ -1708,16 +1723,31 @@ function drawTimeline(p, item, minH) {
     return;
   }
   // Casts table.
+  // Click a column's header to sort by it (again for the other way).
   const table = el('table', 'tl-table'), head = el('tr'), total = casts.reduce((a, c) => a + c[1], 0), top = Math.max(...casts.map((c) => c[1]));
-  for (const [t, cls] of [['Ability'], ['Casts', 'n'], ['Share'], ['Per minute', 'n'], ['Uptime', 'n']]) head.append(el('th', cls, t));
+  const COLS = [['Ability', null, (c) => c[0]], ['Casts', 'n', (c) => c[1]], ['Share', null, (c) => c[1]], ['Per minute', 'n', (c) => c[1]], ['Uptime', 'n', (c) => (c[2] == null ? -1 : c[2])]];
   const tbody = el('tbody');
-  for (const [name, n, up] of casts) {
-    const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
-    ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
-    bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
-    tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
-    tbody.append(tr);
-  }
+  const fillRows = () => {
+    const by = COLS[tlSort.i][2];
+    const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir; });
+    tbody.replaceChildren(...list.map(([name, n, up]) => {
+      const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
+      ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
+      bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
+      tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
+      return tr;
+    }));
+    head.querySelectorAll('th').forEach((th, i) => th.setAttribute('aria-sort', i === tlSort.i ? (tlSort.dir > 0 ? 'ascending' : 'descending') : 'none'));
+  };
+  COLS.forEach(([t, cls], i) => {
+    const th = el('th', cls, t);
+    th.tabIndex = 0;
+    const go = () => { tlSort = tlSort.i === i ? { i, dir: -tlSort.dir } : { i, dir: i ? -1 : 1 }; fillRows(); };
+    th.addEventListener('click', go);
+    th.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    head.append(th);
+  });
+  fillRows();
   const tf = el('tr');
   tf.append(el('td', null, 'Total'), el('td', 'n', fx(total, 1)), el('td'), el('td', 'n', fx(total / (fight / 60), 1)), el('td'));
   const thead = el('thead'); thead.append(head);
@@ -1730,7 +1760,7 @@ function drawTimeline(p, item, minH) {
   const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pps = Math.max((W - lw - 16) / (fight - start), 14);
   const TW = Math.ceil(lw + (fight - start) * pps + 16), TH = names.length * rowH + 24;
   const sc = el('div', 'tl-scroll');
-  wrap.append(el('h3', 'tl-note', 'Timeline (one run)'), sc);
+  wrap.append(el('h3', 'tl-note', 'Cast timeline (one run)'), sc);
   const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
   const x = (t) => lw + (t - start) * pps;
   if (start < 0) {
@@ -1760,7 +1790,7 @@ function drawTimeline(p, item, minH) {
   sc.addEventListener('scroll', () => labels.attr('transform', `translate(${sc.scrollLeft},0)`));
 }
 
-// Character setup: what a build was simmed with, from the `setup` dataset (the Gear switch's pb_setup for Classic
+// Setup: what a build was simmed with, from the `setup` dataset (the Gear switch's pb_setup for Classic
 // pre-raid gear): gear and enchants, talents (linked to the talent calculator), consumables, buffs, debuffs on the
 // target and the build's other settings.
 const QUALITY = { 0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d9bff', 4: '#b866ff', 5: '#ff8000' };
@@ -1828,7 +1858,7 @@ function drawSetup(p, item, race, minH) {
 }
 
 const CMP_MIN_H = () => 0;
-let cmpUserH = 0;
+let cmpUserH = 0, cmpDrawnH = 0;  // the box height set by its drag handle; the spec ranking's drawn height
 function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
@@ -1846,6 +1876,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   // Icons grow with the bars (the Tanks tab's three bars are spread taller), as the healers' do, up to 30 px.
   const iz = Math.min(30, Math.max(18, bh)), W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+  cmpDrawnH = svg.node().getBoundingClientRect().height;
+  $('.lx-cmpgrip').style.display = '';
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   // A phone: short spec names and no race name after the bar (its portrait stays), so the bars keep room.
@@ -2028,7 +2060,7 @@ dash.onData(redraw);
   const grip = $('.lx-cmpgrip');
   let start = null;
   const setH = (h) => { cmpUserH = h > 0 ? Math.round(Math.max(120, Math.min(2400, h))) : 0; queueDraw(); };
-  grip.addEventListener('pointerdown', (e) => { start = { y: e.clientY, h: $('.lx-speccmp svg') ? $('.lx-speccmp svg').getBoundingClientRect().height : 0 }; grip.setPointerCapture(e.pointerId); grip.classList.add('drag'); e.preventDefault(); });
+  grip.addEventListener('pointerdown', (e) => { start = { y: e.clientY, h: cmpDrawnH }; grip.setPointerCapture(e.pointerId); grip.classList.add('drag'); e.preventDefault(); });
   grip.addEventListener('pointermove', (e) => { if (start) setH(start.h + e.clientY - start.y); });
   const end = () => { start = null; grip.classList.remove('drag'); };
   grip.addEventListener('pointerup', end); grip.addEventListener('pointercancel', end);
@@ -2036,7 +2068,7 @@ dash.onData(redraw);
   grip.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     e.preventDefault();
-    const cur = cmpUserH || ($('.lx-speccmp svg') ? $('.lx-speccmp svg').getBoundingClientRect().height : 0);
+    const cur = cmpUserH || cmpDrawnH;
     setH(cur + (e.key === 'ArrowDown' ? 40 : -40));
   });
 }
@@ -2733,29 +2765,39 @@ const SCHOOL_COLOR = { Physical: '#f0d24a', Holy: '#ffe680', Fire: '#ff8a1f', Na
 const KIND_LABEL = { direct: 'Direct', dot: 'Over time', channel: 'Channel', auto: 'Auto attack', proc: 'Proc', resource: 'Resource gained' };
 // Physical damage over time is a bleed: it ignores armor (so armor debuffs don't raise it), and some bosses are immune.
 const kindLabel = (a) => (a.kind === 'dot' && a.school === 'Physical' ? 'Bleed' : KIND_LABEL[a.kind]);
+// The breakdown, Timeline, Casts and Setup views have each build run with its best race overall and with its best race
+// in the other faction: of a build's rows, those of the ranking's race when it was run, else of the faction picked's
+// best race (the best run when the filter is All).
+const ALLIANCE = new Set(['Human', 'Dwarf', 'Night Elf', 'Gnome', 'Alliance Skyborne']);
+function raceRows(p, item, list) {
+  const races = [...new Set(list.slice().sort((a, b) => b.dps - a.dps).map((r) => r.race))];
+  const race = races.includes(item.best) ? item.best : races.find((r) => p.faction === 'All' || (ALLIANCE.has(r) ? 'Alliance' : 'Horde') === p.faction) || races[0];
+  return list.filter((r) => r.race === race);
+}
 function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), open = el('button', 'rr-reset', 'Open in the boxes below');
-  back.type = open.type = 'button';
+  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs');
+  back.type = 'button';
   back.addEventListener('click', () => setP({ specView: '' }));
-  open.addEventListener('click', () => pickSpec(item.key));
   // The spec's name opens the spec menu, to switch to another spec's breakdown.
   const title = el('span', 'rr-bdtitle');
   title.append(specPicker(item.key, 'specView'));
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
-  for (const [v, text] of [['abilities', 'Abilities'], ['dot', 'Damage over time'], ['casts', 'Casts'], ['setup', 'Character setup']]) {
+  for (const [v, text] of [['abilities', 'Abilities'], ['dot', 'Timeline'], ['casts', 'Casts'], ['setup', 'Setup']]) {
     const b = el('button', null, text);
     b.type = 'button'; b.setAttribute('aria-pressed', String((p.specTab || 'abilities') === v));
     b.addEventListener('click', () => setP({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(back, title, tabs, open);
+  bar.append(back, title, tabs);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
-  const rows = data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight));
+  // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
+  $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
+  const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
   if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
@@ -2840,10 +2882,11 @@ function drawBreakdown(p, item, data, fitH) {
     .on('mouseleave', () => { tip.hidden = true; });
 }
 
-// Damage over time and Casts: from the `timeline` dataset (tankTimeline here):
-// each build's best race at one target, run 10 times as single fights with the sim's combat log. Damage over time
+// Timeline (damage over time) and Casts: from the `timeline` dataset (tankTimeline here):
+// each build's best race at one target (and its other faction's best), run 10 times as single fights with the sim's combat log. Timeline
 // averages the 10 runs' damage per second (in 2-second steps, smoothed over 6 seconds), stacked by ability. Casts
 // counts each pressed ability per fight (averaged) with its buff's uptime, and draws one run's casts as a timeline.
+let tlSort = { i: 1, dir: -1 };  // the casts table's sort: column index, 1 ascending / -1 descending
 const TL_DATA = 'tankTimeline';
 // Nine colours apart from each other for the stacked damage (the dashboard's eight has two near-oranges).
 const TL_COLORS = ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#e0628f', '#8a8fd6', '#a7c95b'];
@@ -2852,7 +2895,7 @@ const mmss = (t) => `${t < 0 ? '-' : ''}${Math.floor(Math.abs(t) / 60)}:${String
 function drawTimeline(p, item, minH) {
   const box = $('.lx-speccmp'), T = rrData(dash.data(TL_DATA));
   const fight = p.fight === 'all' ? 180 : +p.fight;
-  const r = T.status === 'ok' && T.data.find((x) => x.spec === item.key && x.build === item.build && +x.fight === fight);
+  const r = T.status === 'ok' && raceRows(p, item, T.data.filter((x) => x.spec === item.key && x.build === item.build && +x.fight === fight))[0];
   $('.lx-specnote').textContent = r ? '' : `No combat logs for ${item.name} (${item.build}) here.`;
   if (!r) return;
   const wrap = el('div', 'tl');
@@ -2871,7 +2914,7 @@ function drawTimeline(p, item, minH) {
     const series = damage.map(([name, pet, vals], i) => ({ name: pet ? `${name} (${pet})` : name, raw: name, vals: smooth(vals), color: name === 'Other' ? '#6b6a64' : TL_COLORS[i % TL_COLORS.length] }));
     const pts = d3.range(n).map((i) => { const o = { t: i * step }; series.forEach((s, k) => { o[k] = s.vals[i] || 0; }); return o; });
     const stack = d3.stack().keys(series.map((_, k) => k))(pts);
-    const H = Math.max(220, Math.min(380, minH - 120)), m = { l: 48, r: 12, t: 8, b: 22 };
+    const H = Math.max(220, cmpUserH ? minH - 120 : Math.min(380, minH - 120)), m = { l: 48, r: 12, t: 8, b: 22 };
     const x = d3.scaleLinear([0, fight], [m.l, W - m.r]), y = d3.scaleLinear([0, d3.max(stack[stack.length - 1], (d) => d[1]) * 1.05], [H - m.b, m.t]).nice();
     const chart = el('div', 'tl-chart');
     wrap.append(chart);
@@ -2903,16 +2946,31 @@ function drawTimeline(p, item, minH) {
     return;
   }
   // Casts table.
+  // Click a column's header to sort by it (again for the other way).
   const table = el('table', 'tl-table'), head = el('tr'), total = casts.reduce((a, c) => a + c[1], 0), top = Math.max(...casts.map((c) => c[1]));
-  for (const [t, cls] of [['Ability'], ['Casts', 'n'], ['Share'], ['Per minute', 'n'], ['Uptime', 'n']]) head.append(el('th', cls, t));
+  const COLS = [['Ability', null, (c) => c[0]], ['Casts', 'n', (c) => c[1]], ['Share', null, (c) => c[1]], ['Per minute', 'n', (c) => c[1]], ['Uptime', 'n', (c) => (c[2] == null ? -1 : c[2])]];
   const tbody = el('tbody');
-  for (const [name, n, up] of casts) {
-    const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
-    ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
-    bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
-    tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
-    tbody.append(tr);
-  }
+  const fillRows = () => {
+    const by = COLS[tlSort.i][2];
+    const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir; });
+    tbody.replaceChildren(...list.map(([name, n, up]) => {
+      const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
+      ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
+      bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
+      tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
+      return tr;
+    }));
+    head.querySelectorAll('th').forEach((th, i) => th.setAttribute('aria-sort', i === tlSort.i ? (tlSort.dir > 0 ? 'ascending' : 'descending') : 'none'));
+  };
+  COLS.forEach(([t, cls], i) => {
+    const th = el('th', cls, t);
+    th.tabIndex = 0;
+    const go = () => { tlSort = tlSort.i === i ? { i, dir: -tlSort.dir } : { i, dir: i ? -1 : 1 }; fillRows(); };
+    th.addEventListener('click', go);
+    th.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    head.append(th);
+  });
+  fillRows();
   const tf = el('tr');
   tf.append(el('td', null, 'Total'), el('td', 'n', fx(total, 1)), el('td'), el('td', 'n', fx(total / (fight / 60), 1)), el('td'));
   const thead = el('thead'); thead.append(head);
@@ -2925,7 +2983,7 @@ function drawTimeline(p, item, minH) {
   const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pps = Math.max((W - lw - 16) / (fight - start), 14);
   const TW = Math.ceil(lw + (fight - start) * pps + 16), TH = names.length * rowH + 24;
   const sc = el('div', 'tl-scroll');
-  wrap.append(el('h3', 'tl-note', 'Timeline (one run)'), sc);
+  wrap.append(el('h3', 'tl-note', 'Cast timeline (one run)'), sc);
   const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
   const x = (t) => lw + (t - start) * pps;
   if (start < 0) {
@@ -2955,7 +3013,7 @@ function drawTimeline(p, item, minH) {
   sc.addEventListener('scroll', () => labels.attr('transform', `translate(${sc.scrollLeft},0)`));
 }
 
-// Character setup: what a tank build was simmed with, from the `tankSetup` dataset (as the DPS tab's: gear and
+// Setup: what a tank build was simmed with, from the `tankSetup` dataset (as the DPS tab's: gear and
 // enchants, talents linked to the talent calculator, consumables, buffs, debuffs on the target and other settings).
 const QUALITY = { 0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d9bff', 4: '#b866ff', 5: '#ff8000' };
 const suIcon = (name) => { const i = el('img'); i.alt = ''; i.loading = 'lazy'; if (name) i.src = 'images/icons/' + name + '.jpg'; return i; };
@@ -3027,7 +3085,7 @@ const CMP_MIN_H = () => {
   const n = Math.max(0, ...B.data.map((r) => (typeof r.abilities === 'string' ? JSON.parse(r.abilities) : r.abilities).length));
   return n * 16 + 22 + 40;
 };
-let cmpUserH = 0;
+let cmpUserH = 0, cmpDrawnH = 0;  // the box height set by its drag handle; the spec ranking's drawn height
 function drawSpecCompare(p, items, up, unit, onPick, note) {
   const box = $('.lx-speccmp');
   box.replaceChildren();
@@ -3045,6 +3103,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   // Icons grow with the bars (the Tanks tab's three bars are spread taller), as the healers' do, up to 30 px.
   const iz = Math.min(30, Math.max(18, bh)), W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+  cmpDrawnH = svg.node().getBoundingClientRect().height;
+  $('.lx-cmpgrip').style.display = '';
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   // A phone: short spec names and no race name after the bar (its portrait stays), so the bars keep room.
@@ -3229,7 +3289,7 @@ dash.onData(redraw);
   const grip = $('.lx-cmpgrip');
   let start = null;
   const setH = (h) => { cmpUserH = h > 0 ? Math.round(Math.max(120, Math.min(2400, h))) : 0; queueDraw(); };
-  grip.addEventListener('pointerdown', (e) => { start = { y: e.clientY, h: $('.lx-speccmp svg') ? $('.lx-speccmp svg').getBoundingClientRect().height : 0 }; grip.setPointerCapture(e.pointerId); grip.classList.add('drag'); e.preventDefault(); });
+  grip.addEventListener('pointerdown', (e) => { start = { y: e.clientY, h: cmpDrawnH }; grip.setPointerCapture(e.pointerId); grip.classList.add('drag'); e.preventDefault(); });
   grip.addEventListener('pointermove', (e) => { if (start) setH(start.h + e.clientY - start.y); });
   const end = () => { start = null; grip.classList.remove('drag'); };
   grip.addEventListener('pointerup', end); grip.addEventListener('pointercancel', end);
@@ -3237,7 +3297,7 @@ dash.onData(redraw);
   grip.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     e.preventDefault();
-    const cur = cmpUserH || ($('.lx-speccmp svg') ? $('.lx-speccmp svg').getBoundingClientRect().height : 0);
+    const cur = cmpUserH || cmpDrawnH;
     setH(cur + (e.key === 'ArrowDown' ? 40 : -40));
   });
 }

@@ -77,9 +77,9 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     synced Oct 28, 2026, before the build renames): don't update it or copy from it. The DPS tab's Gear switch
     ("Classic pre-raid") reads `data/pb_<id>.json` in place of `<id>` (sims, targets, breakdown, apm, regear, setup, timeline); those
     come from the race-sims harness (`C:\Users\austi\Documents\GitHub\race-sims-harness`, README "Classic pre-raid gear"). `data/setup.json` / `pb_setup.json` (and `tankSetup.json` for the Tanks tab) hold each build's gear, talents, consumables, buffs and
-    settings for the ability breakdown's "Character setup" view (item icons saved in `images/icons/`; its links go to
+    settings for the ability breakdown's "Setup" view (item icons saved in `images/icons/`; its links go to
     Wowhead, classic Wowhead for the Classic pre-raid gear and enchants, and show Wowhead's tooltips, loaded in `experiment.py`'s head), written by the harness's
-    `scripts/shape_setup.py`. `data/timeline.json` / `pb_timeline.json` / `tankTimeline.json` hold the breakdown's "Damage over time" and
+    `scripts/shape_setup.py`. `data/timeline.json` / `pb_timeline.json` / `tankTimeline.json` hold the breakdown's "Timeline" (damage over time) and
     "Casts" views (10 single runs per build and fight length, read from the sim's combat log), written by the harness's
     `scripts/shape_timeline.py` (README "Casts and damage over time")
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
