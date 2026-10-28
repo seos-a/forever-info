@@ -1282,9 +1282,9 @@ const BELOW = {
   'Beast Mastery Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Marksmanship Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Survival Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
-  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
@@ -1622,7 +1622,7 @@ function drawLines(p, rows) {
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
 // The Hunters' Dwarf note says how a Dwarf geared for it (1% hit traded for 1% crit) would do. Hovering that sentence (or
 // tapping it) shows that run in the chart, from the "regear" dataset: the same builds and fight lengths with the regear.
-const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.';
+const REGEAR_TEXT = 'With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.';
 let regearOn = false, gainArgs = null;
 function withRegear(p, list) {
   const R = rrData(dash.data('regear'));
@@ -3952,9 +3952,9 @@ const BELOW = {
   'Beast Mastery Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Marksmanship Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Survival Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
-  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit (Artisan’s Precision) currently gains no value due to Hunter presets already being hit capped. Big Game Hunter only works on Beasts (the boss is Mechanical). Dwarf’s innate −4 Agility is all that shows. Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 0.8 to 1 percentage point higher.',
+  'Beast Mastery Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
