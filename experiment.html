@@ -1810,7 +1810,7 @@ function drawBreakdown(p, item, data, fitH) {
     b.addEventListener('click', () => dash.setParams({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(back, title, tabs);
+  bar.append(title, tabs, back);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
@@ -4497,7 +4497,7 @@ function drawBreakdown(p, item, data, fitH) {
     b.addEventListener('click', () => setP({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(back, title, tabs);
+  bar.append(title, tabs, back);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
