@@ -513,8 +513,8 @@ document.head.appendChild(t);})();
   .lx-wide .rr-spec .l, .lx-wide .hr-spec .l { font-size: 12px; margin-top: 2px; }
   .lx-wide .l .ru { font-weight: 600; }
   @media (max-width: 700px) { .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: wrap; } .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; } }
-  /* the Top Race cards: as wide as the longest spec name ("Marksmanship") needs, beside the icon */
-  .rr-specs .rr-spec, .hr-specs .hr-spec { flex-basis: 9.25rem; }
+  /* the Top Race cards: as wide as their longest name needs, beside the icon (--card-w, measured as they're drawn) */
+  .rr-specs .rr-spec, .hr-specs .hr-spec { flex-basis: var(--card-w, 11rem); }
   /* phones: slimmer boxes, and the Top Race cards two to a row */
   @media (max-width: 600px) {
     .rr-card, .hr-card { padding: 10px; }
@@ -1387,6 +1387,12 @@ function drawCards(p, rows, specs) {
     b.append(best);
     return b;
   }));
+  // Size the cards to their longest spec or race name in the fonts this device has, beside the icon.
+  const c0 = box.querySelector('.rr-spec'), need = Math.max(0, ...[...box.querySelectorAll('.rr-spec .s, .rr-spec .r')].map((e) => { const r = document.createRange(); r.selectNodeContents(e); return r.getBoundingClientRect().width; }));  // the text's own width
+  if (c0 && need) {
+    const cs = getComputedStyle(c0), px = (v) => parseFloat(v) || 0;
+    box.style.setProperty('--card-w', Math.ceil(need + c0.querySelector('.pic').offsetWidth + px(cs.columnGap) + px(cs.paddingLeft) + px(cs.paddingRight) + px(cs.borderLeftWidth) * 2 + 4) + 'px');
+  }
   fitNames(box);
 }
 
