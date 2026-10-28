@@ -106,9 +106,10 @@
   .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
   .rr-chart svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
-  /* "← All specs": a plain text link like the page's "← Forever Info", no button border */
-  .rr-reset.rr-back { border: 0; background: none; padding: 0; color: var(--color-fg-muted); font-size: .8125rem; }
-  .rr-reset.rr-back:hover { color: var(--color-fg); }
+  /* The spec breakdown's breadcrumb title: "Damage Per Second › Combat Rogue", the first part going back to all specs */
+  .rr-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
+  .rr-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
+  .rr-crumbsep { color: var(--color-fg-muted); margin: 0 .4em; font-weight: 400; }
   .rr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
   .rr-chart .lab { fill: var(--color-fg); }
   .rr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
@@ -128,7 +129,6 @@
   .rr-chart.lx-speccmp, .rr-chart.lx-gains { min-height: 0; }
   .rr-chart.lx-speccmp svg { cursor: default; }
   .rr-bdbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-sm); }
-  .rr-bdtitle { font-weight: 600; margin-right: auto; }
   .rr-bdlegend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-xs) var(--cds-gap-md); margin-bottom: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .rr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
@@ -451,9 +451,10 @@
   .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
   .rr-chart svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
-  /* "← All specs": a plain text link like the page's "← Forever Info", no button border */
-  .rr-reset.rr-back { border: 0; background: none; padding: 0; color: var(--color-fg-muted); font-size: .8125rem; }
-  .rr-reset.rr-back:hover { color: var(--color-fg); }
+  /* The spec breakdown's breadcrumb title: "Damage Per Second › Combat Rogue", the first part going back to all specs */
+  .rr-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
+  .rr-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
+  .rr-crumbsep { color: var(--color-fg-muted); margin: 0 .4em; font-weight: 400; }
   .rr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
   .rr-chart .lab { fill: var(--color-fg); }
   .rr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
@@ -473,7 +474,6 @@
   .rr-chart.lx-speccmp, .rr-chart.lx-gains { min-height: 0; }
   .rr-chart.lx-speccmp svg { cursor: default; }
   .rr-bdbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-sm); }
-  .rr-bdtitle { font-weight: 600; margin-right: auto; }
   .rr-bdlegend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-xs) var(--cds-gap-md); margin-bottom: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .rr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
@@ -1584,12 +1584,12 @@ function raceRows(p, item, list) {
 function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs');
-  back.type = 'button';
+  const bar = el('div', 'rr-bdbar');
+  // The card's title becomes a breadcrumb: its name goes back to all specs, the spec's name opens the spec menu.
+  const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb', h2.dataset.base);
+  back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => dash.setParams({ specView: '', specBuild: '', specRace: '' }));
-  // The spec's name opens the spec menu, to switch to another spec's breakdown.
-  const title = el('span', 'rr-bdtitle');
-  title.append(specPicker(item.key, 'specView'));
+  if (p.cmpMode !== 'apm') h2.replaceChildren(back, el('span', 'rr-crumbsep', '›'), specPicker(item.key, 'specView'));
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
@@ -1599,7 +1599,7 @@ function drawBreakdown(p, item, data, fitH) {
     b.addEventListener('click', () => dash.setParams({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(title, tabs, back);
+  bar.append(tabs);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
@@ -2141,6 +2141,11 @@ function draw() {
     // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
     if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) view = { ...view, build: p.specBuild.slice(view.key.length + 1), best: p.specRace || view.best, pinned: true };
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
+    // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
+    // plain again when none is, and left alone in the APM view, which shows its own.
+    const h2 = $('.lx-cmptitle');
+    h2.dataset.base ||= h2.textContent;
+    if (p.cmpMode !== 'apm' && !view && h2.querySelector('.rr-crumb')) h2.textContent = h2.dataset.base;
     // The breakdown is drawn over the ranking, at the ranking's height.
     if (view) drawBreakdown(sp, view, B.data, $('.lx-specnote').offsetHeight + $('.lx-speccmp').offsetHeight);
   }
@@ -2923,12 +2928,12 @@ function raceRows(p, item, list) {
 function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs');
-  back.type = 'button';
+  const bar = el('div', 'rr-bdbar');
+  // The card's title becomes a breadcrumb: its name goes back to all specs, the spec's name opens the spec menu.
+  const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb', h2.dataset.base);
+  back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => setP({ specView: '', specBuild: '', specRace: '' }));
-  // The spec's name opens the spec menu, to switch to another spec's breakdown.
-  const title = el('span', 'rr-bdtitle');
-  title.append(specPicker(item.key, 'specView'));
+  if (p.tCmpMode !== 'apm') h2.replaceChildren(back, el('span', 'rr-crumbsep', '›'), specPicker(item.key, 'specView'));
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
@@ -2938,7 +2943,7 @@ function drawBreakdown(p, item, data, fitH) {
     b.addEventListener('click', () => setP({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(title, tabs, back);
+  bar.append(tabs);
   const legend = el('div', 'rr-bdlegend');
   box.append(bar, legend);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
@@ -3486,6 +3491,11 @@ function draw() {
     // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
     if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) view = { ...view, build: p.specBuild.slice(view.key.length + 1), best: p.specRace || view.best, pinned: true };
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
+    // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
+    // plain again when none is, and left alone in the APM view, which shows its own.
+    const h2 = $('.lx-cmptitle');
+    h2.dataset.base ||= h2.textContent;
+    if (p.tCmpMode !== 'apm' && !view && h2.querySelector('.rr-crumb')) h2.textContent = h2.dataset.base;
     // The breakdown is drawn over the ranking, at the ranking's height.
     if (view) drawBreakdown(sp, view, B.data, $('.lx-specnote').offsetHeight + $('.lx-speccmp').offsetHeight);
   }

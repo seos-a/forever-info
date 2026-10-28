@@ -59,7 +59,7 @@ function specItems(b, rows, fight) {
 function setup(b) {
   const panel = document.querySelector(`[data-tab-panel="${b.tab}"]`), card = panel && panel.querySelector('#' + b.id);
   if (!card) return;
-  const title = card.querySelector('.lx-cmptitle');
+  const title = b.titleEl = card.querySelector('.lx-cmptitle');
   const seg = card.querySelector('.lx-cmpmode'), box = card.querySelector('.lx-apm'), note = card.querySelector('.lx-apmnote'), noteText = note.textContent;
   // Show the chosen chart before the page redraws, so the ranking is measured (and drawn) at its real width.
   card.classList.toggle('apm-on', dash.params()[b.mode] === 'apm');
@@ -76,8 +76,11 @@ function setup(b) {
     const q = dash.params(), on = q[b.mode] === 'apm', fight = String(q[b.fight] || 'all');
     seg.querySelectorAll('button').forEach((e) => e.setAttribute('aria-pressed', String(e.dataset.v === (on ? 'apm' : 'rank'))));
     card.classList.toggle('apm-on', on);
-    // The box's title names what it shows (the Tanks tab: its chosen measure).
-    title.textContent = on ? 'Actions Per Minute' : b.title(q);
+    // The box's title names what it shows (the Tanks tab: its chosen measure). While a spec's breakdown is open the
+    // dashboard shows it as a breadcrumb ("Damage Per Second › Combat Rogue"), whose first part is this name.
+    title.dataset.base = b.title(q);
+    const crumb = !on && title.querySelector('.rr-crumb');
+    if (crumb) crumb.textContent = title.dataset.base; else title.textContent = on ? 'Actions Per Minute' : title.dataset.base;
     box.replaceChildren();
     note.textContent = noteText;
     if (!on) return;
@@ -205,11 +208,11 @@ function drawBreakdown(b, box, note, item, fight, specs) {
   });
   const total = rows.reduce((t, a) => t + a.v, 0);
   note.textContent = '';
-  const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs'), title = el('span', 'rr-bdtitle');
-  back.type = 'button';
+  // The box's title becomes a breadcrumb, as in the damage breakdown: its name goes back to all specs.
+  const back = el('button', 'rr-crumb', 'Actions Per Minute');
+  back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => dash.setParams({ [b.view]: '' }));
-  title.append(apmPicker(b, item.spec, specs));
-  bar.append(back, title);
+  b.titleEl.replaceChildren(back, el('span', 'rr-crumbsep', '›'), apmPicker(b, item.spec, specs));
   const col = (a) => (healer ? cls : SCHOOL_COLOR[a.school] || 'var(--color-fg-muted)');
   // Legend swatches reuse the damage breakdown's styles: over time as its stripes, utility as its grey, absorbs outlined.
   const sw = (c, kind) => { const e = el('span', 'rr-bdsw'); e.dataset.kind = kind === 'hot' ? 'dot' : kind === 'utility' ? 'resource' : kind === 'absorb' ? 'proc' : kind; e.style.setProperty('--c', c); return e; };
@@ -219,7 +222,7 @@ function drawBreakdown(b, box, note, item, fight, specs) {
   const legend = el('div', 'rr-bdlegend');
   legend.append(...schools.map((sc) => key(sw(SCHOOL_COLOR[sc], 'direct'), sc)), ...(schools.length ? [el('span', 'rr-bdsep')] : []),
     ...Object.keys(KIND_LABEL).filter((k) => present.has(k)).map((k) => key(sw(c0, k), KIND_LABEL[k])));
-  box.append(bar, legend);
+  box.append(legend);
   const slot = b.userH ? Math.max(16, (b.userH - 22) / rows.length) : 26, bh = Math.min(64, slot * 0.78), gap = slot - bh;
   const W = Math.max(280, box.clientWidth), H = rows.length * slot + 22, iz = Math.min(28, Math.max(14, bh));
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
