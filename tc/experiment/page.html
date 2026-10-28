@@ -166,6 +166,28 @@
   .su-opts { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); color: var(--color-fg-muted); }
   .su-opts b { color: var(--color-fg); font-weight: 500; }
   .su-note { margin-top: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  /* Casts (a table and a timeline of one run) and Damage over time, like Warcraft Logs' cast and damage views. */
+  .tl { display: grid; gap: var(--cds-gap-md); font-size: .8125rem; }
+  .tl-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  .tl-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .rr .tl-table th { position: static; background: none; text-align: left; font-weight: 600; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); padding: 4px 8px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .tl-table td { padding: 3px 8px; border-bottom: 1px solid #ffffff0a; white-space: nowrap; }
+  .rr .tl-table th.n, .tl-table td.n { text-align: right; }
+  .tl-table tr:hover td { background: #ffffff08; }
+  .tl-name { display: flex; align-items: center; gap: 8px; }
+  .tl-name img { width: 20px; height: 20px; border-radius: 3px; background: #000; }
+  .tl-amt { display: flex; align-items: center; gap: 8px; min-width: 160px; }
+  .tl-amt span { width: 46px; text-align: right; color: var(--color-fg-muted); }
+  .tl-amt i { display: block; height: 10px; border-radius: 2px; background: #c9b37e; }
+  .tl-tablewrap { overflow-x: auto; }
+  .tl-scroll { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
+  .tl-scroll svg { display: block; }
+  .tl-svg text { fill: var(--color-fg-muted); font-size: 11px; }
+  .tl-svg .lab { fill: var(--color-fg); font-size: 12px; }
+  .tl-legend { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .tl-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .tl-legend i { width: 12px; height: 10px; border-radius: 2px; }
+  .tl-chart { position: relative; }
 
   /* Layout: patched notice, header + filters, best race per healer, ranking, race-by-healer table, one healer's charts and runs */
   .hr { --hr-alliance: #3f7fd9; --hr-horde: #d2423b; --hr-none: #8a8a8a; --hr-gold: #e2b23c; --hr-up: #4a8fe0; --hr-down: #d2463f; display: flex; flex-direction: column; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
@@ -1529,7 +1551,7 @@ function drawBreakdown(p, item, data, fitH) {
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
-  for (const [v, text] of [['abilities', 'Abilities'], ['setup', 'Character setup']]) {
+  for (const [v, text] of [['abilities', 'Abilities'], ['dot', 'Damage over time'], ['casts', 'Casts'], ['setup', 'Character setup']]) {
     const b = el('button', null, text);
     b.type = 'button'; b.setAttribute('aria-pressed', String((p.specTab || 'abilities') === v));
     b.addEventListener('click', () => dash.setParams({ specTab: v }));
@@ -1540,6 +1562,7 @@ function drawBreakdown(p, item, data, fitH) {
   box.append(bar, legend);
   const rows = data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight));
   if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
+  if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
   const acc = new Map();
@@ -1620,6 +1643,121 @@ function drawBreakdown(p, item, data, fitH) {
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
+}
+
+// Damage over time and Casts: from the `timeline` dataset (the Gear switch's pb_timeline for Classic pre-raid gear):
+// each build's best race at one target, run 10 times as single fights with the sim's combat log. Damage over time
+// averages the 10 runs' damage per second (in 2-second steps, smoothed over 6 seconds), stacked by ability. Casts
+// counts each pressed ability per fight (averaged) with its buff's uptime, and draws one run's casts as a timeline.
+const TL_DATA = 'timeline';
+// Nine colours apart from each other for the stacked damage (the dashboard's eight has two near-oranges).
+const TL_COLORS = ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#e0628f', '#8a8fd6', '#a7c95b'];
+const tlIcon = (name) => (window.ABILITY_ICONS || {})[name] || null;
+const mmss = (t) => `${t < 0 ? '-' : ''}${Math.floor(Math.abs(t) / 60)}:${String(Math.floor(Math.abs(t) % 60)).padStart(2, '0')}`;
+function drawTimeline(p, item, minH) {
+  const box = $('.lx-speccmp'), T = rrData(dash.data(TL_DATA));
+  const fight = p.fight === 'all' ? 180 : +p.fight;
+  const r = T.status === 'ok' && T.data.find((x) => x.spec === item.key && x.build === item.build && +x.fight === fight);
+  $('.lx-specnote').textContent = r ? '' : `No combat logs for ${item.name} (${item.build}) here.`;
+  if (!r) return;
+  const wrap = el('div', 'tl');
+  wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
+  const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
+  const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
+  if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
+  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median).`);
+  wrap.append(el('div', 'tl-note', notes.join(' ')));
+  box.append(wrap);
+  const W = Math.max(280, box.clientWidth);
+  if (p.specTab === 'dot') {
+    // Stacked damage per second, each series smoothed over 3 steps.
+    const step = +r.step || 2, n = Math.max(...damage.map((d) => d[2].length));
+    const smooth = (a) => a.map((_, i) => { const w = a.slice(Math.max(0, i - 1), i + 2); return w.reduce((x, y) => x + y, 0) / w.length; });
+    const series = damage.map(([name, pet, vals], i) => ({ name: pet ? `${name} (${pet})` : name, raw: name, vals: smooth(vals), color: name === 'Other' ? '#6b6a64' : TL_COLORS[i % TL_COLORS.length] }));
+    const pts = d3.range(n).map((i) => { const o = { t: i * step }; series.forEach((s, k) => { o[k] = s.vals[i] || 0; }); return o; });
+    const stack = d3.stack().keys(series.map((_, k) => k))(pts);
+    const H = Math.max(220, Math.min(380, minH - 120)), m = { l: 48, r: 12, t: 8, b: 22 };
+    const x = d3.scaleLinear([0, fight], [m.l, W - m.r]), y = d3.scaleLinear([0, d3.max(stack[stack.length - 1], (d) => d[1]) * 1.05], [H - m.b, m.t]).nice();
+    const chart = el('div', 'tl-chart');
+    wrap.append(chart);
+    const svg = d3.select(chart).append('svg').attr('class', 'tl-svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    svg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(y.ticks(5)).join('text').attr('x', m.l - 6).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text((v) => d3.format(',')(v));
+    const xt = d3.range(0, fight + 1, fight > 120 ? 30 : 15);
+    svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text(mmss);
+    const area = d3.area().x((d) => x(d.data.t + step / 2)).y0((d) => y(d[0])).y1((d) => y(d[1])).curve(d3.curveMonotoneX);
+    svg.append('g').selectAll('path').data(stack).join('path').attr('d', area).style('fill', (d) => series[d.key].color).attr('fill-opacity', 0.85);
+    const cursor = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).attr('stroke', 'var(--color-fg-muted)').attr('stroke-dasharray', '3 3').style('display', 'none');
+    const tip = el('div', 'rr-tip'); tip.hidden = true; chart.append(tip);
+    const line = (k, v, c) => { const row = el('div', 'row'), a = el('span', null, k); if (c) a.style.color = c; row.append(a, el('b', null, v)); return row; };
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+      .on('mousemove', (ev) => {
+        const [mx] = d3.pointer(ev), i = Math.max(0, Math.min(n - 1, Math.floor(x.invert(mx) / step))), d = pts[i];
+        cursor.style('display', null).attr('x1', x(d.t + step / 2)).attr('x2', x(d.t + step / 2));
+        const tot = series.reduce((a, _, k) => a + d[k], 0);
+        tip.replaceChildren(el('div', 'h', mmss(d.t)), line('Total', d3.format(',')(Math.round(tot)) + ' DPS'),
+          ...series.map((s, k) => [s, d[k]]).filter(([, v]) => v >= 0.5).sort((a, b) => b[1] - a[1]).map(([s, v]) => line(s.name, d3.format(',')(Math.round(v)), s.color)));
+        tip.hidden = false;
+        const [px, py] = d3.pointer(ev, chart), tw = tip.offsetWidth;
+        tip.style.left = (px + 14 + tw > chart.clientWidth ? px - 14 - tw : px + 14) + 'px'; tip.style.top = Math.max(0, py - 40) + 'px';
+      })
+      .on('mouseleave', () => { tip.hidden = true; cursor.style('display', 'none'); });
+    const leg = el('div', 'tl-legend');
+    for (const s of series) { const k = el('span'), sw = el('i'); sw.style.background = s.color; k.append(sw, s.name); leg.append(k); }
+    wrap.append(leg);
+    return;
+  }
+  // Casts table.
+  const table = el('table', 'tl-table'), head = el('tr'), total = casts.reduce((a, c) => a + c[1], 0), top = Math.max(...casts.map((c) => c[1]));
+  for (const [t, cls] of [['Ability'], ['Casts', 'n'], ['Share'], ['Per minute', 'n'], ['Uptime', 'n']]) head.append(el('th', cls, t));
+  const tbody = el('tbody');
+  for (const [name, n, up] of casts) {
+    const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
+    ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
+    bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
+    tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
+    tbody.append(tr);
+  }
+  const tf = el('tr');
+  tf.append(el('td', null, 'Total'), el('td', 'n', fx(total, 1)), el('td'), el('td', 'n', fx(total / (fight / 60), 1)), el('td'));
+  const thead = el('thead'); thead.append(head);
+  const tfoot = el('tfoot'); tfoot.append(tf);
+  table.append(thead, tbody, tfoot);
+  const tw = el('div', 'tl-tablewrap');
+  tw.append(table);
+  wrap.append(tw);
+  // Timeline of one run: a row per ability, its casts as icons (a bar for a cast time), its buff as a band behind.
+  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pps = Math.max((W - lw - 16) / (fight - start), 14);
+  const TW = Math.ceil(lw + (fight - start) * pps + 16), TH = names.length * rowH + 24;
+  const sc = el('div', 'tl-scroll');
+  wrap.append(el('h3', 'tl-note', 'Timeline (one run)'), sc);
+  const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
+  const x = (t) => lw + (t - start) * pps;
+  if (start < 0) {
+    svg.append('rect').attr('x', x(start)).attr('y', 20).attr('width', x(0) - x(start)).attr('height', TH - 20).attr('fill', '#ffffff08');
+    svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
+  }
+  const ticks = d3.range(0, fight + 1, pps >= 30 ? 5 : 10);
+  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', 16).attr('y2', TH).attr('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(ticks.filter((t) => t > 0 || start === 0)).join('text').attr('x', x).attr('y', 12).attr('text-anchor', 'middle').text(mmss);
+  const rows = svg.append('g').attr('transform', 'translate(0,20)');
+  names.forEach((name, i) => {
+    const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
+    g.append('rect').attr('x', 0).attr('width', TW).attr('height', rowH).attr('fill', i % 2 ? '#ffffff05' : 'transparent');
+    g.append('image').attr('href', tlIcon(name)).attr('x', 4).attr('y', 3).attr('width', 16).attr('height', 16);
+    g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
+  });
+  for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
+  for (const [i, t, ct] of tl) {
+    if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
+    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14)
+      .append('title').text(`${names[i]} · ${t < 0 ? 'pre-pull ' : ''}${mmss(t)}${ct ? ` · ${ct} s cast` : ''}`);
+  }
+  // The labels stay in view while the timeline scrolls.
+  const labels = svg.append('g');
+  labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
+  labels.node().append(...rows.selectAll(':scope > g').nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
+  sc.addEventListener('scroll', () => labels.attr('transform', `translate(${sc.scrollLeft},0)`));
 }
 
 // Character setup: what a build was simmed with, from the `setup` dataset (the Gear switch's pb_setup for Classic
@@ -2608,7 +2746,7 @@ function drawBreakdown(p, item, data, fitH) {
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
-  for (const [v, text] of [['abilities', 'Abilities'], ['setup', 'Character setup']]) {
+  for (const [v, text] of [['abilities', 'Abilities'], ['dot', 'Damage over time'], ['casts', 'Casts'], ['setup', 'Character setup']]) {
     const b = el('button', null, text);
     b.type = 'button'; b.setAttribute('aria-pressed', String((p.specTab || 'abilities') === v));
     b.addEventListener('click', () => setP({ specTab: v }));
@@ -2619,6 +2757,7 @@ function drawBreakdown(p, item, data, fitH) {
   box.append(bar, legend);
   const rows = data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight));
   if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
+  if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
   const acc = new Map();
@@ -2699,6 +2838,121 @@ function drawBreakdown(p, item, data, fitH) {
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
+}
+
+// Damage over time and Casts: from the `timeline` dataset (tankTimeline here):
+// each build's best race at one target, run 10 times as single fights with the sim's combat log. Damage over time
+// averages the 10 runs' damage per second (in 2-second steps, smoothed over 6 seconds), stacked by ability. Casts
+// counts each pressed ability per fight (averaged) with its buff's uptime, and draws one run's casts as a timeline.
+const TL_DATA = 'tankTimeline';
+// Nine colours apart from each other for the stacked damage (the dashboard's eight has two near-oranges).
+const TL_COLORS = ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#e0628f', '#8a8fd6', '#a7c95b'];
+const tlIcon = (name) => (window.ABILITY_ICONS || {})[name] || null;
+const mmss = (t) => `${t < 0 ? '-' : ''}${Math.floor(Math.abs(t) / 60)}:${String(Math.floor(Math.abs(t) % 60)).padStart(2, '0')}`;
+function drawTimeline(p, item, minH) {
+  const box = $('.lx-speccmp'), T = rrData(dash.data(TL_DATA));
+  const fight = p.fight === 'all' ? 180 : +p.fight;
+  const r = T.status === 'ok' && T.data.find((x) => x.spec === item.key && x.build === item.build && +x.fight === fight);
+  $('.lx-specnote').textContent = r ? '' : `No combat logs for ${item.name} (${item.build}) here.`;
+  if (!r) return;
+  const wrap = el('div', 'tl');
+  wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
+  const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
+  const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
+  if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
+  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median).`);
+  wrap.append(el('div', 'tl-note', notes.join(' ')));
+  box.append(wrap);
+  const W = Math.max(280, box.clientWidth);
+  if (p.specTab === 'dot') {
+    // Stacked damage per second, each series smoothed over 3 steps.
+    const step = +r.step || 2, n = Math.max(...damage.map((d) => d[2].length));
+    const smooth = (a) => a.map((_, i) => { const w = a.slice(Math.max(0, i - 1), i + 2); return w.reduce((x, y) => x + y, 0) / w.length; });
+    const series = damage.map(([name, pet, vals], i) => ({ name: pet ? `${name} (${pet})` : name, raw: name, vals: smooth(vals), color: name === 'Other' ? '#6b6a64' : TL_COLORS[i % TL_COLORS.length] }));
+    const pts = d3.range(n).map((i) => { const o = { t: i * step }; series.forEach((s, k) => { o[k] = s.vals[i] || 0; }); return o; });
+    const stack = d3.stack().keys(series.map((_, k) => k))(pts);
+    const H = Math.max(220, Math.min(380, minH - 120)), m = { l: 48, r: 12, t: 8, b: 22 };
+    const x = d3.scaleLinear([0, fight], [m.l, W - m.r]), y = d3.scaleLinear([0, d3.max(stack[stack.length - 1], (d) => d[1]) * 1.05], [H - m.b, m.t]).nice();
+    const chart = el('div', 'tl-chart');
+    wrap.append(chart);
+    const svg = d3.select(chart).append('svg').attr('class', 'tl-svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    svg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y).attr('stroke', 'var(--cds-chart-grid)');
+    svg.append('g').selectAll('text').data(y.ticks(5)).join('text').attr('x', m.l - 6).attr('y', (v) => y(v) + 4).attr('text-anchor', 'end').text((v) => d3.format(',')(v));
+    const xt = d3.range(0, fight + 1, fight > 120 ? 30 : 15);
+    svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text(mmss);
+    const area = d3.area().x((d) => x(d.data.t + step / 2)).y0((d) => y(d[0])).y1((d) => y(d[1])).curve(d3.curveMonotoneX);
+    svg.append('g').selectAll('path').data(stack).join('path').attr('d', area).style('fill', (d) => series[d.key].color).attr('fill-opacity', 0.85);
+    const cursor = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).attr('stroke', 'var(--color-fg-muted)').attr('stroke-dasharray', '3 3').style('display', 'none');
+    const tip = el('div', 'rr-tip'); tip.hidden = true; chart.append(tip);
+    const line = (k, v, c) => { const row = el('div', 'row'), a = el('span', null, k); if (c) a.style.color = c; row.append(a, el('b', null, v)); return row; };
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+      .on('mousemove', (ev) => {
+        const [mx] = d3.pointer(ev), i = Math.max(0, Math.min(n - 1, Math.floor(x.invert(mx) / step))), d = pts[i];
+        cursor.style('display', null).attr('x1', x(d.t + step / 2)).attr('x2', x(d.t + step / 2));
+        const tot = series.reduce((a, _, k) => a + d[k], 0);
+        tip.replaceChildren(el('div', 'h', mmss(d.t)), line('Total', d3.format(',')(Math.round(tot)) + ' DPS'),
+          ...series.map((s, k) => [s, d[k]]).filter(([, v]) => v >= 0.5).sort((a, b) => b[1] - a[1]).map(([s, v]) => line(s.name, d3.format(',')(Math.round(v)), s.color)));
+        tip.hidden = false;
+        const [px, py] = d3.pointer(ev, chart), tw = tip.offsetWidth;
+        tip.style.left = (px + 14 + tw > chart.clientWidth ? px - 14 - tw : px + 14) + 'px'; tip.style.top = Math.max(0, py - 40) + 'px';
+      })
+      .on('mouseleave', () => { tip.hidden = true; cursor.style('display', 'none'); });
+    const leg = el('div', 'tl-legend');
+    for (const s of series) { const k = el('span'), sw = el('i'); sw.style.background = s.color; k.append(sw, s.name); leg.append(k); }
+    wrap.append(leg);
+    return;
+  }
+  // Casts table.
+  const table = el('table', 'tl-table'), head = el('tr'), total = casts.reduce((a, c) => a + c[1], 0), top = Math.max(...casts.map((c) => c[1]));
+  for (const [t, cls] of [['Ability'], ['Casts', 'n'], ['Share'], ['Per minute', 'n'], ['Uptime', 'n']]) head.append(el('th', cls, t));
+  const tbody = el('tbody');
+  for (const [name, n, up] of casts) {
+    const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
+    ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src; d.append(ic, name); nm.append(d);
+    bar.style.width = Math.max(1, (n / top) * 120) + 'px'; a.append(el('span', null, fx((n / total) * 100, 1) + '%'), bar); amt.append(a);
+    tr.append(nm, el('td', 'n', fx(n, 1)), amt, el('td', 'n', fx(n / (fight / 60), 1)), el('td', 'n', up == null ? '–' : fx(up, 1) + '%'));
+    tbody.append(tr);
+  }
+  const tf = el('tr');
+  tf.append(el('td', null, 'Total'), el('td', 'n', fx(total, 1)), el('td'), el('td', 'n', fx(total / (fight / 60), 1)), el('td'));
+  const thead = el('thead'); thead.append(head);
+  const tfoot = el('tfoot'); tfoot.append(tf);
+  table.append(thead, tbody, tfoot);
+  const tw = el('div', 'tl-tablewrap');
+  tw.append(table);
+  wrap.append(tw);
+  // Timeline of one run: a row per ability, its casts as icons (a bar for a cast time), its buff as a band behind.
+  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pps = Math.max((W - lw - 16) / (fight - start), 14);
+  const TW = Math.ceil(lw + (fight - start) * pps + 16), TH = names.length * rowH + 24;
+  const sc = el('div', 'tl-scroll');
+  wrap.append(el('h3', 'tl-note', 'Timeline (one run)'), sc);
+  const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
+  const x = (t) => lw + (t - start) * pps;
+  if (start < 0) {
+    svg.append('rect').attr('x', x(start)).attr('y', 20).attr('width', x(0) - x(start)).attr('height', TH - 20).attr('fill', '#ffffff08');
+    svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
+  }
+  const ticks = d3.range(0, fight + 1, pps >= 30 ? 5 : 10);
+  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', 16).attr('y2', TH).attr('stroke', 'var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(ticks.filter((t) => t > 0 || start === 0)).join('text').attr('x', x).attr('y', 12).attr('text-anchor', 'middle').text(mmss);
+  const rows = svg.append('g').attr('transform', 'translate(0,20)');
+  names.forEach((name, i) => {
+    const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
+    g.append('rect').attr('x', 0).attr('width', TW).attr('height', rowH).attr('fill', i % 2 ? '#ffffff05' : 'transparent');
+    g.append('image').attr('href', tlIcon(name)).attr('x', 4).attr('y', 3).attr('width', 16).attr('height', 16);
+    g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
+  });
+  for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
+  for (const [i, t, ct] of tl) {
+    if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
+    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14)
+      .append('title').text(`${names[i]} · ${t < 0 ? 'pre-pull ' : ''}${mmss(t)}${ct ? ` · ${ct} s cast` : ''}`);
+  }
+  // The labels stay in view while the timeline scrolls.
+  const labels = svg.append('g');
+  labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
+  labels.node().append(...rows.selectAll(':scope > g').nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
+  sc.addEventListener('scroll', () => labels.attr('transform', `translate(${sc.scrollLeft},0)`));
 }
 
 // Character setup: what a tank build was simmed with, from the `tankSetup` dataset (as the DPS tab's: gear and
