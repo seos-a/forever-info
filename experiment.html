@@ -234,7 +234,10 @@ document.head.appendChild(t);})();
   .su h3 { margin: 0 0 var(--cds-gap-xs); font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--color-fg-muted); }
   .su-gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px var(--cds-gap-md); }
   .su-item { display: grid; grid-template-columns: 32px 1fr; gap: 0 8px; align-items: center; min-width: 0; }
-  .su-item img { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #ffffff2e; background: #000; grid-row: span 3; }
+  .su-ico { grid-row: span 3; display: block; line-height: 0; }
+  .su-item img { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #ffffff2e; background: #000; }
+  /* Wowhead's tooltips, smaller than its own (14 px text, 320 px wide), scaled from the corner it places by the cursor. */
+  .wowhead-tooltip { transform: scale(.8); transform-origin: 0 0; }
   .su-slot { font-size: .6875rem; color: var(--color-fg-muted); line-height: 1.2; }
   .su-name { text-decoration: none; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .su-name:hover { text-decoration: underline; }
@@ -1849,7 +1852,9 @@ function drawSetup(p, item, race, minH) {
     name.style.color = QUALITY[g.q] || QUALITY[1];
     const slot = el('div', 'su-slot', g.slot);
     if (g.classic) { const t = el('span', 'su-tag', 'Classic'); t.title = "Not in Forever's item database: simmed with its Classic stats"; slot.append(t); }
-    row.append(suIcon(g.icon), slot, name);
+    const ico = suLink('su-ico', null, g.url);
+    ico.append(suIcon(g.icon));
+    row.append(ico, slot, name);
     if (g.enchant) { const e = el('div', 'su-ench'); e.append(g.eurl ? suLink(null, g.enchant, g.eurl) : g.enchant); row.append(e); }
     return row;
   };
@@ -4241,7 +4246,9 @@ function drawSetup(p, item, race, minH) {
     name.style.color = QUALITY[g.q] || QUALITY[1];
     const slot = el('div', 'su-slot', g.slot);
     if (g.classic) { const t = el('span', 'su-tag', 'Classic'); t.title = "Not in Forever's item database: simmed with its Classic stats"; slot.append(t); }
-    row.append(suIcon(g.icon), slot, name);
+    const ico = suLink('su-ico', null, g.url);
+    ico.append(suIcon(g.icon));
+    row.append(ico, slot, name);
     if (g.enchant) { const e = el('div', 'su-ench'); e.append(g.eurl ? suLink(null, g.enchant, g.eurl) : g.enchant); row.append(e); }
     return row;
   };
