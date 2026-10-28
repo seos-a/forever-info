@@ -1659,8 +1659,8 @@ function drawBreakdown(p, item, data, fitH) {
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
+  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'proc' ? 0.25 : a.kind === 'resource' ? 0.5 : 0.9))
     .style('stroke', (a) => (a.kind === 'proc' ? col(a) : 'none')).attr('stroke-width', 1.5);
@@ -2991,8 +2991,8 @@ function drawBreakdown(p, item, data, fitH) {
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
+  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'proc' ? 0.25 : a.kind === 'resource' ? 0.5 : 0.9))
     .style('stroke', (a) => (a.kind === 'proc' ? col(a) : 'none')).attr('stroke-width', 1.5);

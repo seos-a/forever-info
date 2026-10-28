@@ -1,11 +1,14 @@
-// Over each ability icon in a chart, an invisible link to the ability's Forever Wowhead page, so hovering the icon shows
+// Over each ability icon and name in a chart, an invisible link to the ability's Forever Wowhead page, so hovering either shows
 // Wowhead's tooltip (the row's own hover covers the rest of the row). names(d) gives the names to look up, first found wins.
 window.abilityLinks = (box, images, names) => {
   const L = window.ABILITY_LINKS || {}, b = box.getBoundingClientRect();
   for (const img of images) {
     const path = names(img.__data__).map((n) => L[n]).find(Boolean);
     if (!path) continue;
-    const r = img.getBoundingClientRect(), a = document.createElement('a');
+    // The link covers the icon and the ability's name beside it (the row's first label).
+    const lab = img.parentNode.querySelector('text.lab'), ri = img.getBoundingClientRect(), rl = lab ? lab.getBoundingClientRect() : ri;
+    const r = { left: Math.min(ri.left, rl.left), top: Math.min(ri.top, rl.top), width: Math.max(ri.right, rl.right) - Math.min(ri.left, rl.left), height: Math.max(ri.bottom, rl.bottom) - Math.min(ri.top, rl.top) };
+    const a = document.createElement('a');
     a.className = 'ab-link'; a.href = 'https://www.wowhead.com/forever/' + path; a.target = '_blank'; a.rel = 'noopener';
     Object.assign(a.style, { position: 'absolute', zIndex: 1, left: r.left - b.left + 'px', top: r.top - b.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     box.append(a);

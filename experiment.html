@@ -988,14 +988,17 @@ document.head.appendChild(t);})();
 <div class="xp-stamp">WoWSims Version 5d4dd1c (Beta)<br>Oct 27 2026</div>
 <script>
 (() => {
-// Over each ability icon in a chart, an invisible link to the ability's Forever Wowhead page, so hovering the icon shows
+// Over each ability icon and name in a chart, an invisible link to the ability's Forever Wowhead page, so hovering either shows
 // Wowhead's tooltip (the row's own hover covers the rest of the row). names(d) gives the names to look up, first found wins.
 window.abilityLinks = (box, images, names) => {
   const L = window.ABILITY_LINKS || {}, b = box.getBoundingClientRect();
   for (const img of images) {
     const path = names(img.__data__).map((n) => L[n]).find(Boolean);
     if (!path) continue;
-    const r = img.getBoundingClientRect(), a = document.createElement('a');
+    // The link covers the icon and the ability's name beside it (the row's first label).
+    const lab = img.parentNode.querySelector('text.lab'), ri = img.getBoundingClientRect(), rl = lab ? lab.getBoundingClientRect() : ri;
+    const r = { left: Math.min(ri.left, rl.left), top: Math.min(ri.top, rl.top), width: Math.max(ri.right, rl.right) - Math.min(ri.left, rl.left), height: Math.max(ri.bottom, rl.bottom) - Math.min(ri.top, rl.top) };
+    const a = document.createElement('a');
     a.className = 'ab-link'; a.href = 'https://www.wowhead.com/forever/' + path; a.target = '_blank'; a.rel = 'noopener';
     Object.assign(a.style, { position: 'absolute', zIndex: 1, left: r.left - b.left + 'px', top: r.top - b.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     box.append(a);
@@ -1867,8 +1870,8 @@ function drawBreakdown(p, item, data, fitH) {
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
+  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'proc' ? 0.25 : a.kind === 'resource' ? 0.5 : 0.9))
     .style('stroke', (a) => (a.kind === 'proc' ? col(a) : 'none')).attr('stroke-width', 1.5);
@@ -3758,8 +3761,8 @@ function drawBreakdown(b, box, note, item, fight, specs) {
   const fill = (a) => (a.kind === 'utility' ? 'var(--color-fg-muted)' : a.kind === 'dot' || a.kind === 'hot' ? `url(#${pid(col(a), 'dot')})` : a.kind === 'channel' ? `url(#${pid(col(a), 'ch')})` : col(a));
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (a, i) => `translate(0,${i * slot + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.raw] || (window.ABILITY_ICONS || {})[a.name] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  window.abilityLinks(box, abIcons.nodes(), (a) => [a.raw, a.name]);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).text((a) => a.name);
+  window.abilityLinks(box, abIcons.nodes(), (a) => [a.raw, a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'utility' ? 0.5 : a.kind === 'absorb' ? 0.25 : 0.9))
     .style('stroke', (a) => (a.kind === 'absorb' ? col(a) : 'none')).attr('stroke-width', 1.5);
@@ -4547,8 +4550,8 @@ function drawBreakdown(p, item, data, fitH) {
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
+  window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'proc' ? 0.25 : a.kind === 'resource' ? 0.5 : 0.9))
     .style('stroke', (a) => (a.kind === 'proc' ? col(a) : 'none')).attr('stroke-width', 1.5);
