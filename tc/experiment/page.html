@@ -170,6 +170,7 @@
   .su-stat { display: flex; justify-content: space-between; gap: var(--cds-gap-md); padding: 1px 0; border-bottom: 1px solid #ffffff0a; font-variant-numeric: tabular-nums; }
   .su-stat span { color: var(--color-fg-muted); }
   .su-stat b { font-weight: 500; }
+  .lx-detail tbody tr { cursor: pointer; }
   .su-congrp { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: var(--cds-gap-sm); }
   .su-congrp + .su-congrp { margin-top: 6px; }
   .su-congrp .su-statgh { margin: 0; font-size: var(--cds-font-size-caption); }
@@ -1095,7 +1096,7 @@ const METRIC = {
   gain: { label: 'Gain over no racials', fmt: (v) => sign(v, 2) + '%', high: true, note: 'DPS gained over the same builds with no race, as a percentage. Bold is the largest gain in each column.' },
   gapDps: { label: 'DPS behind best', fmt: (v) => fx(v, 1), high: false, note: 'Average DPS behind the best race on each build. 0 is the best race; bold is the smallest gap in each column.' },
 };
-const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', gainFight: 'all', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
+const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
 const sorts = { overall: { field: 'pct', dir: 'desc' }, matrix: { field: null, dir: 'desc' }, detail: { field: null, dir: 'desc' } };
 let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 
@@ -1565,7 +1566,8 @@ const kindLabel = (a) => (a.kind === 'dot' && a.school === 'Physical' ? 'Bleed' 
 const ALLIANCE = new Set(['Human', 'Dwarf', 'Night Elf', 'Gnome', 'Alliance Skyborne']);
 function raceRows(p, item, list) {
   const races = [...new Set(list.slice().sort((a, b) => b.dps - a.dps).map((r) => r.race))];
-  const race = races.includes(item.best) ? item.best : races.find((r) => p.faction === 'All' || (ALLIANCE.has(r) ? 'Alliance' : 'Horde') === p.faction) || races[0];
+  const fa = (r) => (ALLIANCE.has(r) ? 'Alliance' : 'Horde'), want = item.pinned ? fa(item.best) : p.faction;  // a pinned race: its own faction's run
+  const race = races.includes(item.best) ? item.best : races.find((r) => want === 'All' || fa(r) === want) || races[0];
   return list.filter((r) => r.race === race);
 }
 function drawBreakdown(p, item, data, fitH) {
@@ -1573,7 +1575,7 @@ function drawBreakdown(p, item, data, fitH) {
   box.replaceChildren();
   const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs');
   back.type = 'button';
-  back.addEventListener('click', () => dash.setParams({ specView: '' }));
+  back.addEventListener('click', () => dash.setParams({ specView: '', specBuild: '', specRace: '' }));
   // The spec's name opens the spec menu, to switch to another spec's breakdown.
   const title = el('span', 'rr-bdtitle');
   title.append(specPicker(item.key, 'specView'));
@@ -1592,7 +1594,7 @@ function drawBreakdown(p, item, data, fitH) {
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
   const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
-  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
+  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
@@ -1610,7 +1612,7 @@ function drawBreakdown(p, item, data, fitH) {
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fights`;
-  $('.lx-specnote').textContent = '';
+  $('.lx-specnote').textContent = item.pinned && race !== item.best ? `${item.build} · ${race}: ability breakdowns were simmed only with each build's best race in each faction, so this is ${race}'s, not ${item.best}'s (Setup shows ${item.best}).` : '';
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -1696,6 +1698,7 @@ function drawTimeline(p, item, minH) {
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
   const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
   const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
+  if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
   else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline below is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median): hover a cast for its damage and result.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
@@ -2047,6 +2050,7 @@ function drawDetail(p, rows, trows) {
   const sortCols = cols.map((c) => (c.field === 'length' ? Object.assign({}, c, { field: 'fight', num: true }) : c));
   const s = sorts.detail.field === 'length' ? { field: 'fight', dir: sorts.detail.dir } : sorts.detail;
   const sorted = sortRows(list, s, sortCols);
+  detailPick = { spec: p.spec, rows: new Map(sorted.map((r) => [r.key, r])) };
   table($('.lx-detail'), cols, sorted, sorts.detail,
     (c) => toggle('detail', c, (c) => (c.num ? 'desc' : 'asc')),
     (c, r) => {
@@ -2063,8 +2067,21 @@ function drawDetail(p, rows, trows) {
   $('.lx-detnote').replaceChildren(...(multi
     ? [`At ${nT} targets each build was run only with its best race at one target, so there's no race comparison here: the last two columns show how much the extra targets add over that race's own one-target run. The faction and Best filters don't apply.`]
     : ['Rows are grouped by build and fight length, with a line between groups. ', el('b', null, 'Best'), ' is the top race within its group; ', el('b', null, 'Tie'),
-      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']));
+      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']),
+    ' Click a row to see that build’s setup (gear, talents, consumables, stats) in the ranking box above.');
 }
+
+// Click a row of the builds table to open that build and race's Setup in the spec ranking box (its charts are a tab away).
+let detailPick = null;
+$('.lx-detail').tBodies[0].addEventListener('click', (e) => {
+  const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
+  if (!r) return;
+  const card = $('.lx-speccmp').closest('section');
+  if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
+  if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
+  dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'setup', specFight: String(r.fight) });
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 function draw() {
   if (ROOT.hidden) return;
@@ -2105,7 +2122,10 @@ function draw() {
     const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, d.scoped.data) : tOk ? targetItems(sp, T.data) : [];
     if (tOk) for (const it of items) it.scale = targetScale(sp, T.data, it.key, it.build);
     // A spec picked from the bars shows its ability breakdown in this box until "All specs" is clicked.
-    const B = rrData(dash.data('breakdown')), view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
+    const B = rrData(dash.data('breakdown'));
+    let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
+    // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
+    if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) view = { ...view, build: p.specBuild.slice(view.key.length + 1), best: p.specRace || view.best, pinned: true };
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
     // The breakdown is drawn over the ranking, at the ranking's height.
     if (view) drawBreakdown(sp, view, B.data, $('.lx-specnote').offsetHeight + $('.lx-speccmp').offsetHeight);
@@ -2397,7 +2417,7 @@ const P = () => {
   // The Top Race, Racial Bonus and Race Standings boxes each have their own measure; the filter row's sets the rest.
   return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'tps', build: q.tBuild ?? 'all',
     bestMeasure: q.tBestMeasure ?? 'tps', gainMeasure: q.tGainMeasure ?? 'tps', lineMeasure: q.tLineMeasure ?? 'tps',
-    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', gainFight: q.tGainFight ?? 'all',
+    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', specBuild: q.tSpecBuild ?? '', specRace: q.tSpecRace ?? '', gainFight: q.tGainFight ?? 'all',
     detailFight: q.tDetailFight ?? 'all', detailTargets: q.tDetailTargets ?? '1', detailRace: q.tDetailRace ?? 'all', detailMark: q.tDetailMark ?? 'all',
     lineSpec: q.tLineSpec ?? d, gainSpec: q.tGainSpec ?? d, detailSpec: q.tDetailSpec ?? d };
 };
@@ -2878,7 +2898,8 @@ const kindLabel = (a) => (a.kind === 'dot' && a.school === 'Physical' ? 'Bleed' 
 const ALLIANCE = new Set(['Human', 'Dwarf', 'Night Elf', 'Gnome', 'Alliance Skyborne']);
 function raceRows(p, item, list) {
   const races = [...new Set(list.slice().sort((a, b) => b.dps - a.dps).map((r) => r.race))];
-  const race = races.includes(item.best) ? item.best : races.find((r) => p.faction === 'All' || (ALLIANCE.has(r) ? 'Alliance' : 'Horde') === p.faction) || races[0];
+  const fa = (r) => (ALLIANCE.has(r) ? 'Alliance' : 'Horde'), want = item.pinned ? fa(item.best) : p.faction;  // a pinned race: its own faction's run
+  const race = races.includes(item.best) ? item.best : races.find((r) => want === 'All' || fa(r) === want) || races[0];
   return list.filter((r) => r.race === race);
 }
 function drawBreakdown(p, item, data, fitH) {
@@ -2886,7 +2907,7 @@ function drawBreakdown(p, item, data, fitH) {
   box.replaceChildren();
   const bar = el('div', 'rr-bdbar'), back = el('button', 'rr-reset rr-back', '← All specs');
   back.type = 'button';
-  back.addEventListener('click', () => setP({ specView: '' }));
+  back.addEventListener('click', () => setP({ specView: '', specBuild: '', specRace: '' }));
   // The spec's name opens the spec menu, to switch to another spec's breakdown.
   const title = el('span', 'rr-bdtitle');
   title.append(specPicker(item.key, 'specView'));
@@ -2905,7 +2926,7 @@ function drawBreakdown(p, item, data, fitH) {
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
   const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
-  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
+  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
@@ -2923,7 +2944,7 @@ function drawBreakdown(p, item, data, fitH) {
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fights`;
-  $('.lx-specnote').textContent = '';
+  $('.lx-specnote').textContent = item.pinned && race !== item.best ? `${item.build} · ${race}: ability breakdowns were simmed only with each build's best race in each faction, so this is ${race}'s, not ${item.best}'s (Setup shows ${item.best}).` : '';
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -3009,6 +3030,7 @@ function drawTimeline(p, item, minH) {
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
   const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
   const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
+  if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
   else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline below is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median): hover a cast for its damage and result.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
@@ -3364,6 +3386,7 @@ function drawDetail(p, rows, trows) {
   const sortCols = cols.map((c) => (c.field === 'length' ? Object.assign({}, c, { field: 'fight', num: true }) : c));
   const s = sorts.detail.field === 'length' ? { field: 'fight', dir: sorts.detail.dir } : sorts.detail;
   const sorted = sortRows(list, s, sortCols);
+  detailPick = { spec: p.spec, rows: new Map(sorted.map((r) => [r.key, r])) };
   table($('.lx-detail'), cols, sorted, sorts.detail,
     (c) => toggle('detail', c, (c) => (c.num ? 'desc' : 'asc')),
     (c, r) => {
@@ -3380,8 +3403,21 @@ function drawDetail(p, rows, trows) {
   $('.lx-detnote').replaceChildren(...(multi
     ? [`At ${nT} targets each build was run only with its best race at one target, so there's no race comparison here: the last two columns show how much the extra targets add over that race's own one-target run. The faction and Best filters don't apply.`]
     : ['Rows are grouped by build and fight length, with a line between groups. ', el('b', null, 'Best'), ' is the top race within its group; ', el('b', null, 'Tie'),
-      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']));
+      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']),
+    ' Click a row to see that build’s setup (gear, talents, consumables, stats) in the ranking box above.');
 }
+
+// Click a row of the builds table to open that build and race's Setup in the spec ranking box (its charts are a tab away).
+let detailPick = null;
+$('.lx-detail').tBodies[0].addEventListener('click', (e) => {
+  const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
+  if (!r) return;
+  const card = $('.lx-speccmp').closest('section');
+  if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
+  if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
+  setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'setup', specFight: String(r.fight) });
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 function draw() {
   if (ROOT.hidden) return;
@@ -3424,7 +3460,10 @@ function draw() {
     const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, M(d.scoped.data)) : tOk ? targetItems(sp, M(T.data)) : [];
     if (tOk) for (const it of items) it.scale = targetScale(sp, M(T.data), it.key, it.build);
     // A spec picked from the bars shows its ability breakdown in this box until "All specs" is clicked.
-    const B = rrData(dash.data('tankBreakdown')), view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
+    const B = rrData(dash.data('tankBreakdown'));
+    let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
+    // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
+    if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) view = { ...view, build: p.specBuild.slice(view.key.length + 1), best: p.specRace || view.best, pinned: true };
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
     // The breakdown is drawn over the ranking, at the ranking's height.
     if (view) drawBreakdown(sp, view, B.data, $('.lx-specnote').offsetHeight + $('.lx-speccmp').offsetHeight);
