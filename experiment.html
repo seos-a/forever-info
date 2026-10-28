@@ -485,6 +485,7 @@ document.head.appendChild(t);})();
   .apm-on .lx-speccmp, .apm-on .lx-specnote, .apm-on .lx-cmpgrip, .apm-on .lx-targets { display: none !important; }
   /* the APM view's own drag handle, and the race/spec tables' text size (--mz, set to fit their box: matrix_fit.js) */
   .lx-apmgrip { display: none; }
+  .rr-chart.lx-apm, .hr-chart.lx-apm { min-height: 0; }   /* as tall as its bars, not the ranking's minimum */
   .apm-on .lx-apmgrip { display: block; }
   .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
   .rr .lx-matrix td, .hr .lx-matrix td { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
@@ -633,7 +634,7 @@ document.head.appendChild(t);})();
     </div>
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
     <div class="hr-chart lx-speccmp" data-source="healRunHps"></div>
-    <p class="hr-note lx-apmnote">Heals cast per minute in the healing sim's test fight, with no racials (the sim records only heals, so cooldowns and potions aren't counted). Healers here cast nearly non-stop. Click a healer for its spell breakdown.</p>
+    <p class="hr-note lx-apmnote">No racials, cooldowns, potions included</p>
     <div class="hr-chart lx-apm" data-source="healApm"></div>
     <div class="hr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="hr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
@@ -2819,7 +2820,7 @@ function draw() {
     for (const r of runs) if (!bestOf.has(r.cls) || r.mean > bestOf.get(r.cls).mean) bestOf.set(r.cls, r);
     const rows = [...bestOf.values()].sort((a, b) => b.median - a.median).map((r) => ({ ...r, label: HEALER_NAME[r.cls] || r.cls, color: healerColor(HEALER_NAME[r.cls]), icon: (window.SPEC_ICONS || {})[HEALER_NAME[r.cls]] }));
     box.replaceChildren();
-    $('.lx-specnote').textContent = rows.length ? 'Each healer with its best race: healing per second over its runs. The box is the middle half of the runs, the line the median; where boxes overlap, the sim can’t separate the healers. Hover for the numbers, click a healer for its spell breakdown.' : '';
+    $('.lx-specnote').textContent = rows.length ? 'Hover for spec info, click for ability breakdown.' : '';
     // As tall as the longest spell breakdown needs, or as tall as the box was dragged, so opening one doesn't move the page.
     const SP = rrData(dash.data('healSpells')), spellRows = SP.status === 'ok' ? SP.data : [];
     const most = Math.max(0, ...spellRows.map((r) => (typeof r.spells === 'string' ? JSON.parse(r.spells) : r.spells).length));

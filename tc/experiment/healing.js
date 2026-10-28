@@ -903,7 +903,7 @@ function draw() {
     for (const r of runs) if (!bestOf.has(r.cls) || r.mean > bestOf.get(r.cls).mean) bestOf.set(r.cls, r);
     const rows = [...bestOf.values()].sort((a, b) => b.median - a.median).map((r) => ({ ...r, label: HEALER_NAME[r.cls] || r.cls, color: healerColor(HEALER_NAME[r.cls]), icon: (window.SPEC_ICONS || {})[HEALER_NAME[r.cls]] }));
     box.replaceChildren();
-    $('.lx-specnote').textContent = rows.length ? 'Each healer with its best race: healing per second over its runs. The box is the middle half of the runs, the line the median; where boxes overlap, the sim can’t separate the healers. Hover for the numbers, click a healer for its spell breakdown.' : '';
+    $('.lx-specnote').textContent = rows.length ? 'Hover for spec info, click for ability breakdown.' : '';
     // As tall as the longest spell breakdown needs, or as tall as the box was dragged, so opening one doesn't move the page.
     const SP = rrData(dash.data('healSpells')), spellRows = SP.status === 'ok' ? SP.data : [];
     const most = Math.max(0, ...spellRows.map((r) => (typeof r.spells === 'string' ? JSON.parse(r.spells) : r.spells).length));

@@ -406,6 +406,7 @@
   .apm-on .lx-speccmp, .apm-on .lx-specnote, .apm-on .lx-cmpgrip, .apm-on .lx-targets { display: none !important; }
   /* the APM view's own drag handle, and the race/spec tables' text size (--mz, set to fit their box: matrix_fit.js) */
   .lx-apmgrip { display: none; }
+  .rr-chart.lx-apm, .hr-chart.lx-apm { min-height: 0; }   /* as tall as its bars, not the ranking's minimum */
   .apm-on .lx-apmgrip { display: block; }
   .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
   .rr .lx-matrix td, .hr .lx-matrix td { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
@@ -554,7 +555,7 @@
     </div>
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
     <div class="hr-chart lx-speccmp" data-source="healRunHps"></div>
-    <p class="hr-note lx-apmnote">Heals cast per minute in the healing sim's test fight, with no racials (the sim records only heals, so cooldowns and potions aren't counted). Healers here cast nearly non-stop. Click a healer for its spell breakdown.</p>
+    <p class="hr-note lx-apmnote">No racials, cooldowns, potions included</p>
     <div class="hr-chart lx-apm" data-source="healApm"></div>
     <div class="hr-vgrip lx-apmgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
     <div class="hr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
