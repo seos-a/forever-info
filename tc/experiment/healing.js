@@ -513,7 +513,9 @@ function drawLines(p, rows) {
   const key = [p.faction, p.cls, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
+  // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[ml, top], [W, bottom]]).translateExtent([[ml, top], [W, bottom]])
+    .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => {
       zoomState.t = ev.transform;
       x = ev.transform.rescaleX(x0); y = ev.transform.rescaleY(y0);

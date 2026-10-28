@@ -1,13 +1,15 @@
-// Horizontal zoom for the Racial Bonus charts, like the Race Standings charts': the wheel zooms where it points (and
-// never scrolls the page), dragging moves around, double-click zooms back out. Only the value scale zooms; the race
+// Horizontal zoom for the Heals tab's box plots, like the Race Standings charts': the wheel zooms where it points (and
+// never scrolls the page), dragging moves around, double-click zooms back out. On a touch screen one finger scrolls
+// the page and two fingers zoom. Only the value scale zooms; the race
 // rows stay put. onZoom(x) redraws the chart against the zoomed scale x. The zoom is kept in store while key (the
 // chart's spec, fight length...) stays the same, so a redraw for something else doesn't throw it away.
 window.xZoom = (svg, { x0, left, right, top, bottom, store, key, onZoom }) => {
   if (store.key !== key) { store.key = key; store.t = d3.zoomIdentity; }
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[left, top], [right, bottom]]).translateExtent([[left, top], [right, bottom]])
+    .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => { store.t = ev.transform; onZoom(ev.transform.rescaleX(x0)); });
   svg.node().addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
-  svg.call(zoom).on('dblclick.zoom', null).on('dblclick', () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity));
+  svg.style('touch-action', 'pan-y').call(zoom).on('dblclick.zoom', null).on('dblclick', () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity));
   svg.call(zoom.transform, store.t);
 };
 // A clip path for the plot area, so zoomed bars and boxes don't run over the race names.

@@ -103,7 +103,7 @@
   .rr .pill { display: inline-block; padding: 0 .4rem; border-radius: 999px; font-size: .85em; border: 1px solid var(--color-border-line); }
   .rr .pill.best { border-color: currentColor; font-weight: 600; }
   .rr-chart { position: relative; min-height: 260px; flex: 1 1 auto; }
-  .rr-chart svg { display: block; overflow: visible; touch-action: none; cursor: grab; }
+  .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
   .rr-chart svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
   .rr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
@@ -248,7 +248,7 @@
   .hr td.na { color: var(--color-fg-muted); }
   .hr-chart { position: relative; min-height: 240px; flex: 1 1 auto; }
   .hr-chart svg { display: block; overflow: visible; }
-  .hr-chart.lx-lines svg { touch-action: none; cursor: grab; }
+  .hr-chart.lx-lines svg { touch-action: pan-y; cursor: grab; }
   .hr-chart.lx-lines svg:active { cursor: grabbing; }
   .hr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
   .hr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
@@ -368,7 +368,7 @@
   .rr .pill { display: inline-block; padding: 0 .4rem; border-radius: 999px; font-size: .85em; border: 1px solid var(--color-border-line); }
   .rr .pill.best { border-color: currentColor; font-weight: 600; }
   .rr-chart { position: relative; min-height: 260px; flex: 1 1 auto; }
-  .rr-chart svg { display: block; overflow: visible; touch-action: none; cursor: grab; }
+  .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
   .rr-chart svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
   .rr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
@@ -440,12 +440,14 @@
     .rr-specs .rr-spec, .hr-specs .hr-spec { flex: 1 1 calc(50% - var(--cds-gap-sm)); }
     .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; }
   }
+  /* the tabs stay at the top of the screen while the page scrolls */
+  .rr-tabs { position: sticky; top: 0; z-index: 15; background: var(--color-bg); }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
   <button type="button" role="tab" id="tab-dps" data-tab="dps" aria-controls="panel-dps" aria-selected="true">DPS</button>
-  <button type="button" role="tab" id="tab-healing" data-tab="healing" aria-controls="panel-healing" aria-selected="false" tabindex="-1">Healing</button>
-  <button type="button" role="tab" id="tab-tanks" data-tab="tanks" aria-controls="panel-tanks" aria-selected="false" tabindex="-1">Tanks</button>
+  <button type="button" role="tab" id="tab-tanks" data-tab="tanks" aria-controls="panel-tanks" aria-selected="false" tabindex="-1">Tank</button>
+  <button type="button" role="tab" id="tab-healing" data-tab="healing" aria-controls="panel-healing" aria-selected="false" tabindex="-1">Heals</button>
 </nav>
 
 <div id="panel-dps" role="tabpanel" aria-labelledby="tab-dps" data-tab-panel="dps">
@@ -1263,7 +1265,9 @@ function drawLines(p, rows) {
   const key = [p.faction, p.spec, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
+  // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[ml, top], [W, bottom]]).translateExtent([[ml, top], [W, bottom]])
+    .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => {
       zoomState.t = ev.transform;
       x = ev.transform.rescaleX(x0); y = ev.transform.rescaleY(y0);
@@ -1332,7 +1336,7 @@ function drawGains(p, rows) {
   g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (r) => (r.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => r.race);
-  // The bars, their values and the 0% line (no racials) zoom; the race names and portraits don't.
+  // The bars, their values and the 0% line (no racials), clipped to the plot area.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
   const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
@@ -1358,9 +1362,7 @@ function drawGains(p, rows) {
       tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
-  xZoom(svg, { x0, left: ml, right: W, top: 0, bottom: H, store: gainZoom, key: [p.faction, p.spec, p.fight, p.measure, W].join('|'), onZoom: (x) => { tip.hidden = true; render(x); } });
 }
-const gainZoom = {};
 
 // Each spec's best race on its best build (the build whose best race does best), with its weakest race on that build.
 const VAL = (r) => r.dps, HIGHER = () => true;
@@ -2264,7 +2266,9 @@ function drawLines(p, rows) {
   const key = [p.faction, p.spec, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
+  // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[ml, top], [W, bottom]]).translateExtent([[ml, top], [W, bottom]])
+    .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => {
       zoomState.t = ev.transform;
       x = ev.transform.rescaleX(x0); y = ev.transform.rescaleY(y0);
@@ -2333,7 +2337,7 @@ function drawGains(p, rows) {
   g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (r) => (r.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => r.race);
-  // The bars, their values and the 0% line (no racials) zoom; the race names and portraits don't.
+  // The bars, their values and the 0% line (no racials), clipped to the plot area.
   const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
   const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
@@ -2359,9 +2363,7 @@ function drawGains(p, rows) {
       tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
-  xZoom(svg, { x0, left: ml, right: W, top: 0, bottom: H, store: gainZoom, key: [p.faction, p.spec, p.fight, p.measure, W].join('|'), onZoom: (x) => { tip.hidden = true; render(x); } });
 }
-const gainZoom = {};
 
 // Each spec's best race on its best build (the build whose best race does best), with its weakest race on that build.
 const VAL = (r) => r.value, HIGHER = (p) => p.measure === 'tps' || p.measure === 'dps';
