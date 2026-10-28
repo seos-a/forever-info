@@ -187,12 +187,18 @@ function apmPicker(b, spec, specs) {
       list.append(it);
     }
     root.append(list);
-    const rb = root.getBoundingClientRect(), bb = btn.getBoundingClientRect();
-    list.style.left = Math.max(0, Math.min(rb.width - list.offsetWidth, bb.left - rb.left)) + 'px';
-    list.style.top = bb.bottom - rb.top + 4 + 'px';
+    // Opened around the spec name, like a dropdown: the current spec sits over the name with the others above and
+    // below it (a long list scrolled to put it mid-way), kept on screen. Placed against whatever box the menu is
+    // positioned in, as the tab itself isn't one.
+    const cur = list.querySelector('[aria-checked="true"]') || list.firstChild, pad = (e) => parseFloat(getComputedStyle(e).paddingLeft) || 0;
+    list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
+    const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
+    const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
+    const y = Math.max(8, Math.min(innerHeight - lb.height - 8, bb.top + (bb.height - cb.height) / 2 - (cb.top - lb.top)));
+    list.style.left = x - ob.left + 'px'; list.style.top = y - ob.top + 'px';
     btn.setAttribute('aria-expanded', 'true');
     apmMenu = { el: list, btn };
-    (list.querySelector('[aria-checked="true"]') || list.firstChild).focus();
+    (list.querySelector('[aria-checked="true"]') || list.firstChild).focus({ preventScroll: true });
   });
   return btn;
 }
