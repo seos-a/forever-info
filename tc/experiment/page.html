@@ -768,6 +768,7 @@
 </div>
 
 <script src="race_icons.js"></script>
+<script src="xzoom.js"></script>
 <script src="ability_icons.js"></script>
 <script>
 // Tabs: one panel at a time, chosen by the `tab` filter; the link follows the tab.
@@ -1306,20 +1307,25 @@ function drawGains(p, rows) {
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
   const lo = Math.min(0, ...list.map((r) => r.gain)), hi = Math.max(0, ...list.map((r) => r.gain));
-  const x = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
+  const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   g.append('image').attr('href', (r) => rrIcons()[r.race] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (r) => (r.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => r.race);
-  g.append('rect').attr('x', (r) => Math.min(x(0), x(r.gain))).attr('y', 0).attr('height', bh).attr('rx', 4)
-    .attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))))
-    .attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
-  g.append('text').attr('y', bh / 2 + 4).attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4)).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start'))
-    .text((r) => sign(r.gain, 2) + '%');
-  // The 0% line: no racials.
-  svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
+  // The bars, their values and the 0% line (no racials) zoom; the race names and portraits don't.
+  const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
+  const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
+  const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
+  const vals = pg.append('text').attr('y', bh / 2 + 4).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start')).text((r) => sign(r.gain, 2) + '%');
+  const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
+  const render = (x) => {
+    bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
+    vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
+    zero.attr('x1', x(0)).attr('x2', x(0));
+  };
+  render(x0);
   // Hover a row for the race's actual numbers.
   const tip = el('div', 'rr-tip'), unit = UNIT(p);
   tip.hidden = true; box.append(tip);
@@ -1334,7 +1340,9 @@ function drawGains(p, rows) {
       tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
+  xZoom(svg, { x0, left: ml, right: W, top: 0, bottom: H, store: gainZoom, key: [p.faction, p.spec, p.fight, p.measure, W].join('|'), onZoom: (x) => { tip.hidden = true; render(x); } });
 }
+const gainZoom = {};
 
 // Each spec's best race on its best build (the build whose best race does best), with its weakest race on that build.
 const VAL = (r) => r.dps, HIGHER = () => true;
@@ -2287,20 +2295,25 @@ function drawGains(p, rows) {
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
   const lo = Math.min(0, ...list.map((r) => r.gain)), hi = Math.max(0, ...list.map((r) => r.gain));
-  const x = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
+  const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   g.append('image').attr('href', (r) => rrIcons()[r.race] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (r) => (r.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).text((r) => r.race);
-  g.append('rect').attr('x', (r) => Math.min(x(0), x(r.gain))).attr('y', 0).attr('height', bh).attr('rx', 4)
-    .attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))))
-    .attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
-  g.append('text').attr('y', bh / 2 + 4).attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4)).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start'))
-    .text((r) => sign(r.gain, 2) + '%');
-  // The 0% line: no racials.
-  svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
+  // The bars, their values and the 0% line (no racials) zoom; the race names and portraits don't.
+  const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml, W, H));
+  const pg = plot.selectAll('g').data(list).join('g').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
+  const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
+  const vals = pg.append('text').attr('y', bh / 2 + 4).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start')).text((r) => sign(r.gain, 2) + '%');
+  const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
+  const render = (x) => {
+    bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
+    vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
+    zero.attr('x1', x(0)).attr('x2', x(0));
+  };
+  render(x0);
   // Hover a row for the race's actual numbers.
   const tip = el('div', 'rr-tip'), unit = UNIT(p);
   tip.hidden = true; box.append(tip);
@@ -2315,7 +2328,9 @@ function drawGains(p, rows) {
       tip.style.top = my + 14 + 'px';
     })
     .on('mouseleave', () => { tip.hidden = true; });
+  xZoom(svg, { x0, left: ml, right: W, top: 0, bottom: H, store: gainZoom, key: [p.faction, p.spec, p.fight, p.measure, W].join('|'), onZoom: (x) => { tip.hidden = true; render(x); } });
 }
+const gainZoom = {};
 
 // Each spec's best race on its best build (the build whose best race does best), with its weakest race on that build.
 const VAL = (r) => r.value, HIGHER = (p) => p.measure === 'tps' || p.measure === 'dps';

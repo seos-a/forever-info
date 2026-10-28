@@ -542,30 +542,43 @@ function drawLines(p, rows) {
 
 // Box plots: each row's box is the middle half of its runs, the line inside it the median, the whiskers the rest of
 // the runs within 1.5 boxes of it, and dots the extremes beyond them. Rows are [{label, color, icon, ring, ...stats}].
-function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor }) {
+function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, zoomKey = '' }) {
   const W = Math.max(280, box.clientWidth), gap = 8, bh = Math.max(14, (H0 - 22) / rows.length - gap), H = rows.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab'), textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(r.label))) + 14, mr = Math.max(...rows.map((r) => textW(value(r)))) + 14;
   probe.remove();
   const lo = Math.min(...rows.map((r) => r.min), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.max), zero ? 0 : -Infinity);
-  const x = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
-  svg.append('g').selectAll('line').data(x.ticks(6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(x.ticks(6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
-  // The 0% line (no racials), behind the boxes so a race at exactly 0% still shows its colour.
-  if (zero) svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
+  const x0 = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
+  const grid = svg.append('g'), ticks = svg.append('g');
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (r, i) => `translate(0,${i * (bh + gap) + 2})`);
   g.append('image').attr('href', (r) => r.icon || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.filter((r) => r.ring).append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5).attr('stroke', (r) => r.ring);
   g.append('text').attr('class', 'lab').attr('x', ix).attr('y', bh / 2 + 4).style('fill', (r) => (labelColor ? r.color : null)).text((r) => r.label);
+  // The boxes, the 0% line (no racials, behind the boxes so a race at exactly 0% still shows its colour) and the grid
+  // zoom (xzoom.js); the names and portraits don't.
+  const plot = svg.append('g').attr('clip-path', xZoomClip(svg, ml - 4, W, H - 18));
+  const zl = zero ? plot.append('line').attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2) : null;
+  const pg = plot.selectAll('g.row').data(rows).join('g').attr('class', 'row').attr('transform', (r, i) => `translate(0,${i * (bh + gap) + 2})`);
   const mid = bh / 2;
-  g.append('line').attr('x1', (r) => x(r.lo)).attr('x2', (r) => x(r.hi)).attr('y1', mid).attr('y2', mid).attr('stroke', (r) => r.color).attr('stroke-width', 1.5);
-  for (const end of ['lo', 'hi']) g.append('line').attr('x1', (r) => x(r[end])).attr('x2', (r) => x(r[end])).attr('y1', mid - bh * 0.22).attr('y2', mid + bh * 0.22).attr('stroke', (r) => r.color).attr('stroke-width', 1.5);
-  g.append('rect').attr('x', (r) => x(r.q1)).attr('width', (r) => Math.max(2, x(r.q3) - x(r.q1))).attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3)
-    .style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
-  g.append('line').attr('x1', (r) => x(r.median)).attr('x2', (r) => x(r.median)).attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
-  for (const end of ['min', 'max']) g.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi)).append('circle').attr('cx', (r) => x(r[end])).attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color);
-  g.append('text').attr('x', (r) => x(r.max) + 8).attr('y', mid + 4).text(value);
+  const whisk = pg.append('line').attr('y1', mid).attr('y2', mid).attr('stroke', (r) => r.color).attr('stroke-width', 1.5);
+  const ends = ['lo', 'hi'].map((end) => pg.append('line').attr('y1', mid - bh * 0.22).attr('y2', mid + bh * 0.22).attr('stroke', (r) => r.color).attr('stroke-width', 1.5).datum((r) => ({ r, end })));
+  const boxes = pg.append('rect').attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3).style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
+  const meds = pg.append('line').attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
+  const dots = ['min', 'max'].map((end) => pg.filter((r) => (end === 'min' ? r.min < r.lo : r.max > r.hi)).append('circle').attr('cy', mid).attr('r', 2.5).style('fill', (r) => r.color).datum((r) => ({ r, end })));
+  const vals = pg.append('text').attr('y', mid + 4).text(value);
+  const render = (x) => {
+    grid.selectAll('line').data(x.ticks(6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
+    ticks.selectAll('text').data(x.ticks(6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
+    if (zl) zl.attr('x1', x(0)).attr('x2', x(0));
+    whisk.attr('x1', (r) => x(r.lo)).attr('x2', (r) => x(r.hi));
+    for (const e of ends) e.attr('x1', (d) => x(d.r[d.end])).attr('x2', (d) => x(d.r[d.end]));
+    boxes.attr('x', (r) => x(r.q1)).attr('width', (r) => Math.max(2, x(r.q3) - x(r.q1)));
+    meds.attr('x1', (r) => x(r.median)).attr('x2', (r) => x(r.median));
+    for (const d of dots) d.attr('cx', (o) => x(o.r[o.end]));
+    vals.attr('x', (r) => x(r.max) + 8);
+  };
+  render(x0);
   const t = el('div', 'hr-tip'); t.hidden = true; box.append(t);
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', onPick ? 'pointer' : null)
     .on('mousemove', (ev, r) => {
@@ -575,7 +588,10 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor })
     })
     .on('mouseleave', () => { t.hidden = true; })
     .on('click', (ev, r) => onPick && onPick(r));
+  if (!boxZoom.has(box)) boxZoom.set(box, {});
+  xZoom(svg, { x0, left: ml, right: W, top: 0, bottom: H, store: boxZoom.get(box), key: zoomKey + '|' + W, onZoom: (x) => { t.hidden = true; render(x); } });
 }
+const boxZoom = new WeakMap(); // each chart's zoom
 const tipLine = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
 
 function drawGains(p, rows, runRows) {
@@ -600,6 +616,7 @@ function drawGains(p, rows, runRows) {
   // Boxes: the top race gold, other gains blue, losses red, no change grey (by the median run); portraits keep their faction ring.
   const tone = (r) => (r === list[0] && r.median > 0 ? 'var(--hr-gold)' : r.median > 0 ? 'var(--hr-up)' : r.median < 0 ? 'var(--hr-down)' : 'var(--color-fg-muted)');
   drawBoxes(box, list.map((r) => ({ ...r, label: r.race, color: tone(r), ring: fa(r), icon: rrIcons()[r.race] })), boxH, {
+    zoomKey: [p.faction, p.cls, p.fight].join('|'),
     zero: true, fmt: (v) => sign(v, 1) + '%', value: (r) => sign(r.median, 2) + '%',
     tip: (r) => { const s = summary(r.race); return [el('div', 'h', r.race), tipLine('Median run', sign(r.median, 2) + '%'), tipLine('Middle half of runs', `${sign(r.q1, 2)}% to ${sign(r.q3, 2)}%`),
       tipLine('All runs', `${sign(r.min, 2)}% to ${sign(r.max, 2)}%`), ...(s ? [tipLine('Healing per second', num(s.hps)), tipLine('Mana left at end', num(s.manaEnd))] : []), tipLine('Runs', String(r.n))]; },
@@ -908,7 +925,7 @@ function draw() {
     const SP = rrData(dash.data('healSpells')), spellRows = SP.status === 'ok' ? SP.data : [];
     const most = Math.max(0, ...spellRows.map((r) => (typeof r.spells === 'string' ? JSON.parse(r.spells) : r.spells).length));
     const H0 = Math.max(rows.length * 44, most ? most * 18 + 22 + 56 : 0, healUserH);
-    if (rows.length) drawBoxes(box, rows, H0, { labelColor: true, fmt: (v) => num(Math.round(v)), value: (r) => `${num(Math.round(r.median))} HPS · ${r.race}`, onPick: (r) => setP({ cmpView: r.cls }),
+    if (rows.length) drawBoxes(box, rows, H0, { zoomKey: [p.faction, p.specFight].join('|'), labelColor: true, fmt: (v) => num(Math.round(v)), value: (r) => `${num(Math.round(r.median))} HPS · ${r.race}`, onPick: (r) => setP({ cmpView: r.cls }),
       tip: (r) => [Object.assign(el('div', 'h', r.label), { style: `color: ${r.color}` }), tipLine('Race', r.race), tipLine('Median run', num(Math.round(r.median)) + ' HPS'), tipLine('Middle half of runs', `${num(Math.round(r.q1))} to ${num(Math.round(r.q3))} HPS`), tipLine('All runs', `${num(Math.round(r.min))} to ${num(Math.round(r.max))} HPS`), tipLine('Runs', String(r.n))] });
     // A healer picked from the boxes shows its spell breakdown over them, at their height, until "All healers" is clicked.
     const view = p.cmpView && rows.find((r) => r.cls === p.cmpView);
