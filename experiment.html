@@ -489,6 +489,9 @@ document.head.appendChild(t);})();
   .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
   .rr .lx-matrix td, .hr .lx-matrix td { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
   .rr .lx-matrix th button, .hr .lx-matrix th button { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
+  /* the race/spec tables keep their Race column in view when scrolled sideways */
+  .rr .lx-matrix td:first-child, .hr .lx-matrix td:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-panel); }
+  .rr .lx-matrix th:first-child, .hr .lx-matrix th:first-child { left: 0; z-index: 2; }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -506,7 +509,7 @@ document.head.appendChild(t);})();
   </div>
 
   <section class="rr-card" id="speccmp" data-label="DPS Ranking by Spec">
-    <div class="rr-cardhead">
+    <div class="rr-cardhead"><h2 class="lx-cmptitle">Damage Per Second</h2>
       <div class="rr-tools">
         <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Damage Per Second">DPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="targets">
@@ -618,7 +621,7 @@ document.head.appendChild(t);})();
   </div>
 
   <section class="hr-card" id="h-speccmp" data-label="HPS Ranking by Spec">
-    <div class="hr-cardhead">
+    <div class="hr-cardhead"><h2 class="lx-cmptitle">Healing Per Second</h2>
       <div class="hr-tools"><div class="hr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Healing Per Second">HPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
     </div>
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
@@ -738,7 +741,7 @@ document.head.appendChild(t);})();
   </div>
 
   <section class="rr-card" id="t-speccmp" data-label="Tank Ranking by Spec">
-    <div class="rr-cardhead">
+    <div class="rr-cardhead"><h2 class="lx-cmptitle">Threat Per Second</h2>
       <div class="rr-tools">
         <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Tank ranking (threat, damage taken, spikes or DPS)">Ranking</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="tankTargets">
@@ -2903,13 +2906,24 @@ if (named) setTimeout(() => named.scrollIntoView(), 0);
 </script>
 <script>
 (() => {
-// The race-by-spec tables' drag handles: dragging one down makes its table's text and cells bigger (up to 2.5 times),
-// dragging up makes them smaller again (no smaller than normal); double-click resets, arrow keys work too. The size is
-// a CSS variable (--mz) on the table's box, so it stays through the table's redraws.
+// The race-by-spec tables' drag handles: dragging one down makes its table's text and cells bigger, up to the size
+// where the table fills its box's width (2.5 times at most), or 1.5 times for a table already about as wide as its box
+// (it then scrolls sideways, its Race column staying in view); dragging up makes them smaller
+// again (no smaller than normal); double-click resets, arrow keys work too. The size is a CSS variable (--mz) on the
+// table's box, so it stays through the table's redraws.
 document.querySelectorAll('.lx-mxgrip').forEach((grip) => {
   const card = grip.closest('section'), table = card.querySelector('.lx-matrix');
   const scale = () => parseFloat(card.style.getPropertyValue('--mz')) || 1;
-  const set = (v) => card.style.setProperty('--mz', String(Math.min(2.5, Math.max(1, v))));
+  // The table's width grows with the size, so the widest size that still fits is the box's width over the table's own
+  // width at size 1 (measured at its natural width: it is otherwise stretched to fill the box).
+  const fit = () => {
+    const prev = table.style.width;
+    table.style.width = 'max-content';
+    const w = table.offsetWidth / scale();
+    table.style.width = prev;
+    return w ? table.parentElement.clientWidth / w : 1;
+  };
+  const set = (v) => card.style.setProperty('--mz', String(Math.max(1, Math.min(Math.min(2.5, Math.max(1.5, fit())), v))));
   let start = null;
   grip.addEventListener('pointerdown', (e) => { start = { y: e.clientY, h: table.getBoundingClientRect().height, s: scale() }; grip.setPointerCapture(e.pointerId); grip.classList.add('drag'); e.preventDefault(); });
   grip.addEventListener('pointermove', (e) => { if (start) set((start.s * (start.h + e.clientY - start.y)) / start.h); });
@@ -2961,10 +2975,11 @@ dash.calc('healApm', {
 
 // One ranking box per tab: its dataset, how it picks each spec's build, the ability breakdowns that give each press
 // its school and kind, and the filters it reads (each tab's own: the Healing and Tanks tabs prefix theirs with h and t).
+const TANK_TITLE = { tps: 'Threat Per Second', dtps: 'Damage Taken Per Second', tmi: 'Spikes (TMI)', dps: 'Damage Per Second' };
 const BOXES = [
-  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', source: 'apm', role: 'dps', by: 'dps', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
-  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', source: 'apm', role: 'tank', by: 'tps', bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
-  { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', view: 'hApmView', source: 'healApm', lens: '2, 3, 5 and 7 minute fights' },
+  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', source: 'apm', role: 'tank', by: 'tps', title: (q) => TANK_TITLE[q.tMeasure] || TANK_TITLE.tps, bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', view: 'hApmView', source: 'healApm', title: () => 'Healing Per Second', lens: '2, 3, 5 and 7 minute fights' },
 ];
 
 // Each spec at the chosen fight length (All: averaged over the four), on the build that does most damage (tanks: threat).
@@ -2994,6 +3009,7 @@ function specItems(b, rows, fight) {
 function setup(b) {
   const panel = document.querySelector(`[data-tab-panel="${b.tab}"]`), card = panel && panel.querySelector('#' + b.id);
   if (!card) return;
+  const title = card.querySelector('.lx-cmptitle');
   const seg = card.querySelector('.lx-cmpmode'), box = card.querySelector('.lx-apm'), note = card.querySelector('.lx-apmnote'), noteText = note.textContent;
   // Show the chosen chart before the page redraws, so the ranking is measured (and drawn) at its real width.
   card.classList.toggle('apm-on', dash.params()[b.mode] === 'apm');
@@ -3010,6 +3026,8 @@ function setup(b) {
     const q = dash.params(), on = q[b.mode] === 'apm', fight = String(q[b.fight] || 'all');
     seg.querySelectorAll('button').forEach((e) => e.setAttribute('aria-pressed', String(e.dataset.v === (on ? 'apm' : 'rank'))));
     card.classList.toggle('apm-on', on);
+    // The box's title names what it shows (the Tanks tab: its chosen measure).
+    title.textContent = on ? 'Actions Per Minute' : b.title(q);
     box.replaceChildren();
     note.textContent = noteText;
     if (!on) return;

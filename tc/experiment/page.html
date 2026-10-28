@@ -410,6 +410,9 @@
   .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
   .rr .lx-matrix td, .hr .lx-matrix td { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
   .rr .lx-matrix th button, .hr .lx-matrix th button { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
+  /* the race/spec tables keep their Race column in view when scrolled sideways */
+  .rr .lx-matrix td:first-child, .hr .lx-matrix td:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-panel); }
+  .rr .lx-matrix th:first-child, .hr .lx-matrix th:first-child { left: 0; z-index: 2; }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -427,7 +430,7 @@
   </div>
 
   <section class="rr-card" id="speccmp" data-label="DPS Ranking by Spec">
-    <div class="rr-cardhead">
+    <div class="rr-cardhead"><h2 class="lx-cmptitle">Damage Per Second</h2>
       <div class="rr-tools">
         <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Damage Per Second">DPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="targets">
@@ -539,7 +542,7 @@
   </div>
 
   <section class="hr-card" id="h-speccmp" data-label="HPS Ranking by Spec">
-    <div class="hr-cardhead">
+    <div class="hr-cardhead"><h2 class="lx-cmptitle">Healing Per Second</h2>
       <div class="hr-tools"><div class="hr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Healing Per Second">HPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
     </div>
     <p class="hr-note lx-specnote" data-source="healSpells"></p>
@@ -659,7 +662,7 @@
   </div>
 
   <section class="rr-card" id="t-speccmp" data-label="Tank Ranking by Spec">
-    <div class="rr-cardhead">
+    <div class="rr-cardhead"><h2 class="lx-cmptitle">Threat Per Second</h2>
       <div class="rr-tools">
         <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Tank ranking (threat, damage taken, spikes or DPS)">Ranking</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
         <div class="rr-seg lx-targets" role="group" aria-label="Targets" data-source="tankTargets">

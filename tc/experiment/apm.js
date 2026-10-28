@@ -25,10 +25,11 @@ dash.calc('healApm', {
 
 // One ranking box per tab: its dataset, how it picks each spec's build, the ability breakdowns that give each press
 // its school and kind, and the filters it reads (each tab's own: the Healing and Tanks tabs prefix theirs with h and t).
+const TANK_TITLE = { tps: 'Threat Per Second', dtps: 'Damage Taken Per Second', tmi: 'Spikes (TMI)', dps: 'Damage Per Second' };
 const BOXES = [
-  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', source: 'apm', role: 'dps', by: 'dps', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
-  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', source: 'apm', role: 'tank', by: 'tps', bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
-  { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', view: 'hApmView', source: 'healApm', lens: '2, 3, 5 and 7 minute fights' },
+  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', source: 'apm', role: 'tank', by: 'tps', title: (q) => TANK_TITLE[q.tMeasure] || TANK_TITLE.tps, bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', view: 'hApmView', source: 'healApm', title: () => 'Healing Per Second', lens: '2, 3, 5 and 7 minute fights' },
 ];
 
 // Each spec at the chosen fight length (All: averaged over the four), on the build that does most damage (tanks: threat).
@@ -58,6 +59,7 @@ function specItems(b, rows, fight) {
 function setup(b) {
   const panel = document.querySelector(`[data-tab-panel="${b.tab}"]`), card = panel && panel.querySelector('#' + b.id);
   if (!card) return;
+  const title = card.querySelector('.lx-cmptitle');
   const seg = card.querySelector('.lx-cmpmode'), box = card.querySelector('.lx-apm'), note = card.querySelector('.lx-apmnote'), noteText = note.textContent;
   // Show the chosen chart before the page redraws, so the ranking is measured (and drawn) at its real width.
   card.classList.toggle('apm-on', dash.params()[b.mode] === 'apm');
@@ -74,6 +76,8 @@ function setup(b) {
     const q = dash.params(), on = q[b.mode] === 'apm', fight = String(q[b.fight] || 'all');
     seg.querySelectorAll('button').forEach((e) => e.setAttribute('aria-pressed', String(e.dataset.v === (on ? 'apm' : 'rank'))));
     card.classList.toggle('apm-on', on);
+    // The box's title names what it shows (the Tanks tab: its chosen measure).
+    title.textContent = on ? 'Actions Per Minute' : b.title(q);
     box.replaceChildren();
     note.textContent = noteText;
     if (!on) return;
