@@ -492,6 +492,10 @@ document.head.appendChild(t);})();
   /* the race/spec tables keep their Race column in view when scrolled sideways */
   .rr .lx-matrix td:first-child, .hr .lx-matrix td:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-panel); }
   .rr .lx-matrix th:first-child, .hr .lx-matrix th:first-child { left: 0; z-index: 2; }
+  /* the race/spec tables: each race's portrait with a faction-coloured border in place of the dot (scales with the table) */
+  .lx-matrix td.lx-raceface::before { display: none; }
+  .lx-matrix td.lx-raceface img { width: 1.5em; height: 1.5em; vertical-align: middle; margin: -.2em .5em -.2em 1px; }
+  .rr-spec .s, .hr-spec .s { font-size: 12.5px; }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -1278,7 +1282,8 @@ function drawMatrix(p, rows, specs, overall) {
     (c) => { colRace = null; toggle('matrix', c, (c) => (c.field === 'race' ? 'asc' : m.high ? 'desc' : 'asc')); },  // a column sort clears the picked race
     (c, r) => {
       if (c.field === 'race') {
-        const td = raceCell(r);
+        const td = raceCell(r), icon = raceIcon(r.race, r.faction);
+        if (icon.src) { td.classList.add('lx-raceface'); td.prepend(icon); } // the race's portrait, bordered in its faction's colour, for the dot
         td.classList.add('lx-pickrace'); td.classList.toggle('picked', r.race === colRace); td.dataset.race = r.race; td.tabIndex = 0; td.setAttribute('role', 'button');
         td.title = r.race === colRace ? 'Put the specs back in class order' : `Order the specs by ${r.race}’s results, best first`;
         return td;
@@ -1316,6 +1321,7 @@ function drawCards(p, rows, specs) {
     pic.append(specIcon(s), raceIcon(r.best === 'Skyborne' ? 'Horde Skyborne' : r.best, r.faction)); // the two Skyborne tied get a plain border
     const best = el('span', 'r', r.best.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')')); // short enough for the card
     best.dataset.source = 'bestBySpec'; best.dataset.field = 'best'; best.dataset.where = where;
+    if (r.faction === 'Alliance' || r.faction === 'Horde') best.style.color = `color-mix(in srgb, var(--rr-${r.faction.toLowerCase()}) 70%, #fff)`;
     b.append(best);
     return b;
   }));
@@ -2296,7 +2302,8 @@ function drawMatrix(p, rows, overall) {
     (c) => { colRace = null; toggle('matrix', c, (c) => (c.field === 'race' ? 'asc' : 'desc')); },  // a column sort clears the picked race
     (c, r) => {
       if (c.field === 'race') {
-        const td = raceCell(r);
+        const td = raceCell(r), icon = raceIcon(r.race, r.faction);
+        if (icon.src) { td.classList.add('lx-raceface'); td.prepend(icon); } // the race's portrait, bordered in its faction's colour, for the dot
         td.classList.add('lx-pickrace'); td.classList.toggle('picked', r.race === colRace); td.dataset.race = r.race; td.tabIndex = 0; td.setAttribute('role', 'button');
         td.title = r.race === colRace ? 'Put the healers back in class order' : `Order the healers by ${r.race}’s results, best first`;
         return td;
@@ -2333,6 +2340,7 @@ function drawCards(p, rows, healers) {
     pic.append(specIcon(name), raceIcon(r.best === 'Skyborne' ? 'Horde Skyborne' : r.best, r.faction)); // the two Skyborne tied get a plain border
     const best = el('span', 'r', r.best.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')')); // short enough for the card
     best.dataset.source = 'healBest'; best.dataset.field = 'best'; best.dataset.where = where;
+    if (r.faction === 'Alliance' || r.faction === 'Horde') best.style.color = `color-mix(in srgb, var(--hr-${r.faction.toLowerCase()}) 70%, #fff)`;
     b.append(best);
     return b;
   }));
@@ -3533,7 +3541,8 @@ function drawMatrix(p, rows, specs, overall) {
     (c) => { colRace = null; toggle('matrix', c, (c) => (c.field === 'race' ? 'asc' : m.high ? 'desc' : 'asc')); },  // a column sort clears the picked race
     (c, r) => {
       if (c.field === 'race') {
-        const td = raceCell(r);
+        const td = raceCell(r), icon = raceIcon(r.race, r.faction);
+        if (icon.src) { td.classList.add('lx-raceface'); td.prepend(icon); } // the race's portrait, bordered in its faction's colour, for the dot
         td.classList.add('lx-pickrace'); td.classList.toggle('picked', r.race === colRace); td.dataset.race = r.race; td.tabIndex = 0; td.setAttribute('role', 'button');
         td.title = r.race === colRace ? 'Put the specs back in class order' : `Order the specs by ${r.race}’s results, best first`;
         return td;
@@ -3571,6 +3580,7 @@ function drawCards(p, rows, specs) {
     pic.append(specIcon(s), raceIcon(r.best === 'Skyborne' ? 'Horde Skyborne' : r.best, r.faction)); // the two Skyborne tied get a plain border
     const best = el('span', 'r', r.best.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')')); // short enough for the card
     best.dataset.source = 'tankBest'; best.dataset.field = 'best'; best.dataset.where = where;
+    if (r.faction === 'Alliance' || r.faction === 'Horde') best.style.color = `color-mix(in srgb, var(--rr-${r.faction.toLowerCase()}) 70%, #fff)`;
     b.append(best);
     return b;
   }));
