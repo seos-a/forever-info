@@ -168,6 +168,7 @@
   .su-stat { display: flex; justify-content: space-between; gap: var(--cds-gap-md); padding: 1px 0; border-bottom: 1px solid #ffffff0a; font-variant-numeric: tabular-nums; }
   .su-stat span { color: var(--color-fg-muted); }
   .su-stat b { font-weight: 500; }
+  .su-congrp + .su-congrp { margin-top: var(--cds-gap-sm); }
   .su-stat.su-hasbd { cursor: help; }
   .su-stat.su-hasbd:hover { background: #ffffff08; }
   .su-tip .su-tipnote { max-width: 240px; white-space: normal; margin-top: 4px; color: var(--color-fg-muted); }
@@ -1909,7 +1910,9 @@ function drawSetup(p, item, race, minH) {
     }
     return c;
   };
-  section('Consumables', chips(suJson(s.consumables)));
+  // Consumables used before the pull (flask, elixirs, food, weapon oils, scrolls) apart from those used during the fight.
+  const cons = suJson(s.consumables), when = [['pull', 'Before the pull'], ['fight', 'During the fight']].filter(([u]) => cons.some((c) => (c.use || 'pull') === u));
+  section('Consumables', ...when.map(([u, label]) => { const d = el('div', 'su-congrp'); d.append(el('div', 'su-statgh', label), chips(cons.filter((c) => (c.use || 'pull') === u))); return d; }));
   section('Buffs', chips(suJson(s.buffs)));
   section('Debuffs on the target', chips(suJson(s.debuffs)));
   const opts = el('div', 'su-opts');
@@ -3219,7 +3222,9 @@ function drawSetup(p, item, race, minH) {
     }
     return c;
   };
-  section('Consumables', chips(suJson(s.consumables)));
+  // Consumables used before the pull (flask, elixirs, food, weapon oils, scrolls) apart from those used during the fight.
+  const cons = suJson(s.consumables), when = [['pull', 'Before the pull'], ['fight', 'During the fight']].filter(([u]) => cons.some((c) => (c.use || 'pull') === u));
+  section('Consumables', ...when.map(([u, label]) => { const d = el('div', 'su-congrp'); d.append(el('div', 'su-statgh', label), chips(cons.filter((c) => (c.use || 'pull') === u))); return d; }));
   section('Buffs', chips(suJson(s.buffs)));
   section('Debuffs on the target', chips(suJson(s.debuffs)));
   const opts = el('div', 'su-opts');
