@@ -217,7 +217,7 @@ dash.calc('healBest', {
       const sky = tied.length === 2 && tied.every((r) => r.race.endsWith('Skyborne'));
       const first = sorted[0], second = sky ? sorted[2] : sorted[1];
       return { key, scope: first.scope, fight: first.fight, cls: first.cls, healer: first.healer, best: sky ? 'Skyborne' : first.race, faction: sky ? 'Tie' : first.faction,
-        second: second ? second.race : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.hps - second.hps) * 10) / 10 : 0, races: g.length };
+        second: second ? second.race : '', secondFaction: second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.hps - second.hps) * 10) / 10 : 0, races: g.length };
     });
   },
 });
@@ -415,13 +415,23 @@ function drawMatrix(p, rows, overall) {
   body.onkeydown = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(td); } };
 }
 
+// The runner-up and the top race's lead over it, in points of "% of best" (its lead in HPS on hover).
+const runnerUp = (r) => {
+  const l = el('span', 'l');
+  if (!r.second) return l;
+  const who = el('span', 'ru', r.second.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')'));
+  who.style.color = r.secondFaction === 'Horde' ? 'var(--hr-down)' : 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
+  l.append(r.lead > 0 ? `+${r.lead.toFixed(2)}% over ` : 'Tied with ', who);
+  l.title = `${r.leadAmt} HPS ahead of ${r.second}`;
+  return l;
+};
 function drawCards(p, rows, healers) {
   $('.lx-cards').replaceChildren(...healers.map(([cls, name]) => {
     const r = rows.find((x) => x.scope === p.faction && x.fight === p.fight && x.cls === cls);
     const b = el('button', 'hr-spec');
     b.type = 'button'; b.dataset.cls = cls;
     b.setAttribute('aria-pressed', String(cls === p.lineCls && cls === p.gainCls && cls === p.detailCls));
-    const sn = el('span', 's', name.replace(/ (Druid|Hunter|Mage|Paladin|Priest|Rogue|Shaman|Warlock|Warrior)$/, '')), pic = el('span', 'pic'); sn.style.color = healerColor(name);
+    const sn = el('span', 's', name), pic = el('span', 'pic'); sn.style.color = healerColor(name); // the full name: these cards are wide
     b.append(pic, sn);
     if (!r) { pic.append(specIcon(name)); b.append(el('span', 'l', 'No race of this faction')); b.disabled = true; return b; }
     const where = 'key=' + encodeURIComponent(r.key);
@@ -431,7 +441,7 @@ function drawCards(p, rows, healers) {
     // Alliance a light blue; Horde the red of the Racial Bonus box's negative bars
     if (r.faction === 'Alliance') best.style.color = 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
     else if (r.faction === 'Horde') best.style.color = 'var(--hr-down)';
-    b.append(best);
+    b.append(best, runnerUp(r));
     return b;
   }));
   fitNames($('.lx-cards'));

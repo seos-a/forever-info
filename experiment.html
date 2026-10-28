@@ -501,6 +501,17 @@ document.head.appendChild(t);})();
   /* the filter rows: buttons only (no labels), and the Healing tab's TESTING note beside them so the page doesn't move */
   .rr-filters, .hr-filters { align-items: center; }
   .hr-filters .hr-patched { margin: 0; flex: 0 1 auto; max-width: none; padding: 3px var(--cds-pad-md); line-height: 1.45; }
+  /* Healing and Tanks: the Top Race box spans the page, its three cards share the row, bigger, with the runner-up */
+  .lx-bestcard.lx-wide { align-self: stretch; width: auto; }
+  .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: nowrap; }
+  .lx-wide .rr-spec, .lx-wide .hr-spec { flex: 1 1 0; height: auto; min-height: 5.25rem; padding: 10px 16px; column-gap: 1rem; }
+  .lx-wide .rr-spec .pic, .lx-wide .hr-spec .pic { grid-row: 1 / span 3; width: 3rem; height: 3rem; }
+  .lx-wide .rr-spec .pic .rr-ricon, .lx-wide .hr-spec .pic .hr-ricon { width: 1.7rem; height: 1.7rem; right: -8px; bottom: -8px; }
+  .lx-wide .rr-spec .s, .lx-wide .hr-spec .s { font-size: 15px; }
+  .lx-wide .rr-spec .r, .lx-wide .hr-spec .r { font-size: 15px; }
+  .lx-wide .rr-spec .l, .lx-wide .hr-spec .l { font-size: 12px; margin-top: 2px; }
+  .lx-wide .l .ru { font-weight: 600; }
+  @media (max-width: 700px) { .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: wrap; } .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; } }
 </style>
 
 <nav class="rr-tabs" role="tablist" aria-label="Role">
@@ -663,7 +674,7 @@ document.head.appendChild(t);})();
     <p class="hr-note lx-metricnote"></p>
   </section>
 
-  <section class="hr-card lx-bestcard" id="h-best">
+  <section class="hr-card lx-bestcard lx-wide" id="h-best">
     <div class="hr-cardhead"><h2>Top Race for Each Healer</h2>
       <div class="hr-tools"><div class="hr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
     </div>
@@ -778,7 +789,7 @@ document.head.appendChild(t);})();
     <p class="rr-note lx-metricnote"></p>
   </section>
 
-  <section class="rr-card lx-bestcard" id="t-best">
+  <section class="rr-card lx-bestcard lx-wide" id="t-best">
     <div class="rr-cardhead"><h2>Top Race for Each Tank</h2>
       <div class="rr-tools"><div class="rr-seg lx-measure" data-p="bestMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
     </div>
@@ -2165,7 +2176,7 @@ dash.calc('healBest', {
       const sky = tied.length === 2 && tied.every((r) => r.race.endsWith('Skyborne'));
       const first = sorted[0], second = sky ? sorted[2] : sorted[1];
       return { key, scope: first.scope, fight: first.fight, cls: first.cls, healer: first.healer, best: sky ? 'Skyborne' : first.race, faction: sky ? 'Tie' : first.faction,
-        second: second ? second.race : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.hps - second.hps) * 10) / 10 : 0, races: g.length };
+        second: second ? second.race : '', secondFaction: second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.hps - second.hps) * 10) / 10 : 0, races: g.length };
     });
   },
 });
@@ -2363,13 +2374,23 @@ function drawMatrix(p, rows, overall) {
   body.onkeydown = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(td); } };
 }
 
+// The runner-up and the top race's lead over it, in points of "% of best" (its lead in HPS on hover).
+const runnerUp = (r) => {
+  const l = el('span', 'l');
+  if (!r.second) return l;
+  const who = el('span', 'ru', r.second.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')'));
+  who.style.color = r.secondFaction === 'Horde' ? 'var(--hr-down)' : 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
+  l.append(r.lead > 0 ? `+${r.lead.toFixed(2)}% over ` : 'Tied with ', who);
+  l.title = `${r.leadAmt} HPS ahead of ${r.second}`;
+  return l;
+};
 function drawCards(p, rows, healers) {
   $('.lx-cards').replaceChildren(...healers.map(([cls, name]) => {
     const r = rows.find((x) => x.scope === p.faction && x.fight === p.fight && x.cls === cls);
     const b = el('button', 'hr-spec');
     b.type = 'button'; b.dataset.cls = cls;
     b.setAttribute('aria-pressed', String(cls === p.lineCls && cls === p.gainCls && cls === p.detailCls));
-    const sn = el('span', 's', name.replace(/ (Druid|Hunter|Mage|Paladin|Priest|Rogue|Shaman|Warlock|Warrior)$/, '')), pic = el('span', 'pic'); sn.style.color = healerColor(name);
+    const sn = el('span', 's', name), pic = el('span', 'pic'); sn.style.color = healerColor(name); // the full name: these cards are wide
     b.append(pic, sn);
     if (!r) { pic.append(specIcon(name)); b.append(el('span', 'l', 'No race of this faction')); b.disabled = true; return b; }
     const where = 'key=' + encodeURIComponent(r.key);
@@ -2379,7 +2400,7 @@ function drawCards(p, rows, healers) {
     // Alliance a light blue; Horde the red of the Racial Bonus box's negative bars
     if (r.faction === 'Alliance') best.style.color = 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
     else if (r.faction === 'Horde') best.style.color = 'var(--hr-down)';
-    b.append(best);
+    b.append(best, runnerUp(r));
     return b;
   }));
   fitNames($('.lx-cards'));
@@ -3378,7 +3399,7 @@ dash.calc('tankBest', {
       const sky = tied.length === 2 && tied.every((r) => r.race.endsWith('Skyborne'));
       const first = sorted[0], second = sky ? sorted[2] : sorted[1];
       return { key, scope: first.scope, measure: first.measure, fight: first.fight, spec: first.spec, best: sky ? 'Skyborne' : first.race, faction: sky ? 'Tie' : first.faction,
-        second: second ? second.race : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.dps - second.dps) * 10) / 10 : 0, races: g.length };
+        second: second ? second.race : '', secondFaction: second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.dps - second.dps) * 10) / 10 : 0, races: g.length };
     });
   },
 });
@@ -3617,6 +3638,16 @@ function drawMatrix(p, rows, specs, overall) {
   body.onkeydown = (e) => { const td = e.target.closest('td.lx-pickrace'); if (td && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(td); } };
 }
 
+// The runner-up and the top race's lead over it, in points of "% of best" (its lead in the measure on hover).
+const runnerUp = (r, unit) => {
+  const l = el('span', 'l');
+  if (!r.second) return l;
+  const who = el('span', 'ru', r.second.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')'));
+  who.style.color = r.secondFaction === 'Horde' ? 'var(--rr-down)' : 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)';
+  l.append(r.lead > 0 ? `+${r.lead.toFixed(2)}% over ` : 'Tied with ', who);
+  l.title = `${r.leadAmt} ${unit} ahead of ${r.second}`;
+  return l;
+};
 function drawCards(p, rows, specs) {
   const box = $('.lx-cards');
   box.replaceChildren(...specs.map((s) => {
@@ -3624,7 +3655,7 @@ function drawCards(p, rows, specs) {
     const b = el('button', 'rr-spec');
     b.type = 'button'; b.dataset.spec = s;
     b.setAttribute('aria-pressed', String(s === p.lineSpec && s === p.gainSpec && s === p.detailSpec));
-    const sn = el('span', 's', s.replace(/ (Druid|Hunter|Mage|Paladin|Priest|Rogue|Shaman|Warlock|Warrior)$/, '')), pic = el('span', 'pic'); sn.style.color = specColor(s);
+    const sn = el('span', 's', s), pic = el('span', 'pic'); sn.style.color = specColor(s); // the full name: these cards are wide
     b.append(pic, sn);
     if (!r) { pic.append(specIcon(s)); b.append(el('span', 'l', 'No race of this faction')); b.disabled = true; return b; }
     const where = 'key=' + encodeURIComponent(r.key);
@@ -3634,7 +3665,7 @@ function drawCards(p, rows, specs) {
     // Alliance a light blue; Horde the red of the Racial Bonus box's negative bars
     if (r.faction === 'Alliance') best.style.color = 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)';
     else if (r.faction === 'Horde') best.style.color = 'var(--rr-down)';
-    b.append(best);
+    b.append(best, runnerUp(r, MEASURE[p.measure].label));
     return b;
   }));
   fitNames(box);
