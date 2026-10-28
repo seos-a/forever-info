@@ -1509,7 +1509,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   let bh = 20, gap = 6;
   const minH = Math.max(CMP_MIN_H(), cmpUserH);
   if (items.length * (bh + gap) + 22 < minH) { const slot = (minH - 22) / items.length; bh = Math.min(cmpUserH ? 64 : 40, slot * 0.7); gap = slot - bh; }
-  const iz = 18, W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
+  // Icons grow with the bars (the Tanks tab's three bars are spread taller), as the healers' do, up to 30 px.
+  const iz = Math.min(30, Math.max(18, bh)), W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
@@ -2490,7 +2491,8 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   let bh = 20, gap = 6;
   const minH = Math.max(CMP_MIN_H(), cmpUserH);
   if (items.length * (bh + gap) + 22 < minH) { const slot = (minH - 22) / items.length; bh = Math.min(cmpUserH ? 64 : 40, slot * 0.7); gap = slot - bh; }
-  const iz = 18, W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
+  // Icons grow with the bars (the Tanks tab's three bars are spread taller), as the healers' do, up to 30 px.
+  const iz = Math.min(30, Math.max(18, bh)), W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
