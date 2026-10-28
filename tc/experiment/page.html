@@ -404,7 +404,7 @@
   .lx-apm, .lx-apmnote { display: none; }
   .apm-on .lx-apm, .apm-on .lx-apmnote { display: block; }
   .apm-on .lx-speccmp, .apm-on .lx-specnote, .apm-on .lx-cmpgrip, .apm-on .lx-targets { display: none !important; }
-  /* the APM view's own drag handle, and the race/spec tables' text size (--mz, set by dragging their handle: grips.js) */
+  /* the APM view's own drag handle, and the race/spec tables' text size (--mz, set to fit their box: matrix_fit.js) */
   .lx-apmgrip { display: none; }
   .apm-on .lx-apmgrip { display: block; }
   .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
@@ -463,7 +463,6 @@
     </div>
     <div class="rr-scroll"><table class="lx-matrix" data-source="matrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
     <p class="rr-note lx-metricnote"></p>
-    <div class="rr-vgrip lx-mxgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the table" tabindex="0" title="Drag to make the table bigger or smaller; double-click to reset"></div>
   </section>
 
   <section class="rr-card lx-bestcard" id="best">
@@ -579,7 +578,6 @@
     </div>
     <div class="hr-scroll"><table class="lx-matrix" data-source="healMatrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
     <p class="hr-note lx-metricnote"></p>
-    <div class="hr-vgrip lx-mxgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the table" tabindex="0" title="Drag to make the table bigger or smaller; double-click to reset"></div>
   </section>
 
   <section class="hr-card lx-bestcard" id="h-best">
@@ -695,7 +693,6 @@
     </div>
     <div class="rr-scroll"><table class="lx-matrix" data-source="tankMatrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
     <p class="rr-note lx-metricnote"></p>
-    <div class="rr-vgrip lx-mxgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the table" tabindex="0" title="Drag to make the table bigger or smaller; double-click to reset"></div>
   </section>
 
   <section class="rr-card lx-bestcard" id="t-best">
@@ -1756,7 +1753,7 @@ const named = document.getElementById(location.hash.slice(1));
 if (named) setTimeout(() => named.scrollIntoView(), 0);
 </script>
 <script src="healing.js"></script>
-<script src="grips.js"></script>
+<script src="matrix_fit.js"></script>
 <script src="apm_icons.js"></script>
 <script src="apm.js"></script>
 <script>
