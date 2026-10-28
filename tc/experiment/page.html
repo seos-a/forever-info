@@ -1791,12 +1791,15 @@ function drawTimeline(p, item, minH) {
   // Hover a cast for what it did: its damage and its hits, crits, misses and ticks.
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  for (const [i, t, ct, dmg, out] of tl) {
+  const fmtN = d3.format(',');
+  for (const [i, t, ct, dmg, out, tick, nt] of tl) {
     if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
     rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
       .on('mousemove', (ev) => {
         tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
-          ...(dmg ? [line('Damage', d3.format(',')(dmg))] : []), ...(out ? [line('Result', out)] : []));
+          // Damage over time: its average tick, with what the whole dot did (and its direct hit, if any).
+          ...(nt ? [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), line('Damage', `${fmtN(Math.round(tick / nt))} per tick (${fmtN(dmg)} total)`)]
+            : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
         tip.hidden = false;
         const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
         tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
@@ -3095,12 +3098,15 @@ function drawTimeline(p, item, minH) {
   // Hover a cast for what it did: its damage and its hits, crits, misses and ticks.
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  for (const [i, t, ct, dmg, out] of tl) {
+  const fmtN = d3.format(',');
+  for (const [i, t, ct, dmg, out, tick, nt] of tl) {
     if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
     rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
       .on('mousemove', (ev) => {
         tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
-          ...(dmg ? [line('Damage', d3.format(',')(dmg))] : []), ...(out ? [line('Result', out)] : []));
+          // Damage over time: its average tick, with what the whole dot did (and its direct hit, if any).
+          ...(nt ? [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), line('Damage', `${fmtN(Math.round(tick / nt))} per tick (${fmtN(dmg)} total)`)]
+            : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
         tip.hidden = false;
         const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
         tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
