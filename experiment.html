@@ -1841,10 +1841,10 @@ function drawSetup(p, item, race, minH) {
   if (!s) return;
   const wrap = el('div', 'su');
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
-  const classic = p.gear === 'classic', gear = suJson(s.gear), pts = suJson(s.points);
+  const classic = p.gear === 'classic', gear = suJson(s.gear), pts = [...suJson(s.points), 0, 0].slice(0, 3);
   const head = el('div', 'su-head'), cal = el('a', null, pts.join(' / '));
   cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
-  head.append(el('b', null, item.build), ` · ${race ? race + ' (its best race) · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
+  head.append(el('b', null, item.build), ` · ${race ? race + ' · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
   wrap.append(head);
   const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
   const itemRow = (g) => {
@@ -4235,10 +4235,10 @@ function drawSetup(p, item, race, minH) {
   if (!s) return;
   const wrap = el('div', 'su');
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
-  const classic = p.gear === 'classic', gear = suJson(s.gear), pts = suJson(s.points);
+  const classic = p.gear === 'classic', gear = suJson(s.gear), pts = [...suJson(s.points), 0, 0].slice(0, 3);
   const head = el('div', 'su-head'), cal = el('a', null, pts.join(' / '));
   cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
-  head.append(el('b', null, item.build), ` · ${race ? race + ' (its best race) · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
+  head.append(el('b', null, item.build), ` · ${race ? race + ' · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
   wrap.append(head);
   const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
   const itemRow = (g) => {
