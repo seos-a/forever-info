@@ -1465,8 +1465,8 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale for every spec at this faction and fight length, so a 1% bar is the same width whichever spec is shown.
-  const all = rows.filter((r) => r.scope === p.faction && r.fight === p.fight).concat(list).map((r) => r.gain);
+  // One scale for every spec and fight length at this faction, so a 1% bar is the same width whichever is shown.
+  const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
@@ -2804,8 +2804,8 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale for every spec at this faction and fight length, so a 1% bar is the same width whichever spec is shown.
-  const all = rows.filter((r) => r.scope === p.faction && r.fight === p.fight).concat(list).map((r) => r.gain);
+  // One scale for every spec and fight length at this faction, so a 1% bar is the same width whichever is shown.
+  const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
