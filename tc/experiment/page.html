@@ -863,6 +863,7 @@
       <ul>
         <li>WoWSims Forever at commit 5d4dd1c (27 October 2026, 12:01 PM CT), whose engine has the 26 October racials and the 27 October changes to Blood Fury, Berserking and Touch of the Grave. Run by Claude from the sims' own source with each tank spec's test-suite setup: talents, rotation, consumables and buffs, and the UI's gear presets. Protection Warrior has two (Defense Cap and Threat); Protection Paladin and Feral Bear have one each.</li>
         <li>The default level 63 boss hits the tank every 2 sec. Incoming healing is each spec's UI default (815 healing per second for Protection Warrior, 2,200 for Protection Paladin and Feral Bear), so no tank died in any run.</li>
+        <li>Dwarf tanks press Stoneform (10% less physical damage taken for 8 sec, 3 min cooldown) whenever it is ready. WoWSims' Prot Warrior rotation keeps it for below 50% health, which the steady healing never reaches, so it would never be used; the Prot Paladin rotation already uses it at the pull.</li>
         <li>Fights of 1, 2, 3 and 5 minutes, 10,000 iterations each, with every race on the same random seed. Each figure is good to about 0.1–0.5%; <b>Tie</b> marks races within two standard errors of the best.</li>
         <li><b>Targets</b> (Tank Ranking by Spec): each build at 1 to 5 targets, run with the race that generates the most threat on it at one target. Only the first target attacks; the others take hits and add threat work but deal no damage, so damage taken and spikes stay one-target figures.</li>
         <li><b>Gain over no racials</b> compares against the same setup with no race: no racial abilities or passives and no race stat offset.</li>
@@ -1070,8 +1071,7 @@ const BELOW = {
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
-  'Protection Warrior|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
-  'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|dtps|Dwarf': 'The Paladin uses Stoneform (10% less physical damage for 8 sec, every 3 min) at the pull, but in these sims it lowers the Paladin’s damage taken by only about 0.04% (1.4% for a Prot Warrior on a 1 minute fight), for a reason not yet found. Dwarf’s innate −4 Agility (slightly less dodge) is what shows.',
   'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
   'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
   'Protection Paladin|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
@@ -1443,7 +1443,7 @@ function drawGains(p, rows, keepNote) {
   const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   note.hidden = !below.length;
   if (!keepNote) {
-    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? el('span', 'lx-gnext', belowNote(p, r.race)) : belowNote(p, r.race)))] : []));
+    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map((r) => belowNote(p, r.race)))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : []));
     markRegear(note);
   }
   const list = regearOn ? withRegear(p, plain) : plain;
@@ -2385,8 +2385,7 @@ const BELOW = {
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
-  'Protection Warrior|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
-  'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec) covers only 8 of every 180 seconds, so it gains little value. Dwarf’s innate −4 Agility (slightly less dodge) is all that shows.',
+  'Protection Paladin|dtps|Dwarf': 'The Paladin uses Stoneform (10% less physical damage for 8 sec, every 3 min) at the pull, but in these sims it lowers the Paladin’s damage taken by only about 0.04% (1.4% for a Prot Warrior on a 1 minute fight), for a reason not yet found. Dwarf’s innate −4 Agility (slightly less dodge) is what shows.',
   'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
   'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
   'Protection Paladin|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
@@ -2774,7 +2773,7 @@ function drawGains(p, rows, keepNote) {
   if (!dwarf) regearOn = false;
   note.hidden = !below.length && !dwarf;
   if (!keepNote) {
-    const parts = below.length ? [el('b', null, 'Below zero: '), ...below.map((r, i) => (i ? el('span', 'lx-gnext', belowNote(p, r.race)) : belowNote(p, r.race)))] : [];
+    const parts = below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map((r) => belowNote(p, r.race)))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : [];
     if (dwarf) { const d = el('span', below.length ? 'lx-gnext' : null, REGEAR_LEAD); d.append(regearSpan()); parts.push(d); }
     note.replaceChildren(...parts);
   }
