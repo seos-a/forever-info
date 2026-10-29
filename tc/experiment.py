@@ -69,11 +69,10 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 @media (max-width:600px){#dash-root{padding:10px 10px 52px}.xp-top{padding:10px 10px 0}}
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
-.xp-stamp{position:absolute;left:10px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap;text-align:center}
-@media (max-width:820px){.xp-stamp{left:0;right:0;text-align:center}}
+.xp-stamp{position:absolute;left:0;right:0;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap;text-align:center}
 """
 
-# The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown bottom left). WoWSims has no release
+# The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown at the bottom, centered). WoWSims has no release
 # number for it: its version tags stop at v0.0.140 (September), on another line of history.
 SIMS_BUILD, SIMS_DATE = '5d4dd1c', 'Oct 27 2026'
 
