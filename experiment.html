@@ -111,7 +111,9 @@ document.head.appendChild(t);})();
   .rr select, .rr input[type="search"] { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
-  .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); }
+  .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
+  /* a card's switches are as tall as its title's line (the title's font size times its 1.45 line height) and centred on it */
+  .rr-cardhead .rr-seg button { padding-block: 0; line-height: calc(var(--cds-font-size-heading) * 1.45 - 2px); }
   .rr-grid2 { display: flex; align-items: flex-start; }
   .rr-grid2 > .rr-card { flex: 1 1 0; min-width: 280px; }
   .rr-split { flex: none; position: relative; width: var(--cds-gap-md); cursor: ew-resize; touch-action: none; }
@@ -327,7 +329,9 @@ document.head.appendChild(t);})();
   .hr select, .hr input[type="search"] { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
   .hr button:focus-visible, .hr select:focus-visible, .hr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .hr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
-  .hr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); }
+  .hr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
+  /* a card's switches are as tall as its title's line (the title's font size times its 1.45 line height) and centred on it */
+  .hr-cardhead .hr-seg button { padding-block: 0; line-height: calc(var(--cds-font-size-heading) * 1.45 - 2px); }
   .hr-grid2 { display: flex; align-items: flex-start; }
   .hr-grid2 > .hr-card { flex: 1 1 0; min-width: 280px; }
   .hr-split { flex: none; position: relative; width: var(--cds-gap-md); cursor: ew-resize; touch-action: none; }
@@ -463,7 +467,9 @@ document.head.appendChild(t);})();
   .rr select, .rr input[type="search"] { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
-  .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); }
+  .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
+  /* a card's switches are as tall as its title's line (the title's font size times its 1.45 line height) and centred on it */
+  .rr-cardhead .rr-seg button { padding-block: 0; line-height: calc(var(--cds-font-size-heading) * 1.45 - 2px); }
   .rr-grid2 { display: flex; align-items: flex-start; }
   .rr-grid2 > .rr-card { flex: 1 1 0; min-width: 280px; }
   .rr-split { flex: none; position: relative; width: var(--cds-gap-md); cursor: ew-resize; touch-action: none; }
