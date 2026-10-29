@@ -67,7 +67,7 @@
   "icon": "racial_orc_berserkerstrength",
   "cells": [
    "Instant",
-   "3 min cooldown"
+   "2 min cooldown"
   ],
   "text": "Increases Attack Power and Spell Power by 10% for 15 sec."
  },
