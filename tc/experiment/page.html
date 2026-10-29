@@ -129,6 +129,8 @@
   .rr-chart.lx-speccmp, .rr-chart.lx-gains { min-height: 0; }
   .rr-chart.lx-speccmp svg { cursor: default; }
   .rr-bdbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-sm); }
+  .rr-bdbar .rr-bdlegend { flex: 1 1 auto; margin-bottom: 0; }
+  .rr-bdbar .rr-seg { margin-left: auto; }
   .rr-bdlegend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-xs) var(--cds-gap-md); margin-bottom: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .rr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
@@ -139,7 +141,6 @@
   .rr-bdsw[data-kind="proc"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
   /* Setup: the gear, talents, consumables and buffs a spec's breakdown was simmed with. */
-  .rr-bdbar .rr-seg { margin-right: var(--cds-gap-xs); }
   .su { display: grid; align-content: start; gap: var(--cds-gap-lg); font-size: .8125rem; }
   /* Each section under a faint rule, its heading in the text colour; sub-groups are labelled in muted text beside their chips. */
   .su > div + div { border-top: 1px solid #ffffff12; padding-top: var(--cds-gap-md); }
@@ -474,6 +475,8 @@
   .rr-chart.lx-speccmp, .rr-chart.lx-gains { min-height: 0; }
   .rr-chart.lx-speccmp svg { cursor: default; }
   .rr-bdbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-sm); }
+  .rr-bdbar .rr-bdlegend { flex: 1 1 auto; margin-bottom: 0; }
+  .rr-bdbar .rr-seg { margin-left: auto; }
   .rr-bdlegend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-xs) var(--cds-gap-md); margin-bottom: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .rr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
@@ -1627,9 +1630,10 @@ function drawBreakdown(p, item, data, fitH) {
     b.addEventListener('click', () => dash.setParams({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(tabs);
+  // The view switch sits at the right end of the legend's row (alone on the right in a view with no legend).
   const legend = el('div', 'rr-bdlegend');
-  box.append(bar, legend);
+  bar.append(legend, tabs);
+  box.append(bar);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
   const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
@@ -2999,9 +3003,10 @@ function drawBreakdown(p, item, data, fitH) {
     b.addEventListener('click', () => setP({ specTab: v }));
     tabs.append(b);
   }
-  bar.append(tabs);
+  // The view switch sits at the right end of the legend's row (alone on the right in a view with no legend).
   const legend = el('div', 'rr-bdlegend');
-  box.append(bar, legend);
+  bar.append(legend, tabs);
+  box.append(bar);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
   const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
