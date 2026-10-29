@@ -1707,6 +1707,14 @@ function markRegear(note) {
     n.replaceWith(n.textContent.slice(0, i), span, n.textContent.slice(i + REGEAR_TEXT.length));
   }
 }
+// Specs whose biggest racial bonus is more than 1.5 times any other spec's: their Racial Bonus chart gets its own scale.
+function gainOutliers(rows) {
+  const top = new Map();
+  for (const r of rows) top.set(r.spec, Math.max(top.get(r.spec) || 0, Math.abs(r.gain)));
+  const out = new Set();
+  for (const [spec, v] of top) if (v > 1.5 * Math.max(0, ...[...top].filter(([s]) => s !== spec).map(([, w]) => w))) out.add(spec);
+  return out;
+}
 function drawGains(p, rows, keepNote) {
   gainArgs = [p, rows];
   const box = $('.lx-gains');
@@ -1736,9 +1744,11 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale per spec, the same for all its fight lengths and target counts at this faction, so switching them keeps a
-  // 1% bar the same width; one spec's outlier (Combat's Gnome at 2 targets) doesn't squeeze every other spec's bars.
-  const all = rows.filter((r) => r.scope === p.faction && r.spec === p.spec).concat(list).map((r) => r.gain);
+  // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is
+  // shown, except a spec far out of line with the rest (Combat: Gnome +7.87% at 2 targets, no other spec past ~4%):
+  // it gets a scale of its own rather than squeezing every other spec's bars.
+  const own = gainOutliers(rows.filter((r) => r.scope === p.faction));
+  const all = rows.filter((r) => r.scope === p.faction && (own.has(p.spec) ? r.spec === p.spec : !own.has(r.spec))).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
@@ -4581,9 +4591,8 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale per spec, the same for all its fight lengths and target counts at this faction, so switching them keeps a
-  // 1% bar the same width; one spec's outlier (Combat's Gnome at 2 targets) doesn't squeeze every other spec's bars.
-  const all = rows.filter((r) => r.scope === p.faction && r.spec === p.spec).concat(list).map((r) => r.gain);
+  // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is shown.
+  const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
