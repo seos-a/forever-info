@@ -1,38 +1,32 @@
-"""Make images/icons/race_bloodelf_female_skyborne.jpg, the Alliance Skyborne portrait on the Racials and Spellbook
-pages and the Experiment page (tc/experiment/race_icons.js, "High Order Skyborne").
+"""Make images/icons/race_bloodelf_male_tbc.jpg, the Alliance Skyborne portrait on the Racials and Spellbook pages.
 
-It is WoW's race_bloodelf_female icon recoloured to look like the Skyborne icons (race_skyborne_female): the skin and
-hair turned periwinkle blue, the lightest parts a little more lavender, and the fel-green glowing eyes turned
-Skyborne's gold. (Before Oct 29 it was race_bloodelf_male made into a TBC-style blond, race_bloodelf_male_tbc.jpg.)
+It is WoW's race_bloodelf_male icon with the green fel lighting on the hair, face and mouth turned into warm
+blond and skin tones, so it looks like the TBC character-creation Blood Elf icon. Then the whole face is made paler and less saturated. The glowing eyes keep their green.
 This icon is not on Wowhead, so it is not in assets.json / image-list.txt; the file lives in the repo.
 Run from tc/:  py art/bloodelf_icon.py   (downloads the original from Wowhead; needs Pillow)
 """
-import base64, colorsys, io, re, urllib.request
+import colorsys, io, urllib.request
 from PIL import Image
 
-SRC = "https://wow.zamimg.com/images/wow/icons/large/race_bloodelf_female.jpg"
-OUT = "../images/icons/race_bloodelf_female_skyborne.jpg"
-EXPERIMENT = "experiment/race_icons.js"
-EYES = [(14.6, 21.2, 3.2), (33.2, 23.8, 3.4)]   # the glowing eyes (x, y, radius in the 56px icon)
-im = Image.open(io.BytesIO(urllib.request.urlopen(urllib.request.Request(SRC, headers={"User-Agent": "Mozilla/5.0"})).read())).convert("RGB")
-src = im.copy(); px = im.load(); W, H = im.size
-def blue(s, v):   # Skyborne blue: hue, saturation and brightness for a pixel of the original's saturation s and brightness v
-    return (229 - 6*v) / 360, min(1, .32 + .45*s) * (1 - .4 * max(0, v - .75) / .25), v ** .97
+SRC = "https://wow.zamimg.com/images/wow/icons/large/race_bloodelf_male.jpg"
+OUT = "../images/icons/race_bloodelf_male_tbc.jpg"
+im = Image.open(io.BytesIO(urllib.request.urlopen(SRC).read())).convert("RGB"); W, H = im.size; px = im.load()
+SAT, LIFT = .68, .82  # overall saturation and brightness lift for the pale TBC look
+EYES = [(29, 16.5, 3), (13, 22, 2.6)]   # glowing eyes keep their green (x, y, radius in the 56px icon)
+def in_eye(x, y): return any((x-a)**2 + (y-b)**2 <= r*r for a, b, r in EYES)
 for y in range(H):
     for x in range(W):
-        h, s, v = colorsys.rgb_to_hsv(*(c/255 for c in src.getpixel((x, y)))); deg = h*360
-        eye = max(max(0, 1 - ((x-a)**2 + (y-b)**2) ** .5 / r) for a, b, r in EYES)
-        green = max(0, min(1, (s - .25) / .3)) * (55 <= deg <= 120)
-        b = colorsys.hsv_to_rgb(*blue(s, v))
-        if eye and green:   # the fel-green glow becomes gold, brightest at the centre
-            w = min(1, eye*2) * green
-            g = colorsys.hsv_to_rgb(42/360, .78, min(1, v*1.15 + .1))
-            px[x, y] = tuple(round(255 * (w*gc + (1-w)*bc)) for gc, bc in zip(g, b))
-        else:
-            px[x, y] = tuple(round(255*c) for c in b)
+        r, g, b = (c/255 for c in px[x, y]); h, s, v = colorsys.rgb_to_hsv(r, g, b); deg = h*360
+        if 60 <= deg <= 175 and s > .12 and not in_eye(x, y):
+            w = min(1, (deg-60)/15, (175-deg)/15)          # fade in/out at the edges of the green band
+            nh = (deg + (28 - deg)*w) / 360                  # pull the hue to a warm blond / skin tone
+            ns = s * (1 - .55*w)                             # and take most of the saturation out
+            nv = v * (1 - .08*w)
+            px[x, y] = tuple(round(c*255) for c in colorsys.hsv_to_rgb(nh, ns, nv))
+for y in range(H):   # second pass: paler, cooler skin and platinum-blond hair like the TBC portrait
+    for x in range(W):
+        if in_eye(x, y): continue
+        r, g, b = (c/255 for c in px[x, y]); h, s, v = colorsys.rgb_to_hsv(r, g, b)
+        s *= SAT; v = v ** LIFT
+        px[x, y] = tuple(round(c*255) for c in colorsys.hsv_to_rgb(h, s, v))
 im.save(OUT, quality=95)
-uri = "data:image/jpeg;base64," + base64.b64encode(open(OUT, "rb").read()).decode()
-js = open(EXPERIMENT, encoding="utf-8").read()
-js = re.sub(r'("High Order Skyborne": )"data:[^"]*"', lambda m: m.group(1) + '"' + uri + '"', js)
-open(EXPERIMENT, "w", encoding="utf-8", newline="\n").write(js)
-print(OUT, im.size, "and", EXPERIMENT)
