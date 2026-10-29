@@ -1,6 +1,167 @@
 {
  "updates": [
   {
+   "date": "2026-10-29",
+   "version": "1.60.1",
+   "build": "70685",
+   "classes": {
+    "hunter": [
+     [
+      "nerf",
+      "Trueshot Aura",
+      "ability_trueshot",
+      "Marksmanship talent",
+      "Increases the Ranged Attack Power of party or raid members within 45 yds by {-15} (down from 30)."
+     ],
+     [
+      "nerf",
+      "Aspect of the Hawk",
+      "spell_nature_ravenform",
+      "Spell",
+      "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {-47} (down from 90). Only one Aspect can be active at a time.",
+      "",
+      [
+       [
+        5,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {-47} (down from 90). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        4,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {-38} (down from 70). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        3,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {-30} (down from 50). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        2,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {-22} (down from 35). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        1,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {-15} (down from 20). Only one Aspect can be active at a time.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "mage": [
+     [
+      "other",
+      "Incineration",
+      "spell_fire_flameshock",
+      "Fire talent",
+      "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by {+10%} (up from 6%). Now has 5 ranks (was 3)."
+     ],
+     [
+      "other",
+      "Accelerant",
+      "spell_fire_flamebolt",
+      "Fire talent · reworded",
+      "Renamed from Improved Fireball. Reduces the casting time of your Fireball{*,*} Frostfire Bolt{*, and Arcane Wrath*} spells by 0.5 sec.",
+      "Reduces the casting time of your Fireball {~and~} Frostfire Bolt spells by 0.5 sec.",
+      [
+       [
+        5,
+        "Renamed from Improved Fireball. Reduces the casting time of your Fireball{*,*} Frostfire Bolt{*, and Arcane Wrath*} spells by 0.5 sec.",
+        "Reduces the casting time of your Fireball {~and~} Frostfire Bolt spells by 0.5 sec."
+       ],
+       [
+        4,
+        "Renamed from Improved Fireball. Reduces the casting time of your Fireball{*,*} Frostfire Bolt{*, and Arcane Wrath*} spells by 0.4 sec.",
+        "Reduces the casting time of your Fireball {~and~} Frostfire Bolt spells by 0.4 sec."
+       ],
+       [
+        3,
+        "Renamed from Improved Fireball. Reduces the casting time of your Fireball{*,*} Frostfire Bolt{*, and Arcane Wrath*} spells by 0.3 sec.",
+        "Reduces the casting time of your Fireball {~and~} Frostfire Bolt spells by 0.3 sec."
+       ],
+       [
+        2,
+        "Renamed from Improved Fireball. Reduces the casting time of your Fireball{*,*} Frostfire Bolt{*, and Arcane Wrath*} spells by 0.2 sec.",
+        "Reduces the casting time of your Fireball {~and~} Frostfire Bolt spells by 0.2 sec."
+       ],
+       [
+        1,
+        "Renamed from Improved Fireball. Reduces the casting time of your Fireball{*,*} Frostfire Bolt{*, and Arcane Wrath*} spells by 0.1 sec.",
+        "Reduces the casting time of your Fireball {~and~} Frostfire Bolt spells by 0.1 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Critical Mass",
+      "spell_nature_wispheal",
+      "Fire talent",
+      "Increases the critical strike chance of your Fire spells by {-6%} (down from 10%). Now has 3 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Precision",
+      "spell_ice_magicdamage",
+      "Frost talent · reworded",
+      "Renamed from Elemental Precision. Improves your chance to hit with {*all*} spells by 6%.",
+      "Improves your chance to hit with {~Frost and Fire~} spells by 6%.",
+      [
+       [
+        3,
+        "Renamed from Elemental Precision. Improves your chance to hit with {*all*} spells by 6%.",
+        "Improves your chance to hit with {~Frost and Fire~} spells by 6%."
+       ],
+       [
+        2,
+        "Renamed from Elemental Precision. Improves your chance to hit with {*all*} spells by 4%.",
+        "Improves your chance to hit with {~Frost and Fire~} spells by 4%."
+       ],
+       [
+        1,
+        "Renamed from Elemental Precision. Improves your chance to hit with {*all*} spells by 2%.",
+        "Improves your chance to hit with {~Frost and Fire~} spells by 2%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Ice Lance",
+      "spell_frost_frostblast",
+      "Frost talent",
+      "Now has a cooldown: 8 sec cooldown."
+     ],
+     [
+      "other",
+      "Arcane Focus",
+      "spell_holy_devotion",
+      "Arcane talent · removed",
+      "Removed from the talent tree.",
+      "Improves your chance to hit with Arcane spells by 5%."
+     ]
+    ],
+    "paladin": [
+     [
+      "buff",
+      "Righteous Fury",
+      "spell_holy_sealoffury",
+      "Spell",
+      "Now learned at level {+10} (was 16)."
+     ]
+    ],
+    "warrior": [
+     [
+      "other",
+      "Victory Rush",
+      "ability_warrior_devastate",
+      "Spell · reworded",
+      "Instantly attack the target causing (1 + {*$apm*} * 15 / 100) damage and healing you for 10% of your maximum health. Only useable within 20 sec after you kill a non-trivial enemy.",
+      "Instantly attack the target causing (1 + {~Attack Power~} * 15 / 100) damage and healing you for 10% of your maximum health. Only useable within 20 sec after you kill a non-trivial enemy."
+     ]
+    ]
+   }
+  },
+  {
    "date": "2026-10-27",
    "version": "1.60.1",
    "build": "70630",
