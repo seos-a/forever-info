@@ -294,6 +294,11 @@ document.head.appendChild(t);})();
   .tl-tablewrap { overflow-x: auto; }
   .tl-scroll { margin-top: calc(6px - var(--cds-gap-md)); overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
   .tl-scroll svg { display: block; }
+  .tl-scroll { cursor: grab; }
+  .tl-scroll.drag { cursor: grabbing; user-select: none; }
+  .tl-zoombar { display: flex; align-items: center; justify-content: flex-end; gap: var(--cds-gap-sm); margin-top: calc(6px - var(--cds-gap-md)); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .tl-zoombar + .tl-scroll { margin-top: calc(4px - var(--cds-gap-md)); }
+  .tl-zoombar button { min-width: 2.2em; }
   .rr-tip .row.tl-ticks b { white-space: normal; max-width: 220px; text-align: right; }
   .tl-svg text { fill: var(--color-fg-muted); font-size: 11px; }
   .tl-svg .lab { fill: var(--color-fg); font-size: 12px; }
@@ -1940,6 +1945,7 @@ function drawBreakdown(p, item, data, fitH) {
 // averages the 10 runs' damage per second (in 2-second steps, smoothed over 6 seconds), stacked by ability. Casts
 // counts each pressed ability per fight (averaged) with its buff's uptime, and draws one run's casts as a timeline.
 let tlSort = { i: 1, dir: -1 };  // the casts table's sort: column index, 1 ascending / -1 descending
+let tlZoom = 1;  // the casts timeline's zoom, as a multiple of its opening scale
 const TL_DATA = 'timeline';
 // Nine colours apart from each other for the stacked damage (the dashboard's eight has two near-oranges).
 const TL_COLORS = ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#e0628f', '#8a8fd6', '#a7c95b'];
@@ -2037,55 +2043,97 @@ function drawTimeline(p, item, minH) {
   tw.append(table);
   wrap.append(tw);
   // Timeline of one run: a row per ability, its casts as icons (a bar for a cast time), its buff as a band behind.
-  // pad keeps the first cast's icon clear of the pinned ability names.
-  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, pps = Math.max((W - lw - pad - 16) / (fight - start), 14);
-  const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
-  const sc = el('div', 'tl-scroll');
-  wrap.append(sc);
-  const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
-  const x = (t) => lw + pad + (t - start) * pps;
-  if (start < 0) {
-    svg.append('rect').attr('x', x(start)).attr('y', 20).attr('width', x(0) - x(start)).attr('height', TH - 20).attr('fill', '#ffffff08');
-    svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
-  }
-  const ticks = d3.range(0, fight + 1, pps >= 30 ? 5 : 10);
-  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', 16).attr('y2', TH).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(ticks.filter((t) => t > 0 || start === 0)).join('text').attr('x', x).attr('y', 12).attr('text-anchor', 'middle').text(mmss);
-  const rows = svg.append('g').attr('transform', 'translate(0,20)');
-  names.forEach((name, i) => {
-    const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
-    g.append('rect').attr('x', 0).attr('width', TW).attr('height', rowH).attr('fill', i % 2 ? '#ffffff05' : 'transparent');
-    g.append('image').attr('href', tlIcon(name)).attr('x', 4).attr('y', 3).attr('width', 16).attr('height', 16);
-    g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
-  });
-  for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
+  // pad keeps the first cast's icon clear of the pinned ability names. Ctrl + scroll (a pinch on a trackpad) or the
+  // − / + buttons zoom in around the pointer, down to single seconds; drag the timeline to move along it.
+  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, fit = (W - 2 - lw - pad - 16) / (fight - start), maxPps = 160;  // W - 2: inside the box's border
+  // It opens at least 14 px a second (as it always has; tlZoom keeps a zoom from view to view), zooming out to fit the whole fight.
+  let pps = Math.max(fit, Math.min(maxPps, Math.max(fit, 14) * tlZoom)), labels = null;
+  const bar = el('div', 'tl-zoombar'), seg = el('div', 'rr-seg'), sc = el('div', 'tl-scroll');
+  const zbtn = (text, title, f) => { const b = el('button', null, text); b.type = 'button'; b.title = title; b.addEventListener('click', f); seg.append(b); return b; };
+  bar.append(el('span', null, 'Ctrl + scroll to zoom, drag to move'), seg);
+  wrap.append(bar, sc);
   // Hover a cast for what it did: its damage and its hits, crits, misses and ticks.
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   const fmtN = d3.format(',');
-  for (const [i, t, ct, dmg, out, ticks] of tl) {
-    if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
-    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
-      .on('mousemove', (ev) => {
-        tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
-          // Damage over time: each tick (or the one amount when they're all the same), with what the whole dot did
-          // and its direct hit, if any.
-          ...(ticks ? (() => {
-            const tick = ticks.reduce((a, b) => a + b, 0), same = ticks.every((v) => v === ticks[0]), row = ticks.length === 1 ? line('Tick', fmtN(ticks[0])) : line('Ticks', same ? `${fmtN(ticks[0])} each` : ticks.map(fmtN).join(', '));
-            row.classList.add('tl-ticks');
-            return [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), row, line('Total', fmtN(dmg))];
-          })() : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
-        tip.hidden = false;
-        const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
-        tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
-      })
-      .on('mouseleave', () => { tip.hidden = true; });
-  }
-  // The labels stay in view while the timeline scrolls.
-  const labels = svg.append('g');
-  labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
-  labels.node().append(...rows.selectAll(':scope > g').nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
-  sc.addEventListener('scroll', () => labels.attr('transform', `translate(${sc.scrollLeft},0)`));
+  const STEPS = [1, 2, 5, 10, 15, 30, 60];
+  const render = () => {
+    const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
+    const x = (t) => lw + pad + (t - start) * pps;
+    sc.replaceChildren();
+    const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
+    const rows = svg.append('g').attr('transform', 'translate(0,20)');
+    names.forEach((name, i) => {
+      const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
+      g.append('rect').attr('x', 0).attr('width', TW).attr('height', rowH).attr('fill', i % 2 ? '#ffffff05' : 'transparent');
+      g.append('image').attr('href', tlIcon(name)).attr('x', 4).attr('y', 3).attr('width', 16).attr('height', 16);
+      g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
+    });
+    // Pre-pull: one flat shade over the row stripes, so it reads as a single stretch before the pull.
+    if (start < 0) for (const f of ['var(--color-panel, #141413)', '#ffffff08'])
+      rows.append('rect').attr('x', lw - 4).attr('y', 0).attr('width', x(0) - lw + 4).attr('height', names.length * rowH).attr('fill', f);
+    // Grid: a labelled line every 1 to 60 seconds, as the zoom allows, with fainter lines between when there's room.
+    const major = STEPS.find((s) => s * pps >= 56) || 60, minor = STEPS.find((s) => s < major && major % s === 0 && s * pps >= 16) || major;
+    const isMajor = (t) => Math.abs(t % major) < 1e-6;
+    const grid = d3.range(Math.ceil(start / minor) * minor, fight + 1e-6, minor);
+    rows.append('g').selectAll('line').data(grid).join('line').attr('x1', x).attr('x2', x).attr('y1', -4).attr('y2', TH - 20)
+      .attr('stroke', 'var(--cds-chart-grid)').attr('stroke-opacity', (t) => (isMajor(t) ? 1 : 0.45));
+    // "Pre-pull" names the stretch before the pull until the zoom gives it labelled seconds of its own.
+    const preLabel = start < 0 && Math.ceil(start / major) * major >= 0;
+    const tickLabels = grid.filter((t) => isMajor(t) && (t !== 0 || !preLabel || x(0) - x(start) >= 110));
+    svg.append('g').selectAll('text').data(tickLabels).join('text').attr('x', x).attr('y', 12).attr('text-anchor', 'middle').text((t) => (t < 0 ? `−${-t}s` : mmss(t)));
+    if (preLabel) svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
+    for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
+    for (const [i, t, ct, dmg, out, ticks] of tl) {
+      if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
+      rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14)
+        .on('mousemove', (ev) => {
+          if (sc.classList.contains('drag')) return;
+          tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
+            // Damage over time: each tick (or the one amount when they're all the same), with what the whole dot did
+            // and its direct hit, if any.
+            ...(ticks ? (() => {
+              const tick = ticks.reduce((a, b) => a + b, 0), same = ticks.every((v) => v === ticks[0]), row = ticks.length === 1 ? line('Tick', fmtN(ticks[0])) : line('Ticks', same ? `${fmtN(ticks[0])} each` : ticks.map(fmtN).join(', '));
+              row.classList.add('tl-ticks');
+              return [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), row, line('Total', fmtN(dmg))];
+            })() : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
+          tip.hidden = false;
+          const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
+          tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+        })
+        .on('mouseleave', () => { tip.hidden = true; });
+    }
+    // The labels stay in view while the timeline scrolls.
+    labels = svg.append('g');
+    labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
+    labels.node().append(...rows.selectAll(':scope > g').filter(function () { return this.querySelector('text.lab'); }).nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
+    labels.attr('transform', `translate(${sc.scrollLeft},0)`);
+    zOut.disabled = pps <= fit + 1e-6; zIn.disabled = pps >= maxPps - 1e-6; zFit.disabled = zOut.disabled;
+  };
+  // Zoom to a new scale, keeping the moment under the pointer (or the middle of the view) where it is.
+  const zoomTo = (next, clientX) => {
+    const r = sc.getBoundingClientRect(), px = clientX == null ? (lw + r.width) / 2 : clientX - r.left;
+    const t = start + (sc.scrollLeft + px - lw - pad) / pps;
+    pps = Math.max(fit, Math.min(maxPps, next)); tlZoom = pps / Math.max(fit, 14);
+    render();
+    sc.scrollLeft = lw + pad + (t - start) * pps - px;
+  };
+  const zOut = zbtn('−', 'Zoom out', () => zoomTo(pps / 1.6)), zIn = zbtn('+', 'Zoom in', () => zoomTo(pps * 1.6)), zFit = zbtn('Fit', 'Show the whole fight', () => zoomTo(fit));
+  sc.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); zoomTo(pps * Math.exp(-e.deltaY * 0.002), e.clientX); }, { passive: false });
+  sc.addEventListener('scroll', () => labels && labels.attr('transform', `translate(${sc.scrollLeft},0)`));
+  // Drag with the mouse to move along the timeline (touch scrolls it natively).
+  let drag = null;
+  sc.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && e.button === 0 && e.target !== sc) { drag = { x: e.clientX, s: sc.scrollLeft, id: e.pointerId, moved: false }; e.preventDefault(); } });
+  sc.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 4) return;
+    if (!drag.moved) { drag.moved = true; sc.setPointerCapture(drag.id); sc.classList.add('drag'); tip.hidden = true; }
+    sc.scrollLeft = drag.s - dx;
+  });
+  const endDrag = () => { drag = null; sc.classList.remove('drag'); };
+  sc.addEventListener('pointerup', endDrag); sc.addEventListener('pointercancel', endDrag);
+  render();
 }
 
 // Setup: what a build was simmed with, from the `setup` dataset (the Gear switch's pb_setup for Classic
@@ -4726,6 +4774,7 @@ function drawBreakdown(p, item, data, fitH) {
 // averages the 10 runs' damage per second (in 2-second steps, smoothed over 6 seconds), stacked by ability. Casts
 // counts each pressed ability per fight (averaged) with its buff's uptime, and draws one run's casts as a timeline.
 let tlSort = { i: 1, dir: -1 };  // the casts table's sort: column index, 1 ascending / -1 descending
+let tlZoom = 1;  // the casts timeline's zoom, as a multiple of its opening scale
 const TL_DATA = 'tankTimeline';
 // Nine colours apart from each other for the stacked damage (the dashboard's eight has two near-oranges).
 const TL_COLORS = ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#e0628f', '#8a8fd6', '#a7c95b'];
@@ -4823,55 +4872,97 @@ function drawTimeline(p, item, minH) {
   tw.append(table);
   wrap.append(tw);
   // Timeline of one run: a row per ability, its casts as icons (a bar for a cast time), its buff as a band behind.
-  // pad keeps the first cast's icon clear of the pinned ability names.
-  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, pps = Math.max((W - lw - pad - 16) / (fight - start), 14);
-  const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
-  const sc = el('div', 'tl-scroll');
-  wrap.append(sc);
-  const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
-  const x = (t) => lw + pad + (t - start) * pps;
-  if (start < 0) {
-    svg.append('rect').attr('x', x(start)).attr('y', 20).attr('width', x(0) - x(start)).attr('height', TH - 20).attr('fill', '#ffffff08');
-    svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
-  }
-  const ticks = d3.range(0, fight + 1, pps >= 30 ? 5 : 10);
-  svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', 16).attr('y2', TH).attr('stroke', 'var(--cds-chart-grid)');
-  svg.append('g').selectAll('text').data(ticks.filter((t) => t > 0 || start === 0)).join('text').attr('x', x).attr('y', 12).attr('text-anchor', 'middle').text(mmss);
-  const rows = svg.append('g').attr('transform', 'translate(0,20)');
-  names.forEach((name, i) => {
-    const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
-    g.append('rect').attr('x', 0).attr('width', TW).attr('height', rowH).attr('fill', i % 2 ? '#ffffff05' : 'transparent');
-    g.append('image').attr('href', tlIcon(name)).attr('x', 4).attr('y', 3).attr('width', 16).attr('height', 16);
-    g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
-  });
-  for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
+  // pad keeps the first cast's icon clear of the pinned ability names. Ctrl + scroll (a pinch on a trackpad) or the
+  // − / + buttons zoom in around the pointer, down to single seconds; drag the timeline to move along it.
+  const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, fit = (W - 2 - lw - pad - 16) / (fight - start), maxPps = 160;  // W - 2: inside the box's border
+  // It opens at least 14 px a second (as it always has; tlZoom keeps a zoom from view to view), zooming out to fit the whole fight.
+  let pps = Math.max(fit, Math.min(maxPps, Math.max(fit, 14) * tlZoom)), labels = null;
+  const bar = el('div', 'tl-zoombar'), seg = el('div', 'rr-seg'), sc = el('div', 'tl-scroll');
+  const zbtn = (text, title, f) => { const b = el('button', null, text); b.type = 'button'; b.title = title; b.addEventListener('click', f); seg.append(b); return b; };
+  bar.append(el('span', null, 'Ctrl + scroll to zoom, drag to move'), seg);
+  wrap.append(bar, sc);
   // Hover a cast for what it did: its damage and its hits, crits, misses and ticks.
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   const fmtN = d3.format(',');
-  for (const [i, t, ct, dmg, out, ticks] of tl) {
-    if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
-    rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14).style('cursor', 'default')
-      .on('mousemove', (ev) => {
-        tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
-          // Damage over time: each tick (or the one amount when they're all the same), with what the whole dot did
-          // and its direct hit, if any.
-          ...(ticks ? (() => {
-            const tick = ticks.reduce((a, b) => a + b, 0), same = ticks.every((v) => v === ticks[0]), row = ticks.length === 1 ? line('Tick', fmtN(ticks[0])) : line('Ticks', same ? `${fmtN(ticks[0])} each` : ticks.map(fmtN).join(', '));
-            row.classList.add('tl-ticks');
-            return [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), row, line('Total', fmtN(dmg))];
-          })() : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
-        tip.hidden = false;
-        const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
-        tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
-      })
-      .on('mouseleave', () => { tip.hidden = true; });
-  }
-  // The labels stay in view while the timeline scrolls.
-  const labels = svg.append('g');
-  labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
-  labels.node().append(...rows.selectAll(':scope > g').nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
-  sc.addEventListener('scroll', () => labels.attr('transform', `translate(${sc.scrollLeft},0)`));
+  const STEPS = [1, 2, 5, 10, 15, 30, 60];
+  const render = () => {
+    const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
+    const x = (t) => lw + pad + (t - start) * pps;
+    sc.replaceChildren();
+    const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
+    const rows = svg.append('g').attr('transform', 'translate(0,20)');
+    names.forEach((name, i) => {
+      const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
+      g.append('rect').attr('x', 0).attr('width', TW).attr('height', rowH).attr('fill', i % 2 ? '#ffffff05' : 'transparent');
+      g.append('image').attr('href', tlIcon(name)).attr('x', 4).attr('y', 3).attr('width', 16).attr('height', 16);
+      g.append('text').attr('class', 'lab').attr('x', 26).attr('y', 15).text(name.length > 18 ? name.slice(0, 17) + '…' : name).append('title').text(name);
+    });
+    // Pre-pull: one flat shade over the row stripes, so it reads as a single stretch before the pull.
+    if (start < 0) for (const f of ['var(--color-panel, #141413)', '#ffffff08'])
+      rows.append('rect').attr('x', lw - 4).attr('y', 0).attr('width', x(0) - lw + 4).attr('height', names.length * rowH).attr('fill', f);
+    // Grid: a labelled line every 1 to 60 seconds, as the zoom allows, with fainter lines between when there's room.
+    const major = STEPS.find((s) => s * pps >= 56) || 60, minor = STEPS.find((s) => s < major && major % s === 0 && s * pps >= 16) || major;
+    const isMajor = (t) => Math.abs(t % major) < 1e-6;
+    const grid = d3.range(Math.ceil(start / minor) * minor, fight + 1e-6, minor);
+    rows.append('g').selectAll('line').data(grid).join('line').attr('x1', x).attr('x2', x).attr('y1', -4).attr('y2', TH - 20)
+      .attr('stroke', 'var(--cds-chart-grid)').attr('stroke-opacity', (t) => (isMajor(t) ? 1 : 0.45));
+    // "Pre-pull" names the stretch before the pull until the zoom gives it labelled seconds of its own.
+    const preLabel = start < 0 && Math.ceil(start / major) * major >= 0;
+    const tickLabels = grid.filter((t) => isMajor(t) && (t !== 0 || !preLabel || x(0) - x(start) >= 110));
+    svg.append('g').selectAll('text').data(tickLabels).join('text').attr('x', x).attr('y', 12).attr('text-anchor', 'middle').text((t) => (t < 0 ? `−${-t}s` : mmss(t)));
+    if (preLabel) svg.append('text').attr('x', (x(start) + x(0)) / 2).attr('y', 12).attr('text-anchor', 'middle').text('Pre-pull');
+    for (const [i, a, b] of wins) rows.append('rect').attr('x', x(a)).attr('y', i * rowH + 3).attr('width', Math.max(1, x(b) - x(a))).attr('height', rowH - 6).attr('rx', 3).attr('fill', '#c9b37e').attr('fill-opacity', 0.16);
+    for (const [i, t, ct, dmg, out, ticks] of tl) {
+      if (ct) rows.append('rect').attr('x', x(t)).attr('y', i * rowH + 7).attr('width', ct * pps).attr('height', rowH - 14).attr('fill', '#7fdcff').attr('fill-opacity', 0.55);
+      rows.append('image').attr('href', tlIcon(names[i])).attr('x', x(t) - 7).attr('y', i * rowH + 4).attr('width', 14).attr('height', 14)
+        .on('mousemove', (ev) => {
+          if (sc.classList.contains('drag')) return;
+          tip.replaceChildren(el('div', 'h', names[i]), line('Time', `${t < 0 ? 'pre-pull ' : ''}${mmss(t)}`), ...(ct ? [line('Cast time', `${ct} s`)] : []),
+            // Damage over time: each tick (or the one amount when they're all the same), with what the whole dot did
+            // and its direct hit, if any.
+            ...(ticks ? (() => {
+              const tick = ticks.reduce((a, b) => a + b, 0), same = ticks.every((v) => v === ticks[0]), row = ticks.length === 1 ? line('Tick', fmtN(ticks[0])) : line('Ticks', same ? `${fmtN(ticks[0])} each` : ticks.map(fmtN).join(', '));
+              row.classList.add('tl-ticks');
+              return [...(dmg - tick >= 1 ? [line('Direct hit', fmtN(dmg - tick))] : []), row, line('Total', fmtN(dmg))];
+            })() : dmg ? [line('Damage', fmtN(dmg))] : []), ...(out ? [line('Result', out)] : []));
+          tip.hidden = false;
+          const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
+          tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+        })
+        .on('mouseleave', () => { tip.hidden = true; });
+    }
+    // The labels stay in view while the timeline scrolls.
+    labels = svg.append('g');
+    labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
+    labels.node().append(...rows.selectAll(':scope > g').filter(function () { return this.querySelector('text.lab'); }).nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
+    labels.attr('transform', `translate(${sc.scrollLeft},0)`);
+    zOut.disabled = pps <= fit + 1e-6; zIn.disabled = pps >= maxPps - 1e-6; zFit.disabled = zOut.disabled;
+  };
+  // Zoom to a new scale, keeping the moment under the pointer (or the middle of the view) where it is.
+  const zoomTo = (next, clientX) => {
+    const r = sc.getBoundingClientRect(), px = clientX == null ? (lw + r.width) / 2 : clientX - r.left;
+    const t = start + (sc.scrollLeft + px - lw - pad) / pps;
+    pps = Math.max(fit, Math.min(maxPps, next)); tlZoom = pps / Math.max(fit, 14);
+    render();
+    sc.scrollLeft = lw + pad + (t - start) * pps - px;
+  };
+  const zOut = zbtn('−', 'Zoom out', () => zoomTo(pps / 1.6)), zIn = zbtn('+', 'Zoom in', () => zoomTo(pps * 1.6)), zFit = zbtn('Fit', 'Show the whole fight', () => zoomTo(fit));
+  sc.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); zoomTo(pps * Math.exp(-e.deltaY * 0.002), e.clientX); }, { passive: false });
+  sc.addEventListener('scroll', () => labels && labels.attr('transform', `translate(${sc.scrollLeft},0)`));
+  // Drag with the mouse to move along the timeline (touch scrolls it natively).
+  let drag = null;
+  sc.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && e.button === 0 && e.target !== sc) { drag = { x: e.clientX, s: sc.scrollLeft, id: e.pointerId, moved: false }; e.preventDefault(); } });
+  sc.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 4) return;
+    if (!drag.moved) { drag.moved = true; sc.setPointerCapture(drag.id); sc.classList.add('drag'); tip.hidden = true; }
+    sc.scrollLeft = drag.s - dx;
+  });
+  const endDrag = () => { drag = null; sc.classList.remove('drag'); };
+  sc.addEventListener('pointerup', endDrag); sc.addEventListener('pointercancel', endDrag);
+  render();
 }
 
 // Setup: what a tank build was simmed with, from the `tankSetup` dataset (as the DPS tab's: gear and
