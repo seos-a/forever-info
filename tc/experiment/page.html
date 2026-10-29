@@ -1526,8 +1526,9 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is shown.
-  const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
+  // One scale per spec, the same for all its fight lengths and target counts at this faction, so switching them keeps a
+  // 1% bar the same width; one spec's outlier (Combat's Gnome at 2 targets) doesn't squeeze every other spec's bars.
+  const all = rows.filter((r) => r.scope === p.faction && r.spec === p.spec).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
@@ -2960,8 +2961,9 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is shown.
-  const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
+  // One scale per spec, the same for all its fight lengths and target counts at this faction, so switching them keeps a
+  // 1% bar the same width; one spec's outlier (Combat's Gnome at 2 targets) doesn't squeeze every other spec's bars.
+  const all = rows.filter((r) => r.scope === p.faction && r.spec === p.spec).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
