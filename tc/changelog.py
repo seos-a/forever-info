@@ -362,9 +362,9 @@ def builds():
     return cmp['live'], old
 
 def beta_build():
-    """(version, build) of the WoW Forever beta from Blizzard's patch server, e.g. ('1.60.1', '70338').
-    The beta is listed as wow_classic_beta; at launch the live game will likely be a different product."""
-    txt = tm.get('http://us.patch.battle.net:1119/wow_classic_beta/versions')
+    """(version, build) of WoW Forever's client from Blizzard's patch server, e.g. ('1.60.1', '70685').
+    The game is listed as wowf, the launch client; the beta's wow_classic_beta entry stopped at 70532 (Oct 23)."""
+    txt = tm.get('http://us.patch.battle.net:1119/wowf/versions')
     row = next(l for l in txt.splitlines() if l.startswith('us|')).split('|')
     name = row[5]   # VersionsName, e.g. 1.60.1.70338
     return name.rsplit('.', 1)[0], name.rsplit('.', 1)[1]
