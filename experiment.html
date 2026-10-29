@@ -1261,9 +1261,11 @@ dash.calc('bestBySpec', {
       const sorted = g.slice().sort((a, b) => b.pct - a.pct || b.dps - a.dps), tied = sorted.filter((r) => r.pct === sorted[0].pct);
       // The two Skyborne races share their racials, so a tie between them reads as one race, Skyborne.
       const sky = tied.length === 2 && tied.every((r) => r.race.endsWith('Skyborne'));
-      const first = sorted[0], second = sky ? sorted[2] : sorted[1];
+      const first = sorted[0], i2 = sky ? 2 : 1, second = sorted[i2], next = sorted[i2 + 1];
+      // Likewise a runner-up tie between them: Skyborne, with no faction.
+      const sky2 = !!second && !!next && second.race.endsWith('Skyborne') && next.race.endsWith('Skyborne') && next.pct === second.pct;
       return { key, scope: first.scope, fight: first.fight, spec: first.spec, best: sky ? 'Skyborne' : first.race, faction: sky ? 'Tie' : first.faction,
-        second: second ? second.race : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.dps - second.dps) * 10) / 10 : 0, races: g.length };
+        second: second ? (sky2 ? 'Skyborne' : second.race) : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.dps - second.dps) * 10) / 10 : 0, races: g.length };
     });
   },
 });
@@ -2700,9 +2702,11 @@ dash.calc('healBest', {
       const sorted = g.slice().sort((a, b) => b.pct - a.pct || b.hps - a.hps), tied = sorted.filter((r) => r.pct === sorted[0].pct);
       // The two Skyborne races share their racials, so a tie between them reads as one race, Skyborne.
       const sky = tied.length === 2 && tied.every((r) => r.race.endsWith('Skyborne'));
-      const first = sorted[0], second = sky ? sorted[2] : sorted[1];
+      const first = sorted[0], i2 = sky ? 2 : 1, second = sorted[i2], next = sorted[i2 + 1];
+      // Likewise a runner-up tie between them: Skyborne, with no faction.
+      const sky2 = !!second && !!next && second.race.endsWith('Skyborne') && next.race.endsWith('Skyborne') && next.pct === second.pct;
       return { key, scope: first.scope, fight: first.fight, cls: first.cls, healer: first.healer, best: sky ? 'Skyborne' : first.race, faction: sky ? 'Tie' : first.faction,
-        second: second ? second.race : '', secondFaction: second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.hps - second.hps) * 10) / 10 : 0, races: g.length };
+        second: second ? (sky2 ? 'Skyborne' : second.race) : '', secondFaction: sky2 ? 'Tie' : second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.hps - second.hps) * 10) / 10 : 0, races: g.length };
     });
   },
 });
@@ -2935,7 +2939,8 @@ const runnerUp = (r) => {
   const l = el('span', 'l');
   if (!r.second) return l;
   const who = el('span', 'ru', r.second.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')'));
-  who.style.color = r.secondFaction === 'Horde' ? 'var(--hr-down)' : 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
+  // Horde red, Alliance blue; the two Skyborne tied keep the plain text colour.
+  if (r.secondFaction !== 'Tie') who.style.color = r.secondFaction === 'Horde' ? 'var(--hr-down)' : 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)';
   l.append(r.lead > 0 ? `+${r.lead.toFixed(2)}% over ` : 'Tied with ', who);
   l.title = `${r.leadAmt} HPS ahead of ${r.second}`;
   return l;
@@ -4024,9 +4029,11 @@ dash.calc('tankBest', {
       const sorted = g.slice().sort((a, b) => b.pct - a.pct || b.dps - a.dps), tied = sorted.filter((r) => r.pct === sorted[0].pct);
       // The two Skyborne races share their racials, so a tie between them reads as one race, Skyborne.
       const sky = tied.length === 2 && tied.every((r) => r.race.endsWith('Skyborne'));
-      const first = sorted[0], second = sky ? sorted[2] : sorted[1];
+      const first = sorted[0], i2 = sky ? 2 : 1, second = sorted[i2], next = sorted[i2 + 1];
+      // Likewise a runner-up tie between them: Skyborne, with no faction.
+      const sky2 = !!second && !!next && second.race.endsWith('Skyborne') && next.race.endsWith('Skyborne') && next.pct === second.pct;
       return { key, scope: first.scope, measure: first.measure, fight: first.fight, spec: first.spec, best: sky ? 'Skyborne' : first.race, faction: sky ? 'Tie' : first.faction,
-        second: second ? second.race : '', secondFaction: second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.dps - second.dps) * 10) / 10 : 0, races: g.length };
+        second: second ? (sky2 ? 'Skyborne' : second.race) : '', secondFaction: sky2 ? 'Tie' : second ? second.faction : '', lead: second ? Math.round((first.pct - second.pct) * 100) / 100 : 0, leadAmt: second ? Math.round(Math.abs(first.dps - second.dps) * 10) / 10 : 0, races: g.length };
     });
   },
 });
@@ -4296,7 +4303,8 @@ const runnerUp = (r, unit) => {
   const l = el('span', 'l');
   if (!r.second) return l;
   const who = el('span', 'ru', r.second.replace(/^(Alliance|Horde) Skyborne$/, (m, f) => 'Skyborne (' + f[0] + ')'));
-  who.style.color = r.secondFaction === 'Horde' ? 'var(--rr-down)' : 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)';
+  // Horde red, Alliance blue; the two Skyborne tied keep the plain text colour.
+  if (r.secondFaction !== 'Tie') who.style.color = r.secondFaction === 'Horde' ? 'var(--rr-down)' : 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)';
   l.append(r.lead > 0 ? `+${r.lead.toFixed(2)}% over ` : 'Tied with ', who);
   l.title = `${r.leadAmt} ${unit} ahead of ${r.second}`;
   return l;
