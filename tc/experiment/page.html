@@ -372,6 +372,7 @@
   .rr-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg); border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
   .rr-seg button:last-child { border-right: 0; }
   .rr-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+  .rr-seg button:disabled { opacity: .45; cursor: default; }
   .rr .rr-seg button:focus-visible, .hr .hr-seg button:focus-visible { outline-offset: -3px; }  /* inset: the group clips its corners */
   .rr select, .rr input[type="search"] { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
@@ -603,7 +604,7 @@
   <div class="rr-grid2" id="spec">
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-gainhead">Racial Bonus</h2>
-        <div class="rr-tools"><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
+        <div class="rr-tools"><div class="rr-seg lx-gtargets" data-p="gainTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
       </div>
       <p class="rr-note">DPS each race adds over the same builds run with no race at all, stat differences included.</p>
       <div class="rr-chart lx-gains" data-source="bySpec regear"></div>
@@ -646,7 +647,7 @@
         <li>Every DPS spec's preset builds from the WoWSims site: gear, talents, rotation, consumables, buffs and debuffs as each spec's presets set them, except Dragonbreath Chili: only the Retribution and Enhancement presets carry it, and it would put them about 3% (1 target) to 11% (5 targets) ahead of the other melee specs, so it is left out. The gear presets are marked developer-only, so the public site hides them; they are in WoWSims' source.</li>
         <li>Fights of 1, 2, 3 and 5 minutes against the site's default level 63 boss, 10,000 iterations each, with every race on the same random seed, so each DPS figure is good to about 0.1%.</li>
         <li><b>Gain over no racials</b> compares against the same build with no race: no racial abilities or passives and no race stat offset. Stat offsets count, which is why Tauren and some Dwarf builds come out below zero.</li>
-        <li><b>Targets</b> (DPS Ranking by Spec): each build at 1 to 5 copies of the boss, run with the race that does best on it at one target. Race choice barely changes with the number of targets, so only that race is run there.</li>
+        <li><b>Targets</b> (DPS Ranking by Spec): each build at 1 to 5 copies of the boss, run with the race that does best on it at one target. Race choice barely changes with the number of targets, so only that race is run there. The Racial Bonus box's target switch is the exception: every race, and the no-racials baseline, is run at 1 to 5 targets for it.</li>
         <li>Active racials such as Elune's Light, Blood Fury, Berserking and Eureka! are fired by the sim's rotation on its own. Players lining them up with other cooldowns may get a little more.</li>
         <li>Situational racials are not counted: Big Game Hunter, Beast Slaying, Elemental Insight, and Read Leyline outside the mage and feral rotations.</li>
       </ul>
@@ -837,7 +838,7 @@
   <div class="rr-grid2" id="t-spec">
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-gainhead">Racial Bonus</h2>
-        <div class="rr-tools"><div class="rr-seg lx-measure" data-p="gainMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
+        <div class="rr-tools"><div class="rr-seg lx-measure" data-p="gainMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-gtargets" data-p="gainTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
       </div>
       <p class="rr-note">How much each race improves the chosen measure over the same builds with no race at all, stat differences included. For damage taken and spikes, a drop counts as a gain.</p>
       <div class="rr-chart lx-gains" data-source="tankBySpec"></div>
@@ -880,7 +881,7 @@
         <li>The default level 63 boss hits the tank every 2 sec. Incoming healing is each spec's UI default (815 healing per second for Protection Warrior, 2,200 for Protection Paladin and Feral Bear), so no tank died in any run.</li>
         <li>Dwarf tanks press Stoneform (10% less physical damage taken for 8 sec, 3 min cooldown) whenever it is ready. WoWSims' Prot Warrior rotation keeps it for below 50% health, which the steady healing never reaches, so it would never be used. The Prot Paladin's sim fires it at the pull together with Templar's Bulwark, whose 8 sec absorb shield soaks every hit while both last, so the Paladin presses it once the Bulwark drops.</li>
         <li>Fights of 1, 2, 3 and 5 minutes, 10,000 iterations each, with every race on the same random seed. Each figure is good to about 0.1–0.5%; <b>Tie</b> marks races within two standard errors of the best.</li>
-        <li><b>Targets</b> (Tank Ranking by Spec): each build at 1 to 5 targets, run with the race that generates the most threat on it at one target. Only the first target attacks; the others take hits and add threat work but deal no damage, so damage taken and spikes stay one-target figures.</li>
+        <li><b>Targets</b> (Tank Ranking by Spec): each build at 1 to 5 targets, run with the race that generates the most threat on it at one target. Only the first target attacks; the others take hits and add threat work but deal no damage, so damage taken and spikes stay one-target figures. The Racial Bonus box's target switch runs every race, and the no-racials baseline, at 1 to 5 targets; it applies to threat and DPS only.</li>
         <li><b>Gain over no racials</b> compares against the same setup with no race: no racial abilities or passives and no race stat offset.</li>
         <li><b>Threat (TPS)</b> is the threat generated per second. <b>Damage taken (DTPS)</b> is after armor, avoidance and mitigation. <b>Spikes (TMI)</b> is the Theck–Meloree Index, a measure of how large the tank's worst damage spikes are against its health. For damage taken and spikes, lower is better, so the page treats the lowest value as 100%.</li>
       </ul>
@@ -949,55 +950,68 @@ function fitNames(box) {
   }
 }
 // Calculations: every figure on the page comes from these, worked out from the per-build sims.
+// A row's target count: the `sims` rows are all at 1 target; `simsTargets` holds the same runs at 2 to 5.
+const tgt = (r) => +r.targets || 1;
 dash.calc('scoped', {
   inputs: ['sims'],
   title: 'Each sim vs the best race',
   description: 'Each race’s DPS as a share of the best race on the same build and fight length, among all races or within one faction, with its gain over no racials.',
-  fn: (sims) => {
-    const out = [];
-    for (const scope of ['All', 'Alliance', 'Horde']) {
-      const groups = new Map();
-      for (const r of sims) {
-        if (scope !== 'All' && r.faction !== scope) continue;
-        const k = r.spec + '|' + r.build + '|' + r.fight;
-        if (!groups.has(k)) groups.set(k, []);
-        groups.get(k).push(r);
-      }
-      for (const g of groups.values()) {
-        const best = g.reduce((a, r) => (+r.dps > +a.dps ? r : a));
-        for (const r of g) {
-          const gap = best.dps - r.dps, tie = r !== best && gap <= 2 * Math.hypot(best.se, r.se);
-          out.push({
-            key: [scope, r.spec, r.build, r.fight, r.race].join('|'), scope, spec: r.spec, build: r.build,
-            fight: +r.fight, length: r.fight / 60 + ' min', race: r.race, faction: r.faction,
-            dps: +r.dps, se: +r.se, pct: Math.round((r.dps / best.dps) * 10000) / 100, gain: +r.gain,
-            gainDps: Math.round((r.dps - r.base) * 10) / 10, gapDps: Math.round(gap * 10) / 10,
-            best: r === best, status: r === best ? 'Best' : tie ? 'Tie' : '',
-          });
-        }
+  fn: (sims) => scopeSims(sims),
+});
+function scopeSims(sims) {
+  const out = [];
+  for (const scope of ['All', 'Alliance', 'Horde']) {
+    const groups = new Map();
+    for (const r of sims) {
+      if (scope !== 'All' && r.faction !== scope) continue;
+      const k = r.spec + '|' + r.build + '|' + r.fight + '|' + tgt(r);
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(r);
+    }
+    for (const g of groups.values()) {
+      const best = g.reduce((a, r) => (+r.dps > +a.dps ? r : a));
+      for (const r of g) {
+        const gap = best.dps - r.dps, tie = r !== best && gap <= 2 * Math.hypot(best.se, r.se);
+        out.push({
+          key: [scope, r.spec, r.build, r.fight, r.race].concat(tgt(r) > 1 ? [tgt(r)] : []).join('|'), scope, spec: r.spec, build: r.build,
+          fight: +r.fight, length: r.fight / 60 + ' min', targets: tgt(r), race: r.race, faction: r.faction,
+          dps: +r.dps, se: +r.se, pct: Math.round((r.dps / best.dps) * 10000) / 100, gain: +r.gain,
+          gainDps: Math.round((r.dps - r.base) * 10) / 10, gapDps: Math.round(gap * 10) / 10,
+          best: r === best, status: r === best ? 'Best' : tie ? 'Tie' : '',
+        });
       }
     }
-    return out;
-  },
-});
+  }
+  return out;
+}
 
 dash.calc('bySpec', {
   inputs: ['scoped'],
   title: 'Race averages per spec',
   description: 'Each race’s average over a spec’s builds, per fight length and over all four lengths (all), and how many build and length runs it was best on.',
-  fn: (scoped) => {
-    const acc = new Map();
-    for (const r of scoped) {
-      for (const fight of ['all', String(r.fight)]) {
-        const k = [r.scope, fight, r.spec, r.race].join('|');
-        let a = acc.get(k);
-        if (!a) acc.set(k, (a = { key: k, scope: r.scope, fight, spec: r.spec, race: r.race, faction: r.faction, n: 0, dps: 0, pct: 0, gain: 0, gainDps: 0, gapDps: 0, wins: 0 }));
-        a.n++; a.dps += r.dps; a.pct += r.pct; a.gain += r.gain; a.gainDps += r.gainDps; a.gapDps += r.gapDps; a.wins += r.best ? 1 : 0;
-      }
+  fn: (scoped) => specAverages(scoped),
+});
+function specAverages(scoped) {
+  const acc = new Map();
+  for (const r of scoped) {
+    for (const fight of ['all', String(r.fight)]) {
+      const k = [r.scope, fight, r.spec, r.race].concat(r.targets > 1 ? [r.targets] : []).join('|');
+      let a = acc.get(k);
+      if (!a) acc.set(k, (a = { key: k, scope: r.scope, fight, targets: r.targets, spec: r.spec, race: r.race, faction: r.faction, n: 0, dps: 0, pct: 0, gain: 0, gainDps: 0, gapDps: 0, wins: 0 }));
+      a.n++; a.dps += r.dps; a.pct += r.pct; a.gain += r.gain; a.gainDps += r.gainDps; a.gapDps += r.gapDps; a.wins += r.best ? 1 : 0;
     }
-    const r2 = (x) => Math.round(x * 100) / 100, r1 = (x) => Math.round(x * 10) / 10;
-    return [...acc.values()].map((a) => ({ ...a, dps: r1(a.dps / a.n), pct: r2(a.pct / a.n), gain: r2(a.gain / a.n), gainDps: r1(a.gainDps / a.n), gapDps: r1(a.gapDps / a.n) }));
-  },
+  }
+  const r2 = (x) => Math.round(x * 100) / 100, r1 = (x) => Math.round(x * 10) / 10;
+  return [...acc.values()].map((a) => ({ ...a, dps: r1(a.dps / a.n), pct: r2(a.pct / a.n), gain: r2(a.gain / a.n), gainDps: r1(a.gainDps / a.n), gapDps: r1(a.gapDps / a.n) }));
+}
+
+// The Racial Bonus box's target switch: the race averages at 1 to 5 targets (every race and the no-racials baseline
+// were simmed at each count).
+dash.calc('gainsByTargets', {
+  inputs: ['sims', 'simsTargets'],
+  title: 'Race averages per spec and target count',
+  description: 'Each race’s average over a spec’s builds at 1 to 5 targets, per fight length and over all four lengths (all), with its gain over no racials at the same target count.',
+  fn: (sims, simsTargets) => specAverages(scopeSims(sims.concat(simsTargets))),
 });
 
 dash.calc('overall', {
@@ -1086,6 +1100,9 @@ const BELOW = {
   'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
   'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Hunter presets are already hit capped, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is about 0.8 to 1 point higher.',
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
+  // At 2 to 5 targets (the Racial Bonus box's target switch): Chain Lightning runs Elemental's mana down after the first minute.
+  'Elemental Shaman|Tauren|aoe': 'Tauren racials provide no value to Elemental DPS. At more targets Chain Lightning runs the mana pool down on fights of 2 minutes or more, so its innate −5 Intellect (less mana, a sliver of spell crit) costs more than on one target.',
+  'Elemental Shaman|Troll|aoe': 'Troll’s innate −4 Intellect means less mana, and at more targets Chain Lightning runs the pool down on fights of 2 minutes or more. Berserking (10% faster casting for 10 sec) doesn’t make that up there.',
   'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec, every 3 min) covers 8 of every 180 seconds; on 3 minute fights its one use (once Templar’s Bulwark drops) doesn’t quite make up for Dwarf’s innate −4 Agility (slightly less dodge).',
@@ -1096,7 +1113,7 @@ const BELOW = {
   'Protection Warrior|tmi|Alliance Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
   'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
 };
-const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
+const belowNote = (p, race) => (p.targets > 1 && BELOW[`${p.spec}|${race}|aoe`]) || BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
   || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
 const FIGHT = { all: 'all fight lengths', 60: '1 minute fights', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
@@ -1111,7 +1128,7 @@ const METRIC = {
   gain: { label: 'Gain over no racials', fmt: (v) => sign(v, 2) + '%', high: true, note: 'DPS gained over the same builds with no race, as a percentage. Bold is the largest gain in each column.' },
   gapDps: { label: 'DPS behind best', fmt: (v) => fx(v, 1), high: false, note: 'Average DPS behind the best race on each build. 0 is the best race; bold is the smallest gap in each column.' },
 };
-const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
+const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', gainTargets: '1', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
 const sorts = { overall: { field: 'pct', dir: 'desc' }, matrix: { field: null, dir: 'desc' }, detail: { field: null, dir: 'desc' } };
 let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 
@@ -1119,7 +1136,7 @@ let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 const seg = (sel, name) => {
   $(sel).addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) dash.setParams({ [name]: b.dataset.v }); });
 };
-seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets');
+seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets');
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
@@ -1484,15 +1501,17 @@ function drawGains(p, rows, keepNote) {
   gainArgs = [p, rows];
   const box = $('.lx-gains');
   box.replaceChildren();
-  const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight).sort((a, b) => b.gain - a.gain);
+  const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight && (r.targets || 1) === p.targets).sort((a, b) => b.gain - a.gain);
   // Explain each race that lands below "no racials" in this view; hidden when none do.
   const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   note.hidden = !below.length;
   if (!keepNote) {
-    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map((r) => belowNote(p, r.race)))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : []));
+    // The re-geared Dwarf was simmed at 1 target only, so its sentence (and its hover) go at more targets.
+    const text = (r) => (p.targets > 1 ? belowNote(p, r.race).replace(' ' + REGEAR_TEXT, '') : belowNote(p, r.race));
+    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map(text))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : []));
     markRegear(note);
   }
-  const list = regearOn ? withRegear(p, plain) : plain;
+  const list = regearOn && p.targets === 1 ? withRegear(p, plain) : plain;
   // A fixed height, room for the 10 races the most a spec can have, so the box keeps its size from spec to spec;
   // a note below the bars takes its room from the bars.
   const gap = 6, noteH = note.hidden ? 0 : note.getBoundingClientRect().height + (parseFloat(getComputedStyle(box.parentElement).rowGap) || 0);
@@ -1507,7 +1526,7 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale for every spec and fight length at this faction, so a 1% bar is the same width whichever is shown.
+  // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is shown.
   const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
@@ -2187,7 +2206,7 @@ function draw() {
   if (ROOT.hidden) return;
   const p = P();
   const d = { scoped: rrData(dash.data('scoped')), bySpec: rrData(dash.data('bySpec')), overall: rrData(dash.data('overall')), matrix: rrData(dash.data('matrix')), best: rrData(dash.data('bestBySpec')) };
-  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets]])
+  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
@@ -2212,7 +2231,8 @@ function draw() {
 
   drawCards({ ...p, fight: p.bestFight }, d.best.data, specs);
   drawMatrix({ ...p, fight: p.matrixFight }, d.matrix.data, specs, d.overall.data);
-  drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight }, d.bySpec.data);
+  const GT = rrData(dash.data('gainsByTargets'));
+  drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, targets: +p.gainTargets || 1 }, GT.status === 'ok' ? GT.data : d.bySpec.data);
   drawLines({ ...p, spec: p.lineSpec }, d.bySpec.data);
   const DT = rrData(dash.data('targets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, d.scoped.data, DT.status === 'ok' ? DT.data : []);
@@ -2352,56 +2372,69 @@ function fitNames(box) {
   }
 }
 // Calculations: every figure on the page comes from these, worked out from the per-build sims.
+// A row's target count: the `tankRuns` rows are all at 1 target; `tankRunsTargets` holds the same runs at 2 to 5.
+const tgt = (r) => +r.targets || 1;
 dash.calc('tankScoped', {
   inputs: ['tankRuns'],
   title: 'Each tank sim vs the best race',
   description: 'Each race’s threat, damage taken, spikes (TMI) and DPS as a share of the best race on the same build and fight length (for damage taken and spikes the lowest is best), among all races or within one faction, with its gain over no racials (positive is better).',
-  fn: (sims) => {
-    const out = [];
-    for (const scope of ['All', 'Alliance', 'Horde']) {
-      const groups = new Map();
-      for (const r of sims) {
-        if (scope !== 'All' && r.faction !== scope) continue;
-        const k = r.measure + '|' + r.spec + '|' + r.build + '|' + r.fight;
-        if (!groups.has(k)) groups.set(k, []);
-        groups.get(k).push(r);
-      }
-      for (const g of groups.values()) {
-        const up = String(g[0].higher) === 'true', better = (a, b) => (up ? +a.value > +b.value : +a.value < +b.value);
-        const best = g.reduce((a, r) => (better(r, a) ? r : a));
-        for (const r of g) {
-          const gap = Math.abs(best.value - r.value), tie = r !== best && gap <= 2 * Math.hypot(best.se, r.se);
-          out.push({
-            key: [scope, r.measure, r.spec, r.build, r.fight, r.race].join('|'), scope, measure: r.measure, spec: r.spec, build: r.build,
-            fight: +r.fight, length: r.fight / 60 + ' min', race: r.race, faction: r.faction,
-            value: +r.value, se: +r.se, pct: Math.round((up ? r.value / best.value : best.value / r.value) * 10000) / 100, gain: +r.gain,
-            gainDps: Math.round((r.value - r.base) * 100) / 100, gapDps: Math.round(gap * 100) / 100,
-            best: r === best, status: r === best ? 'Best' : tie ? 'Tie' : '',
-          });
-        }
+  fn: (sims) => scopeTanks(sims),
+});
+function scopeTanks(sims) {
+  const out = [];
+  for (const scope of ['All', 'Alliance', 'Horde']) {
+    const groups = new Map();
+    for (const r of sims) {
+      if (scope !== 'All' && r.faction !== scope) continue;
+      const k = r.measure + '|' + r.spec + '|' + r.build + '|' + r.fight + '|' + tgt(r);
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(r);
+    }
+    for (const g of groups.values()) {
+      const up = String(g[0].higher) === 'true', better = (a, b) => (up ? +a.value > +b.value : +a.value < +b.value);
+      const best = g.reduce((a, r) => (better(r, a) ? r : a));
+      for (const r of g) {
+        const gap = Math.abs(best.value - r.value), tie = r !== best && gap <= 2 * Math.hypot(best.se, r.se);
+        out.push({
+          key: [scope, r.measure, r.spec, r.build, r.fight, r.race].concat(tgt(r) > 1 ? [tgt(r)] : []).join('|'), scope, measure: r.measure, spec: r.spec, build: r.build,
+          fight: +r.fight, length: r.fight / 60 + ' min', targets: tgt(r), race: r.race, faction: r.faction,
+          value: +r.value, se: +r.se, pct: Math.round((up ? r.value / best.value : best.value / r.value) * 10000) / 100, gain: +r.gain,
+          gainDps: Math.round((r.value - r.base) * 100) / 100, gapDps: Math.round(gap * 100) / 100,
+          best: r === best, status: r === best ? 'Best' : tie ? 'Tie' : '',
+        });
       }
     }
-    return out;
-  },
-});
+  }
+  return out;
+}
 
 dash.calc('tankBySpec', {
   inputs: ['tankScoped'],
   title: 'Race averages per spec',
   description: 'Each race’s average over a spec’s builds, per fight length and over all four lengths (all), and how many build and length runs it was best on.',
-  fn: (scoped) => {
-    const acc = new Map();
-    for (const r of scoped) {
-      for (const fight of ['all', String(r.fight)]) {
-        const k = [r.scope, r.measure, fight, r.spec, r.race].join('|');
-        let a = acc.get(k);
-        if (!a) acc.set(k, (a = { key: k, scope: r.scope, measure: r.measure, fight, spec: r.spec, race: r.race, faction: r.faction, n: 0, dps: 0, pct: 0, gain: 0, gainDps: 0, gapDps: 0, wins: 0 }));
-        a.n++; a.dps += r.value; a.pct += r.pct; a.gain += r.gain; a.gainDps += r.gainDps; a.gapDps += r.gapDps; a.wins += r.best ? 1 : 0;
-      }
+  fn: (scoped) => tankAverages(scoped),
+});
+function tankAverages(scoped) {
+  const acc = new Map();
+  for (const r of scoped) {
+    for (const fight of ['all', String(r.fight)]) {
+      const k = [r.scope, r.measure, fight, r.spec, r.race].concat(r.targets > 1 ? [r.targets] : []).join('|');
+      let a = acc.get(k);
+      if (!a) acc.set(k, (a = { key: k, scope: r.scope, measure: r.measure, fight, targets: r.targets, spec: r.spec, race: r.race, faction: r.faction, n: 0, dps: 0, pct: 0, gain: 0, gainDps: 0, gapDps: 0, wins: 0 }));
+      a.n++; a.dps += r.value; a.pct += r.pct; a.gain += r.gain; a.gainDps += r.gainDps; a.gapDps += r.gapDps; a.wins += r.best ? 1 : 0;
     }
-    const r2 = (x) => Math.round(x * 100) / 100, r1 = r2;
-    return [...acc.values()].map((a) => ({ ...a, dps: r1(a.dps / a.n), pct: r2(a.pct / a.n), gain: r2(a.gain / a.n), gainDps: r1(a.gainDps / a.n), gapDps: r1(a.gapDps / a.n) }));
-  },
+  }
+  const r2 = (x) => Math.round(x * 100) / 100, r1 = r2;
+  return [...acc.values()].map((a) => ({ ...a, dps: r1(a.dps / a.n), pct: r2(a.pct / a.n), gain: r2(a.gain / a.n), gainDps: r1(a.gainDps / a.n), gapDps: r1(a.gapDps / a.n) }));
+}
+
+// The Racial Bonus box's target switch: the race averages at 1 to 5 targets (every race and the no-racials baseline
+// were simmed at each count; only the first target attacks, so damage taken and spikes stay one-target figures).
+dash.calc('tankGainsByTargets', {
+  inputs: ['tankRuns', 'tankRunsTargets'],
+  title: 'Race averages per spec and target count',
+  description: 'Each race’s average over a spec’s builds at 1 to 5 targets, per measure and fight length and over all four lengths (all), with its gain over no racials at the same target count.',
+  fn: (sims, simsTargets) => tankAverages(scopeTanks(sims.concat(simsTargets))),
 });
 
 dash.calc('tankOverall', {
@@ -2521,7 +2554,7 @@ const P = () => {
   // The Top Race, Racial Bonus and Race Standings boxes each have their own measure; the filter row's sets the rest.
   return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'tps', build: q.tBuild ?? 'all',
     bestMeasure: q.tBestMeasure ?? 'tps', gainMeasure: q.tGainMeasure ?? 'tps', lineMeasure: q.tLineMeasure ?? 'tps',
-    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', specBuild: q.tSpecBuild ?? '', specRace: q.tSpecRace ?? '', gainFight: q.tGainFight ?? 'all',
+    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', specBuild: q.tSpecBuild ?? '', specRace: q.tSpecRace ?? '', gainFight: q.tGainFight ?? 'all', gainTargets: q.tGainTargets ?? '1',
     detailFight: q.tDetailFight ?? 'all', detailTargets: q.tDetailTargets ?? '1', detailRace: q.tDetailRace ?? 'all', detailMark: q.tDetailMark ?? 'all',
     lineSpec: q.tLineSpec ?? d, gainSpec: q.tGainSpec ?? d, detailSpec: q.tDetailSpec ?? d };
 };
@@ -2534,7 +2567,7 @@ let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 const seg = (sel, name) => {
   ROOT.querySelectorAll(sel).forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [name]: b.dataset.v }); }));
 };
-seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets');
+seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets');
 // Each measure button row sets its own filter (data-p).
 ROOT.querySelectorAll('.lx-measure').forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [g.dataset.p]: b.dataset.v }); }));
 // Each box has its own fight length buttons; data-p names the filter it sets.
@@ -2875,7 +2908,8 @@ const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(-
 // Threat build with 1% hit traded for 1% crit, and the Defense Cap build (under the cap) as it is.
 const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit on that build, as a Dwarf would gear, its bonus here is about 0.4 percentage points higher.';
 const REGEAR_LEAD = 'Dwarf: the Threat build is already at the 8% hit cap, so Dwarf’s 1% hit (Artisan’s Precision) gains nothing there. ';
-const hasRegear = (p) => p.spec === 'Protection Warrior' && (p.measure === 'tps' || p.measure === 'dps');
+// (at 1 target: the re-geared runs are one-target runs)
+const hasRegear = (p) => p.spec === 'Protection Warrior' && (p.measure === 'tps' || p.measure === 'dps') && p.targets === 1;
 let regearOn = false, gainArgs = null;
 function withRegear(p, list) {
   const R = rrData(dash.data('tankRegear'));
@@ -2900,7 +2934,7 @@ function drawGains(p, rows, keepNote) {
   gainArgs = [p, rows];
   const box = $('.lx-gains');
   box.replaceChildren();
-  const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight).sort((a, b) => b.gain - a.gain);
+  const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight && (r.targets || 1) === p.targets).sort((a, b) => b.gain - a.gain);
   // Explain each race that lands below "no racials" in this view, and Dwarf's hit on Prot Warrior; hidden when neither applies.
   const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   const dwarf = hasRegear(p) && plain.some((r) => r.race === 'Dwarf');
@@ -2926,7 +2960,7 @@ function drawGains(p, rows, keepNote) {
   const ml = ix + probe.node().getComputedTextLength() + 12; probe.remove();
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
-  // One scale for every spec and fight length at this faction, so a 1% bar is the same width whichever is shown.
+  // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is shown.
   const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
@@ -3610,7 +3644,7 @@ function draw() {
   if (ROOT.hidden) return;
   const p = P();
   const d = { scoped: rrData(dash.data('tankScoped')), bySpec: rrData(dash.data('tankBySpec')), overall: rrData(dash.data('tankOverall')), matrix: rrData(dash.data('tankMatrix')), best: rrData(dash.data('tankBest')) };
-  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets]])
+  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-measure').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
@@ -3637,7 +3671,15 @@ function draw() {
   const M = (rows, m = p.measure) => rows.filter((r) => r.measure === m);
   drawCards({ ...p, fight: p.bestFight, measure: p.bestMeasure }, M(d.best.data, p.bestMeasure), specs);
   drawMatrix({ ...p, fight: p.matrixFight }, M(d.matrix.data), specs, M(d.overall.data));
-  drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, measure: p.gainMeasure }, M(d.bySpec.data, p.gainMeasure));
+  // Only the first target attacks, so damage taken and spikes are one-target figures: the target switch is for threat and DPS.
+  const GT = rrData(dash.data('tankGainsByTargets')), perTarget = p.gainMeasure === 'tps' || p.gainMeasure === 'dps';
+  $('.lx-gtargets').title = perTarget ? '' : 'Only the first target attacks, so damage taken and spikes are the same at any number of targets';
+  ROOT.querySelectorAll('.lx-gtargets button').forEach((b) => {
+    b.disabled = !perTarget;
+    if (!perTarget) b.setAttribute('aria-pressed', String(b.dataset.v === '1'));
+  });
+  const gainRows = M(GT.status === 'ok' ? GT.data : d.bySpec.data, p.gainMeasure).filter((r) => perTarget || (r.targets || 1) === 1);
+  drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, measure: p.gainMeasure, targets: perTarget ? +p.gainTargets || 1 : 1 }, gainRows);
   drawLines({ ...p, spec: p.lineSpec, measure: p.lineMeasure }, M(d.bySpec.data, p.lineMeasure));
   const DT = rrData(dash.data('tankTargets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, M(d.scoped.data), DT.status === 'ok' ? M(DT.data) : []);

@@ -97,7 +97,9 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     Wowhead, classic Wowhead for the Classic pre-raid gear and enchants, and show Wowhead's tooltips, loaded in `experiment.py`'s head), written by the harness's
     `scripts/shape_setup.py`. `data/timeline.json` / `pb_timeline.json` / `tankTimeline.json` hold the breakdown's "Timeline" (damage over time) and
     "Casts" views (10 single runs per build and fight length, read from the sim's combat log), written by the harness's
-    `scripts/shape_timeline.py` (README "Casts and damage over time")
+    `scripts/shape_timeline.py` (README "Casts and damage over time"). The Racial Bonus boxes' target switch (1 to 5 targets) reads `data/simsTargets.json` / `pb_simsTargets.json` and
+    `tankRunsTargets.json`: every race and the no-racials baseline at 2 to 5 targets, from the harness's
+    `scripts/shape_race_targets.py` (README "Every race at 2 to 5 targets")
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.
