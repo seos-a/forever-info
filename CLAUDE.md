@@ -103,8 +103,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.
-    To change one, re-encode it and replace the data URI in the template. `art/skyborne_icon.py` makes the zoomed Horde Skyborne
-    portrait (`images/icons/race_skyborne_male.jpg`); `art/bloodelf_icon.py` the Alliance one. Phones show the logo without the BETA!
+    To change one, re-encode it and replace the data URI in the template. `art/skyborne_icon.py` makes the Horde Skyborne
+    portrait (`images/icons/race_skyborne_female.jpg`, also embedded in `experiment/race_icons.js`); `art/bloodelf_icon.py` the Alliance one. Phones show the logo without the BETA!
     sticker instead, from files: `images/logo-nobeta.png` and `images/logo-hallow-nobeta.png` (copies of
     `art/banner_title_nobeta.png` and `art/banner_hallow_nobeta.png`; the Hallow's End one is made by
     `HALLOW_SRC=art/banner_title_nobeta.png HALLOW_OUT=art/banner_hallow_nobeta.png py art/hallow_logo.py`).

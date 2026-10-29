@@ -1,13 +1,18 @@
-"""Make images/icons/race_skyborne_male.jpg, the Horde Skyborne portrait on the Racials and Spellbook pages:
-WoW's race_skyborne_male icon zoomed in on the face (a 42px square of the 56px icon, scaled back up to 56px),
-framed low enough to keep the chin in view. Run from tc/:  py art/skyborne_icon.py   (downloads the original from
-Wowhead; needs Pillow). build.py won't overwrite it: fetch_images.py only downloads icons the repo doesn't have."""
-import io, urllib.request
+"""Make images/icons/race_skyborne_female.jpg, the Horde Skyborne portrait on the Racials and Spellbook pages and the
+Experiment page (tc/experiment/race_icons.js, "Windshaper Skyborne"): WoW's race_skyborne_female icon as it is (it is
+already framed close on the face; the male one, used before Oct 29, needed zooming in). Run from tc/:
+py art/skyborne_icon.py   (downloads the original from Wowhead; needs Pillow). build.py won't overwrite it:
+fetch_images.py only downloads icons the repo doesn't have."""
+import base64, io, re, urllib.request
 from PIL import Image
 
-SRC = "https://wow.zamimg.com/images/wow/icons/large/race_skyborne_male.jpg"
-OUT = "../images/icons/race_skyborne_male.jpg"
-X, Y, SIDE = 7, 8, 42   # the square kept: 7px from the left, 8px from the top
+SRC = "https://wow.zamimg.com/images/wow/icons/large/race_skyborne_female.jpg"
+OUT = "../images/icons/race_skyborne_female.jpg"
+EXPERIMENT = "experiment/race_icons.js"
 im = Image.open(io.BytesIO(urllib.request.urlopen(urllib.request.Request(SRC, headers={"User-Agent": "Mozilla/5.0"})).read())).convert("RGB")
-im.resize(im.size, Image.LANCZOS, box=(X, Y, X + SIDE, Y + SIDE)).save(OUT, quality=95)
-print(OUT, im.size)
+im.save(OUT, quality=95)
+uri = "data:image/jpeg;base64," + base64.b64encode(open(OUT, "rb").read()).decode()
+js = open(EXPERIMENT, encoding="utf-8").read()
+js = re.sub(r'("Windshaper Skyborne": )"data:[^"]*"', lambda m: m.group(1) + '"' + uri + '"', js)
+open(EXPERIMENT, "w", encoding="utf-8", newline="\n").write(js)
+print(OUT, im.size, "and", EXPERIMENT)
