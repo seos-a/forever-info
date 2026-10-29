@@ -112,8 +112,10 @@ document.head.appendChild(t);})();
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  /* a card's switches are as tall as its title's line (the title's font size times its 1.45 line height) and centred on it */
-  .rr-cardhead .rr-seg button { padding-block: 0; line-height: calc(var(--cds-font-size-heading) * 1.45 - 2px); }
+  /* a card's title is a little larger, its line as tall as the switches beside it (their text line, padding and border), centred on them;
+     the card's top padding a little less, as the taller title line already adds room above the text */
+  .rr-cardhead h2 { font-size: calc(var(--cds-font-size-heading) + 2px); line-height: calc(var(--cds-font-size-caption) * 1.45 + 2 * var(--cds-pad-xs) + 2px); }
+  .rr-card { padding-top: calc(var(--cds-pad-lg) - 4px); }
   .rr-grid2 { display: flex; align-items: flex-start; }
   .rr-grid2 > .rr-card { flex: 1 1 0; min-width: 280px; }
   .rr-split { flex: none; position: relative; width: var(--cds-gap-md); cursor: ew-resize; touch-action: none; }
@@ -330,8 +332,10 @@ document.head.appendChild(t);})();
   .hr button:focus-visible, .hr select:focus-visible, .hr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .hr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .hr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  /* a card's switches are as tall as its title's line (the title's font size times its 1.45 line height) and centred on it */
-  .hr-cardhead .hr-seg button { padding-block: 0; line-height: calc(var(--cds-font-size-heading) * 1.45 - 2px); }
+  /* a card's title is a little larger, its line as tall as the switches beside it (their text line, padding and border), centred on them;
+     the card's top padding a little less, as the taller title line already adds room above the text */
+  .hr-cardhead h2 { font-size: calc(var(--cds-font-size-heading) + 2px); line-height: calc(var(--cds-font-size-caption) * 1.45 + 2 * var(--cds-pad-xs) + 2px); }
+  .hr-card { padding-top: calc(var(--cds-pad-lg) - 4px); }
   .hr-grid2 { display: flex; align-items: flex-start; }
   .hr-grid2 > .hr-card { flex: 1 1 0; min-width: 280px; }
   .hr-split { flex: none; position: relative; width: var(--cds-gap-md); cursor: ew-resize; touch-action: none; }
@@ -468,8 +472,10 @@ document.head.appendChild(t);})();
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  /* a card's switches are as tall as its title's line (the title's font size times its 1.45 line height) and centred on it */
-  .rr-cardhead .rr-seg button { padding-block: 0; line-height: calc(var(--cds-font-size-heading) * 1.45 - 2px); }
+  /* a card's title is a little larger, its line as tall as the switches beside it (their text line, padding and border), centred on them;
+     the card's top padding a little less, as the taller title line already adds room above the text */
+  .rr-cardhead h2 { font-size: calc(var(--cds-font-size-heading) + 2px); line-height: calc(var(--cds-font-size-caption) * 1.45 + 2 * var(--cds-pad-xs) + 2px); }
+  .rr-card { padding-top: calc(var(--cds-pad-lg) - 4px); }
   .rr-grid2 { display: flex; align-items: flex-start; }
   .rr-grid2 > .rr-card { flex: 1 1 0; min-width: 280px; }
   .rr-split { flex: none; position: relative; width: var(--cds-gap-md); cursor: ew-resize; touch-action: none; }
