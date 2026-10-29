@@ -1147,16 +1147,26 @@ function openMenu(btn, param, current) {
   const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
   const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
   // Where the list starts for the current spec to sit over the name. A list that would run off the screen is cut
-  // short there rather than moved (and scrolled on to keep the current spec in place), so the name never shifts.
+  // short there rather than moved (and scrolled on to keep the current spec in place), so the name never shifts. With
+  // no room above for more than a couple of specs (the name near the top of the window, the current spec near the
+  // list's end), it opens as a plain dropdown below the name instead, scrolled to the current spec.
   let y = bb.top + (bb.height - cb.height) / 2 - (cb.top - lb.top), h = lb.height;
+  const below = 8 - y > cb.height * 2;
   list.style.boxSizing = 'border-box'; // a cut height counts the menu's padding and border
-  if (y < 8) { h -= 8 - y; list.style.maxHeight = h + 'px'; list.scrollTop += 8 - y; y = 8; }
-  if (y + h > innerHeight - 8) list.style.maxHeight = (h = innerHeight - 8 - y) + 'px';
+  if (below) {
+    for (const k of ['fontFamily', 'fontSize', 'fontWeight', 'letterSpacing', 'lineHeight', 'background']) cur.style[k] = '';
+    y = bb.bottom + 4;
+    list.style.maxHeight = Math.min(lb.height, innerHeight - 8 - y) + 'px';
+    list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
+  } else {
+    if (y < 8) { h -= 8 - y; list.style.maxHeight = h + 'px'; list.scrollTop += 8 - y; y = 8; }
+    if (y + h > innerHeight - 8) list.style.maxHeight = (h = innerHeight - 8 - y) + 'px';
+  }
   list.style.left = x - ob.left + 'px'; list.style.top = y - ob.top + 'px';
-  // The other specs unfold above and below it.
+  // The other specs unfold above and below it (a dropdown below the name unfolds downwards).
   const ll = list.getBoundingClientRect(), cl = cur.getBoundingClientRect();
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
-    list.animate([{ clipPath: `inset(${cl.top - ll.top}px 0 ${ll.bottom - cl.bottom}px 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: 160, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+    list.animate([{ clipPath: below ? 'inset(0 0 100% 0)' : `inset(${cl.top - ll.top}px 0 ${ll.bottom - cl.bottom}px 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: 160, easing: 'cubic-bezier(.2, .8, .2, 1)' });
   btn.setAttribute('aria-expanded', 'true');
   menu = { el: list, btn };
   (list.querySelector('[aria-checked="true"]') || list.firstChild).focus({ preventScroll: true });
@@ -2505,16 +2515,26 @@ function openMenu(btn, param, current) {
   const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
   const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
   // Where the list starts for the current spec to sit over the name. A list that would run off the screen is cut
-  // short there rather than moved (and scrolled on to keep the current spec in place), so the name never shifts.
+  // short there rather than moved (and scrolled on to keep the current spec in place), so the name never shifts. With
+  // no room above for more than a couple of specs (the name near the top of the window, the current spec near the
+  // list's end), it opens as a plain dropdown below the name instead, scrolled to the current spec.
   let y = bb.top + (bb.height - cb.height) / 2 - (cb.top - lb.top), h = lb.height;
+  const below = 8 - y > cb.height * 2;
   list.style.boxSizing = 'border-box'; // a cut height counts the menu's padding and border
-  if (y < 8) { h -= 8 - y; list.style.maxHeight = h + 'px'; list.scrollTop += 8 - y; y = 8; }
-  if (y + h > innerHeight - 8) list.style.maxHeight = (h = innerHeight - 8 - y) + 'px';
+  if (below) {
+    for (const k of ['fontFamily', 'fontSize', 'fontWeight', 'letterSpacing', 'lineHeight', 'background']) cur.style[k] = '';
+    y = bb.bottom + 4;
+    list.style.maxHeight = Math.min(lb.height, innerHeight - 8 - y) + 'px';
+    list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
+  } else {
+    if (y < 8) { h -= 8 - y; list.style.maxHeight = h + 'px'; list.scrollTop += 8 - y; y = 8; }
+    if (y + h > innerHeight - 8) list.style.maxHeight = (h = innerHeight - 8 - y) + 'px';
+  }
   list.style.left = x - ob.left + 'px'; list.style.top = y - ob.top + 'px';
-  // The other specs unfold above and below it.
+  // The other specs unfold above and below it (a dropdown below the name unfolds downwards).
   const ll = list.getBoundingClientRect(), cl = cur.getBoundingClientRect();
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
-    list.animate([{ clipPath: `inset(${cl.top - ll.top}px 0 ${ll.bottom - cl.bottom}px 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: 160, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+    list.animate([{ clipPath: below ? 'inset(0 0 100% 0)' : `inset(${cl.top - ll.top}px 0 ${ll.bottom - cl.bottom}px 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: 160, easing: 'cubic-bezier(.2, .8, .2, 1)' });
   btn.setAttribute('aria-expanded', 'true');
   menu = { el: list, btn };
   (list.querySelector('[aria-checked="true"]') || list.firstChild).focus({ preventScroll: true });
