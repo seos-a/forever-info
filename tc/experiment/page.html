@@ -612,7 +612,7 @@
     </section>
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-lenhead">Race Standings over Time</h2>
-        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button></div>
+        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-ltargets" data-p="lineTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div></div>
       </div>
       <p class="rr-note">How close each race comes to the top race (100%) at each fight length, averaged across this spec's builds.</p>
       <div class="rr-legend lx-legend"></div>
@@ -846,7 +846,7 @@
     </section>
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-lenhead">Race Standings over Time</h2>
-        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-measure" data-p="lineMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div></div>
+        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-measure" data-p="lineMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-ltargets" data-p="lineTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div></div>
       </div>
       <p class="rr-note">How close each race comes to the top race (100%) at each fight length, averaged across this spec's builds.</p>
       <div class="rr-legend lx-legend"></div>
@@ -1128,7 +1128,7 @@ const METRIC = {
   gain: { label: 'Gain over no racials', fmt: (v) => sign(v, 2) + '%', high: true, note: 'DPS gained over the same builds with no race, as a percentage. Bold is the largest gain in each column.' },
   gapDps: { label: 'DPS behind best', fmt: (v) => fx(v, 1), high: false, note: 'Average DPS behind the best race on each build. 0 is the best race; bold is the smallest gap in each column.' },
 };
-const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', gainTargets: '1', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
+const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', gainTargets: '1', lineTargets: '1', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
 const sorts = { overall: { field: 'pct', dir: 'desc' }, matrix: { field: null, dir: 'desc' }, detail: { field: null, dir: 'desc' } };
 let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 
@@ -1136,7 +1136,7 @@ let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 const seg = (sel, name) => {
   $(sel).addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) dash.setParams({ [name]: b.dataset.v }); });
 };
-seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets');
+seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets'); seg('.lx-ltargets', 'lineTargets');
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
@@ -1424,7 +1424,7 @@ function drawLines(p, rows) {
     leads.attr('d', (s) => (s.pts.length ? d3.line()([[x(0), y(100)], [x(xi(s.pts[0].fight)), y(s.pts[0].pct)]]) : null));
     circles.attr('cx', (d) => x(xi(d.fight))).attr('cy', (d) => y(d.pct));
   };
-  const key = [p.faction, p.spec, W, H].join('|');
+  const key = [p.faction, p.spec, p.lineTargets, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
   // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
@@ -2217,7 +2217,7 @@ function draw() {
   if (ROOT.hidden) return;
   const p = P();
   const d = { scoped: rrData(dash.data('scoped')), bySpec: rrData(dash.data('bySpec')), overall: rrData(dash.data('overall')), matrix: rrData(dash.data('matrix')), best: rrData(dash.data('bestBySpec')) };
-  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets]])
+  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets], ['.lx-ltargets', p.lineTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
@@ -2244,7 +2244,9 @@ function draw() {
   drawMatrix({ ...p, fight: p.matrixFight }, d.matrix.data, specs, d.overall.data);
   const GT = rrData(dash.data('gainsByTargets'));
   drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, targets: +p.gainTargets || 1 }, GT.status === 'ok' ? GT.data : d.bySpec.data);
-  drawLines({ ...p, spec: p.lineSpec }, d.bySpec.data);
+  // Race Standings at 1 to 5 targets: the same race averages as the Racial Bonus box's target switch
+  const lt = +p.lineTargets || 1;
+  drawLines({ ...p, spec: p.lineSpec }, GT.status === 'ok' ? GT.data.filter((r) => (r.targets || 1) === lt) : lt === 1 ? d.bySpec.data : []);
   const DT = rrData(dash.data('targets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, d.scoped.data, DT.status === 'ok' ? DT.data : []);
   {
@@ -2565,7 +2567,7 @@ const P = () => {
   // The Top Race, Racial Bonus and Race Standings boxes each have their own measure; the filter row's sets the rest.
   return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'tps', build: q.tBuild ?? 'all',
     bestMeasure: q.tBestMeasure ?? 'tps', gainMeasure: q.tGainMeasure ?? 'tps', lineMeasure: q.tLineMeasure ?? 'tps',
-    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', specBuild: q.tSpecBuild ?? '', specRace: q.tSpecRace ?? '', gainFight: q.tGainFight ?? 'all', gainTargets: q.tGainTargets ?? '1',
+    bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', specBuild: q.tSpecBuild ?? '', specRace: q.tSpecRace ?? '', gainFight: q.tGainFight ?? 'all', gainTargets: q.tGainTargets ?? '1', lineTargets: q.tLineTargets ?? '1',
     detailFight: q.tDetailFight ?? 'all', detailTargets: q.tDetailTargets ?? '1', detailRace: q.tDetailRace ?? 'all', detailMark: q.tDetailMark ?? 'all',
     lineSpec: q.tLineSpec ?? d, gainSpec: q.tGainSpec ?? d, detailSpec: q.tDetailSpec ?? d };
 };
@@ -2578,7 +2580,7 @@ let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 const seg = (sel, name) => {
   ROOT.querySelectorAll(sel).forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [name]: b.dataset.v }); }));
 };
-seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets');
+seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets'); seg('.lx-ltargets', 'lineTargets');
 // Each measure button row sets its own filter (data-p).
 ROOT.querySelectorAll('.lx-measure').forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [g.dataset.p]: b.dataset.v }); }));
 // Each box has its own fight length buttons; data-p names the filter it sets.
@@ -2870,7 +2872,7 @@ function drawLines(p, rows) {
     leads.attr('d', (s) => (s.pts.length ? d3.line()([[x(0), y(100)], [x(xi(s.pts[0].fight)), y(s.pts[0].pct)]]) : null));
     circles.attr('cx', (d) => x(xi(d.fight))).attr('cy', (d) => y(d.pct));
   };
-  const key = [p.faction, p.spec, W, H].join('|');
+  const key = [p.faction, p.spec, p.lineTargets, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
   // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
@@ -3655,7 +3657,7 @@ function draw() {
   if (ROOT.hidden) return;
   const p = P();
   const d = { scoped: rrData(dash.data('tankScoped')), bySpec: rrData(dash.data('tankBySpec')), overall: rrData(dash.data('tankOverall')), matrix: rrData(dash.data('tankMatrix')), best: rrData(dash.data('tankBest')) };
-  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets]])
+  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets], ['.lx-ltargets', p.lineTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-measure').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
@@ -3691,7 +3693,15 @@ function draw() {
   });
   const gainRows = M(GT.status === 'ok' ? GT.data : d.bySpec.data, p.gainMeasure).filter((r) => perTarget || (r.targets || 1) === 1);
   drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, measure: p.gainMeasure, targets: perTarget ? +p.gainTargets || 1 : 1 }, gainRows);
-  drawLines({ ...p, spec: p.lineSpec, measure: p.lineMeasure }, M(d.bySpec.data, p.lineMeasure));
+  // Race Standings' target switch, like the Racial Bonus box's: threat and DPS only
+  const linePer = p.lineMeasure === 'tps' || p.lineMeasure === 'dps', lt = linePer ? +p.lineTargets || 1 : 1;
+  $('.lx-ltargets').title = linePer ? '' : 'Only the first target attacks, so damage taken and spikes are the same at any number of targets';
+  ROOT.querySelectorAll('.lx-ltargets button').forEach((b) => {
+    b.disabled = !linePer;
+    if (!linePer) b.setAttribute('aria-pressed', String(b.dataset.v === '1'));
+  });
+  const lineRows = GT.status === 'ok' ? M(GT.data, p.lineMeasure).filter((r) => (r.targets || 1) === lt) : lt === 1 ? M(d.bySpec.data, p.lineMeasure) : [];
+  drawLines({ ...p, spec: p.lineSpec, measure: p.lineMeasure }, lineRows);
   const DT = rrData(dash.data('tankTargets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, M(d.scoped.data), DT.status === 'ok' ? M(DT.data) : []);
   {
