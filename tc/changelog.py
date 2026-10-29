@@ -29,9 +29,17 @@ bigger "reduces ... by" is better, other numbers going up are better); anything 
 
 It also keeps version.json (beta version, build number and the date that build first appeared) up to date from
 Blizzard's patch server.
+
+A second source, the game's client tables (client_changes.py, read from wago.tools), adds what no tooltip shows: a
+diminishing returns group, a mechanic, a spell power coefficient, the spells a talent affects... version.json's
+"client" is the last client build compared, and each update records the client builds it covers ("client": [old, new]).
+Their sentences end with a "†" (the page's footnote) and join Wowhead's entry for the same talent or spell, or become
+an entry of their own. A client build Wowhead has no build for becomes an update of its own ("source": "client"),
+which Wowhead's update for that build joins later. --client=OLD compares the client tables from build OLD again.
 """
 import json, re, sys, time, datetime, difflib
 import talent_meta as tm
+import client_changes as cc
 from textfix import clean_html, tidy_formula
 
 CLASSES = ['druid', 'hunter', 'mage', 'paladin', 'priest', 'rogue', 'shaman', 'warlock', 'warrior']
@@ -419,9 +427,31 @@ def show(u):
         for k, name, icon, where, text, *was in ch: print(f'{c:8} {k:5} {name} [{where}]: {text}')
     print(sum(len(v) for v in u['classes'].values()), 'changes')
 
+def client_pair(ver):
+    """(last client build compared, latest client build), or None when there is nothing new (or wago.tools can't be read)"""
+    try: latest = cc.builds()[-1]
+    except Exception as e: print('could not read the client builds from wago.tools:', e); return None
+    last = ver.get('client')
+    if not last: ver['client'] = latest; return None   # first run: start from here
+    return (last, latest) if last != latest else None
+
+def client_entries(pair):
+    """The client-table entries for one pair of builds, or None when they can't be read (Wowhead's update still goes in)"""
+    try: return cc.entries(*pair)
+    except Exception as e: print(f'could not compare the client builds {pair[0]} and {pair[1]}:', e); return None
+
+def client_only(log):
+    """The client-table entries an update already has (those with a client sentence), to carry into another"""
+    return {c: [e for e in ch if cc.MARK in e[4]] for c, ch in log['classes'].items()}
+
+def save_version(ver):
+    with open('version.json', 'w', encoding='utf-8', newline='\n') as f: json.dump(ver, f, indent=1); f.write('\n')
+
 def main():
     dry, rebuild = '--dry' in sys.argv, '--rebuild' in sys.argv
     live_date = next((a.split('=', 1)[1] for a in sys.argv if a.startswith('--date=')), None)   # Wowhead doesn't date the latest build
+    # --client=OLD: compare the client tables from build OLD to the latest (with --dry: to check the merge)
+    client_from = next((a.split('=', 1)[1] for a in sys.argv if a.startswith('--client=')), None)
     ver = now('version.json')
     try:
         v, b = beta_build()
@@ -429,8 +459,9 @@ def main():
         ver.update(version=v, build=b)
     except Exception as e:
         print('could not read the beta build from Blizzard:', e)
-    if not dry:
-        with open('version.json', 'w', encoding='utf-8', newline='\n') as f: json.dump(ver, f, indent=1); f.write('\n')
+    if client_from: ver['client'] = cc.version(client_from)
+    pair = None if rebuild else client_pair(ver)
+    if not dry: save_version(ver)
     log = now('changes.json')
     live, old = builds()
     lv, lb = live.rsplit('.', 1)
@@ -445,19 +476,60 @@ def main():
             updates.insert(0, {'date': date, 'version': label.rsplit('.', 1)[0], 'build': str(build),
                                'classes': update(prev_vs, nb[0] if nb else None)})
             show(updates[0]); print(needs_a_look(str(build)) or 'Needs a look: nothing')
+        # each update's client-table changes are worked out again, and the client-only updates are kept
+        for k in log['updates']:
+            if not k.get('client'): continue
+            u = next((u for u in updates if u['build'] == k['build']), None)
+            if u is None:
+                if k.get('source') != 'client': continue
+                u = dict(k, classes={}); updates.append(u)
+            u['client'] = k['client']
+            ce = client_entries(k['client'])
+            cc.merge(u['classes'], client_only(k) if ce is None else ce)
+        updates.sort(key=lambda u: (u['date'], int(u['build'])), reverse=True)
         log['updates'] = updates
     else:
-        if lb in known: print(f'build {lb} is already recorded'); return
-        recorded = [int(u['build']) for u in log['updates'] if u['build'].isdigit()]
-        avail = [b for b, _, _ in old]
-        prev_vs = max([b for b in recorded if b in avail] or [max(avail)])   # the newest build we recorded that Wowhead can still compare with
-        u = {'date': today, 'version': lv, 'build': lb, 'classes': update(prev_vs, None)}
-        show(u)
-        look = needs_a_look(lb); print(look or 'Needs a look: nothing')
-        if not dry:   # the workflow puts this at the top of the pull request report
-            with open('../needs-a-look.md', 'w', encoding='utf-8', newline='\n') as f: f.write(look)
-        if not u['classes']: return
-        log['updates'].insert(0, u)
+        mine = known.get(lb)
+        if mine and mine.get('source') != 'client':
+            if not pair: print(f'build {lb} is already recorded'); return
+            # a client build Wowhead has no build for (yet): an update of its own, which Wowhead's joins later
+            ce = client_entries(pair)
+            if ce is None: return
+            cv, cb = pair[1].rsplit('.', 1)
+            print(f'build {lb} is already recorded; client files {pair[0]} -> {pair[1]}:')
+            ver['client'] = pair[1]
+            if not dry: save_version(ver)
+            u = known.get(cb)
+            if u:   # the update for this build is there already (Wowhead's, or --client again): the entries join it
+                u['client'] = [u['client'][0] if u.get('client') else pair[0], pair[1]]
+                cc.merge(u['classes'], ce)
+            else:
+                u = {'date': today, 'version': cv, 'build': cb, 'source': 'client', 'client': list(pair), 'classes': ce}
+                if ce: log['updates'].insert(0, u)
+            show(u)
+            if not ce: return
+        else:
+            recorded = [int(u['build']) for u in log['updates'] if u['build'].isdigit() and u.get('source') != 'client']
+            avail = [b for b, _, _ in old]
+            prev_vs = max([b for b in recorded if b in avail] or [max(avail)])   # the newest build we recorded that Wowhead can still compare with
+            u = {'date': today, 'version': lv, 'build': lb, 'classes': update(prev_vs, None)}
+            if mine:   # Wowhead now has the build a client-only update was made for: they become one update
+                u['date'], u['client'] = mine['date'], mine['client']
+                cc.merge(u['classes'], client_only(mine))
+                log['updates'] = [x for x in log['updates'] if x is not mine]
+            if pair:
+                ce = client_entries(pair)
+                if ce is not None:
+                    cc.merge(u['classes'], ce)
+                    u['client'] = [u['client'][0] if u.get('client') else pair[0], pair[1]]
+                    ver['client'] = pair[1]
+            show(u)
+            look = needs_a_look(lb); print(look or 'Needs a look: nothing')
+            if not dry:   # the workflow puts this at the top of the pull request report
+                save_version(ver)
+                with open('../needs-a-look.md', 'w', encoding='utf-8', newline='\n') as f: f.write(look)
+            if not u['classes'] and not mine: return
+            log['updates'].insert(0, u)
     apply_fixes(log)
     if dry: return
     with open('changes.json', 'w', encoding='utf-8', newline='\n') as f: json.dump(log, f, ensure_ascii=False, indent=1); f.write('\n')

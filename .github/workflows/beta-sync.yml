@@ -69,7 +69,11 @@ jobs:
             echo '```'
             python talent_meta.py | tail -n 1
             echo '```'
-            echo '### Class Changes page (review the buff / nerf guesses in tc/changes.json)'
+            echo "### Client files (the game's own tables, from wago.tools: what no tooltip shows)"
+            echo '```'
+            python client_changes.py
+            echo '```'
+            echo '### Class Changes page (review the buff / nerf guesses in tc/changes.json; a "†" marks what the client files added)'
             echo '```'
             python changelog.py
             echo '```'

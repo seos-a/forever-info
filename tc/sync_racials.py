@@ -9,7 +9,8 @@ Racial traits: each trait's tooltip (TRAIT_IDS below) is compared with the copy 
     two proc chances) is never rewritten: the change goes on the
     pull request's "Needs a look" list to be edited in racials.json by hand.
   Each change is summarised in the report (buff / nerf / other, worked out as on the Class Changes page) but not added
-  to the Class Changes page: the developers don't plan to change racials after launch. Wowhead's race pages are read
+  to the Class Changes page: the developers don't plan to change racials after launch (what client_changes.py finds
+  in the client tables, which no tooltip shows, does go there, under each class the race can be). Wowhead's race pages are read
   too, to notice a racial that was added or removed (listed, not applied: where it goes is decided by hand).
 Priest racial spells: their text comes from the spellbook data sync_spells.py keeps current (spells_raw.json); the
   Racials page's copy is refreshed from it. Their changes already show under Priest on the Class Changes page.

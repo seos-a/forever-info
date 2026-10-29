@@ -1334,6 +1334,7 @@ body.hallow .rc-pl,body.hallow .rc-pl b{color:#9be84a;text-shadow:-1px -1px 0 #0
         </div>
         <section class="card wood glance-card" id="chgOtherCard"><div class="hdr" id="chgOtherHead">Other Changes</div><div class="parch" id="chgOther"></div></section>
         <p class="chg-note" id="chgNote" hidden>* Not in the game's tooltips: from Blizzard's patch notes.</p>
+        <p class="chg-note" id="chgNoteClient" hidden>† Not in the game's tooltips: found in the game's client files.</p>
       </div>
     </section>
     <section class="racials spellbook" id="spellbook" hidden>
@@ -2056,6 +2057,7 @@ function showChanges(k,build){
     const none=`<span class="fold-caret chg-fold" aria-hidden="true"></span>`;   // phones: an empty side folds to its title bar
     $("chgBuffHead").innerHTML=`${esc(m.name)} Buffs${none}`; $("chgNerfHead").innerHTML=`${esc(m.name)} Nerfs${none}`; $("chgOtherHead").innerHTML=`Other ${esc(m.name)} Changes<span class="fold-caret chg-fold" aria-hidden="true"></span>`;
     chgShown=[]; $("chgNote").hidden=!all.some(e=>chgPlain(e[4]).includes("*"));   // a "*" after words that are in no tooltip
+    $("chgNoteClient").hidden=!all.some(e=>e[4].includes("†"));   // a "†" after what client_changes.py found in the client tables
     $("chgBuffs").innerHTML=buffs.length?chgRows(buffs):`<p class="chg-empty">No ${m.name} buffs in this update</p>`;
     $("chgNerfs").innerHTML=nerfs.length?chgRows(nerfs):`<p class="chg-empty">No ${m.name} nerfs in this update</p>`;
     $("chgBuffs").classList.toggle("is-empty",!buffs.length); $("chgNerfs").classList.toggle("is-empty",!nerfs.length);

@@ -50,7 +50,7 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       the Grave its two proc chances; Touch of Weakness and Hex of Weakness fix
       Wowhead's typos) is never overwritten but listed under "Racials: needs a look" in the pull request. Racial changes are
       summarised in the pull request report only, not on the Class Changes page (the developers don't plan to change
-      racials after launch). It also reads Wowhead's race pages and lists any racial added or removed there. Priest racial spells
+      racials after launch; what `client_changes.py` finds in the client files does show there). It also reads Wowhead's race pages and lists any racial added or removed there. Priest racial spells
       follow the spellbook text (`spells_raw.json`)
     - `sync_legacy.py`: rewrites `legacy_raw.json` from Wowhead's Legacy Calculator data feed (nodes, ranks, rank texts,
       points needed, cast time / cooldown, the arrows between nodes; positions are Wowhead's grid of 750 units a slot,
@@ -69,6 +69,22 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       of the pull request. Wowhead's data is sometimes wrong (Thick Hide, Oct 8: 180 armor per level at every rank, in
       game 1 / 2 / 3): once checked in game, a wrong Class Changes entry is corrected in `changes_fixes.json` (applied on
       every run, so rebuilds keep it) and a wrong talent text in `TEXT_FIXES` in `build.py`
+    - `client_changes.py` (run by `changelog.py`; on its own it prints what the next run adds): the Class Changes page's
+      second source, WoW Forever's client tables (DB2), which wago.tools serves as CSV for each build of Blizzard's `wowf`
+      product (`wago.tools/api/builds`, `wago.tools/db2/<table>/csv?build=1.60.1.70685`). It compares two builds for the
+      spells the site shows (every rank of the talents, matched by Wowhead's talent feed's spell ids, the spellbook, the
+      racial traits in `sync_racials.TRAIT_IDS`, and the spells they trigger, e.g. a talent's root) and words what no
+      tooltip shows: diminishing returns group, mechanic, dispel type, spell power / attack power coefficient, global and
+      internal cooldown, the spells a talent affects, a triggered effect's values. It leaves to Wowhead a number a tooltip
+      quotes (`$s1`, `$d`... in the client's descriptions) and the cost / range / cast time / cooldown / level rows (the
+      site shows Wowhead's, hotfixes included). Each sentence ends with a "†" (the page's footnote "found in the game's
+      client files") and joins Wowhead's entry for that talent or spell, or becomes its own entry; a racial's goes under
+      each class the race can be. `version.json`'s `client` is the last client build compared, each `changes.json` update
+      lists the client builds it covers (`client`), and a client build Wowhead has no build for becomes an update of its
+      own (`source: "client"`). `py changelog.py --dry --client=70658` checks the merge for builds 70658 → latest.
+      Server hotfixes are in no client table (they come from the realm, cached in the game's DBCache.bin): Blood Fury's
+      2 min cooldown is still 3 min in 70685's table, so a client change that disagrees with the site's tooltip row is the
+      server's to decide and isn't listed. Client changes before 70532 aren't recorded (wowf builds start at 70245)
   - `experiment.py` + `experiment/`: the Experiment page (`/experiment`, linked faintly bottom right on every page): DPS /
     Healing / Tanks race sims. `experiment/` is the only source: the page (`page.html`), its scripts and its datasets
     (`data/<id>.json`); edit them there and rebuild. `experiment.py` stands in for the dashboard runtime the page was first
