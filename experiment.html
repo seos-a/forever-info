@@ -108,6 +108,7 @@ document.head.appendChild(t);})();
   .rr-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg); border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
   .rr-seg button:last-child { border-right: 0; }
   .rr-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+  .rr .rr-seg button:focus-visible, .hr .hr-seg button:focus-visible { outline-offset: -3px; }  /* inset: the group clips its corners */
   .rr select, .rr input[type="search"] { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
@@ -259,10 +260,9 @@ document.head.appendChild(t);})();
   .su-stat span { color: var(--color-fg-muted); }
   .su-stat b { font-weight: 500; }
   .lx-detail tbody tr { cursor: pointer; }
-  .su-congrp { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: var(--cds-gap-sm); }
+  .su-congrp { display: grid; gap: 4px; }  /* its label above its chips, so they start at the left edge like the buffs' */
   .su-congrp + .su-congrp { margin-top: 6px; }
   .su-congrp .su-statgh { margin: 0; font-size: var(--cds-font-size-caption); }
-  @media (max-width: 600px) { .su-congrp { grid-template-columns: 1fr; gap: 4px; } }
   .su-stat.su-hasbd { cursor: help; }
   .su-stat.su-hasbd:hover { background: #ffffff08; }
   .su-tip .su-tipnote { max-width: 240px; white-space: normal; margin-top: 4px; color: var(--color-fg-muted); }
@@ -459,6 +459,7 @@ document.head.appendChild(t);})();
   .rr-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg); border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
   .rr-seg button:last-child { border-right: 0; }
   .rr-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+  .rr .rr-seg button:focus-visible, .hr .hr-seg button:focus-visible { outline-offset: -3px; }  /* inset: the group clips its corners */
   .rr select, .rr input[type="search"] { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); max-width: 100%; }
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
@@ -1400,6 +1401,9 @@ const specPicker = (spec, param) => {
   return b;
 };
 document.addEventListener('pointerdown', (e) => { if (menu && !menu.el.contains(e.target) && e.target !== menu.btn) closeMenu(); });
+// A switch button clicked with the mouse lets go of focus, so a later key press (Shift, say) doesn't show its focus
+// ring; with the keyboard (Enter or Space: no click count) it keeps it.
+document.addEventListener('click', (e) => { const b = e.detail > 0 && e.target.closest && e.target.closest('.rr-seg button, .hr-seg button'); if (b) b.blur(); });
 document.addEventListener('keydown', (e) => {
   if (!menu) return;
   if (e.key === 'Escape') { const b = menu.btn; closeMenu(); b.focus(); }
