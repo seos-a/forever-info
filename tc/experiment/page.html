@@ -144,6 +144,8 @@
   .rr-bdbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-sm); }
   .rr-bdbar .rr-bdlegend { flex: 1 1 auto; margin-bottom: 0; }
   .rr-bdbar .rr-seg { margin-left: auto; }
+  /* a phone: the view switch (Abilities / Timeline / Casts / Setup) first, across the box, above the legend */
+  @media (max-width: 600px) { .rr-bdbar .rr-seg { order: -1; margin-left: 0; width: 100%; display: flex; } .rr-bdbar .rr-seg button { flex: 1 1 0; } }
   .rr-bdlegend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-xs) var(--cds-gap-md); margin-bottom: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .rr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
@@ -520,6 +522,8 @@
   .rr-bdbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-sm); }
   .rr-bdbar .rr-bdlegend { flex: 1 1 auto; margin-bottom: 0; }
   .rr-bdbar .rr-seg { margin-left: auto; }
+  /* a phone: the view switch (Abilities / Timeline / Casts / Setup) first, across the box, above the legend */
+  @media (max-width: 600px) { .rr-bdbar .rr-seg { order: -1; margin-left: 0; width: 100%; display: flex; } .rr-bdbar .rr-seg button { flex: 1 1 0; } }
   .rr-bdlegend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-xs) var(--cds-gap-md); margin-bottom: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .rr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
@@ -597,7 +601,7 @@
     </div></div>
   </div>
 
-  <section class="rr-card" id="speccmp" data-label="DPS Ranking by Spec">
+  <section class="rr-card" id="speccmp" data-fixed data-label="DPS Ranking by Spec">
     <div class="rr-cardhead"><h2 class="lx-cmptitle">Damage Per Second</h2>
       <div class="rr-tools">
         <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Damage Per Second">DPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
@@ -619,6 +623,7 @@
   <section class="rr-card" id="matrix">
     <div class="rr-cardhead"><h2>DPS by Race and Spec</h2>
       <div class="rr-tools">
+        <div class="rr-seg lx-mtargets" data-p="matrixTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div>
         <div class="rr-seg lx-fight" data-p="matrixFight" role="group" aria-label="Fight length"></div>
         <div class="rr-seg lx-metric" role="group" aria-label="Measure">
           <button type="button" data-v="pct">% of best</button><button type="button" data-v="gain">Gain over no racials</button><button type="button" data-v="gapDps">DPS behind best</button>
@@ -683,7 +688,7 @@
         <li>Every DPS spec's preset builds from the WoWSims site: gear, talents, rotation, consumables, buffs and debuffs as each spec's presets set them, except Dragonbreath Chili: only the Retribution and Enhancement presets carry it, and it would put them about 3% (1 target) to 11% (5 targets) ahead of the other melee specs, so it is left out. The gear presets are marked developer-only, so the public site hides them; they are in WoWSims' source.</li>
         <li>Fights of 1, 2, 3 and 5 minutes against the site's default level 63 boss, 10,000 iterations each, with every race on the same random seed, so each DPS figure is good to about 0.1%.</li>
         <li><b>Gain over no racials</b> compares against the same build with no race: no racial abilities or passives and no race stat offset. Stat offsets count, which is why Tauren and some Dwarf builds come out below zero.</li>
-        <li><b>Targets</b> (DPS Ranking by Spec): each build at 1 to 5 copies of the boss, run with the race that does best on it at one target. Race choice barely changes with the number of targets, so only that race is run there. The Racial Bonus box's target switch is the exception: every race, and the no-racials baseline, is run at 1 to 5 targets for it.</li>
+        <li><b>Targets</b> (DPS Ranking by Spec): each build at 1 to 5 copies of the boss, run with the race that does best on it at one target. Race choice barely changes with the number of targets, so only that race is run there. The target switches on the DPS by Race and Spec table and the Racial Bonus box are the exception: every race, and the no-racials baseline, is run at 1 to 5 targets for them.</li>
         <li>Active racials such as Elune's Light, Blood Fury, Berserking and Eureka! are fired by the sim's rotation on its own. Players lining them up with other cooldowns may get a little more.</li>
         <li>Situational racials are not counted: Big Game Hunter, Beast Slaying, Elemental Insight, and Read Leyline outside the mage and feral rotations.</li>
       </ul>
@@ -711,7 +716,7 @@
     <p class="hr-patched" id="h-patched"><b>TESTING:</b>This page displays ForeverHealing-TC's October 16th version with the October 27th racial changes patched in, in a healing-limited test fight. Pally is currently broken. Take with a grain of salt.</p>
   </div>
 
-  <section class="hr-card" id="h-speccmp" data-label="HPS Ranking by Spec">
+  <section class="hr-card" id="h-speccmp" data-fixed data-label="HPS Ranking by Spec">
     <div class="hr-cardhead"><h2 class="lx-cmptitle">Healing Per Second</h2>
       <div class="hr-tools"><div class="hr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Healing Per Second">HPS</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div><div class="hr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div></div>
     </div>
@@ -832,7 +837,7 @@
     </div></div>
   </div>
 
-  <section class="rr-card" id="t-speccmp" data-label="Tank Ranking by Spec">
+  <section class="rr-card" id="t-speccmp" data-fixed data-label="Tank Ranking by Spec">
     <div class="rr-cardhead"><h2 class="lx-cmptitle">Threat Per Second</h2>
       <div class="rr-tools">
         <div class="rr-seg lx-cmpmode" role="group" aria-label="Show"><button type="button" data-v="rank" title="Tank ranking (threat, damage taken, spikes or DPS)">Ranking</button><button type="button" data-v="apm" title="Actions Per Minute">APM</button></div>
@@ -1050,23 +1055,25 @@ dash.calc('gainsByTargets', {
   fn: (sims, simsTargets) => specAverages(scopeSims(sims.concat(simsTargets))),
 });
 
+// The race by spec table and its row order, at 1 to 5 targets (the table's target switch).
+const tk = (r) => (r.targets > 1 ? [r.targets] : []);
 dash.calc('overall', {
-  inputs: ['bySpec'],
+  inputs: ['gainsByTargets'],
   title: 'Overall race ranking',
   description: 'Each race’s per-spec averages averaged again over the specs it can play, and the number of specs where it has the highest average (a tie counts for each race).',
   fn: (bySpec) => {
     const top = new Map();
     for (const r of bySpec) {
-      const k = [r.scope, r.fight, r.spec].join('|');
+      const k = [r.scope, r.fight, r.spec, ...tk(r)].join('|');
       top.set(k, Math.max(top.get(k) ?? -Infinity, r.pct));
     }
     const acc = new Map();
     for (const r of bySpec) {
-      const k = [r.scope, r.fight, r.race].join('|');
+      const k = [r.scope, r.fight, r.race, ...tk(r)].join('|');
       let a = acc.get(k);
-      if (!a) acc.set(k, (a = { key: k, scope: r.scope, fight: r.fight, race: r.race, faction: r.faction, specs: 0, pct: 0, gain: 0, gainDps: 0, gapDps: 0, specWins: 0 }));
+      if (!a) acc.set(k, (a = { key: k, scope: r.scope, fight: r.fight, targets: r.targets, race: r.race, faction: r.faction, specs: 0, pct: 0, gain: 0, gainDps: 0, gapDps: 0, specWins: 0 }));
       a.specs++; a.pct += r.pct; a.gain += r.gain; a.gainDps += r.gainDps; a.gapDps += r.gapDps;
-      a.specWins += top.get([r.scope, r.fight, r.spec].join('|')) === r.pct ? 1 : 0;
+      a.specWins += top.get([r.scope, r.fight, r.spec, ...tk(r)].join('|')) === r.pct ? 1 : 0;
     }
     const r2 = (x) => Math.round(x * 100) / 100, r1 = (x) => Math.round(x * 10) / 10;
     return [...acc.values()].map((a) => ({ ...a, pct: r2(a.pct / a.specs), gain: r2(a.gain / a.specs), gainDps: r1(a.gainDps / a.specs), gapDps: r1(a.gapDps / a.specs) }));
@@ -1074,15 +1081,15 @@ dash.calc('overall', {
 });
 
 dash.calc('matrix', {
-  inputs: ['bySpec'],
+  inputs: ['gainsByTargets'],
   title: 'Race by spec table',
   description: 'The per-spec averages laid out as one row per race and one column per spec, for each measure.',
   fn: (bySpec) => {
     const rows = new Map();
     for (const r of bySpec) {
       for (const metric of ['pct', 'gain', 'gapDps']) {
-        const k = [r.scope, r.fight, metric, r.race].join('|');
-        if (!rows.has(k)) rows.set(k, { key: k, scope: r.scope, fight: r.fight, metric, race: r.race, faction: r.faction });
+        const k = [r.scope, r.fight, metric, r.race, ...tk(r)].join('|');
+        if (!rows.has(k)) rows.set(k, { key: k, scope: r.scope, fight: r.fight, targets: r.targets, metric, race: r.race, faction: r.faction });
         rows.get(k)[r.spec] = r[metric];
       }
     }
@@ -1164,7 +1171,7 @@ const METRIC = {
   gain: { label: 'Gain over no racials', fmt: (v) => sign(v, 2) + '%', high: true, note: 'DPS gained over the same builds with no race, as a percentage. Bold is the largest gain in each column.' },
   gapDps: { label: 'DPS behind best', fmt: (v) => fx(v, 1), high: false, note: 'Average DPS behind the best race on each build. 0 is the best race; bold is the smallest gap in each column.' },
 };
-const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', gainTargets: '1', lineTargets: '1', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
+const P = () => Object.assign({ faction: 'All', gear: 'sims', bestFight: 'all', rankFight: 'all', matrixFight: 'all', specFight: 'all', specTargets: '1', specView: '', specTab: 'abilities', specBuild: '', specRace: '', gainFight: 'all', gainTargets: '1', lineTargets: '1', matrixTargets: '1', detailFight: 'all', detailTargets: '1', detailRace: 'all', detailMark: 'all', lineSpec: 'Beast Mastery Hunter', gainSpec: 'Beast Mastery Hunter', detailSpec: 'Beast Mastery Hunter', metric: 'pct', build: 'all' }, dash.params());
 const sorts = { overall: { field: 'pct', dir: 'desc' }, matrix: { field: null, dir: 'desc' }, detail: { field: null, dir: 'desc' } };
 let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 
@@ -1172,7 +1179,7 @@ let hl = null, query = '', zoomState = { key: null, t: d3.zoomIdentity };
 const seg = (sel, name) => {
   $(sel).addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) dash.setParams({ [name]: b.dataset.v }); });
 };
-seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets'); seg('.lx-ltargets', 'lineTargets');
+seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets'); seg('.lx-ltargets', 'lineTargets'); seg('.lx-mtargets', 'matrixTargets');
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
@@ -1325,8 +1332,9 @@ let colRace = null;
 
 function drawMatrix(p, rows, specs, overall) {
   const m = METRIC[p.metric] || METRIC.pct;
-  const rank = new Map(overall.filter((r) => r.scope === p.faction && r.fight === p.fight).map((r) => [r.race, r.pct]));
-  const list = rows.filter((r) => r.scope === p.faction && r.fight === p.fight && r.metric === p.metric).sort((a, b) => rank.get(b.race) - rank.get(a.race));
+  const atTargets = (r) => (r.targets || 1) === (p.targets || 1);
+  const rank = new Map(overall.filter((r) => r.scope === p.faction && r.fight === p.fight && atTargets(r)).map((r) => [r.race, r.pct]));
+  const list = rows.filter((r) => r.scope === p.faction && r.fight === p.fight && r.metric === p.metric && atTargets(r)).sort((a, b) => rank.get(b.race) - rank.get(a.race));
   // A picked race orders the columns by its own results, best first; columns it can't play go last.
   const by = list.find((r) => r.race === colRace), order = by ? [...specs].sort((a, b) => (by[a] == null) - (by[b] == null) || (m.high ? by[b] - by[a] : by[a] - by[b])) : specs;
   const cols = [{ field: 'race', label: 'Race' }].concat(order.map((s) => ({ field: s, label: SHORT[s] || s, title: s, num: true, fmt: m.fmt, color: specColor(s) })));
@@ -2253,7 +2261,7 @@ function draw() {
   if (ROOT.hidden) return;
   const p = P();
   const d = { scoped: rrData(dash.data('scoped')), bySpec: rrData(dash.data('bySpec')), overall: rrData(dash.data('overall')), matrix: rrData(dash.data('matrix')), best: rrData(dash.data('bestBySpec')) };
-  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets], ['.lx-ltargets', p.lineTargets]])
+  for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets], ['.lx-ltargets', p.lineTargets], ['.lx-mtargets', p.matrixTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
@@ -2277,7 +2285,7 @@ function draw() {
   $('.lx-dethead').replaceChildren(specPicker(p.detailSpec, 'detailSpec'), ' Sim Results by Build');
 
   drawCards({ ...p, fight: p.bestFight }, d.best.data, specs);
-  drawMatrix({ ...p, fight: p.matrixFight }, d.matrix.data, specs, d.overall.data);
+  drawMatrix({ ...p, fight: p.matrixFight, targets: +p.matrixTargets || 1 }, d.matrix.data, specs, d.overall.data);
   const GT = rrData(dash.data('gainsByTargets'));
   drawGains({ ...p, spec: p.gainSpec, fight: p.gainFight, targets: +p.gainTargets || 1 }, GT.status === 'ok' ? GT.data : d.bySpec.data);
   // Race Standings at 1 to 5 targets: the same race averages as the Racial Bonus box's target switch
@@ -2356,6 +2364,8 @@ for (const card of ROOT.querySelectorAll('.rr-card')) {
   });
   // A card with no title (the race grid) still gets the arrow, first in its header.
   if (h2) { h2.replaceWith(title); title.append(fold, h2); } else { title.append(fold); card.querySelector('.rr-cardhead').prepend(title); }
+  // The ranking box (data-fixed) always stays open: no arrow.
+  if (card.hasAttribute('data-fixed')) fold.remove();
   // Cards marked data-collapsed start folded (the builds table and the notes).
   if (card.hasAttribute('data-collapsed')) { card.classList.add('collapsed'); fold.setAttribute('aria-expanded', 'false'); fold.setAttribute('aria-label', 'Expand ' + label); }
 }
@@ -3811,6 +3821,8 @@ for (const card of ROOT.querySelectorAll('.rr-card')) {
   });
   // A card with no title (the race grid) still gets the arrow, first in its header.
   if (h2) { h2.replaceWith(title); title.append(fold, h2); } else { title.append(fold); card.querySelector('.rr-cardhead').prepend(title); }
+  // The ranking box (data-fixed) always stays open: no arrow.
+  if (card.hasAttribute('data-fixed')) fold.remove();
   // Cards marked data-collapsed start folded (the builds table and the notes).
   if (card.hasAttribute('data-collapsed')) { card.classList.add('collapsed'); fold.setAttribute('aria-expanded', 'false'); fold.setAttribute('aria-label', 'Expand ' + label); }
 }

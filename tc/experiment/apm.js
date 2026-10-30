@@ -23,12 +23,12 @@ dash.calc('healApm', {
   }),
 });
 
-// One ranking box per tab: its dataset, how it picks each spec's build, the ability breakdowns that give each press
+// One ranking box per tab (spec: the param of the spec whose breakdown the ranking view has open): its dataset, how it picks each spec's build, the ability breakdowns that give each press
 // its school and kind, and the filters it reads (each tab's own: the Healing and Tanks tabs prefix theirs with h and t).
 const TANK_TITLE = { tps: 'Threat Per Second', dtps: 'Damage Taken Per Second', tmi: 'Spikes (TMI)', dps: 'Damage Per Second' };
 const BOXES = [
-  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
-  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', source: 'apm', role: 'tank', by: 'tps', title: (q) => TANK_TITLE[q.tMeasure] || TANK_TITLE.tps, bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', spec: 'specView', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', spec: 'tSpecView', source: 'apm', role: 'tank', by: 'tps', title: (q) => TANK_TITLE[q.tMeasure] || TANK_TITLE.tps, bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
   { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', view: 'hApmView', source: 'healApm', title: () => 'Healing Per Second', lens: '2, 3, 5 and 7 minute fights' },
 ];
 
@@ -67,7 +67,9 @@ function setup(b) {
     const t = e.target.closest('button[data-v]');
     if (!t) return;
     card.classList.toggle('apm-on', t.dataset.v === 'apm');
-    dash.setParams({ [b.mode]: t.dataset.v });
+    // A spec open in one view stays open in the other (DPS and Tanks: its ability breakdown and what it presses).
+    const q = dash.params(), apm = t.dataset.v === 'apm';
+    dash.setParams({ [b.mode]: t.dataset.v, ...(b.spec && (apm ? { [b.view]: q[b.spec] || '' } : { [b.spec]: q[b.view] || '' })) });
   });
   // The APM view's own drag handle: the chart's height (0: its natural height), kept per box.
   const grip = card.querySelector('.lx-apmgrip');

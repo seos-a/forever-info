@@ -1028,6 +1028,8 @@ for (const card of ROOT.querySelectorAll('.hr-card')) {
   });
   // A card with no title (the race grid) still gets the arrow, first in its header.
   if (h2) { h2.replaceWith(title); title.append(fold, h2); } else { title.append(fold); card.querySelector('.hr-cardhead').prepend(title); }
+  // The ranking box (data-fixed) always stays open: no arrow.
+  if (card.hasAttribute('data-fixed')) fold.remove();
   // Cards marked data-collapsed start folded (the fights table and the notes).
   if (card.hasAttribute('data-collapsed')) { card.classList.add('collapsed'); fold.setAttribute('aria-expanded', 'false'); fold.setAttribute('aria-label', 'Expand ' + label); }
 }
