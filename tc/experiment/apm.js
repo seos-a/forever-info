@@ -30,7 +30,7 @@ dash.calc('healApm', {
 
 // One ranking box per tab (spec: the param of the spec whose breakdown the ranking view has open): its dataset, how it picks each spec's build, the ability breakdowns that give each press
 // its school and kind, and the filters it reads (each tab's own: the Healing and Tanks tabs prefix theirs with h and t).
-const TANK_TITLE = { tps: 'Threat Per Second', dtps: 'Damage Taken Per Second', tmi: 'Spikes (TMI)', dps: 'Damage Per Second' };
+const TANK_TITLE = { tps: 'Threat Per Second', dtps: 'Damage Taken Per Second', tmi: 'Spikes', dps: 'Damage Per Second' };
 // pin / race / specTab: the DPS view's build and race picked (from its breadcrumb or the builds table) and its view switch.
 const BOXES = [
   { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', spec: 'specView', pin: 'specBuild', race: 'specRace', specTab: 'specTab', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
@@ -143,7 +143,7 @@ function draw(b, box, items) {
   svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
   svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => t);
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
-  g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.spec] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
+  g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[b.role === 'tank' && d.spec === 'Feral Druid' ? 'Feral Bear' : d.spec] || null).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => specColor(d.spec)).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.apm) - x(0))).style('fill', (d) => specColor(d.spec)).attr('fill-opacity', 0.85);
   g.append('text').attr('class', 'lab').attr('x', (d) => x(d.apm) + 8).attr('y', bh / 2 + 4).text(label);
@@ -328,7 +328,7 @@ function drawBreakdown(b, box, note, item, fight, specs, q) {
       const school = a.school && a.kind !== 'utility' ? line('School', a.school) : null;
       if (school) school.lastChild.style.color = col(a);
       tip.replaceChildren(head, line('Presses per minute', a.v.toFixed(2)), line('Share of presses', ((a.v / total) * 100).toFixed(1) + '%'),
-        ...(secs ? [line('Per fight', ((a.v * secs) / 60).toFixed(1))] : []), el('div', 'sep'), ...(school ? [school] : []), line('Kind', KIND_LABEL[a.kind]));
+        ...(secs ? [line('Per fight', ((a.v * secs) / 60).toFixed(1))] : []), el('div', 'sep'), ...(school ? [school] : []), line('Type', KIND_LABEL[a.kind]));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';

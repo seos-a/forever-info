@@ -431,8 +431,10 @@ function drawMatrix(p, rows, overall) {
       const td = el('td', v === best[c.field] && r.race !== 'No racials' ? 'top best' : '', c.fmt(v));
       if (r.race !== 'No racials' && ext[c.field]) {
         const [lo, hi] = ext[c.field];
-        const t = hi > lo ? (v - lo) / (hi - lo) : 1;
-        td.style.background = `color-mix(in srgb, ${accent()} ${Math.round(6 + t * 34)}%, transparent)`;
+        // A loss to no racials is red, as on the DPS tab; gains shade from none (0) up.
+        const neg = p.metric === 'gain' && v < 0, from = p.metric === 'gain' ? Math.max(lo, 0) : lo;
+        const t = hi > from ? Math.max(0, v - from) / (hi - from) : 1;
+        td.style.background = `color-mix(in srgb, ${neg ? 'var(--cds-chart-status-critical)' : accent()} ${neg ? 22 : Math.round(6 + t * 34)}%, transparent)`;
       }
       td.title = `${r.race}, ${c.field}`;
       return td;
@@ -820,10 +822,11 @@ function drawSituations(p, rows, healers) {
   svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
   svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 2).attr('text-anchor', 'middle').text((t) => m.fmt(t));
   let y = 2;
-  const flat = [];
+  const flat = [], labels = [];
   for (const g of groups) {
     const gh = g.items.length * (bh + gap) - gap;
     svg.append('text').attr('class', 'lab').attr('x', 0).attr('y', y + gh / 2 + 4).style('font-weight', 600).text(g.label);
+    labels.push({ ...g, y, gh });
     if (y > 2) svg.append('line').attr('x1', 0).attr('x2', W).attr('y1', y - ggap / 2 - gap / 2).attr('y2', y - ggap / 2 - gap / 2).attr('stroke', 'var(--color-border-line)');
     g.items.forEach((d, i) => flat.push({ ...d, sit: g, y: y + i * (bh + gap) }));
     y += gh + gap + ggap;
@@ -834,15 +837,22 @@ function drawSituations(p, rows, healers) {
   row.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.value) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
   row.append('text').attr('class', 'lab').attr('x', (d) => x(hi(d)) + 6).attr('y', bh / 2 + 4).text((d) => m.fmt(d.value));
   const tip = el('div', 'hr-tip'); tip.hidden = true; box.append(tip);
-  row.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
+  const place = (ev) => {
+    tip.hidden = false;
+    const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
+    tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+  };
+  // An encounter's name says what the encounter is; a healer's numbers are on its bar.
+  svg.append('g').selectAll('rect').data(labels).join('rect').attr('x', 0).attr('y', (g) => g.y - gap / 2).attr('width', ml).attr('height', (g) => g.gh + gap).attr('fill', 'transparent')
+    .on('mousemove', (ev, g) => { tip.replaceChildren(el('div', 'h', g.label), el('div', 'about', g.about)); place(ev); })
+    .on('mouseleave', () => { tip.hidden = true; });
+  row.append('rect').attr('x', ml).attr('y', -gap / 2).attr('width', W - ml).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       tip.replaceChildren(el('div', 'h', `${d.name}: ${d.sit.label}`), el('div', 'about', d.sit.about),
         tipLine('Healing per second', `${num(d.hps)} (middle half ${num(d.q1)}–${num(d.q3)})`), tipLine('Share of raid healing', fx(d.share, 1) + '%'),
         tipLine('Overhealing', fx(d.overPct, 1) + '%'), tipLine('Time idle', fx(d.idle, 1) + '%'), tipLine('Mana left at end', num(d.manaEnd)),
         tipLine('Raid damage taken', num(d.raidDps) + ' per sec'), tipLine('Raid deaths', fx(d.deaths, 1) + ' per fight'));
-      tip.hidden = false;
-      const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
-      tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
+      place(ev);
     })
     .on('mouseleave', () => { tip.hidden = true; })
     .on('click', (ev, d) => pickHealer(d.cls));

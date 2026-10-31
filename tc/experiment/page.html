@@ -142,9 +142,9 @@
   .rr-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); }
   .rr-legend button { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; gap: .35rem; align-items: center; background: none; border: 1px solid transparent; border-radius: var(--cds-radius); padding: 1px .35rem; color: var(--color-fg); cursor: pointer; }
   .rr-legend button[aria-pressed="true"] { border-color: var(--color-fg-muted); }
-  .rr-notes { display: grid; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); max-width: 80ch; }
-  .rr-notes ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--cds-gap-xs); }
-  .rr-notes b { color: var(--color-fg); font-weight: 600; }
+  .rr-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
+  .rr-notes b { display: block; color: var(--color-fg); font-weight: 600; }
+  .rr-notes p { margin: 0; }
   .rr [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   .rr-chart.lx-speccmp, .rr-chart.lx-gains { min-height: 0; }
   .rr-chart.lx-speccmp svg { cursor: default; }
@@ -202,6 +202,11 @@
   .su-tip .su-tipnote { max-width: 240px; white-space: normal; margin-top: 4px; color: var(--color-fg-muted); }
   .su-opts { display: flex; flex-wrap: wrap; gap: 4px var(--cds-gap-md); color: var(--color-fg-muted); }
   .su-opts b { color: var(--color-fg); font-weight: 500; }
+  /* Settings sit to the right of the stats (a column of their own), wrapping below them on narrow screens. */
+  .su-pair { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md) var(--cds-gap-lg); align-items: start; }
+  .su-pair > div { min-width: 0; }
+  .su-pair > div + div { flex: 1 1 200px; border-left: 1px solid #ffffff12; padding-left: var(--cds-gap-lg); }
+  .su-pair .su-opts { flex-direction: column; }
   .su-note { margin-top: var(--cds-gap-xs); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
   /* Casts (a table and a timeline of one run) and Timeline (damage over time), like Warcraft Logs' cast and damage views. */
   .tl { display: grid; gap: var(--cds-gap-md); font-size: .8125rem; }
@@ -383,9 +388,9 @@
   .hr-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); }
   .hr-legend button { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; gap: .35rem; align-items: center; background: none; border: 1px solid transparent; border-radius: var(--cds-radius); padding: 1px .35rem; color: var(--color-fg); cursor: pointer; }
   .hr-legend button[aria-pressed="true"] { border-color: var(--color-fg-muted); }
-  .hr-notes { display: grid; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); max-width: 84ch; }
-  .hr-notes ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--cds-gap-xs); }
-  .hr-notes b { color: var(--color-fg); font-weight: 600; }
+  .hr-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
+  .hr-notes b { display: block; color: var(--color-fg); font-weight: 600; }
+  .hr-notes p { margin: 0; }
   .hr [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   .hr-chart.lx-speccmp, .hr-chart.lx-gains { min-height: 0; }
   .hr-chart.lx-speccmp svg { cursor: default; }
@@ -528,9 +533,9 @@
   .rr-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); }
   .rr-legend button { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; gap: .35rem; align-items: center; background: none; border: 1px solid transparent; border-radius: var(--cds-radius); padding: 1px .35rem; color: var(--color-fg); cursor: pointer; }
   .rr-legend button[aria-pressed="true"] { border-color: var(--color-fg-muted); }
-  .rr-notes { display: grid; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); max-width: 80ch; }
-  .rr-notes ul { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--cds-gap-xs); }
-  .rr-notes b { color: var(--color-fg); font-weight: 600; }
+  .rr-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
+  .rr-notes b { display: block; color: var(--color-fg); font-weight: 600; }
+  .rr-notes p { margin: 0; }
   .rr [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   .rr-chart.lx-speccmp, .rr-chart.lx-gains { min-height: 0; }
   .rr-chart.lx-speccmp svg { cursor: default; }
@@ -696,26 +701,17 @@
   </section>
 
   <section class="rr-card" id="notes" data-collapsed>
-    <h2>Methods and Caveats</h2>
+    <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
-      <ul>
-        <li>WoWSims Forever at commit 376a6aa (30 October 2026, 9:30 PM CT), on the beta's build 70707 data with the hotfixes as of 31 October, run by Claude from the sims' own source. Its Paladin and Priest spells don't have build 70707's changes yet (WoWSims left them out of that update), so Retribution still runs the talents from before the Paladin rework (Twist of Light, no Unsealed Wrath or Oath of Light): treat Retribution and Shadow Priest with care.</li>
-        <li>Every DPS spec's preset builds from the WoWSims site: gear, talents, rotation, consumables, buffs and debuffs as each spec's presets set them, except Dragonbreath Chili: only the Retribution and Enhancement presets carry it, and it would put them about 3% (1 target) to 11% (5 targets) ahead of the other melee specs, so it is left out. WoWSims' Rogue presets set no professions, so the Rogue builds are given Engineering and Leatherworking, with the Warriors' Goblin Sapper Charge and EZ-Thro Dark Bomb, like the other melee builds. The gear presets are marked developer-only, so the public site hides them; they are in WoWSims' source.</li>
-        <li>Fights of 1, 2, 3 and 5 minutes against the site's default level 63 boss, 10,000 iterations each, with every race on the same random seed, so each DPS figure is good to about 0.1%.</li>
-        <li><b>Gain over no racials</b> compares against the same build with no race: no racial abilities or passives and no race stat offset. Stat offsets count, which is why Tauren and some Dwarf builds come out below zero.</li>
-        <li><b>Targets</b> (DPS Ranking by Spec): each build at 1 to 5 copies of the boss, run with the race that does best on it at one target. Race choice barely changes with the number of targets, so only that race is run there. The target switches on the DPS by Race and Spec table and the Racial Bonus box are the exception: every race, and the no-racials baseline, is run at 1 to 5 targets for them.</li>
-        <li>Active racials such as Elune's Light, Blood Fury, Berserking and Eureka! are fired by the sim's rotation on its own. Players lining them up with other cooldowns may get a little more.</li>
-        <li>Situational racials are not counted: Big Game Hunter, Beast Slaying, Elemental Insight, and Read Leyline outside the mage and feral rotations.</li>
-      </ul>
-      <p><b>Things to keep in mind</b></p>
-      <ul>
-        <li><b>Gear is not re-optimized per race.</b> Most physical presets are already hit capped, so Dwarf's 1% hit (Artisan's Precision) adds nothing there and its lower Agility shows as a loss. A separate run gave Dwarf gear with 1% less hit and 1% more crit (spell hit and spell crit for casters), as a Dwarf would gear. Rerun for the Hunters on the current presets, it adds about 1 point on ranged Survival and 0.5 on the Survival and Marksmanship weaves, which are past the cap (9.7% hit with Surefooted), and nothing on Beast Mastery, ranged Marksmanship and melee Survival, which WoWSims now gears under the cap (6.7% and 5.7%), so there Dwarf's own 1% hit already counts. On WoWSims' 27 October presets (not rerun for the other specs) it added about 1 point on Arms, 0.7 on Fury, 0.5 on Enhancement, 0.3 on Ret, and almost nothing on Rogues (dual-wield white hits still miss well past the 8% cap) or Shadow (7% hit against a 17% spell miss chance); on Elemental it was a loss, so a Dwarf would keep the hit. It lifted Dwarf from 9th to 4th of 10 on Arms and from 4th to 2nd on Enhancement, but it wasn't the top race on any spec. The tables show the presets as they are.</li>
-        <li><b>Classic pre-raid gear</b> (the Gear switch): the same builds, talents, rotations, consumables and buffs, in each spec's Phase 1 pre-raid best-in-slot list. Most of those items are not in Forever's item database, so they are added to the sim with their Classic stats (10 hit rating per 1% hit, 14 crit rating per 1% crit); where Forever has its own version of an item, that version is used. Hand of Justice is left out: Hunters wear Royal Seal of Eldre'Thalas in its place, everyone else Rune of the Guard Captain. Item swaps are off, both Moonkin presets become one build, Frost Mage wears the mage list with Frozen Wrath suffixes, and effects the sim doesn't model (Second Wind's mana, the Dwarven Hand Cannon's cannonball) are left out.</li>
-        <li><b>Dwarf in Classic pre-raid gear.</b> Artisan's Precision gives Dwarf 1% hit, so a Dwarf can leave one 1%-hit piece of the list behind for a piece without hit from another Classic pre-raid list (same slot, one it can wear) and still have the hit every other race has. The sim tried every such swap and kept the best one only where it beat the plain list: Blackstone Ring for Magni's Will (Arms, ranged Survival) or Maiden's Circle (Enhancement), and Slashclaw Bracers for Deepfury Bracers (Marksmanship and Survival weave). Every other build wears the plain list as Dwarf too.</li>
-        <li><b>Placeholder presets.</b> Elemental Shaman, Enhancement Shaman and Shadow Priest run WoWSims' developer test presets (named "Testing" there, named after the spec here), so treat those specs with more caution.</li>
-        <li><b>Specs.</b> Each build counts toward its talent tree: Frostfire Bolt (29 Fire points) as Fire, SM/Ruin (31 Affliction points) as Affliction. WoWSims' Smite Priest build is left out, as it isn't a competitive DPS spec; Ret Paladin's Holy Shock and Twist of Light builds are both Retribution.</li>
-        <li>WoWSims' model of the Forever beta changes daily, and the gaps between the top races are often under 1%.</li>
-      </ul>
+      <div><b>Sim</b><p>WoWSims Forever 376a6aa (30 Oct), on build 70707 data with hotfixes to 31 Oct. Its Paladin and Priest spells predate 70707, so treat Retribution and Shadow with care.</p></div>
+      <div><b>Builds</b><p>Every WoWSims preset build (gear, talents, rotation, consumables, buffs) minus Dragonbreath Chili. Rogues get Engineering and Leatherworking like the other melee. Elemental, Enhancement and Shadow use WoWSims' developer test presets.</p></div>
+      <div><b>Fights</b><p>1, 2, 3 and 5 minutes against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%).</p></div>
+      <div><b>Gain over no racials</b><p>The same build with no racial abilities, passives or stat offsets. Stat offsets are why Tauren and some Dwarf builds land below zero.</p></div>
+      <div><b>Targets</b><p>Every race is run at 1 to 5 targets for the race table and Racial Bonus. The spec ranking at 2 to 5 targets and the ability breakdowns use each build's best race (and the other faction's best).</p></div>
+      <div><b>Racials</b><p>Active racials are fired by the sim on cooldown; lining them up with other cooldowns may be worth a little more. Situational ones (Big Game Hunter, Beast Slaying, Elemental Insight) aren't counted.</p></div>
+      <div><b>Gear is the same for every race</b><p>Most physical presets are hit capped, so Dwarf's 1% hit is wasted there. Gearing Dwarf with 1% less hit and 1% more crit adds at most about 1 point and never makes it the top race.</p></div>
+      <div><b>Classic pre-raid gear</b><p>Each spec's Phase 1 pre-raid list; items Forever lacks use their Classic stats. No Hand of Justice or item swaps. A Dwarf may swap one hit piece for a no-hit one where the sim found that better.</p></div>
+      <div><b>Keep in mind</b><p>Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
     </div>
   </section>
 </div>
@@ -728,7 +724,7 @@
     <div class="hr-filter"><div class="hr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
     </div></div>
-    <p class="hr-patched" id="h-patched"><b>TESTING:</b>This page displays ForeverHealing-TC's October 16th version with the October 27th racial changes patched in, in a healing-limited test fight. Pally is currently broken. Take with a grain of salt.</p>
+    <p class="hr-patched" id="h-patched"><b>TESTING:</b>Run on ForeverHealing-TC's October 28th data, in a healing-limited test fight. Build 70707's healer changes (the Holy Paladin rework, Blessing of Light removed, Wild Growth's 3 sec cast) aren't in it yet. Take with a grain of salt.</p>
   </div>
 
   <section class="hr-card" id="h-speccmp" data-fixed data-label="HPS Ranking by Spec">
@@ -808,24 +804,17 @@
   </section>
 
   <section class="hr-card" id="h-notes" data-collapsed>
-    <h2>Methods and Caveats</h2>
+    <div class="hr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="hr-notes">
-      <p><b>The sim.</b> ForeverHealing-TC's experimental raid sim, on its "Oct 28 racial tuning" data (class spells and talents as in beta build 1.60.1.70425; racials from Blizzard's 28 October post), with each healer's default level 60 setup, gear and priority list from the tool. Results for Holy Priest, Holy Paladin, Restoration Druid and Restoration Shaman. The default raid: 2 tanks, 4 healers (a Restoration Shaman on the tanks, Priest, Paladin and Druid on the raid), 6 melee and 8 ranged, steady tank damage and a raid-wide hit every 20 sec.</p>
-      <p><b>Racials</b> are the sim's own, now up to date with the 28 October tuning: Human Ruthless 1% crit and The Human Spirit +10% Spirit; Dwarf's and Tauren's stronger crit heals and Orc's Savage removed; Troll Berserking 15 sec; Orc Blood Fury on a 2 min cooldown; Skyborne 2% haste. (Earlier runs patched these in by hand.)</p>
-      <p><b>Haste barely shows up in this sim.</b> The sim moves in 0.05 sec steps, so a cast made 2% faster (2.50 to 2.45 sec) mostly still ends on the same step: Skyborne comes out level with no racials for the Druid and about 0.2% behind for the Shaman. The healers' priority lists also pace their casts to their mana. Troll's Berserking comes out +0.3% for the Priest and −1% for the Shaman; changes elsewhere in the raid moved those by about a point between runs, so they're within what timing alone shifts. Read Skyborne's and Troll's results as "haste not measured", not as "haste is worthless" or harmful.</p>
-      <p><b>Undead Priest</b> now gains about 4.6%: the sim casts Dark Sacrifice (health turned into mana) about once a fight, and the extra mana pays for more heals.</p>
-      <p><b>Racial cooldowns</b> are used in the fight by the sim, on cooldown from the pull: Elune's Light (+10% crit, 15 sec, 3 min), Berserking (+10% cast speed, 15 sec, 3 min), Eureka! (+10% healing and 10% less mana on non-periodic heals, 8 sec, 2 min; a Priest saves it for Prayer of Healing) and Blood Fury (+10% healing power, 15 sec, 2 min). Lining them up with heavy damage would be worth more than shown.</p>
-      <p><b>A healing-limited fight.</b> In the default fight the healers keep up with the damage, so a better race mostly overheals and the four healers compete for the same heals. That made race differences unmeasurable (about ±2% noise against 0.5–1% effects). So raid health is raised 100× and damage 2.5×: there is always more to heal, nobody dies, overhealing nearly vanishes, and each healer's effective healing is what its spells and mana allow. Real fights are rarely like this: there, crit and haste racials are worth less (more of the extra healing is overheal) and mana racials matter only when mana runs out.</p>
-      <p><b>Holy Paladin's rules are rescaled for this fight.</b> Its priority list gates every heal on someone being below a share of their health ("below 90%", "below 80%"...). With 100× health nobody ever is, so as the tool has it the Paladin healed about 5,000 in 2 minutes and sat idle three quarters of the time. Here each of those gates is rescaled to the same missing health it means in a normal raid ("below 90%" becomes "below 99.9%": 380 missing on a 3,800-health raider); nothing else in its rules changes. That is this page's edit to the tool's Paladin logic, not the tool's own. It then heals about 400 per second and runs low on mana in the longer fights. Human gains about 2.4% (Spirit and crit); Dwarf and Undead have no racial that heals, so they come out level with no racials. The other healers' rules are left as the tool has them: they already heal in this fight, though they wait for low health on some rules and idle more than in the normal fight, so heal size and mana count for more here than speed.</p>
-      <p><b>Runs.</b> 40 runs per race, healer and fight length, every race on the same random seeds, at 2, 3, 5 and 7 minutes. Only the measured healer's race changes; the other healers keep their default races (Undead Priest and Paladin, Night Elf Druid, Dwarf Shaman), and the Paladin always plays with the rescaled rules.</p>
-      <p><b>Encounter types.</b> Unlike the rest of this page, the Healers by Encounter Type box runs at the sim's normal health and damage, since the question there is how each healer copes with each kind of fight, not how races compare. Each healer has no racials, 40 runs per damage preset (the presets' level 60 values), 3 minute fights, with every healer's rules (the Paladin's too) as the tool has them, since at normal health they work as written. The raid is the sim's default one, so the Shaman heals the tanks and the Priest, Paladin and Druid heal the raid; that assignment, not only the healer, shapes each situation's numbers. With 100× health these presets didn't work: in the lighter ones nobody dropped low enough for the healers' rules to fire, and the Shamans sat idle over 95% of the fight.</p>
-      <p><b>Not counted:</b></p>
-      <ul>
-        <li>Read Leyline (Alliance Skyborne): +50% health and mana regeneration for 15 sec, 2 min cooldown (Attuned's +100% is removed in raids). Not in the sim's fights.</li>
-        <li>Undead Cannibalize (35% of maximum mana from a corpse). The sim only uses it on its mana page.</li>
-        <li>With 100× health nobody drops below 35%, so emergency rules never fire: emergency Flash Heals, shields, and the Dwarf Priest's Desperate Prayer.</li>
-        <li>Race base stats: the sim gives every race the same base Intellect and Spirit, so only racial traits differ.</li>
-      </ul>
+      <div><b>Sim</b><p>ForeverHealing-TC's raid sim on its 28 Oct racial data (spells as of build 70425), with each healer's default gear and priority list. Build 70707's healer changes aren't in it yet.</p></div>
+      <div><b>Raid</b><p>2 tanks, 6 melee, 8 ranged and 4 healers: the Shaman on the tanks; the Priest, Paladin and Druid on the raid.</p></div>
+      <div><b>A healing-limited fight</b><p>At normal settings the healers keep up and race differences vanish into overhealing, so raid health is ×100 and damage ×2.5. Real fights reward crit and haste racials less.</p></div>
+      <div><b>Runs</b><p>40 per race, healer and fight length (2, 3, 5 and 7 minutes), on the same seeds. Only the measured healer's race changes.</p></div>
+      <div><b>Haste barely shows</b><p>The sim moves in 0.05 sec steps, so 2% haste mostly rounds away. Read Skyborne and Troll as “haste not measured”, not “worthless”.</p></div>
+      <div><b>Holy Paladin</b><p>Its rules wait for someone to drop below a share of their health, which never happens at ×100 health, so each threshold is rescaled to the same missing health. That's this page's edit, not the tool's.</p></div>
+      <div><b>Racial cooldowns</b><p>Used on cooldown from the pull (Eureka! saved for Prayer of Healing). Undead Priest gains about 4.6% from Dark Sacrifice's extra mana.</p></div>
+      <div><b>Encounter types</b><p>Normal health and damage, no racials, 40 runs per damage preset, 3 minute fights.</p></div>
+      <div><b>Not counted</b><p>Read Leyline, Cannibalize, emergency heals below 35% health (Desperate Prayer), and race base stats (the sim gives every race the same).</p></div>
     </div>
   </section>
 </div>
@@ -840,7 +829,7 @@
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
     </div></div>
     <div class="rr-filter"><div class="rr-seg lx-measure" data-p="measure" role="group" aria-label="Measure">
-      <button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes (TMI)</button>
+      <button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button>
     </div></div>
   </div>
 
@@ -922,23 +911,15 @@
   </section>
 
   <section class="rr-card" id="t-notes" data-collapsed>
-    <h2>Methods and Caveats</h2>
+    <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
-      <ul>
-        <li>WoWSims Forever at commit 376a6aa (30 October 2026, 9:30 PM CT), on the beta's build 70707 data with the hotfixes as of 31 October; its Protection Paladin doesn't have build 70707's Paladin rework yet (no Shieldsworn), so treat it with care. Run by Claude from the sims' own source with each tank spec's test-suite setup: talents, rotation, consumables and buffs, and the UI's gear presets. Protection Warrior has two (Defense Cap and Threat); Protection Paladin and Feral Bear have one each.</li>
-        <li>The default level 63 boss hits the tank every 2 sec. Incoming healing is each spec's UI default (815 healing per second for Protection Warrior, 2,200 for Protection Paladin and Feral Bear), so no tank died in any run.</li>
-        <li>Dwarf tanks press Stoneform (10% less physical damage taken for 8 sec, 3 min cooldown) whenever it is ready. WoWSims' Prot Warrior rotation keeps it for below 50% health, which the steady healing never reaches, so it would never be used. The Prot Paladin's sim fires it at the pull together with Templar's Bulwark, whose 8 sec absorb shield soaks every hit while both last, so the Paladin presses it once the Bulwark drops.</li>
-        <li>Fights of 1, 2, 3 and 5 minutes, 10,000 iterations each, with every race on the same random seed. Each figure is good to about 0.1–0.5%; <b>Tie</b> marks races within two standard errors of the best.</li>
-        <li><b>Targets</b> (Tank Ranking by Spec): each build at 1 to 5 targets, run with the race that generates the most threat on it at one target. Only the first target attacks; the others take hits and add threat work but deal no damage, so damage taken and spikes stay one-target figures. The Racial Bonus box's target switch runs every race, and the no-racials baseline, at 1 to 5 targets; it applies to threat and DPS only.</li>
-        <li><b>Gain over no racials</b> compares against the same setup with no race: no racial abilities or passives and no race stat offset.</li>
-        <li><b>Threat (TPS)</b> is the threat generated per second. <b>Damage taken (DTPS)</b> is after armor, avoidance and mitigation. <b>Spikes (TMI)</b> is the Theck–Meloree Index, a measure of how large the tank's worst damage spikes are against its health. For damage taken and spikes, lower is better, so the page treats the lowest value as 100%.</li>
-      </ul>
-      <p><b>Things to keep in mind</b></p>
-      <ul>
-        <li>Gear is not re-optimized per race. A Dwarf or Night Elf tank would trade some gear for other stats in practice.</li>
-        <li>Stoneform, Elune's Light, Blood Fury and Berserking are fired by the sim's rotation on its own; a player could time defensive ones for big hits.</li>
-        <li>Situational racials are not counted (Big Game Hunter, Beast Slaying, Elemental Insight), and the boss is a Mechanical mob.</li>
-      </ul>
+      <div><b>Sim</b><p>WoWSims Forever 376a6aa (30 Oct), on build 70707 data. Its Protection Paladin predates 70707's rework (no Shieldsworn), so treat it with care.</p></div>
+      <div><b>Setups</b><p>Each tank's WoWSims talents, rotation, consumables, buffs and gear presets (Protection Warrior has two: Defense Cap and Threat).</p></div>
+      <div><b>Fights</b><p>A level 63 boss hitting every 2 sec, with each spec's default incoming healing, so no tank died. 1, 2, 3 and 5 minutes, 10,000 iterations, every race on the same seed.</p></div>
+      <div><b>Measures</b><p>DPS and threat: higher is better. Damage taken (after armor, avoidance and mitigation) and spikes (the worst bursts against the tank's health): lower is better.</p></div>
+      <div><b>Targets</b><p>Only the first target attacks; extra targets add threat and damage, not damage taken. Racial Bonus runs every race at 1 to 5 targets; the spec ranking uses each build's best race.</p></div>
+      <div><b>Stoneform</b><p>Dwarves press it whenever it's ready. WoWSims would otherwise save it for low health, which the steady healing never reaches.</p></div>
+      <div><b>Keep in mind</b><p>Gear is the same for every race, active racials are fired on cooldown rather than timed for big hits, and situational racials aren't counted.</p></div>
     </div>
   </section>
 </div>
@@ -1153,8 +1134,8 @@ const BELOW = {
   // At 2 to 5 targets (the Racial Bonus box's target switch): Chain Lightning runs Elemental's mana down after the first minute.
   'Elemental Shaman|Tauren|aoe': 'Tauren racials provide no value to Elemental DPS. At more targets Chain Lightning runs the mana pool down on fights of 2 minutes or more, so its innate −5 Intellect (less mana, a sliver of spell crit) costs more than on one target.',
   'Elemental Shaman|Troll|aoe': 'Troll’s innate −4 Intellect means less mana, and at more targets Chain Lightning runs the pool down on fights of 2 minutes or more. Berserking (10% faster casting for 10 sec) doesn’t make that up there.',
-  'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
-  'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Feral Druid|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec, every 3 min) covers 8 of every 180 seconds; on 3 minute fights its one use (once Templar’s Bulwark drops) doesn’t quite make up for Dwarf’s innate −4 Agility (slightly less dodge).',
   'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
   'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
@@ -1682,6 +1663,23 @@ const targetItems = (p, rows) => {
   }
   return [...specs.values()];
 };
+// The bars at 2 to 5 targets use each build's best race at one target, but every race was simmed at those counts too
+// (`rows`: simsTargets / tankRunsTargets), so the tooltip still names the build's best and weakest race there.
+const addSpread = (p, rows, items) => {
+  const up = HIGHER(p), better = (a, b) => (up ? a.v > b.v : a.v < b.v);
+  for (const it of items) {
+    const acc = new Map();
+    for (const r of rows) {
+      if (r.spec !== it.key || r.build !== it.build || +r.targets !== +p.targets || (p.faction !== 'All' && r.faction !== p.faction) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
+      if (!acc.has(r.race)) acc.set(r.race, { race: r.race, sum: 0, n: 0 });
+      const a = acc.get(r.race); a.sum += VAL(r); a.n++;
+    }
+    const g = [...acc.values()].map((a) => ({ race: a.race, v: a.sum / a.n }));
+    if (g.length < 2) continue;
+    const best = g.reduce((a, b) => (better(b, a) ? b : a)), worst = g.reduce((a, b) => (better(a, b) ? b : a));
+    Object.assign(it, { single: false, tipBest: best.race, tipTop: best.v, worst: worst.v, worstRace: worst.race });
+  }
+};
 // A build's DPS at 1 to 5 targets (averaged over the fight lengths for "All").
 const targetScale = (p, rows, spec, build) => [1, 2, 3, 4, 5].map((n) => {
   const v = rows.filter((r) => r.spec === spec && r.build === build && +r.targets === n && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
@@ -1716,17 +1714,17 @@ function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
   const bar = el('div', 'rr-bdbar');
+  const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
   // The card's title becomes a breadcrumb: its name goes back to all specs, the spec's name opens the spec menu.
   const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb', h2.dataset.base);
   back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => dash.setParams({ specView: '', specBuild: '', specRace: '' }));
   if (p.cmpMode !== 'apm') {
-    // Then the build and the race shown, each a menu of the others (best first): picking one pins it, as a row of the
-    // builds table does.
-    const race = item.race || item.best, rn = (r) => RACE_NAME[r] || r;
+    // Then the build, a menu of the spec's others (best first): picking one pins it, as a row of the builds table does.
+    // The race is the one the breakdown was simmed with (each build's best race in each faction), so it's no menu.
     const build = choicePicker(item.build, item.build, 'Choose a build', { items: item.builds || [item.build], pick: (bd) => dash.setParams({ specBuild: item.key + '|' + bd, specRace: '' }) });
-    const races = choicePicker(rn(race), race, 'Choose a race', { items: item.races || [race], label: rn, color: (r) => (ALLIANCE.has(r) ? 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--rr-horde) 80%, #fff)'),
-      pick: (r) => dash.setParams({ specBuild: item.key + '|' + item.build, specRace: r }) });
+    const shown = rows.length ? rows[0].race : item.race || item.best, races = el('span', null, RACE_NAME[shown] || shown);
+    races.style.color = ALLIANCE.has(shown) ? 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--rr-horde) 80%, #fff)';
     const sep = () => el('span', 'rr-crumbsep', '›');
     h2.replaceChildren(back, sep(), specPicker(item.key, 'specView'), sep(), build, sep(), races);
   }
@@ -1745,9 +1743,8 @@ function drawBreakdown(p, item, data, fitH) {
   box.append(bar);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
-  const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
   // Setup's line naming the build, race, gear and talents takes the legend's place, beside the view switch.
-  if (p.specTab === 'setup') { legend.replaceChildren(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight, legend); return; }
+  if (p.specTab === 'setup') { legend.replaceChildren(); drawSetup(p, item, rows.length ? rows[0].race : item.best, fitH - bar.offsetHeight, legend); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
@@ -1765,10 +1762,9 @@ function drawBreakdown(p, item, data, fitH) {
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fight${rows.length > 1 ? 's' : ''}`;
-  // The build's total (the sim's own figure for damage; the abilities' sum for threat), then a pinned race's caveat.
+  // The build's total (the sim's own figure for damage; the abilities' sum for threat).
   const sum = key === 'dps' ? rows.reduce((t, r) => t + +r.dps, 0) / rows.length : total;
-  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`),
-    ...(item.pinned && race !== item.best ? [` · Ability breakdowns were simmed only with each build's best race in each faction, so this is ${RACE_NAME[race] || race}'s, not ${RACE_NAME[item.best] || item.best}'s (Setup shows ${RACE_NAME[item.best] || item.best}).`] : []));
+  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`));
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -1836,12 +1832,12 @@ function drawBreakdown(p, item, data, fitH) {
       head.append(label(a));
       const school = line('School', a.school);
       school.lastChild.style.color = col(a);
-      const more = [...(key === 'tps' ? [line('DPS', fx(a.dps, 1))] : a.tps ? [line('Threat per second', fx(a.tps, 1))] : []),
+      const more = [...(key === 'tps' ? [line('DPS', fx(a.dps, 1))] : []),
         ...(a.casts >= 0.05 ? [line('Casts per fight', fx(a.casts, 1))] : []),
         ...(secs && a.casts >= 0.5 ? [line(`${key === 'tps' ? 'Threat' : 'Damage'} per cast`, d3.format(',')(Math.round((a.v * secs) / a.casts)))] : []),
         ...(a.crit != null ? [line('Crit rate', fx(a.crit, 1) + '%' + (a.name.startsWith('Melee') ? ' (glancing blows left out)' : ''))] : [])];
       tip.replaceChildren(head, line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
-        ...(a.kind === 'resource' ? [] : [el('div', 'sep'), school, line('Kind', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
+        ...(a.kind === 'resource' ? [] : [el('div', 'sep'), school, line('Type', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
         ...(more.length ? [el('div', 'sep'), ...more] : []));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
@@ -2083,7 +2079,7 @@ function drawSetup(p, item, race, minH, headTo) {
   cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
   head.append(el('b', null, item.build), ` · ${race ? race + ' · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
   (headTo || wrap).append(head);
-  const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
+  const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); return sec; };
   const itemRow = (g) => {
     const row = el('div', 'su-item'), name = suLink('su-name', g.name, g.url);
     name.style.color = QUALITY[g.q] || QUALITY[1];
@@ -2103,6 +2099,7 @@ function drawSetup(p, item, race, minH, headTo) {
   section('Gear', list, ...extra);
   // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
   const sheet = suJson(s.stats)[race];
+  let statSec = null;
   if (sheet) {
     // Hover a stat for where it comes from: base stats (class and race), gear, talents, buffs and consumables.
     const grid = el('div', 'su-stats'), groups = new Map(), tip = el('div', 'rr-tip su-tip');
@@ -2123,7 +2120,8 @@ function drawSetup(p, item, race, minH, headTo) {
       } else if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
       groups.get(grp).append(row);
     }
-    section('Stats', grid);
+    statSec = section('Stats', grid);
+    statSec.style.flex = `0 1 ${groups.size * 270}px`;
     box.append(tip);
   }
   const chips = (rows) => {
@@ -2142,7 +2140,8 @@ function drawSetup(p, item, race, minH, headTo) {
   section('Debuffs on the target', chips(suJson(s.debuffs)));
   const opts = el('div', 'su-opts');
   for (const [k, v] of suJson(s.options)) { const o = el('span', 'su-opt', k + ': '); o.append(el('b', null, v)); if (SETTING_TIPS[k]) o.title = SETTING_TIPS[k]; opts.append(o); }
-  section('Settings', opts);
+  const setSec = section('Settings', opts);
+  if (statSec) { const pair = el('div', 'su-pair'); statSec.replaceWith(pair); pair.append(statSec, setSec); }
   box.append(wrap);
 }
 
@@ -2196,9 +2195,9 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
-      const spread = (Math.abs(d.top - d.worst) / (up ? d.worst : d.top)) * 100;
+      const top = d.tipTop ?? d.top, spread = (Math.abs(top - d.worst) / (up ? d.worst : top)) * 100;
       const head = el('div', 'h', d.name); head.style.color = d.color;  // the spec in its class colour
-      tip.replaceChildren(head, line(d.single ? 'Race' : 'Best race', `${d.best}, ${fmt(d.top)} ${unit}`),
+      tip.replaceChildren(head, line(d.single ? 'Race' : 'Best race', `${d.tipBest || d.best}, ${fmt(top)} ${unit}`),
         ...(d.single ? [] : [line('Weakest race', `${d.worstRace}, ${fmt(d.worst)} ${unit}`), line(up ? 'Best race adds' : 'Weakest race takes', `${fx(spread, 2)}%${up ? '' : ' more'}`)]),
         ...(d.build ? [line('Build', d.builds > 1 ? `${d.build} (best of ${d.builds})` : d.build)] : []),
         ...(d.scale ? [line('1 / 2 / 3 / 4 / 5 targets', d.scale.map((v) => (v == null ? '–' : Math.round(v))).join(' / '))] : []));
@@ -2288,7 +2287,7 @@ function drawDetail(p, rows, trows) {
     ' Click a row to see that build’s ability breakdown in the ranking box above (its Setup tab has the gear, talents, consumables and stats).');
 }
 
-// Click a row of the builds table to open that build and race's ability breakdown in the spec ranking box.
+// Click a row of the builds table to open that build's ability breakdown in the spec ranking box.
 let detailPick = null;
 $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
@@ -2296,7 +2295,7 @@ $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const card = $('.lx-speccmp').closest('section');
   if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
   if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
-  dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'abilities', specFight: String(r.fight) });
+  dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: '', specTab: 'abilities', specFight: String(r.fight) });
   // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
   const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
   window.scrollBy({ top, behavior: 'smooth' });
@@ -2366,21 +2365,22 @@ function draw() {
     const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, T = $('.lx-targets') ? rrData(dash.data('targets')) : null;
     const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, d.scoped.data) : tOk ? targetItems(sp, T.data) : [];
     if (tOk) for (const it of items) it.scale = targetScale(sp, T.data, it.key, it.build);
+    const ST = sp.targets > 1 ? rrData(dash.data('simsTargets')) : null;
+    if (ST && ST.status === 'ok') addSpread(sp, ST.data, items);
     // A spec picked from the bars shows its ability breakdown in this box until "All specs" is clicked.
     const B = rrData(dash.data('breakdown'));
     let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
     // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
     if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) {
-      // A build picked without a race shows its own best race.
+      // A picked build shows its own best race.
       const build = p.specBuild.slice(view.key.length + 1);
-      view = { ...view, build, best: p.specRace || buildRaces(sp, SCOPED, view.key, build)[0] || view.best, pinned: true };
+      view = { ...view, build, best: buildRaces(sp, SCOPED, view.key, build)[0] || view.best, pinned: true };
     }
-    // The breadcrumb's menus: the spec's builds and the build's races, best first.
+    // The breadcrumb's build menu: the spec's builds, best first.
     if (view) {
       const bs = new Map();
       for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
       view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
-      view.races = buildRaces(sp, SCOPED, view.key, view.build);
     }
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
@@ -2486,6 +2486,8 @@ if (named) setTimeout(() => named.scrollIntoView(), 0);
 <script src="apm.js"></script>
 <script>
 const ROOT = document.querySelector('[data-tab-panel="tanks"]');
+// The bear tank is named Feral Druid here (experiment.py renames the sims' "Feral Bear"), drawn with the bear's icon.
+const TANK_ICON = { 'Feral Druid': 'Feral Bear' };
 
 // The sims call the Skyborne races High Order and Windshaper; the page names them by faction.
 const RACE_NAME = { 'High Order Skyborne': 'Alliance Skyborne', 'Windshaper Skyborne': 'Horde Skyborne' };
@@ -2661,8 +2663,8 @@ const BELOW = {
   'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
   'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
-  'Feral Bear|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
-  'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes (see TMI) but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Feral Druid|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
+  'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Paladin|dtps|Dwarf': 'Stoneform (10% less physical damage for 8 sec, every 3 min) covers 8 of every 180 seconds; on 3 minute fights its one use (once Templar’s Bulwark drops) doesn’t quite make up for Dwarf’s innate −4 Agility (slightly less dodge).',
   'Protection Warrior|dtps|Orc': 'Orc racials provide no value to damage taken, and its innate −3 Agility (slightly less dodge) is all that shows.',
   'Protection Warrior|dtps|Undead': 'Undead racials provide no value to damage taken: Touch of the Grave heals a little but doesn’t reduce damage taken. Its innate −2 Agility (slightly less dodge) is all that shows.',
@@ -2673,7 +2675,7 @@ const BELOW = {
 };
 const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
   || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
-const MEASURE = { tps: { label: 'TPS', name: 'threat per second' }, dtps: { label: 'DTPS', name: 'damage taken per second' }, tmi: { label: 'TMI', name: 'spikes (TMI)' }, dps: { label: 'DPS', name: 'damage per second' } };
+const MEASURE = { tps: { label: 'TPS', name: 'threat per second' }, dtps: { label: 'DTPS', name: 'damage taken per second' }, tmi: { label: 'TMI', name: 'spikes' }, dps: { label: 'DPS', name: 'damage per second' } };
 const FIGHT = { all: 'all fight lengths', 60: '1 minute fights', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
 // WoW class colours; Priest uses the page's text colour so it reads on a light theme too.
@@ -2690,8 +2692,8 @@ const METRIC = {
 const P = () => {
   const q = dash.params(), d = 'Protection Warrior';
   // The Top Race, Racial Bonus and Race Standings boxes each have their own measure; the filter row's sets the rest.
-  return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'tps', build: q.tBuild ?? 'all',
-    bestMeasure: q.tBestMeasure ?? 'tps', gainMeasure: q.tGainMeasure ?? 'tps', lineMeasure: q.tLineMeasure ?? 'tps',
+  return { faction: q.tFaction ?? 'All', metric: q.tMetric ?? 'pct', measure: q.tMeasure ?? 'dps', build: q.tBuild ?? 'all',
+    bestMeasure: q.tBestMeasure ?? 'dps', gainMeasure: q.tGainMeasure ?? 'dps', lineMeasure: q.tLineMeasure ?? 'dps',
     bestFight: q.tBestFight ?? 'all', rankFight: q.tRankFight ?? 'all', matrixFight: q.tMatrixFight ?? 'all', specFight: q.tSpecFight ?? 'all', specTargets: q.tSpecTargets ?? '1', specView: q.tSpecView ?? '', specTab: q.tSpecTab ?? 'abilities', specBuild: q.tSpecBuild ?? '', specRace: q.tSpecRace ?? '', gainFight: q.tGainFight ?? 'all', gainTargets: q.tGainTargets ?? '1', lineTargets: q.tLineTargets ?? '1',
     detailFight: q.tDetailFight ?? 'all', detailTargets: q.tDetailTargets ?? '1', detailRace: q.tDetailRace ?? 'all', detailMark: q.tDetailMark ?? 'all',
     lineSpec: q.tLineSpec ?? d, gainSpec: q.tGainSpec ?? d, detailSpec: q.tDetailSpec ?? d };
@@ -2847,9 +2849,9 @@ const toggle = (key, c, defDir) => {
 const raceCell = (r) => { const td = el('td', 't', r.race); td.dataset.fa = r.faction; return td; };
 const specIcon = (spec) => {
   const img = el('img', 'rr-sicon');
-  const src = (window.SPEC_ICONS || {})[spec];
+  const src = (window.SPEC_ICONS || {})[TANK_ICON[spec] || spec];
   if (src) img.src = src;
-  img.alt = ''; img.dataset.specIcon = spec; // race_icons.js fills it in if it loads later
+  img.alt = ''; img.dataset.specIcon = TANK_ICON[spec] || spec; // race_icons.js fills it in if it loads later
   return img;
 };
 const raceIcon = (race, faction) => {
@@ -3192,6 +3194,23 @@ const targetItems = (p, rows) => {
   }
   return [...specs.values()];
 };
+// The bars at 2 to 5 targets use each build's best race at one target, but every race was simmed at those counts too
+// (`rows`: simsTargets / tankRunsTargets), so the tooltip still names the build's best and weakest race there.
+const addSpread = (p, rows, items) => {
+  const up = HIGHER(p), better = (a, b) => (up ? a.v > b.v : a.v < b.v);
+  for (const it of items) {
+    const acc = new Map();
+    for (const r of rows) {
+      if (r.spec !== it.key || r.build !== it.build || +r.targets !== +p.targets || (p.faction !== 'All' && r.faction !== p.faction) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
+      if (!acc.has(r.race)) acc.set(r.race, { race: r.race, sum: 0, n: 0 });
+      const a = acc.get(r.race); a.sum += VAL(r); a.n++;
+    }
+    const g = [...acc.values()].map((a) => ({ race: a.race, v: a.sum / a.n }));
+    if (g.length < 2) continue;
+    const best = g.reduce((a, b) => (better(b, a) ? b : a)), worst = g.reduce((a, b) => (better(a, b) ? b : a));
+    Object.assign(it, { single: false, tipBest: best.race, tipTop: best.v, worst: worst.v, worstRace: worst.race });
+  }
+};
 // A build's DPS at 1 to 5 targets (averaged over the fight lengths for "All").
 const targetScale = (p, rows, spec, build) => [1, 2, 3, 4, 5].map((n) => {
   const v = rows.filter((r) => r.spec === spec && r.build === build && +r.targets === n && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
@@ -3226,17 +3245,17 @@ function drawBreakdown(p, item, data, fitH) {
   const box = $('.lx-speccmp'), key = BD_KEY(p), unit = key === 'tps' ? 'TPS' : 'DPS';
   box.replaceChildren();
   const bar = el('div', 'rr-bdbar');
+  const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
   // The card's title becomes a breadcrumb: its name goes back to all specs, the spec's name opens the spec menu.
   const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb', h2.dataset.base);
   back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => setP({ specView: '', specBuild: '', specRace: '' }));
   if (dash.params().tCmpMode !== 'apm') {
-    // Then the build and the race shown, each a menu of the others (best first): picking one pins it, as a row of the
-    // builds table does.
-    const race = item.race || item.best, rn = (r) => RACE_NAME[r] || r;
+    // Then the build, a menu of the spec's others (best first): picking one pins it, as a row of the builds table does.
+    // The race is the one the breakdown was simmed with (each build's best race in each faction), so it's no menu.
     const build = choicePicker(item.build, item.build, 'Choose a build', { items: item.builds || [item.build], pick: (bd) => setP({ specBuild: item.key + '|' + bd, specRace: '' }) });
-    const races = choicePicker(rn(race), race, 'Choose a race', { items: item.races || [race], label: rn, color: (r) => (ALLIANCE.has(r) ? 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--rr-horde) 80%, #fff)'),
-      pick: (r) => setP({ specBuild: item.key + '|' + item.build, specRace: r }) });
+    const shown = rows.length ? rows[0].race : item.race || item.best, races = el('span', null, RACE_NAME[shown] || shown);
+    races.style.color = ALLIANCE.has(shown) ? 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--rr-horde) 80%, #fff)';
     const sep = () => el('span', 'rr-crumbsep', '›');
     h2.replaceChildren(back, sep(), specPicker(item.key, 'specView'), sep(), build, sep(), races);
   }
@@ -3255,9 +3274,8 @@ function drawBreakdown(p, item, data, fitH) {
   box.append(bar);
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
-  const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
   // Setup's line naming the build, race, gear and talents takes the legend's place, beside the view switch.
-  if (p.specTab === 'setup') { legend.replaceChildren(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight, legend); return; }
+  if (p.specTab === 'setup') { legend.replaceChildren(); drawSetup(p, item, rows.length ? rows[0].race : item.best, fitH - bar.offsetHeight, legend); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
@@ -3275,10 +3293,9 @@ function drawBreakdown(p, item, data, fitH) {
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fight${rows.length > 1 ? 's' : ''}`;
-  // The build's total (the sim's own figure for damage; the abilities' sum for threat), then a pinned race's caveat.
+  // The build's total (the sim's own figure for damage; the abilities' sum for threat).
   const sum = key === 'dps' ? rows.reduce((t, r) => t + +r.dps, 0) / rows.length : total;
-  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`),
-    ...(item.pinned && race !== item.best ? [` · Ability breakdowns were simmed only with each build's best race in each faction, so this is ${RACE_NAME[race] || race}'s, not ${RACE_NAME[item.best] || item.best}'s (Setup shows ${RACE_NAME[item.best] || item.best}).`] : []));
+  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`));
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -3351,7 +3368,7 @@ function drawBreakdown(p, item, data, fitH) {
         ...(secs && a.casts >= 0.5 ? [line(`${key === 'tps' ? 'Threat' : 'Damage'} per cast`, d3.format(',')(Math.round((a.v * secs) / a.casts)))] : []),
         ...(a.crit != null ? [line('Crit rate', fx(a.crit, 1) + '%' + (a.name.startsWith('Melee') ? ' (glancing blows left out)' : ''))] : [])];
       tip.replaceChildren(head, line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
-        ...(a.kind === 'resource' ? [] : [el('div', 'sep'), school, line('Kind', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
+        ...(a.kind === 'resource' ? [] : [el('div', 'sep'), school, line('Type', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
         ...(more.length ? [el('div', 'sep'), ...more] : []));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
@@ -3592,7 +3609,7 @@ function drawSetup(p, item, race, minH, headTo) {
   cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
   head.append(el('b', null, item.build), ` · ${race ? race + ' · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
   (headTo || wrap).append(head);
-  const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
+  const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); return sec; };
   const itemRow = (g) => {
     const row = el('div', 'su-item'), name = suLink('su-name', g.name, g.url);
     name.style.color = QUALITY[g.q] || QUALITY[1];
@@ -3612,6 +3629,7 @@ function drawSetup(p, item, race, minH, headTo) {
   section('Gear', list, ...extra);
   // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
   const sheet = suJson(s.stats)[race];
+  let statSec = null;
   if (sheet) {
     // Hover a stat for where it comes from: base stats (class and race), gear, talents, buffs and consumables.
     const grid = el('div', 'su-stats'), groups = new Map(), tip = el('div', 'rr-tip su-tip');
@@ -3632,7 +3650,8 @@ function drawSetup(p, item, race, minH, headTo) {
       } else if (STAT_TIPS[k]) row.title = STAT_TIPS[k];
       groups.get(grp).append(row);
     }
-    section('Stats', grid);
+    statSec = section('Stats', grid);
+    statSec.style.flex = `0 1 ${groups.size * 270}px`;
     box.append(tip);
   }
   const chips = (rows) => {
@@ -3651,7 +3670,8 @@ function drawSetup(p, item, race, minH, headTo) {
   section('Debuffs on the target', chips(suJson(s.debuffs)));
   const opts = el('div', 'su-opts');
   for (const [k, v] of suJson(s.options)) { const o = el('span', 'su-opt', k + ': '); o.append(el('b', null, v)); if (SETTING_TIPS[k]) o.title = SETTING_TIPS[k]; opts.append(o); }
-  section('Settings', opts);
+  const setSec = section('Settings', opts);
+  if (statSec) { const pair = el('div', 'su-pair'); statSec.replaceWith(pair); pair.append(statSec, setSec); }
   box.append(wrap);
 }
 
@@ -3694,7 +3714,7 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   svg.append('g').selectAll('line').data(x.ticks(narrow ? 3 : 5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
   svg.append('g').selectAll('text').data(x.ticks(narrow ? 3 : 5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => d3.format(',')(t));
   const g = svg.append('g').selectAll('g').data(items).join('g').attr('transform', (d, i) => `translate(0,${i * (bh + gap) + 2})`);
-  g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.icon] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
+  g.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[TANK_ICON[d.icon] || d.icon] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2 + 4).style('fill', (d) => d.color).text(nm);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(hi(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.35);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(lo(d)) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
@@ -3710,9 +3730,9 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
-      const spread = (Math.abs(d.top - d.worst) / (up ? d.worst : d.top)) * 100;
+      const top = d.tipTop ?? d.top, spread = (Math.abs(top - d.worst) / (up ? d.worst : top)) * 100;
       const head = el('div', 'h', d.name); head.style.color = d.color;  // the spec in its class colour
-      tip.replaceChildren(head, line(d.single ? 'Race' : 'Best race', `${d.best}, ${fmt(d.top)} ${unit}`),
+      tip.replaceChildren(head, line(d.single ? 'Race' : 'Best race', `${d.tipBest || d.best}, ${fmt(top)} ${unit}`),
         ...(d.single ? [] : [line('Weakest race', `${d.worstRace}, ${fmt(d.worst)} ${unit}`), line(up ? 'Best race adds' : 'Weakest race takes', `${fx(spread, 2)}%${up ? '' : ' more'}`)]),
         ...(d.build ? [line('Build', d.builds > 1 ? `${d.build} (best of ${d.builds})` : d.build)] : []),
         ...(d.scale ? [line('1 / 2 / 3 / 4 / 5 targets', d.scale.map((v) => (v == null ? '–' : Math.round(v))).join(' / '))] : []));
@@ -3802,7 +3822,7 @@ function drawDetail(p, rows, trows) {
     ' Click a row to see that build’s ability breakdown in the ranking box above (its Setup tab has the gear, talents, consumables and stats).');
 }
 
-// Click a row of the builds table to open that build and race's ability breakdown in the spec ranking box.
+// Click a row of the builds table to open that build's ability breakdown in the spec ranking box.
 let detailPick = null;
 $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
@@ -3810,7 +3830,7 @@ $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const card = $('.lx-speccmp').closest('section');
   if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
   if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
-  setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'abilities', specFight: String(r.fight) });
+  setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: '', specTab: 'abilities', specFight: String(r.fight) });
   // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
   const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
   window.scrollBy({ top, behavior: 'smooth' });
@@ -3892,21 +3912,22 @@ function draw() {
     const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, T = $('.lx-targets') ? rrData(dash.data('tankTargets')) : null;
     const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, M(d.scoped.data)) : tOk ? targetItems(sp, M(T.data)) : [];
     if (tOk) for (const it of items) it.scale = targetScale(sp, M(T.data), it.key, it.build);
+    const ST = sp.targets > 1 ? rrData(dash.data('tankRunsTargets')) : null;
+    if (ST && ST.status === 'ok') addSpread(sp, M(ST.data), items);
     // A spec picked from the bars shows its ability breakdown in this box until "All specs" is clicked.
     const B = rrData(dash.data('tankBreakdown'));
     let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
     // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
     if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) {
-      // A build picked without a race shows its own best race.
+      // A picked build shows its own best race.
       const build = p.specBuild.slice(view.key.length + 1);
-      view = { ...view, build, best: p.specRace || buildRaces(sp, SCOPED, view.key, build)[0] || view.best, pinned: true };
+      view = { ...view, build, best: buildRaces(sp, SCOPED, view.key, build)[0] || view.best, pinned: true };
     }
-    // The breadcrumb's menus: the spec's builds and the build's races, best first.
+    // The breadcrumb's build menu: the spec's builds, best first.
     if (view) {
       const bs = new Map();
       for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
       view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
-      view.races = buildRaces(sp, SCOPED, view.key, view.build);
     }
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),

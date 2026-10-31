@@ -15,7 +15,7 @@ PARAMS = {"bestFight": "all", "gear": "sims", "specTab": "abilities", "build": "
           "hMatrixFight": "all", "hMetric": "pct", "hRankFight": "all", "lineSpec": "Beast Mastery Hunter", "matrixFight": "all", "matrixTargets": "1", "metric": "pct",
           "rankFight": "all", "tBestFight": "all", "tBuild": "all", "tDetailFight": "all", "tDetailMark": "all", "tDetailRace": "all",
           "tDetailSpec": "Protection Warrior", "tFaction": "All", "tGainFight": "all", "tGainTargets": "1", "tGainSpec": "Protection Warrior", "tLineSpec": "Protection Warrior",
-          "tMatrixFight": "all", "tMeasure": "tps", "tMetric": "pct", "tRankFight": "all", "tab": "dps"}
+          "tMatrixFight": "all", "tMeasure": "dps", "tMetric": "pct", "tRankFight": "all", "tab": "dps"}
 
 RUNTIME = """
 (function(){
@@ -81,6 +81,15 @@ def build(head_extra=''):
     D = 'experiment/'
     page = open(D + 'page.html', encoding='utf-8').read()
     data = {f[:-5]: json.load(open(D + 'data/' + f, encoding='utf-8')) for f in sorted(os.listdir(D + 'data')) if f.endswith('.json')}
+    # The sims call the bear tank "Feral Bear"; the Tanks tab names it Feral Druid (its icon stays the bear's: page.html's
+    # TANK_ICON, apm.js). The DPS tab's cat "Feral Druid" is in other datasets, and the APM rows are told apart by role.
+    for k, rows in data.items():
+        if k.startswith('tank'):
+            data[k] = json.loads(json.dumps(rows, ensure_ascii=False).replace('"Feral Bear"', '"Feral Druid"'))
+        elif k in ('apm', 'pb_apm'):
+            for r in rows:
+                if r.get('role') == 'tank' and r.get('spec') == 'Feral Bear':
+                    r['spec'] = 'Feral Druid'
     # the dashboard runs the page's scripts once its markup is in place, each in its own scope; a script file loads once
     scripts, seen = [], set()
     def take(m):
