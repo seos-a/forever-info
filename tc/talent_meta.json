@@ -1,13 +1,5 @@
 {
  "druid": {
-  "Berserk": [
-   [
-    [
-     "Instant",
-     "3 min cooldown"
-    ]
-   ]
-  ],
   "Feral Charge": [
    [
     [
@@ -29,6 +21,14 @@
     [
      "45 Mana",
      "30 yd range"
+    ]
+   ]
+  ],
+  "Lacerate": [
+   [
+    [
+     "15 Rage",
+     "Melee Range"
     ]
    ]
   ],
@@ -310,6 +310,14 @@
     ]
    ]
   ],
+  "Oath of Light": [
+   [
+    [
+     "8% of base mana",
+     "40 yd range"
+    ]
+   ]
+  ],
   "Repentance": [
    [
     [
@@ -337,25 +345,9 @@
      "5 min cooldown"
     ]
    ]
-  ],
-  "Voice of Truth": [
-   [
-    [
-     "Instant",
-     "3 min cooldown"
-    ]
-   ]
   ]
  },
  "priest": {
-  "Binding Heal": [
-   [
-    [
-     "155 Mana",
-     "40 yd range"
-    ]
-   ]
-  ],
   "Inner Focus": [
    [
     [
