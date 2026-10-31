@@ -1118,6 +1118,9 @@ const sign = (v, d) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(
 const UNIT = () => 'DPS';
 // Why a race lands below "no racials" (no traits, the class's base stats with no race adjustment). Keyed by
 // spec and race, or spec, measure and race for the tank tab. Others get a sentence built from the base stats.
+// The two Skyborne share their stats and Wind Blessed, so a note about either names them as one (and shows once).
+const SKY = (race) => race.replace(/^(Alliance|Horde) Skyborne$/, 'Skyborne');
+const WEAVE_NOTE = (spec, gain, loss) => `Skyborne’s 2% haste is worth ${gain} on the other ${spec} builds, but WoWSims’ melee-weave rotation loses ${loss} when Auto Shot speeds up, and that pulls the average down. It’s a quirk of the sim’s weave timing, not a real cost: in the Classic pre-raid gear the same weave gains.`;
 const BASE_DIFF = { Orc: '−3 Agility, −3 Intellect', Dwarf: '−4 Agility', Undead: '−2 Agility, −2 Intellect', Tauren: '−5 Agility, −5 Intellect', Troll: '−4 Intellect', Gnome: '−5 Strength', 'Night Elf': '−3 Strength', 'Alliance Skyborne': '−1 Strength, −1 Stamina', 'Horde Skyborne': '−1 Strength, −1 Stamina' };
 const BELOW = {
   'Feral Druid|Tauren': 'Tauren racials provide no value to Feral DPS. Its innate −5 Agility outweighs its +5 Strength, and that is all that shows.',
@@ -1127,6 +1130,11 @@ const BELOW = {
   'Beast Mastery Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Marksmanship Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Survival Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  // WoWSims' melee-weave Hunter rotations lose damage when Wind Blessed speeds up Auto Shot (in the preset gear only).
+  'Marksmanship Hunter|Alliance Skyborne': WEAVE_NOTE('Marksmanship', 'about 1%', 'about 0.7%'),
+  'Marksmanship Hunter|Horde Skyborne': WEAVE_NOTE('Marksmanship', 'about 1%', 'about 0.7%'),
+  'Survival Hunter|Alliance Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
+  'Survival Hunter|Horde Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
   'Beast Mastery Hunter|Dwarf': 'Its innate −4 Agility outweighs its 1% hit racial here. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
   'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
   'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
@@ -1145,7 +1153,7 @@ const BELOW = {
   'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
 };
 const belowNote = (p, race) => (p.targets > 1 && BELOW[`${p.spec}|${race}|aoe`]) || BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
-  || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
+  || `${SKY(race)} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
 const FIGHT = { all: 'all fight lengths', 60: '1 minute fights', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
 // WoW class colours; Priest uses the page's text colour so it reads on a light theme too.
@@ -1184,6 +1192,9 @@ $('.lx-dtargets').addEventListener('change', (e) => dash.setParams({ detailTarge
 let SPECS = [], menu = null;
 const closeMenu = () => { if (menu) { menu.btn.setAttribute('aria-expanded', 'false'); menu.el.remove(); menu = null; } };
 // opts (the breadcrumb's build and race menus): { items, pick(s), label(s), color(s) } in place of the specs.
+// A spec opened in the ranking box (its bar or the breadcrumb's spec menu) is also picked in the boxes below (its Top Race
+// card, Racial Bonus, Race Standings over Time and the builds table), as a Top Race card does, but the page doesn't scroll.
+const SPEC_SYNC = (s) => ({ specView: s, lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' });
 function openMenu(btn, param, current, opts) {
   closeMenu();
   const root = ROOT, list = el('div', 'rr-menu');
@@ -1192,7 +1203,7 @@ function openMenu(btn, param, current, opts) {
     const item = el('button', null, opts && opts.label ? opts.label(s) : s);
     item.type = 'button'; item.setAttribute('role', 'menuitemradio'); item.setAttribute('aria-checked', String(s === current));
     item.style.color = opts ? (opts.color ? opts.color(s) : '') : specColor(s);
-    item.addEventListener('click', () => { closeMenu(); if (opts) opts.pick(s); else dash.setParams(param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
+    item.addEventListener('click', () => { closeMenu(); if (opts) opts.pick(s); else dash.setParams(param === 'specView' ? SPEC_SYNC(s) : param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
     list.append(item);
   }
   root.append(list);
@@ -2382,7 +2393,7 @@ function draw() {
       for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
       view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
     }
-    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
+    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams(SPEC_SYNC(k)), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
     // plain again when none is, and left alone in the APM view, which shows its own.
     const h2 = $('.lx-cmptitle');
@@ -2650,6 +2661,9 @@ const sign = (v, d) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(
 const UNIT = (p) => MEASURE[p.measure].label;
 // Why a race lands below "no racials" (no traits, the class's base stats with no race adjustment). Keyed by
 // spec and race, or spec, measure and race for the tank tab. Others get a sentence built from the base stats.
+// The two Skyborne share their stats and Wind Blessed, so a note about either names them as one (and shows once).
+const SKY = (race) => race.replace(/^(Alliance|Horde) Skyborne$/, 'Skyborne');
+const WEAVE_NOTE = (spec, gain, loss) => `Skyborne’s 2% haste is worth ${gain} on the other ${spec} builds, but WoWSims’ melee-weave rotation loses ${loss} when Auto Shot speeds up, and that pulls the average down. It’s a quirk of the sim’s weave timing, not a real cost: in the Classic pre-raid gear the same weave gains.`;
 const BASE_DIFF = { Orc: '−3 Agility, −3 Intellect', Dwarf: '−4 Agility', Undead: '−2 Agility, −2 Intellect', Tauren: '−5 Agility, −5 Intellect', Troll: '−4 Intellect', Gnome: '−5 Strength', 'Night Elf': '−3 Strength', 'Alliance Skyborne': '−1 Strength, −1 Stamina', 'Horde Skyborne': '−1 Strength, −1 Stamina' };
 const BELOW = {
   'Feral Druid|Tauren': 'Tauren racials provide no value to Feral DPS. Its innate −5 Agility outweighs its +5 Strength, and that is all that shows.',
@@ -2659,6 +2673,11 @@ const BELOW = {
   'Beast Mastery Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Marksmanship Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
   'Survival Hunter|Tauren': 'Tauren racials provide no value to Hunter DPS, and its innate −5 Agility is all that shows.',
+  // WoWSims' melee-weave Hunter rotations lose damage when Wind Blessed speeds up Auto Shot (in the preset gear only).
+  'Marksmanship Hunter|Alliance Skyborne': WEAVE_NOTE('Marksmanship', 'about 1%', 'about 0.7%'),
+  'Marksmanship Hunter|Horde Skyborne': WEAVE_NOTE('Marksmanship', 'about 1%', 'about 0.7%'),
+  'Survival Hunter|Alliance Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
+  'Survival Hunter|Horde Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
   'Beast Mastery Hunter|Dwarf': 'Its innate −4 Agility outweighs its 1% hit racial here. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
   'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
   'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
@@ -2674,7 +2693,7 @@ const BELOW = {
   'Protection Warrior|tmi|Horde Skyborne': 'Skyborne racials provide no value to spikes (its haste doesn’t reduce damage), and its innate −1 Stamina (slightly less health) is all that shows.',
 };
 const belowNote = (p, race) => BELOW[`${p.spec}|${p.measure}|${race}`] || BELOW[`${p.spec}|${race}`]
-  || `${race} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
+  || `${SKY(race)} racials gain too little value here to make up for its innate ${BASE_DIFF[race] || 'base stat differences'}, and that is what shows.`;
 const MEASURE = { tps: { label: 'TPS', name: 'threat per second' }, dtps: { label: 'DTPS', name: 'damage taken per second' }, tmi: { label: 'TMI', name: 'spikes' }, dps: { label: 'DPS', name: 'damage per second' } };
 const FIGHT = { all: 'all fight lengths', 60: '1 minute fights', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
@@ -2726,6 +2745,9 @@ $('.lx-dtargets').addEventListener('change', (e) => setP({ detailTargets: e.targ
 let SPECS = [], menu = null;
 const closeMenu = () => { if (menu) { menu.btn.setAttribute('aria-expanded', 'false'); menu.el.remove(); menu = null; } };
 // opts (the breadcrumb's build and race menus): { items, pick(s), label(s), color(s) } in place of the specs.
+// A spec opened in the ranking box (its bar or the breadcrumb's spec menu) is also picked in the boxes below (its Top Race
+// card, Racial Bonus, Race Standings over Time and the builds table), as a Top Race card does, but the page doesn't scroll.
+const SPEC_SYNC = (s) => ({ specView: s, lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' });
 function openMenu(btn, param, current, opts) {
   closeMenu();
   const root = ROOT, list = el('div', 'rr-menu');
@@ -2734,7 +2756,7 @@ function openMenu(btn, param, current, opts) {
     const item = el('button', null, opts && opts.label ? opts.label(s) : s);
     item.type = 'button'; item.setAttribute('role', 'menuitemradio'); item.setAttribute('aria-checked', String(s === current));
     item.style.color = opts ? (opts.color ? opts.color(s) : '') : specColor(s);
-    item.addEventListener('click', () => { closeMenu(); if (opts) opts.pick(s); else setP(param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
+    item.addEventListener('click', () => { closeMenu(); if (opts) opts.pick(s); else setP(param === 'specView' ? SPEC_SYNC(s) : param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
     list.append(item);
   }
   root.append(list);
@@ -3929,7 +3951,7 @@ function draw() {
       for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
       view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
     }
-    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
+    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP(SPEC_SYNC(k)), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
     // plain again when none is, and left alone in the APM view, which shows its own.
     const h2 = $('.lx-cmptitle');

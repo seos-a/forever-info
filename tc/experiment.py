@@ -108,7 +108,7 @@ def build(head_extra=''):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Experiment – Forever Info</title>
+<title>Simulations – Forever Info</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <style>{CSS}</style>
