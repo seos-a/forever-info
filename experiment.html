@@ -279,7 +279,6 @@ document.head.appendChild(t);})();
   .su-stat { display: flex; justify-content: space-between; gap: var(--cds-gap-md); padding: 1px 0; border-bottom: 1px solid #ffffff0a; font-variant-numeric: tabular-nums; }
   .su-stat span { color: var(--color-fg-muted); }
   .su-stat b { font-weight: 500; }
-  .lx-detail tbody tr { cursor: pointer; }
   .su-congrp { display: grid; gap: 4px; }  /* its label above its chips, so they start at the left edge like the buffs' */
   .su-congrp + .su-congrp { margin-top: 6px; }
   .su-congrp .su-statgh { margin: 0; font-size: var(--cds-font-size-caption); }
@@ -1987,7 +1986,9 @@ function drawBreakdown(p, item, data, fitH) {
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fight${rows.length > 1 ? 's' : ''}`;
   // The build's total (the sim's own figure for damage; the abilities' sum for threat).
   const sum = key === 'dps' ? rows.reduce((t, r) => t + +r.dps, 0) / rows.length : total;
-  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`));
+  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`),
+    ...(p.faction !== 'All' && (ALLIANCE.has(race) ? 'Alliance' : 'Horde') !== p.faction
+      ? [` · Each faction's best race was simmed for breakdowns at one target only, so this is ${RACE_NAME[race] || race}'s.`] : []));
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -2489,7 +2490,6 @@ function drawDetail(p, rows, trows) {
   const sortCols = cols.map((c) => (c.field === 'length' ? Object.assign({}, c, { field: 'fight', num: true }) : c));
   const s = sorts.detail.field === 'length' ? { field: 'fight', dir: sorts.detail.dir } : sorts.detail;
   const sorted = sortRows(list, s, sortCols);
-  detailPick = { spec: p.spec, rows: new Map(sorted.map((r) => [r.key, r])) };
   table($('.lx-detail'), cols, sorted, sorts.detail,
     (c) => toggle('detail', c, (c) => (c.num ? 'desc' : 'asc')),
     (c, r) => {
@@ -2506,29 +2506,14 @@ function drawDetail(p, rows, trows) {
   $('.lx-detnote').replaceChildren(...(multi
     ? [`At ${nT} targets each build was run only with its best race at one target, so there's no race comparison here: the last two columns show how much the extra targets add over that race's own one-target run. The faction and Best filters don't apply.`]
     : ['Rows are grouped by build and fight length, with a line between groups. ', el('b', null, 'Best'), ' is the top race within its group; ', el('b', null, 'Tie'),
-      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']),
-    ' Click a row to see that build’s ability breakdown in the ranking box above (its Setup tab has the gear, talents, consumables and stats).');
+      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']));
 }
 
-// Click a row of the builds table to open that build's ability breakdown in the spec ranking box.
-let detailPick = null;
-$('.lx-detail').tBodies[0].addEventListener('click', (e) => {
-  const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
-  if (!r) return;
-  const card = $('.lx-speccmp').closest('section');
-  if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
-  if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
-  dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: '', specTab: 'abilities', specFight: String(r.fight) });
-  // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
-  const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
-  window.scrollBy({ top, behavior: 'smooth' });
-});
-
-// A build's races, best first (averaged over the fight lengths shown), among all races.
+// A build's races, best first (averaged over the fight lengths shown), among the faction filter's races.
 function buildRaces(p, rows, spec, build) {
   const acc = new Map();
   for (const r of rows) {
-    if (r.scope !== 'All' || r.spec !== spec || r.build !== build || (r.measure && r.measure !== p.measure) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
+    if (r.scope !== (p.faction || 'All') || r.spec !== spec || r.build !== build || (r.measure && r.measure !== p.measure) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
     const a = acc.get(r.race) || { s: 0, n: 0 };
     a.s += VAL(r); a.n++; acc.set(r.race, a);
   }
@@ -4993,7 +4978,9 @@ function drawBreakdown(p, item, data, fitH) {
   const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fight${rows.length > 1 ? 's' : ''}`;
   // The build's total (the sim's own figure for damage; the abilities' sum for threat).
   const sum = key === 'dps' ? rows.reduce((t, r) => t + +r.dps, 0) / rows.length : total;
-  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`));
+  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`),
+    ...(p.faction !== 'All' && (ALLIANCE.has(race) ? 'Alliance' : 'Horde') !== p.faction
+      ? [` · Each faction's best race was simmed for breakdowns at one target only, so this is ${RACE_NAME[race] || race}'s.`] : []));
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -5499,7 +5486,6 @@ function drawDetail(p, rows, trows) {
   const sortCols = cols.map((c) => (c.field === 'length' ? Object.assign({}, c, { field: 'fight', num: true }) : c));
   const s = sorts.detail.field === 'length' ? { field: 'fight', dir: sorts.detail.dir } : sorts.detail;
   const sorted = sortRows(list, s, sortCols);
-  detailPick = { spec: p.spec, rows: new Map(sorted.map((r) => [r.key, r])) };
   table($('.lx-detail'), cols, sorted, sorts.detail,
     (c) => toggle('detail', c, (c) => (c.num ? 'desc' : 'asc')),
     (c, r) => {
@@ -5516,29 +5502,14 @@ function drawDetail(p, rows, trows) {
   $('.lx-detnote').replaceChildren(...(multi
     ? [`At ${nT} targets each build was run only with its best race at one target, so there's no race comparison here: the last two columns show how much the extra targets add over that race's own one-target run. The faction and Best filters don't apply.`]
     : ['Rows are grouped by build and fight length, with a line between groups. ', el('b', null, 'Best'), ' is the top race within its group; ', el('b', null, 'Tie'),
-      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']),
-    ' Click a row to see that build’s ability breakdown in the ranking box above (its Setup tab has the gear, talents, consumables and stats).');
+      ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']));
 }
 
-// Click a row of the builds table to open that build's ability breakdown in the spec ranking box.
-let detailPick = null;
-$('.lx-detail').tBodies[0].addEventListener('click', (e) => {
-  const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
-  if (!r) return;
-  const card = $('.lx-speccmp').closest('section');
-  if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
-  if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
-  setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: '', specTab: 'abilities', specFight: String(r.fight) });
-  // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
-  const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
-  window.scrollBy({ top, behavior: 'smooth' });
-});
-
-// A build's races, best first (averaged over the fight lengths shown), among all races.
+// A build's races, best first (averaged over the fight lengths shown), among the faction filter's races.
 function buildRaces(p, rows, spec, build) {
   const acc = new Map();
   for (const r of rows) {
-    if (r.scope !== 'All' || r.spec !== spec || r.build !== build || (r.measure && r.measure !== p.measure) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
+    if (r.scope !== (p.faction || 'All') || r.spec !== spec || r.build !== build || (r.measure && r.measure !== p.measure) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
     const a = acc.get(r.race) || { s: 0, n: 0 };
     a.s += VAL(r); a.n++; acc.set(r.race, a);
   }
