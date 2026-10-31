@@ -215,9 +215,14 @@ document.head.appendChild(t);})();
   .rr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
   .rr-chart .fade { opacity: .15; }
   .rr-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; white-space: nowrap; z-index: 2; }
-  .rr-tip .h { color: var(--cds-text-secondary); margin-bottom: 2px; }
+  .rr-tip .h { color: var(--color-fg); font-weight: 600; font-size: .8125rem; margin-bottom: 3px; }
+  /* An ability's tooltip: its icon and name over a line, then its numbers in groups. */
+  .rr-tip .h.ab { display: flex; align-items: center; gap: 6px; padding-bottom: 5px; margin-bottom: 4px; border-bottom: 1px solid #ffffff14; }
+  .rr-tip .h.ab img { width: 20px; height: 20px; border-radius: 3px; }
+  .rr-tip .sep { height: 1px; background: #ffffff14; margin: 4px 0; }
   .rr-tip .row { display: flex; gap: .5rem; align-items: center; }
-  .rr-tip .row b { margin-left: auto; padding-left: .75rem; font-weight: 500; }
+  .rr-tip .row > span { color: var(--color-fg-muted); }
+  .rr-tip .row b { margin-left: auto; padding-left: .75rem; font-weight: 500; color: var(--color-fg); }
   .rr-sw { width: .6rem; height: .6rem; border-radius: 2px; flex: none; }
   .rr-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); }
   .rr-legend button { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; gap: .35rem; align-items: center; background: none; border: 1px solid transparent; border-radius: var(--cds-radius); padding: 1px .35rem; color: var(--color-fg); cursor: pointer; }
@@ -594,9 +599,14 @@ document.head.appendChild(t);})();
   .rr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
   .rr-chart .fade { opacity: .15; }
   .rr-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; white-space: nowrap; z-index: 2; }
-  .rr-tip .h { color: var(--cds-text-secondary); margin-bottom: 2px; }
+  .rr-tip .h { color: var(--color-fg); font-weight: 600; font-size: .8125rem; margin-bottom: 3px; }
+  /* An ability's tooltip: its icon and name over a line, then its numbers in groups. */
+  .rr-tip .h.ab { display: flex; align-items: center; gap: 6px; padding-bottom: 5px; margin-bottom: 4px; border-bottom: 1px solid #ffffff14; }
+  .rr-tip .h.ab img { width: 20px; height: 20px; border-radius: 3px; }
+  .rr-tip .sep { height: 1px; background: #ffffff14; margin: 4px 0; }
   .rr-tip .row { display: flex; gap: .5rem; align-items: center; }
-  .rr-tip .row b { margin-left: auto; padding-left: .75rem; font-weight: 500; }
+  .rr-tip .row > span { color: var(--color-fg-muted); }
+  .rr-tip .row b { margin-left: auto; padding-left: .75rem; font-weight: 500; color: var(--color-fg); }
   .rr-sw { width: .6rem; height: .6rem; border-radius: 2px; flex: none; }
   .rr-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); }
   .rr-legend button { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; gap: .35rem; align-items: center; background: none; border: 1px solid transparent; border-radius: var(--cds-radius); padding: 1px .35rem; color: var(--color-fg); cursor: pointer; }
@@ -1952,7 +1962,8 @@ function drawBreakdown(p, item, data, fitH) {
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
   const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
-  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
+  // Setup's line naming the build, race, gear and talents takes the legend's place, beside the view switch.
+  if (p.specTab === 'setup') { legend.replaceChildren(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight, legend); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
@@ -2034,12 +2045,20 @@ function drawBreakdown(p, item, data, fitH) {
   g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', bh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = p.fight === 'all' ? null : +p.fight;
-      tip.replaceChildren(el('div', 'h', label(a)), line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
-        ...(a.kind === 'resource' ? [] : [line('School', a.school), line('Kind', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
-        ...(key === 'tps' ? [line('DPS', fx(a.dps, 1))] : a.tps ? [line('Threat per second', fx(a.tps, 1))] : []),
+      // The ability's icon and name, then three groups: its share, what kind of damage it is (the school in its colour),
+      // and how it hit.
+      const head = el('div', 'h ab'), src = (window.ABILITY_ICONS || {})[a.name];
+      if (src) { const i = el('img'); i.alt = ''; i.src = src; head.append(i); }
+      head.append(label(a));
+      const school = line('School', a.school);
+      school.lastChild.style.color = col(a);
+      const more = [...(key === 'tps' ? [line('DPS', fx(a.dps, 1))] : a.tps ? [line('Threat per second', fx(a.tps, 1))] : []),
         ...(a.casts >= 0.05 ? [line('Casts per fight', fx(a.casts, 1))] : []),
         ...(secs && a.casts >= 0.5 ? [line(`${key === 'tps' ? 'Threat' : 'Damage'} per cast`, d3.format(',')(Math.round((a.v * secs) / a.casts)))] : []),
-        ...(a.crit != null ? [line('Crit rate', fx(a.crit, 1) + '%' + (a.name.startsWith('Melee') ? ' (glancing blows left out)' : ''))] : []));
+        ...(a.crit != null ? [line('Crit rate', fx(a.crit, 1) + '%' + (a.name.startsWith('Melee') ? ' (glancing blows left out)' : ''))] : [])];
+      tip.replaceChildren(head, line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
+        ...(a.kind === 'resource' ? [] : [el('div', 'sep'), school, line('Kind', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
+        ...(more.length ? [el('div', 'sep'), ...more] : []));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
@@ -2268,7 +2287,7 @@ const STAT_TIPS = {
   Haste: 'Attack or cast speed added by gear, talents and buffs.',
   'Less chance to be crit': 'How much less likely the boss is to crit this tank, from defense and talents.',
 };
-function drawSetup(p, item, race, minH) {
+function drawSetup(p, item, race, minH, headTo) {
   const box = $('.lx-speccmp'), S = rrData(dash.data('setup'));
   const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
   $('.lx-specnote').textContent = s ? '' : `No setup for ${item.name} (${item.build}) here.`;
@@ -2279,7 +2298,7 @@ function drawSetup(p, item, race, minH) {
   const head = el('div', 'su-head'), cal = el('a', null, pts.join(' / '));
   cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
   head.append(el('b', null, item.build), ` · ${race ? race + ' · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
-  wrap.append(head);
+  (headTo || wrap).append(head);
   const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
   const itemRow = (g) => {
     const row = el('div', 'su-item'), name = suLink('su-name', g.name, g.url);
@@ -2482,10 +2501,10 @@ function drawDetail(p, rows, trows) {
     ? [`At ${nT} targets each build was run only with its best race at one target, so there's no race comparison here: the last two columns show how much the extra targets add over that race's own one-target run. The faction and Best filters don't apply.`]
     : ['Rows are grouped by build and fight length, with a line between groups. ', el('b', null, 'Best'), ' is the top race within its group; ', el('b', null, 'Tie'),
       ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']),
-    ' Click a row to see that build’s setup (gear, talents, consumables, stats) in the ranking box above.');
+    ' Click a row to see that build’s ability breakdown in the ranking box above (its Setup tab has the gear, talents, consumables and stats).');
 }
 
-// Click a row of the builds table to open that build and race's Setup in the spec ranking box (its charts are a tab away).
+// Click a row of the builds table to open that build and race's ability breakdown in the spec ranking box.
 let detailPick = null;
 $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
@@ -2493,7 +2512,7 @@ $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const card = $('.lx-speccmp').closest('section');
   if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
   if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
-  dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'setup', specFight: String(r.fight) });
+  dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'abilities', specFight: String(r.fight) });
   // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
   const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
   window.scrollBy({ top, behavior: 'smooth' });
@@ -4111,8 +4130,14 @@ function drawBreakdown(b, box, note, item, fight, specs, q) {
   g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', slot).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = fight === 'all' ? null : +fight;
-      tip.replaceChildren(el('div', 'h', a.name), line('Presses per minute', a.v.toFixed(2)), line('Share of presses', ((a.v / total) * 100).toFixed(1) + '%'),
-        ...(secs ? [line('Per fight', ((a.v * secs) / 60).toFixed(1))] : []), ...(a.school && a.kind !== 'utility' ? [line('School', a.school)] : []), line('Kind', KIND_LABEL[a.kind]));
+      // The ability's icon and name, its presses, then what kind it is (the school in its colour), as the damage view's.
+      const head = el('div', 'h ab'), src = (window.ABILITY_ICONS || {})[a.raw] || (window.ABILITY_ICONS || {})[a.name];
+      if (src) { const i = el('img'); i.alt = ''; i.src = src; head.append(i); }
+      head.append(a.name);
+      const school = a.school && a.kind !== 'utility' ? line('School', a.school) : null;
+      if (school) school.lastChild.style.color = col(a);
+      tip.replaceChildren(head, line('Presses per minute', a.v.toFixed(2)), line('Share of presses', ((a.v / total) * 100).toFixed(1) + '%'),
+        ...(secs ? [line('Per fight', ((a.v * secs) / 60).toFixed(1))] : []), el('div', 'sep'), ...(school ? [school] : []), line('Kind', KIND_LABEL[a.kind]));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
@@ -4898,7 +4923,8 @@ function drawBreakdown(p, item, data, fitH) {
   // Setup and Casts are as tall as what they list, so the box's drag handle has nothing to resize there.
   $('.lx-cmpgrip').style.display = p.specTab === 'setup' || p.specTab === 'casts' ? 'none' : '';
   const rows = raceRows(p, item, data.filter((r) => r.spec === item.key && r.build === item.build && +r.targets === +p.targets && (p.fight === 'all' || String(r.fight) === p.fight)));
-  if (p.specTab === 'setup') { legend.remove(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight); return; }
+  // Setup's line naming the build, race, gear and talents takes the legend's place, beside the view switch.
+  if (p.specTab === 'setup') { legend.replaceChildren(); drawSetup(p, item, item.pinned ? item.best : rows.length ? rows[0].race : '', fitH - bar.offsetHeight, legend); return; }
   if (p.specTab === 'casts' || p.specTab === 'dot') { legend.remove(); drawTimeline(p, item, fitH - bar.offsetHeight); return; }
   if (!rows.length) { $('.lx-specnote').textContent = `No ability breakdown for ${item.name} (${item.build}) here.`; return; }
   // Average each ability over the fight lengths shown (one row per length).
@@ -4980,12 +5006,20 @@ function drawBreakdown(p, item, data, fitH) {
   g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', bh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = p.fight === 'all' ? null : +p.fight;
-      tip.replaceChildren(el('div', 'h', label(a)), line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
-        ...(a.kind === 'resource' ? [] : [line('School', a.school), line('Kind', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
-        ...(key === 'tps' ? [line('DPS', fx(a.dps, 1))] : a.tps ? [line('Threat per second', fx(a.tps, 1))] : []),
+      // The ability's icon and name, then three groups: its share, what kind of damage it is (the school in its colour),
+      // and how it hit.
+      const head = el('div', 'h ab'), src = (window.ABILITY_ICONS || {})[a.name];
+      if (src) { const i = el('img'); i.alt = ''; i.src = src; head.append(i); }
+      head.append(label(a));
+      const school = line('School', a.school);
+      school.lastChild.style.color = col(a);
+      const more = [...(key === 'tps' ? [line('DPS', fx(a.dps, 1))] : a.tps ? [line('Threat per second', fx(a.tps, 1))] : []),
         ...(a.casts >= 0.05 ? [line('Casts per fight', fx(a.casts, 1))] : []),
         ...(secs && a.casts >= 0.5 ? [line(`${key === 'tps' ? 'Threat' : 'Damage'} per cast`, d3.format(',')(Math.round((a.v * secs) / a.casts)))] : []),
-        ...(a.crit != null ? [line('Crit rate', fx(a.crit, 1) + '%' + (a.name.startsWith('Melee') ? ' (glancing blows left out)' : ''))] : []));
+        ...(a.crit != null ? [line('Crit rate', fx(a.crit, 1) + '%' + (a.name.startsWith('Melee') ? ' (glancing blows left out)' : ''))] : [])];
+      tip.replaceChildren(head, line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
+        ...(a.kind === 'resource' ? [] : [el('div', 'sep'), school, line('Kind', kindLabel(a) === 'Bleed' ? 'Bleed (ignores armor)' : a.kind === 'channel' ? 'Channel (holds the caster)' : kindLabel(a))]),
+        ...(more.length ? [el('div', 'sep'), ...more] : []));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
@@ -5213,7 +5247,7 @@ const STAT_TIPS = {
   Haste: 'Attack or cast speed added by gear, talents and buffs.',
   'Less chance to be crit': 'How much less likely the boss is to crit this tank, from defense and talents.',
 };
-function drawSetup(p, item, race, minH) {
+function drawSetup(p, item, race, minH, headTo) {
   const box = $('.lx-speccmp'), S = rrData(dash.data('tankSetup'));
   const s = S.status === 'ok' && S.data.find((r) => r.spec === item.key && r.build === item.build);
   $('.lx-specnote').textContent = s ? '' : `No setup for ${item.name} (${item.build}) here.`;
@@ -5224,7 +5258,7 @@ function drawSetup(p, item, race, minH) {
   const head = el('div', 'su-head'), cal = el('a', null, pts.join(' / '));
   cal.href = `/${s.cls}?${s.talents}`; cal.target = '_blank'; cal.rel = 'noopener'; cal.title = 'Open these talents in the talent calculator';
   head.append(el('b', null, item.build), ` · ${race ? race + ' · ' : ''}${classic ? 'Classic pre-raid gear' : 'WoWSims preset gear'} · Talents `, cal);
-  wrap.append(head);
+  (headTo || wrap).append(head);
   const section = (title, ...kids) => { const sec = el('div'); sec.append(el('h3', null, title), ...kids); wrap.append(sec); };
   const itemRow = (g) => {
     const row = el('div', 'su-item'), name = suLink('su-name', g.name, g.url);
@@ -5432,10 +5466,10 @@ function drawDetail(p, rows, trows) {
     ? [`At ${nT} targets each build was run only with its best race at one target, so there's no race comparison here: the last two columns show how much the extra targets add over that race's own one-target run. The faction and Best filters don't apply.`]
     : ['Rows are grouped by build and fight length, with a line between groups. ', el('b', null, 'Best'), ' is the top race within its group; ', el('b', null, 'Tie'),
       ' means within two standard errors of it, too close for these sims to separate. ', el('b', null, '±'), ' is the standard error of the average over the sim’s iterations.']),
-    ' Click a row to see that build’s setup (gear, talents, consumables, stats) in the ranking box above.');
+    ' Click a row to see that build’s ability breakdown in the ranking box above (its Setup tab has the gear, talents, consumables and stats).');
 }
 
-// Click a row of the builds table to open that build and race's Setup in the spec ranking box (its charts are a tab away).
+// Click a row of the builds table to open that build and race's ability breakdown in the spec ranking box.
 let detailPick = null;
 $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const tr = e.target.closest('tr'), r = tr && detailPick && detailPick.rows.get(tr.dataset.key);
@@ -5443,7 +5477,7 @@ $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   const card = $('.lx-speccmp').closest('section');
   if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
   if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
-  setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'setup', specFight: String(r.fight) });
+  setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'abilities', specFight: String(r.fight) });
   // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
   const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
   window.scrollBy({ top, behavior: 'smooth' });

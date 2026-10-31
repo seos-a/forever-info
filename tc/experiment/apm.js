@@ -321,8 +321,14 @@ function drawBreakdown(b, box, note, item, fight, specs, q) {
   g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', slot).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = fight === 'all' ? null : +fight;
-      tip.replaceChildren(el('div', 'h', a.name), line('Presses per minute', a.v.toFixed(2)), line('Share of presses', ((a.v / total) * 100).toFixed(1) + '%'),
-        ...(secs ? [line('Per fight', ((a.v * secs) / 60).toFixed(1))] : []), ...(a.school && a.kind !== 'utility' ? [line('School', a.school)] : []), line('Kind', KIND_LABEL[a.kind]));
+      // The ability's icon and name, its presses, then what kind it is (the school in its colour), as the damage view's.
+      const head = el('div', 'h ab'), src = (window.ABILITY_ICONS || {})[a.raw] || (window.ABILITY_ICONS || {})[a.name];
+      if (src) { const i = el('img'); i.alt = ''; i.src = src; head.append(i); }
+      head.append(a.name);
+      const school = a.school && a.kind !== 'utility' ? line('School', a.school) : null;
+      if (school) school.lastChild.style.color = col(a);
+      tip.replaceChildren(head, line('Presses per minute', a.v.toFixed(2)), line('Share of presses', ((a.v / total) * 100).toFixed(1) + '%'),
+        ...(secs ? [line('Per fight', ((a.v * secs) / 60).toFixed(1))] : []), el('div', 'sep'), ...(school ? [school] : []), line('Kind', KIND_LABEL[a.kind]));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
       tip.style.left = Math.max(0, Math.min(box.clientWidth - tw, mx + 14)) + 'px'; tip.style.top = my + 14 + 'px';
