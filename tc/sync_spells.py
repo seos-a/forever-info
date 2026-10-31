@@ -26,7 +26,7 @@ KNOWN_EXTRA = {'warrior': {'Improved Cleave', 'Improved Overpower', 'Toughness'}
                'mage': {'Improved Blink', 'Magic Attunement'}}
 # Spells whose first rank comes from a talent, so the beta's trainer list starts later. These are the levels the
 # beta listed when reviewed; if it lists different ones later, the spell is flagged again.
-KNOWN_LEVELS = {('paladin', 'Flash of Light'): [20, 26, 34, 42, 50, 58], ('paladin', 'Righteous Fury'): [10],
+KNOWN_LEVELS = {('paladin', 'Flash of Light'): [20, 26, 34, 42, 50, 58], ('paladin', 'Righteous Fury'): [16],  # the beta's trainer still says 16; learned at 10 since the Oct 23 hotfix
                 ('rogue', 'Mutilate'): [40, 50, 60], ('priest', 'Shadow Word: Death'): [32, 40, 48, 56],
                 ('priest', 'Penance'): [40, 50, 60], ('priest', 'Prayer of Mending'): [50, 60],
                 ('shaman', 'Lava Burst'): [50, 60], ('druid', 'Lacerate'): [42, 50, 58],
@@ -62,6 +62,11 @@ def wowhead_spells(cls):
 def same(a, b):
     n = lambda x: re.sub(r'\s+', ' ', spellbook.clean(x).replace('&nbsp;', ' ')).strip()
     return n(a) == n(b)
+
+def worse(old, new):
+    """Wowhead sometimes serves a tooltip with its formula variables left in ($apm for Attack Power): keep the worded
+    text rather than flip back and forth between the two from run to run."""
+    return bool(re.search(r'\$[a-zA-Z]', new)) and not re.search(r'\$[a-zA-Z]', old)
 
 def load(path):
     s = open(path, encoding='utf-8').read()
@@ -101,7 +106,7 @@ def main():
         for s in spells:
             name, icon, skill, levels, label, desc, sid = s
             top = by_id.get(sid)
-            if top and not same(desc, top[2]):
+            if top and not same(desc, top[2]) and not worse(desc, top[2]):
                 s[5] = top[2]; changes.append(f'{cls} {name}: text')
             g = groups.get(cls, {}).get(name, [])
             beta_levels = sorted({e[0] for e in g})
@@ -116,7 +121,10 @@ def main():
                 r, lv, text = row[0], row[1], row[2]
                 cand = [e for e in g if e[0] == lv]
                 pick = [e for e in cand if spellbook.norm(spellbook.clean(e[2])) == spellbook.norm(text)] or (cand if len(cand) == 1 else [])
-                if pick and not same(text, pick[0][2]): texts.append([r, lv, pick[0][2]]); moved = True
+                # Two beta entries at one level that read alike (an old rank and its replacement): the one the spellbook
+                # already shows wins, so the pick doesn't flip between them from run to run.
+                pick = [e for e in pick if same(text, e[2])] or pick
+                if pick and not same(text, pick[0][2]) and not worse(text, pick[0][2]): texts.append([r, lv, pick[0][2]]); moved = True
                 else: texts.append([r, lv, text])
                 if pick and 'c' in pick[0][3]: tipmap[str(r)] = pick[0][3]       # castable spell only, not a triggered half
             if moved:

@@ -59,6 +59,7 @@
   .rr { position: relative; }
   .rr-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .2em; margin: 0 -.2em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-pick:hover, .rr-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
+  .rr-pick2 { color: var(--color-fg); }
   .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .rr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-menu button:hover, .rr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
@@ -437,6 +438,7 @@
   .rr { position: relative; }
   .rr-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .2em; margin: 0 -.2em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-pick:hover, .rr-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
+  .rr-pick2 { color: var(--color-fg); }
   .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .rr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-menu button:hover, .rr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
@@ -1195,15 +1197,16 @@ $('.lx-dtargets').addEventListener('change', (e) => dash.setParams({ detailTarge
 // Spec pickers: the spec name in a card's title opens a menu of every spec in its class colour.
 let SPECS = [], menu = null;
 const closeMenu = () => { if (menu) { menu.btn.setAttribute('aria-expanded', 'false'); menu.el.remove(); menu = null; } };
-function openMenu(btn, param, current) {
+// opts (the breadcrumb's build and race menus): { items, pick(s), label(s), color(s) } in place of the specs.
+function openMenu(btn, param, current, opts) {
   closeMenu();
   const root = ROOT, list = el('div', 'rr-menu');
   list.setAttribute('role', 'menu');
-  for (const s of SPECS) {
-    const item = el('button', null, s);
+  for (const s of opts ? opts.items : SPECS) {
+    const item = el('button', null, opts && opts.label ? opts.label(s) : s);
     item.type = 'button'; item.setAttribute('role', 'menuitemradio'); item.setAttribute('aria-checked', String(s === current));
-    item.style.color = specColor(s);
-    item.addEventListener('click', () => { closeMenu(); dash.setParams(param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
+    item.style.color = opts ? (opts.color ? opts.color(s) : '') : specColor(s);
+    item.addEventListener('click', () => { closeMenu(); if (opts) opts.pick(s); else dash.setParams(param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
     list.append(item);
   }
   root.append(list);
@@ -1247,6 +1250,14 @@ const specPicker = (spec, param) => {
   b.type = 'button'; b.style.color = specColor(spec);
   b.setAttribute('aria-haspopup', 'menu'); b.setAttribute('aria-expanded', 'false'); b.title = 'Choose a spec';
   b.addEventListener('click', (e) => { e.stopPropagation(); if (menu && menu.btn === b) closeMenu(); else openMenu(b, param, spec); });
+  return b;
+};
+// The breadcrumb's build and race names: each opens a menu of the others (opts as openMenu's).
+const choicePicker = (text, current, title, opts) => {
+  const b = el('button', 'rr-pick rr-pick2', text);
+  b.type = 'button'; b.title = title;
+  b.setAttribute('aria-haspopup', 'menu'); b.setAttribute('aria-expanded', 'false');
+  b.addEventListener('click', (e) => { e.stopPropagation(); if (menu && menu.btn === b) closeMenu(); else openMenu(b, null, current, opts); });
   return b;
 };
 document.addEventListener('pointerdown', (e) => { if (menu && !menu.el.contains(e.target) && e.target !== menu.btn) closeMenu(); });
@@ -1705,7 +1716,16 @@ function drawBreakdown(p, item, data, fitH) {
   const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb', h2.dataset.base);
   back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => dash.setParams({ specView: '', specBuild: '', specRace: '' }));
-  if (p.cmpMode !== 'apm') h2.replaceChildren(back, el('span', 'rr-crumbsep', '›'), specPicker(item.key, 'specView'));
+  if (p.cmpMode !== 'apm') {
+    // Then the build and the race shown, each a menu of the others (best first): picking one pins it, as a row of the
+    // builds table does.
+    const race = item.race || item.best, rn = (r) => RACE_NAME[r] || r;
+    const build = choicePicker(item.build, item.build, 'Choose a build', { items: item.builds || [item.build], pick: (bd) => dash.setParams({ specBuild: item.key + '|' + bd, specRace: '' }) });
+    const races = choicePicker(rn(race), race, 'Choose a race', { items: item.races || [race], label: rn, color: (r) => (ALLIANCE.has(r) ? 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--rr-horde) 80%, #fff)'),
+      pick: (r) => dash.setParams({ specBuild: item.key + '|' + item.build, specRace: r }) });
+    const sep = () => el('span', 'rr-crumbsep', '›');
+    h2.replaceChildren(back, sep(), specPicker(item.key, 'specView'), sep(), build, sep(), races);
+  }
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
@@ -1739,8 +1759,11 @@ function drawBreakdown(p, item, data, fitH) {
   }
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
-  const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fights`;
-  $('.lx-specnote').textContent = item.pinned && race !== item.best ? `${item.build} · ${race}: ability breakdowns were simmed only with each build's best race in each faction, so this is ${race}'s, not ${item.best}'s (Setup shows ${item.best}).` : '';
+  const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fight${rows.length > 1 ? 's' : ''}`;
+  // The build's total (the sim's own figure for damage; the abilities' sum for threat), then a pinned race's caveat.
+  const sum = key === 'dps' ? rows.reduce((t, r) => t + +r.dps, 0) / rows.length : total;
+  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`),
+    ...(item.pinned && race !== item.best ? [` · Ability breakdowns were simmed only with each build's best race in each faction, so this is ${RACE_NAME[race] || race}'s, not ${RACE_NAME[item.best] || item.best}'s (Setup shows ${RACE_NAME[item.best] || item.best}).`] : []));
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -1763,7 +1786,12 @@ function drawBreakdown(p, item, data, fitH) {
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
   const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
-  const iz = Math.min(20, Math.max(14, bh)), ml = iz + 6 + Math.max(...list.map((a) => textW(label(a)))) + 14, mr = Math.max(...list.map((a) => textW(valText(a)))) + 12;
+  // Names, values and icons grow with the bars (12 to 15 px text, icons up to 28 px).
+  const fs = Math.round(Math.min(15, Math.max(12, bh * 0.45))) + 'px';
+  probe.style('font-size', fs);
+  const iz = Math.min(28, Math.max(14, bh * 0.85)), ml = iz + 8 + Math.max(...list.map((a) => textW(label(a)))) + 14;
+  for (const a of list) a.vw = textW(valText(a));
+  const mr = Math.max(...list.map((a) => a.vw)) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, list[0].v], [ml, W - mr]);
   svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
@@ -1783,15 +1811,16 @@ function drawBreakdown(p, item, data, fitH) {
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2).attr('dominant-baseline', 'central').style('font-size', fs).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
   window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'proc' ? 0.25 : a.kind === 'resource' ? 0.5 : 0.9))
     .style('stroke', (a) => (a.kind === 'proc' ? col(a) : 'none')).attr('stroke-width', 1.5);
-  g.append('text').attr('x', (a) => x(a.v) + 6).attr('y', bh / 2 + 4).text(valText);
+  g.append('text').attr('x', (a) => x(a.v) + 6).attr('y', bh / 2).attr('dominant-baseline', 'central').style('font-size', fs).text(valText);
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
+  // Hovering the bar (or its value) shows its numbers; the icon has Wowhead's tooltip of its own.
+  g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', bh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = p.fight === 'all' ? null : +p.fight;
       tip.replaceChildren(el('div', 'h', label(a)), line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
@@ -1827,10 +1856,10 @@ function drawTimeline(p, item, minH) {
   const wrap = el('div', 'tl');
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
   const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
-  const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
-  if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
+  const notes = [`${item.build} · ${RACE_NAME[r.race] || r.race} · ${fight / 60} minute fight${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
-  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline below is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median): hover a cast for its damage and result.`);
+  else notes.push(`Casts per minute averaged over ${r.runs} runs of the sim. Timeline is an average run.`);
+  if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
   box.append(wrap);
   const W = Math.max(280, box.clientWidth);
@@ -2254,9 +2283,24 @@ $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
   if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
   dash.setParams({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'setup', specFight: String(r.fight) });
-  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
+  const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
+  window.scrollBy({ top, behavior: 'smooth' });
 });
 
+// A build's races, best first (averaged over the fight lengths shown), among all races.
+function buildRaces(p, rows, spec, build) {
+  const acc = new Map();
+  for (const r of rows) {
+    if (r.scope !== 'All' || r.spec !== spec || r.build !== build || (r.measure && r.measure !== p.measure) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
+    const a = acc.get(r.race) || { s: 0, n: 0 };
+    a.s += VAL(r); a.n++; acc.set(r.race, a);
+  }
+  const up = HIGHER(p);
+  return [...acc].sort((a, b) => (up ? b[1].s / b[1].n - a[1].s / a[1].n : a[1].s / a[1].n - b[1].s / b[1].n)).map(([k]) => k);
+}
+let SCOPED = [];
+const CASTERS = new Set(['Balance Druid', 'Arcane Mage', 'Fire Mage', 'Frost Mage', 'Shadow Priest', 'Elemental Shaman', 'Affliction Warlock', 'Demonology Warlock', 'Destruction Warlock']);
 function draw() {
   if (ROOT.hidden) return;
   const p = P();
@@ -2264,9 +2308,18 @@ function draw() {
   for (const [sel, v] of [['.lx-faction', p.faction], ['.lx-gear', p.gear], ['.lx-metric', p.metric], ['.lx-targets', p.specTargets], ['.lx-gtargets', p.gainTargets], ['.lx-ltargets', p.lineTargets], ['.lx-mtargets', p.matrixTargets]])
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
+  // Timeline and Casts show a single fight (All: the 3 minute one), so the ranking box drops its "All" button there.
+  {
+    const g = ROOT.querySelector('.lx-fight[data-p="specFight"]'), card = $('.lx-speccmp').closest('section');
+    const one = !!p.specView && !card.classList.contains('apm-on') && (p.specTab === 'dot' || p.specTab === 'casts'), all = g && g.querySelector('[data-v="all"]');
+    if (all) all.style.display = one ? 'none' : '';
+    if (one && p.specFight === 'all') g.querySelector('[data-v="180"]').setAttribute('aria-pressed', 'true');
+  }
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
+  // The Classic gear's caster note shows with every spec, or a caster spec open (in the DPS or the APM view).
+  const open = $('.lx-speccmp').closest('section').classList.contains('apm-on') ? p.apmView : p.specView;
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
-    ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear."
+    ? (!open || CASTERS.has(open) ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear." : '')
     : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
@@ -2295,6 +2348,7 @@ function draw() {
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, d.scoped.data, DT.status === 'ok' ? DT.data : []);
   {
     // Spec comparison: every race at one target, or each build's best race at 2 to 5 targets.
+    SCOPED = d.scoped.data;
     const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, T = $('.lx-targets') ? rrData(dash.data('targets')) : null;
     const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, d.scoped.data) : tOk ? targetItems(sp, T.data) : [];
     if (tOk) for (const it of items) it.scale = targetScale(sp, T.data, it.key, it.build);
@@ -2302,7 +2356,18 @@ function draw() {
     const B = rrData(dash.data('breakdown'));
     let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
     // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
-    if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) view = { ...view, build: p.specBuild.slice(view.key.length + 1), best: p.specRace || view.best, pinned: true };
+    if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) {
+      // A build picked without a race shows its own best race.
+      const build = p.specBuild.slice(view.key.length + 1);
+      view = { ...view, build, best: p.specRace || buildRaces(sp, SCOPED, view.key, build)[0] || view.best, pinned: true };
+    }
+    // The breadcrumb's menus: the spec's builds and the build's races, best first.
+    if (view) {
+      const bs = new Map();
+      for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
+      view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
+      view.races = buildRaces(sp, SCOPED, view.key, view.build);
+    }
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
     // plain again when none is, and left alone in the APM view, which shows its own.
@@ -2644,15 +2709,16 @@ $('.lx-dtargets').addEventListener('change', (e) => setP({ detailTargets: e.targ
 // Spec pickers: the spec name in a card's title opens a menu of every spec in its class colour.
 let SPECS = [], menu = null;
 const closeMenu = () => { if (menu) { menu.btn.setAttribute('aria-expanded', 'false'); menu.el.remove(); menu = null; } };
-function openMenu(btn, param, current) {
+// opts (the breadcrumb's build and race menus): { items, pick(s), label(s), color(s) } in place of the specs.
+function openMenu(btn, param, current, opts) {
   closeMenu();
   const root = ROOT, list = el('div', 'rr-menu');
   list.setAttribute('role', 'menu');
-  for (const s of SPECS) {
-    const item = el('button', null, s);
+  for (const s of opts ? opts.items : SPECS) {
+    const item = el('button', null, opts && opts.label ? opts.label(s) : s);
     item.type = 'button'; item.setAttribute('role', 'menuitemradio'); item.setAttribute('aria-checked', String(s === current));
-    item.style.color = specColor(s);
-    item.addEventListener('click', () => { closeMenu(); setP(param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
+    item.style.color = opts ? (opts.color ? opts.color(s) : '') : specColor(s);
+    item.addEventListener('click', () => { closeMenu(); if (opts) opts.pick(s); else setP(param === 'detailSpec' ? { detailSpec: s, build: 'all' } : { [param]: s }); });
     list.append(item);
   }
   root.append(list);
@@ -2696,6 +2762,14 @@ const specPicker = (spec, param) => {
   b.type = 'button'; b.style.color = specColor(spec);
   b.setAttribute('aria-haspopup', 'menu'); b.setAttribute('aria-expanded', 'false'); b.title = 'Choose a spec';
   b.addEventListener('click', (e) => { e.stopPropagation(); if (menu && menu.btn === b) closeMenu(); else openMenu(b, param, spec); });
+  return b;
+};
+// The breadcrumb's build and race names: each opens a menu of the others (opts as openMenu's).
+const choicePicker = (text, current, title, opts) => {
+  const b = el('button', 'rr-pick rr-pick2', text);
+  b.type = 'button'; b.title = title;
+  b.setAttribute('aria-haspopup', 'menu'); b.setAttribute('aria-expanded', 'false');
+  b.addEventListener('click', (e) => { e.stopPropagation(); if (menu && menu.btn === b) closeMenu(); else openMenu(b, null, current, opts); });
   return b;
 };
 document.addEventListener('pointerdown', (e) => { if (menu && !menu.el.contains(e.target) && e.target !== menu.btn) closeMenu(); });
@@ -3143,7 +3217,16 @@ function drawBreakdown(p, item, data, fitH) {
   const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb', h2.dataset.base);
   back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => setP({ specView: '', specBuild: '', specRace: '' }));
-  if (p.tCmpMode !== 'apm') h2.replaceChildren(back, el('span', 'rr-crumbsep', '›'), specPicker(item.key, 'specView'));
+  if (dash.params().tCmpMode !== 'apm') {
+    // Then the build and the race shown, each a menu of the others (best first): picking one pins it, as a row of the
+    // builds table does.
+    const race = item.race || item.best, rn = (r) => RACE_NAME[r] || r;
+    const build = choicePicker(item.build, item.build, 'Choose a build', { items: item.builds || [item.build], pick: (bd) => setP({ specBuild: item.key + '|' + bd, specRace: '' }) });
+    const races = choicePicker(rn(race), race, 'Choose a race', { items: item.races || [race], label: rn, color: (r) => (ALLIANCE.has(r) ? 'color-mix(in srgb, var(--rr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--rr-horde) 80%, #fff)'),
+      pick: (r) => setP({ specBuild: item.key + '|' + item.build, specRace: r }) });
+    const sep = () => el('span', 'rr-crumbsep', '›');
+    h2.replaceChildren(back, sep(), specPicker(item.key, 'specView'), sep(), build, sep(), races);
+  }
   // Abilities (the damage meter) or the character setup it was simmed with.
   const tabs = el('div', 'rr-seg');
   tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', 'Show');
@@ -3177,8 +3260,11 @@ function drawBreakdown(p, item, data, fitH) {
   }
   const list = [...acc.values()].map((a) => ({ ...a, v: a[key], crit: a.critN ? a.crit / a.critN : null })).filter((a) => a.v > 0.05).sort((a, b) => b.v - a.v);
   const total = list.reduce((s, a) => s + a.v, 0), race = rows[0].race;
-  const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fights`;
-  $('.lx-specnote').textContent = item.pinned && race !== item.best ? `${item.build} · ${race}: ability breakdowns were simmed only with each build's best race in each faction, so this is ${race}'s, not ${item.best}'s (Setup shows ${item.best}).` : '';
+  const fightText = p.fight === 'all' ? 'averaged over 1, 2, 3 and 5 minute fights' : `${p.fight / 60} minute fight${rows.length > 1 ? 's' : ''}`;
+  // The build's total (the sim's own figure for damage; the abilities' sum for threat), then a pinned race's caveat.
+  const sum = key === 'dps' ? rows.reduce((t, r) => t + +r.dps, 0) / rows.length : total;
+  $('.lx-specnote').replaceChildren(`${item.build} · ${RACE_NAME[race] || race} · ${fightText}${+p.targets > 1 ? ` · ${p.targets} targets` : ''} · `, el('b', null, `${fx(sum, 1)} ${unit}`),
+    ...(item.pinned && race !== item.best ? [` · Ability breakdowns were simmed only with each build's best race in each faction, so this is ${RACE_NAME[race] || race}'s, not ${RACE_NAME[item.best] || item.best}'s (Setup shows ${RACE_NAME[item.best] || item.best}).`] : []));
   const swatch = (school, kind) => {
     const sw = el('span', 'rr-bdsw');
     sw.dataset.kind = kind; sw.style.setProperty('--c', SCHOOL_COLOR[school] || SCHOOL_COLOR.Physical);
@@ -3201,7 +3287,12 @@ function drawBreakdown(p, item, data, fitH) {
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
   const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
-  const iz = Math.min(20, Math.max(14, bh)), ml = iz + 6 + Math.max(...list.map((a) => textW(label(a)))) + 14, mr = Math.max(...list.map((a) => textW(valText(a)))) + 12;
+  // Names, values and icons grow with the bars (12 to 15 px text, icons up to 28 px).
+  const fs = Math.round(Math.min(15, Math.max(12, bh * 0.45))) + 'px';
+  probe.style('font-size', fs);
+  const iz = Math.min(28, Math.max(14, bh * 0.85)), ml = iz + 8 + Math.max(...list.map((a) => textW(label(a)))) + 14;
+  for (const a of list) a.vw = textW(valText(a));
+  const mr = Math.max(...list.map((a) => a.vw)) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, list[0].v], [ml, W - mr]);
   svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
@@ -3221,15 +3312,16 @@ function drawBreakdown(p, item, data, fitH) {
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   const abIcons = g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
+  g.append('text').attr('class', 'lab').attr('x', iz + 8).attr('y', bh / 2).attr('dominant-baseline', 'central').style('font-size', fs).style('fill', (a) => (a.pet ? 'var(--color-fg-muted)' : null)).text(label);
   window.abilityLinks(box, abIcons.nodes(), (a) => [a.name]);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (a) => Math.max(1, x(a.v) - x(0)))
     .style('fill', fill).attr('fill-opacity', (a) => (a.kind === 'proc' ? 0.25 : a.kind === 'resource' ? 0.5 : 0.9))
     .style('stroke', (a) => (a.kind === 'proc' ? col(a) : 'none')).attr('stroke-width', 1.5);
-  g.append('text').attr('x', (a) => x(a.v) + 6).attr('y', bh / 2 + 4).text(valText);
+  g.append('text').attr('x', (a) => x(a.v) + 6).attr('y', bh / 2).attr('dominant-baseline', 'central').style('font-size', fs).text(valText);
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
+  // Hovering the bar (or its value) shows its numbers; the icon has Wowhead's tooltip of its own.
+  g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', bh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = p.fight === 'all' ? null : +p.fight;
       tip.replaceChildren(el('div', 'h', label(a)), line(unit, fx(a.v, 1)), line('Share', fx((a.v / total) * 100, 1) + '%'),
@@ -3265,10 +3357,10 @@ function drawTimeline(p, item, minH) {
   const wrap = el('div', 'tl');
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
   const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
-  const notes = [`${item.build} · ${r.race} · ${fight / 60} minute fight${p.fight === 'all' ? ' (pick a fight length above for another)' : ''}${+p.targets > 1 ? ' · one target' : ''}.`];
-  if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
+  const notes = [`${item.build} · ${RACE_NAME[r.race] || r.race} · ${fight / 60} minute fight${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
-  else notes.push(`Casts per fight averaged over ${r.runs} runs of the sim; Uptime is how long the ability's buff was up. The timeline below is one of those runs (${fx(r.timelineDps, 1)} DPS, the nearest to their median): hover a cast for its damage and result.`);
+  else notes.push(`Casts per minute averaged over ${r.runs} runs of the sim. Timeline is an average run.`);
+  if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
   box.append(wrap);
   const W = Math.max(280, box.clientWidth);
@@ -3696,9 +3788,23 @@ $('.lx-detail').tBodies[0].addEventListener('click', (e) => {
   if (card.classList.contains('apm-on')) { const b = card.querySelector('.lx-cmpmode button[data-v="rank"]'); if (b) b.click(); }
   if (card.classList.contains('collapsed')) card.querySelector('.rr-fold').click();
   setP({ specView: detailPick.spec, specBuild: detailPick.spec + '|' + r.build, specRace: r.race, specTab: 'setup', specFight: String(r.fight) });
-  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // (redrawn by now) The box's title lands just below the sticky tab bar, which would otherwise cover it.
+  const tabs = document.querySelector('.rr-tabs'), top = card.getBoundingClientRect().top - (tabs ? tabs.getBoundingClientRect().bottom : 0) - 12;
+  window.scrollBy({ top, behavior: 'smooth' });
 });
 
+// A build's races, best first (averaged over the fight lengths shown), among all races.
+function buildRaces(p, rows, spec, build) {
+  const acc = new Map();
+  for (const r of rows) {
+    if (r.scope !== 'All' || r.spec !== spec || r.build !== build || (r.measure && r.measure !== p.measure) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
+    const a = acc.get(r.race) || { s: 0, n: 0 };
+    a.s += VAL(r); a.n++; acc.set(r.race, a);
+  }
+  const up = HIGHER(p);
+  return [...acc].sort((a, b) => (up ? b[1].s / b[1].n - a[1].s / a[1].n : a[1].s / a[1].n - b[1].s / b[1].n)).map(([k]) => k);
+}
+let SCOPED = [];
 function draw() {
   if (ROOT.hidden) return;
   const p = P();
@@ -3707,6 +3813,13 @@ function draw() {
     ROOT.querySelectorAll(sel + ' button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
   ROOT.querySelectorAll('.lx-measure').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
   ROOT.querySelectorAll('.lx-fight').forEach((g) => g.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === p[g.dataset.p]))));
+  // Timeline and Casts show a single fight (All: the 3 minute one), so the ranking box drops its "All" button there.
+  {
+    const g = ROOT.querySelector('.lx-fight[data-p="specFight"]'), card = $('.lx-speccmp').closest('section');
+    const one = !!p.specView && !card.classList.contains('apm-on') && (p.specTab === 'dot' || p.specTab === 'casts'), all = g && g.querySelector('[data-v="all"]');
+    if (all) all.style.display = one ? 'none' : '';
+    if (one && p.specFight === 'all') g.querySelector('[data-v="180"]').setAttribute('aria-pressed', 'true');
+  }
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
     ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear."
@@ -3752,6 +3865,7 @@ function draw() {
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, M(d.scoped.data), DT.status === 'ok' ? M(DT.data) : []);
   {
     // Spec comparison: every race at one target, or each build's best race at 2 to 5 targets.
+    SCOPED = d.scoped.data;
     const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, T = $('.lx-targets') ? rrData(dash.data('tankTargets')) : null;
     const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, M(d.scoped.data)) : tOk ? targetItems(sp, M(T.data)) : [];
     if (tOk) for (const it of items) it.scale = targetScale(sp, M(T.data), it.key, it.build);
@@ -3759,13 +3873,24 @@ function draw() {
     const B = rrData(dash.data('tankBreakdown'));
     let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
     // A row clicked in the builds table pins its build and race (specBuild is "spec|build").
-    if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) view = { ...view, build: p.specBuild.slice(view.key.length + 1), best: p.specRace || view.best, pinned: true };
+    if (view && p.specBuild && p.specBuild.startsWith(view.key + '|')) {
+      // A build picked without a race shows its own best race.
+      const build = p.specBuild.slice(view.key.length + 1);
+      view = { ...view, build, best: p.specRace || buildRaces(sp, SCOPED, view.key, build)[0] || view.best, pinned: true };
+    }
+    // The breadcrumb's menus: the spec's builds and the build's races, best first.
+    if (view) {
+      const bs = new Map();
+      for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
+      view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
+      view.races = buildRaces(sp, SCOPED, view.key, view.build);
+    }
     drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP({ specView: k }), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
     // plain again when none is, and left alone in the APM view, which shows its own.
     const h2 = $('.lx-cmptitle');
     h2.dataset.base ||= h2.textContent;
-    if (p.tCmpMode !== 'apm' && !view && h2.querySelector('.rr-crumb')) h2.textContent = h2.dataset.base;
+    if (dash.params().tCmpMode !== 'apm' && !view && h2.querySelector('.rr-crumb')) h2.textContent = h2.dataset.base;
     // The breakdown is drawn over the ranking, at the ranking's height.
     if (view) drawBreakdown(sp, view, B.data, $('.lx-specnote').offsetHeight + $('.lx-speccmp').offsetHeight);
   }

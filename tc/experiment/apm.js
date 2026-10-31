@@ -3,12 +3,17 @@
 // at 1 target); Healing works its APM out from the healing sim's spell casts. Clicking a spec shows what it presses,
 // damage-meter style: each ability's school colour (from the ability breakdowns), striped when it works over time.
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-const CLASS_OF = { Druid: 'druid', Hunter: 'hunter', Mage: 'mage', Paladin: 'paladin', Rogue: 'rogue', Shaman: 'shaman', Warlock: 'warlock', Warrior: 'warrior', Bear: 'druid' };
+const CLASS_OF = { Druid: 'druid', Hunter: 'hunter', Mage: 'mage', Paladin: 'paladin', Priest: 'priest', Rogue: 'rogue', Shaman: 'shaman', Warlock: 'warlock', Warrior: 'warrior', Bear: 'druid' };
+// Grouped by class, then spec, as the DPS view's spec menu lists them.
+const byClass = (a, b) => (CLASS_OF[a.split(' ').pop()] || '').localeCompare(CLASS_OF[b.split(' ').pop()] || '') || a.localeCompare(b);
+// Item procs the sim counts as casts though nobody presses them (older runs; the harness's shape_apm.py now leaves them out).
+const PROC = new Set(["Alcor's Sunrazor"]);
 const CLASS_COLOR = { druid: '#FF7C0A', hunter: '#AAD372', mage: '#3FC7EB', paladin: '#F48CBA', rogue: '#FFF468', shaman: '#0070DD', warlock: '#8788EE', warrior: '#C69B6D' };
 const specColor = (s) => { const c = CLASS_COLOR[CLASS_OF[s.split(' ').pop()]]; return c ? `color-mix(in srgb, ${c} 85%, var(--color-fg))` : 'var(--color-fg)'; };
 // WoW's combat-log school colours, as the damage breakdowns use them.
 const SCHOOL_COLOR = { Physical: '#f0d24a', Holy: '#ffe680', Fire: '#ff8a1f', Nature: '#5fd35f', Frost: '#7fdcff', Shadow: '#9d8cff', Arcane: '#ff8cf2' };
 const RACE_NAME = { 'High Order Skyborne': 'Alliance Skyborne', 'Windshaper Skyborne': 'Horde Skyborne' };
+const raceName = (r) => RACE_NAME[r] || r;
 const HEALER = { priest: 'Holy Priest', druid: 'Restoration Druid', shaman: 'Restoration Shaman' };
 const list = (v) => (typeof v === 'string' ? JSON.parse(v) : v || []);
 const fightText = (f, lens) => (f === 'all' ? `averaged over ${lens}` : `${f / 60} minute fights`);
@@ -26,14 +31,16 @@ dash.calc('healApm', {
 // One ranking box per tab (spec: the param of the spec whose breakdown the ranking view has open): its dataset, how it picks each spec's build, the ability breakdowns that give each press
 // its school and kind, and the filters it reads (each tab's own: the Healing and Tanks tabs prefix theirs with h and t).
 const TANK_TITLE = { tps: 'Threat Per Second', dtps: 'Damage Taken Per Second', tmi: 'Spikes (TMI)', dps: 'Damage Per Second' };
+// pin / race / specTab: the DPS view's build and race picked (from its breadcrumb or the builds table) and its view switch.
 const BOXES = [
-  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', spec: 'specView', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
-  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', spec: 'tSpecView', source: 'apm', role: 'tank', by: 'tps', title: (q) => TANK_TITLE[q.tMeasure] || TANK_TITLE.tps, bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'dps', id: 'speccmp', mode: 'cmpMode', fight: 'specFight', view: 'apmView', spec: 'specView', pin: 'specBuild', race: 'specRace', specTab: 'specTab', source: 'apm', role: 'dps', by: 'dps', title: () => 'Damage Per Second', bd: 'breakdown', lens: '1, 2, 3 and 5 minute fights' },
+  { tab: 'tanks', id: 't-speccmp', mode: 'tCmpMode', fight: 'tSpecFight', view: 'tApmView', spec: 'tSpecView', pin: 'tSpecBuild', race: 'tSpecRace', specTab: 'tSpecTab', source: 'apm', role: 'tank', by: 'tps', title: (q) => TANK_TITLE[q.tMeasure] || TANK_TITLE.tps, bd: 'tankBreakdown', lens: '1, 2, 3 and 5 minute fights' },
   { tab: 'healing', id: 'h-speccmp', mode: 'hCmpMode', fight: 'hSpecFight', view: 'hApmView', source: 'healApm', title: () => 'Healing Per Second', lens: '2, 3, 5 and 7 minute fights' },
 ];
 
-// Each spec at the chosen fight length (All: averaged over the four), on the build that does most damage (tanks: threat).
-function specItems(b, rows, fight) {
+// Each spec at the chosen fight length (All: averaged over the four), on the build that does most damage (tanks: threat),
+// or the build picked in the DPS view (pin: "spec|build"). Each keeps its spec's builds, best first, for the build menu.
+function specItems(b, rows, fight, pin) {
   const pick = rows.filter((r) => fight === 'all' || String(r.fight) === fight);
   const acc = new Map();
   for (const r of pick) {
@@ -42,14 +49,21 @@ function specItems(b, rows, fight) {
     const k = spec + '|' + (r.build || '');
     if (!acc.has(k)) acc.set(k, { spec, build: r.build, race: r.race, n: 0, apm: 0, val: 0, presses: new Map(), type: new Map() });
     const a = acc.get(k);
-    a.n++; a.apm += +r.apm; a.val += b.by ? +r[b.by] : 0;
-    for (const [name, v, type] of list(r.presses)) { a.presses.set(name, (a.presses.get(name) || 0) + v); if (type) a.type.set(name, type); }
+    a.n++; a.val += b.by ? +r[b.by] : 0;
+    for (const [name, v, type] of list(r.presses)) {
+      if (PROC.has(name)) continue;
+      a.apm += v; a.presses.set(name, (a.presses.get(name) || 0) + v); if (type) a.type.set(name, type);
+    }
   }
-  const specs = new Map();
+  const specs = new Map(), all = new Map();
   for (const a of acc.values()) {
-    const cur = specs.get(a.spec);
-    a.builds = (cur ? cur.builds : 0) + 1;
-    if (!cur || a.val / a.n > cur.val / cur.n) specs.set(a.spec, a); else cur.builds = a.builds;
+    if (!all.has(a.spec)) all.set(a.spec, []);
+    all.get(a.spec).push(a);
+  }
+  for (const [spec, g] of all) {
+    g.sort((x, y) => y.val / y.n - x.val / x.n);
+    const picked = pin && pin.startsWith(spec + '|') && g.find((a) => spec + '|' + a.build === pin);
+    specs.set(spec, Object.assign(picked || g[0], { builds: g.length, buildList: g.map((a) => a.build), best: g[0].build }));
   }
   return [...specs.values()].map((a) => ({ ...a, apm: a.apm / a.n,
     presses: [...a.presses].map(([k, v]) => ({ name: k.replace(/�/g, '–'), raw: k, v: v / a.n, type: a.type.get(k) })).sort((x, y) => y.v - x.v) }))
@@ -88,10 +102,10 @@ function setup(b) {
     if (!on) return;
     const res = dash.data(b.source);
     if (res.status !== 'ok') { box.textContent = '—'; return; }
-    const items = specItems(b, b.role ? res.data.filter((r) => r.role === b.role) : res.data, fight);
+    const items = specItems(b, b.role ? res.data.filter((r) => r.role === b.role) : res.data, fight, q[b.view] && b.pin && q[b.pin]);  // the ranking shows each spec's best build
     if (!items.length) { box.textContent = '—'; return; }
     const view = q[b.view] && items.find((d) => d.spec === q[b.view]);
-    if (view) drawBreakdown(b, box, note, view, fight, items.map((d) => d.spec));
+    if (view) drawBreakdown(b, box, note, view, fight, items.map((d) => d.spec), q);
     else draw(b, box, items);
   };
   dash.onData(render);
@@ -172,9 +186,10 @@ let apmMenu = null;
 const closeApmMenu = () => { if (apmMenu) { apmMenu.btn.setAttribute('aria-expanded', 'false'); apmMenu.el.remove(); apmMenu = null; } };
 document.addEventListener('pointerdown', (e) => { if (apmMenu && !apmMenu.el.contains(e.target) && e.target !== apmMenu.btn) closeApmMenu(); });
 document.addEventListener('keydown', (e) => { if (apmMenu && e.key === 'Escape') { const btn = apmMenu.btn; closeApmMenu(); btn.focus(); } });
-function apmPicker(b, spec, specs) {
-  const btn = el('button', 'rr-pick', spec);
-  btn.type = 'button'; btn.style.color = specColor(spec); btn.title = 'Choose a spec';
+// opts (the build menu): { items, pick(s), label(s), title } in place of the specs, with spec the current choice.
+function apmPicker(b, spec, specs, opts) {
+  const btn = el('button', opts ? 'rr-pick rr-pick2' : 'rr-pick', opts && opts.label ? opts.label(spec) : spec);
+  btn.type = 'button'; if (!opts) btn.style.color = specColor(spec); btn.title = opts ? opts.title : 'Choose a spec';
   btn.setAttribute('aria-haspopup', 'menu'); btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -182,10 +197,10 @@ function apmPicker(b, spec, specs) {
     closeApmMenu();
     const root = btn.closest('[data-tab-panel]'), list = el('div', 'rr-menu');
     list.setAttribute('role', 'menu');
-    for (const s of [...specs].sort()) {
-      const it = el('button', null, s);
-      it.type = 'button'; it.setAttribute('role', 'menuitemradio'); it.setAttribute('aria-checked', String(s === spec)); it.style.color = specColor(s);
-      it.addEventListener('click', () => { closeApmMenu(); dash.setParams({ [b.view]: s }); });
+    for (const s of opts ? opts.items : [...specs].sort(byClass)) {
+      const it = el('button', null, opts && opts.label ? opts.label(s) : s);
+      it.type = 'button'; it.setAttribute('role', 'menuitemradio'); it.setAttribute('aria-checked', String(s === spec)); it.style.color = opts ? 'var(--color-fg)' : specColor(s);
+      it.addEventListener('click', () => { closeApmMenu(); if (opts) opts.pick(s); else dash.setParams({ [b.view]: s }); });
       list.append(it);
     }
     root.append(list);
@@ -226,7 +241,7 @@ function apmPicker(b, spec, specs) {
   });
   return btn;
 }
-function drawBreakdown(b, box, note, item, fight, specs) {
+function drawBreakdown(b, box, note, item, fight, specs, q) {
   const healer = !b.role, cls = healer ? specColor(item.spec) : null, K = kinds(b, item.spec);
   const rows = item.presses.map((p) => {
     if (healer) {
@@ -237,12 +252,19 @@ function drawBreakdown(b, box, note, item, fight, specs) {
     return { ...p, school: k.school, kind: k.kind === 'auto' || k.kind === 'proc' ? 'direct' : k.kind };
   });
   const total = rows.reduce((t, a) => t + a.v, 0);
-  note.textContent = '';
-  // The box's title becomes a breadcrumb, as in the damage breakdown: its name goes back to all specs.
+  // What was simmed and the total: the build, the race and the fight length, then every press per minute added up.
+  const pinRace = b.race && q[b.race] && b.pin && q[b.pin] === item.spec + '|' + item.build ? q[b.race] : '';
+  note.replaceChildren(`${b.role ? `${item.build} · ${raceName(item.race)} · ` : ''}${fight === 'all' ? `averaged over ${b.lens}` : `${fight / 60} minute fight${b.role ? '' : 's'}`} · `,
+    el('b', null, `${total.toFixed(1)} actions per minute`),
+    ...(pinRace && pinRace !== item.race ? [` · Presses were counted only with each build's best race, so this is ${raceName(item.race)}'s, not ${raceName(pinRace)}'s.`] : []));
+  // The box's title becomes a breadcrumb, as in the damage breakdown: its name goes back to all specs, then the spec
+  // and (DPS and Tanks) the build, each a menu of the others; picking a build here picks it in the DPS view too.
   const back = el('button', 'rr-crumb', 'Actions Per Minute');
   back.type = 'button'; back.title = 'Back to all specs';
   back.addEventListener('click', () => dash.setParams({ [b.view]: '' }));
-  b.titleEl.replaceChildren(back, el('span', 'rr-crumbsep', '›'), apmPicker(b, item.spec, specs));
+  const sep = () => el('span', 'rr-crumbsep', '›');
+  b.titleEl.replaceChildren(back, sep(), apmPicker(b, item.spec, specs),
+    ...(b.role ? [sep(), apmPicker(b, item.build, null, { items: item.buildList, title: 'Choose a build', pick: (bd) => dash.setParams({ [b.pin]: item.spec + '|' + bd, [b.race]: '' }) })] : []));
   const col = (a) => (healer ? cls : SCHOOL_COLOR[a.school] || 'var(--color-fg-muted)');
   // Legend swatches reuse the damage breakdown's styles: over time as its stripes, utility as its grey, absorbs outlined.
   const sw = (c, kind) => { const e = el('span', 'rr-bdsw'); e.dataset.kind = kind === 'hot' ? 'dot' : kind === 'utility' ? 'resource' : kind === 'absorb' ? 'proc' : kind; e.style.setProperty('--c', c); return e; };
@@ -252,14 +274,24 @@ function drawBreakdown(b, box, note, item, fight, specs) {
   const legend = el('div', 'rr-bdlegend');
   legend.append(...schools.map((sc) => key(sw(SCHOOL_COLOR[sc], 'direct'), sc)), ...(schools.length ? [el('span', 'rr-bdsep')] : []),
     ...Object.keys(KIND_LABEL).filter((k) => present.has(k)).map((k) => key(sw(c0, k), KIND_LABEL[k])));
-  box.append(legend);
+  // DPS and Tanks: Setup opens the build's gear, talents and consumables in the damage view.
+  if (b.role) {
+    const bar = el('div', 'rr-bdbar'), seg = el('div', 'rr-seg'), su = el('button', null, 'Setup');
+    su.type = 'button'; su.title = 'The gear, talents, consumables and buffs this build was simmed with';
+    su.addEventListener('click', () => {
+      b.titleEl.closest('section').classList.remove('apm-on');
+      dash.setParams({ [b.mode]: 'rank', [b.spec]: item.spec, [b.specTab]: 'setup', ...(q[b.pin] === item.spec + '|' + item.build ? {} : { [b.pin]: item.spec + '|' + item.build, [b.race]: item.race }) });
+    });
+    seg.append(su); bar.append(legend, seg); box.append(bar);
+  } else box.append(legend);
   const slot = b.userH ? Math.max(16, (b.userH - 22) / rows.length) : 26, bh = Math.min(64, slot * 0.78), gap = slot - bh;
   const W = Math.max(280, box.clientWidth), H = rows.length * slot + 22, iz = Math.min(28, Math.max(14, bh));
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const valText = (a) => (narrowChart(W) ? `${a.v.toFixed(a.v < 1 ? 2 : 1)}` : `${a.v.toFixed(a.v < 1 ? 2 : 1)} / min · ${((a.v / total) * 100).toFixed(1)}%`);
-  const ml = iz + 6 + Math.max(...rows.map((a) => textW(a.name))) + 14, mr = Math.max(...rows.map((a) => textW(valText(a)))) + 12;
+  for (const a of rows) a.vw = textW(valText(a));
+  const ml = iz + 6 + Math.max(...rows.map((a) => textW(a.name))) + 14, mr = Math.max(...rows.map((a) => a.vw)) + 12;
   probe.remove();
   const x = d3.scaleLinear([0, rows[0].v], [ml, W - mr]);
   svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
@@ -286,7 +318,8 @@ function drawBreakdown(b, box, note, item, fight, specs) {
   g.append('text').attr('x', (a) => x(a.v) + 6).attr('y', bh / 2 + 4).text(valText);
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', slot).attr('fill', 'transparent')
+  // Hovering the bar (or its value) shows its numbers; the icon has Wowhead's tooltip of its own.
+  g.append('rect').attr('x', x(0)).attr('y', -gap / 2).attr('width', (a) => Math.max(1, x(a.v) - x(0)) + 6 + a.vw).attr('height', slot).attr('fill', 'transparent')
     .on('mousemove', (ev, a) => {
       const secs = fight === 'all' ? null : +fight;
       tip.replaceChildren(el('div', 'h', a.name), line('Presses per minute', a.v.toFixed(2)), line('Share of presses', ((a.v / total) * 100).toFixed(1) + '%'),
