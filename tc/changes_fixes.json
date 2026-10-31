@@ -492,6 +492,20 @@
    "kind": "buff",
    "append": "Now also reduces the Mana cost of Strider Kick.*",
    "why": "12.1.5 patch notes: now reduces Strider Kick's cost, and the proc chance rose (60% to 100%)"
+  },
+  {
+   "build": "70630",
+   "class": "warrior",
+   "name": "Victory Rush",
+   "drop": true,
+   "why": "Wowhead's tooltip switches between \"$apm\" and \"Attack Power\" from build to build; the spell didn't change"
+  },
+  {
+   "build": "70685",
+   "class": "warrior",
+   "name": "Victory Rush",
+   "drop": true,
+   "why": "Wowhead's tooltip switches between \"$apm\" and \"Attack Power\" from build to build; the spell didn't change"
   }
  ]
 }

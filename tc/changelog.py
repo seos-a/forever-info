@@ -212,12 +212,19 @@ def word_diff(old, new):
     return (mark(a, [(i1, i2) for t, i1, i2, j1, j2 in ops if t in ('replace', 'delete')], '{~', '~}'),
             mark(b, [(j1, j2) for t, i1, i2, j1, j2 in ops if t in ('replace', 'insert')], '{*', '*}'))
 
+def unworked(a, b):
+    """Whether two tooltips differ only where one has a formula variable left in and the other its words (Victory Rush:
+    "$apm" / "Attack Power"). Wowhead serves either from build to build, so it's no change."""
+    for x, y in ((a, b), (b, a)):
+        if re.search(r'\$[a-zA-Z]', x) and re.fullmatch(re.sub(r'\\\$[a-zA-Z]\w*', '.+?', re.escape(x)), y): return True
+    return False
+
 def rank_change(pt, nt):
     """One rank's tooltip, old -> new: (notes, verdicts, previous text or None, ' · reworded' / ' · reworked' / '')"""
     notes, verdicts, was, tag = [], set(), None, ''
     if pt['name'] != nt['name']: notes.append(f"Renamed from {pt['name']}."); verdicts.add('other')
     po, no = plain(pt['text']), plain(nt['text'])
-    if po != no:
+    if po != no and not unworked(po, no):
         tc = text_change(po, no)
         if tc: notes.append(tc[0]); verdicts |= tc[1]
         else:

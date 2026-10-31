@@ -148,16 +148,6 @@
       "Spell",
       "Now learned at level {+10} (was 16)."
      ]
-    ],
-    "warrior": [
-     [
-      "other",
-      "Victory Rush",
-      "ability_warrior_devastate",
-      "Spell · reworded",
-      "Instantly attack the target causing (1 + {*$apm*} * 15 / 100) damage and healing you for 10% of your maximum health. Only useable within 20 sec after you kill a non-trivial enemy.",
-      "Instantly attack the target causing (1 + {~Attack Power~} * 15 / 100) damage and healing you for 10% of your maximum health. Only useable within 20 sec after you kill a non-trivial enemy."
-     ]
     ]
    },
    "client": [
@@ -170,16 +160,6 @@
    "version": "1.60.1",
    "build": "70630",
    "classes": {
-    "warrior": [
-     [
-      "other",
-      "Victory Rush",
-      "ability_warrior_devastate",
-      "Spell · reworded",
-      "Instantly attack the target causing (1 + {*Attack Power*} * 15 / 100) damage and healing you for 10% of your maximum health. Only useable within 20 sec after you kill a non-trivial enemy.",
-      "Instantly attack the target causing (1 + {~$apm~} * 15 / 100) damage and healing you for 10% of your maximum health. Only useable within 20 sec after you kill a non-trivial enemy."
-     ]
-    ],
     "warlock": [
      [
       "other",
