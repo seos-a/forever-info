@@ -149,7 +149,7 @@ document.head.appendChild(t);})();
   .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .rr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-menu button:hover, .rr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
-  .rr-menu button[aria-checked="true"] { font-weight: 600; background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
+  .rr-menu button[aria-checked="true"] { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
   .rr tr.group td { border-top: 2px solid var(--color-fg-muted); }
   .rr-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
   .rr-title { display: flex; align-items: center; gap: var(--cds-gap-xs); min-width: 0; }
@@ -388,7 +388,7 @@ document.head.appendChild(t);})();
   .hr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .hr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .hr-menu button:hover, .hr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
-  .hr-menu button[aria-checked="true"] { font-weight: 600; background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
+  .hr-menu button[aria-checked="true"] { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
   .hr tr.group td { border-top: 2px solid var(--color-fg-muted); }
   .hr-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
   .hr-title { display: flex; align-items: center; gap: var(--cds-gap-xs); min-width: 0; }
@@ -528,7 +528,7 @@ document.head.appendChild(t);})();
   .rr-menu { position: absolute; z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); }
   .rr-menu button { font: inherit; font-size: var(--cds-font-size-body); text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .rr-menu button:hover, .rr-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
-  .rr-menu button[aria-checked="true"] { font-weight: 600; background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
+  .rr-menu button[aria-checked="true"] { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
   .rr tr.group td { border-top: 2px solid var(--color-fg-muted); }
   .rr-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
   .rr-title { display: flex; align-items: center; gap: var(--cds-gap-xs); min-width: 0; }
@@ -1425,9 +1425,8 @@ function openMenu(btn, param, current, opts) {
   // below it (a long list scrolled to put it mid-way), kept on screen. Placed against whatever box the menu is
   // positioned in, as the tab itself isn't one.
   const cur = list.querySelector('[aria-checked="true"]') || list.firstChild, pad = (e) => parseFloat(getComputedStyle(e).paddingLeft) || 0;
-  // The current spec is drawn just as the name it covers (font, size and highlight), so the name seems to stay put.
-  const bs = getComputedStyle(btn);
-  Object.assign(cur.style, { fontFamily: bs.fontFamily, fontSize: bs.fontSize, fontWeight: bs.fontWeight, letterSpacing: bs.letterSpacing, lineHeight: bs.lineHeight, background: 'color-mix(in srgb, var(--color-fg) 10%, transparent)' });
+  // The current choice is marked by its highlight alone, in the menu's own font.
+  cur.style.background = 'color-mix(in srgb, var(--color-fg) 10%, transparent)';
   list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
   const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
   const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
@@ -1991,16 +1990,17 @@ function drawBreakdown(p, item, data, fitH) {
   // As tall as the spec ranking it replaces (fitH: its note and chart), so the page doesn't move: the bars grow
   // to fill it, or shrink to no less than 16 px a row when there are more abilities than specs.
   const W = Math.max(280, box.clientWidth), outer = (e) => e.offsetHeight + parseFloat(getComputedStyle(e).marginBottom || 0), barH = outer(bar) + outer(legend);
-  const slot = Math.max(16, (fitH - $('.lx-specnote').offsetHeight - barH - 22) / list.length), bh = Math.min(cmpUserH ? 56 : 34, slot * 0.78), gap = slot - bh, H = list.length * slot + 22;
+  // Rows are at most 30 px apart (22 px bars) unless the box has been dragged taller, so a short list leaves the box shorter.
+  const slot = Math.max(16, Math.min(cmpUserH ? Infinity : 30, (fitH - $('.lx-specnote').offsetHeight - barH - 22) / list.length)), bh = Math.min(cmpUserH ? 56 : 22, slot * 0.75), gap = slot - bh, H = list.length * slot + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
   const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
-  // Names, values and icons grow with the bars (12 to 15 px text, icons up to 28 px).
-  const fs = Math.round(Math.min(15, Math.max(12, bh * 0.45))) + 'px';
+  // Names, values and icons grow with the bars (12 to 15 px text, icons up to 28 px; 13 px and 20 px at the usual 22 px bars).
+  const fs = Math.round(Math.min(15, Math.max(12, bh * 0.6))) + 'px';
   probe.style('font-size', fs);
-  const iz = Math.min(28, Math.max(14, bh * 0.85)), ml = iz + 8 + Math.max(...list.map((a) => textW(label(a)))) + 14;
+  const iz = Math.min(28, Math.max(14, bh * 0.9)), ml = iz + 8 + Math.max(...list.map((a) => textW(label(a)))) + 14;
   for (const a of list) a.vw = textW(valText(a));
   const mr = Math.max(...list.map((a) => a.vw)) + 12;
   probe.remove();
@@ -2972,9 +2972,8 @@ function openMenu(btn, param, current) {
   // below it (a long list scrolled to put it mid-way), kept on screen. Placed against whatever box the menu is
   // positioned in, as the tab itself isn't one.
   const cur = list.querySelector('[aria-checked="true"]') || list.firstChild, pad = (e) => parseFloat(getComputedStyle(e).paddingLeft) || 0;
-  // The current spec is drawn just as the name it covers (font, size and highlight), so the name seems to stay put.
-  const bs = getComputedStyle(btn);
-  Object.assign(cur.style, { fontFamily: bs.fontFamily, fontSize: bs.fontSize, fontWeight: bs.fontWeight, letterSpacing: bs.letterSpacing, lineHeight: bs.lineHeight, background: 'color-mix(in srgb, var(--color-fg) 10%, transparent)' });
+  // The current choice is marked by its highlight alone, in the menu's own font.
+  cur.style.background = 'color-mix(in srgb, var(--color-fg) 10%, transparent)';
   list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
   const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
   const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
@@ -3999,9 +3998,8 @@ function apmPicker(b, spec, specs, opts) {
     // below it (a long list scrolled to put it mid-way), kept on screen. Placed against whatever box the menu is
     // positioned in, as the tab itself isn't one.
     const cur = list.querySelector('[aria-checked="true"]') || list.firstChild, pad = (e) => parseFloat(getComputedStyle(e).paddingLeft) || 0;
-    // The current spec is drawn just as the name it covers (font, size and highlight), so the name seems to stay put.
-    const bs = getComputedStyle(btn);
-    Object.assign(cur.style, { fontFamily: bs.fontFamily, fontSize: bs.fontSize, fontWeight: bs.fontWeight, letterSpacing: bs.letterSpacing, lineHeight: bs.lineHeight, background: 'color-mix(in srgb, var(--color-fg) 10%, transparent)' });
+    // The current choice is marked by its highlight alone, in the menu's own font.
+    cur.style.background = 'color-mix(in srgb, var(--color-fg) 10%, transparent)';
     list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
     const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
     const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
@@ -4384,9 +4382,8 @@ function openMenu(btn, param, current, opts) {
   // below it (a long list scrolled to put it mid-way), kept on screen. Placed against whatever box the menu is
   // positioned in, as the tab itself isn't one.
   const cur = list.querySelector('[aria-checked="true"]') || list.firstChild, pad = (e) => parseFloat(getComputedStyle(e).paddingLeft) || 0;
-  // The current spec is drawn just as the name it covers (font, size and highlight), so the name seems to stay put.
-  const bs = getComputedStyle(btn);
-  Object.assign(cur.style, { fontFamily: bs.fontFamily, fontSize: bs.fontSize, fontWeight: bs.fontWeight, letterSpacing: bs.letterSpacing, lineHeight: bs.lineHeight, background: 'color-mix(in srgb, var(--color-fg) 10%, transparent)' });
+  // The current choice is marked by its highlight alone, in the menu's own font.
+  cur.style.background = 'color-mix(in srgb, var(--color-fg) 10%, transparent)';
   list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
   const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
   const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
@@ -4939,16 +4936,17 @@ function drawBreakdown(p, item, data, fitH) {
   // As tall as the spec ranking it replaces (fitH: its note and chart), so the page doesn't move: the bars grow
   // to fill it, or shrink to no less than 16 px a row when there are more abilities than specs.
   const W = Math.max(280, box.clientWidth), outer = (e) => e.offsetHeight + parseFloat(getComputedStyle(e).marginBottom || 0), barH = outer(bar) + outer(legend);
-  const slot = Math.max(16, (fitH - $('.lx-specnote').offsetHeight - barH - 22) / list.length), bh = Math.min(cmpUserH ? 56 : 34, slot * 0.78), gap = slot - bh, H = list.length * slot + 22;
+  // Rows are at most 30 px apart (22 px bars) unless the box has been dragged taller, so a short list leaves the box shorter.
+  const slot = Math.max(16, Math.min(cmpUserH ? Infinity : 30, (fitH - $('.lx-specnote').offsetHeight - barH - 22) / list.length)), bh = Math.min(cmpUserH ? 56 : 22, slot * 0.75), gap = slot - bh, H = list.length * slot + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const narrow = narrowChart(W);  // a phone: the share only (the hover has the rest)
   const label = (a) => (a.pet ? `${a.name} (${a.pet})` : a.name), valText = (a) => (narrow ? `${fx((a.v / total) * 100, 1)}%` : `${fx(a.v, 1)} ${unit} · ${fx((a.v / total) * 100, 1)}%`);
-  // Names, values and icons grow with the bars (12 to 15 px text, icons up to 28 px).
-  const fs = Math.round(Math.min(15, Math.max(12, bh * 0.45))) + 'px';
+  // Names, values and icons grow with the bars (12 to 15 px text, icons up to 28 px; 13 px and 20 px at the usual 22 px bars).
+  const fs = Math.round(Math.min(15, Math.max(12, bh * 0.6))) + 'px';
   probe.style('font-size', fs);
-  const iz = Math.min(28, Math.max(14, bh * 0.85)), ml = iz + 8 + Math.max(...list.map((a) => textW(label(a)))) + 14;
+  const iz = Math.min(28, Math.max(14, bh * 0.9)), ml = iz + 8 + Math.max(...list.map((a) => textW(label(a)))) + 14;
   for (const a of list) a.vw = textW(valText(a));
   const mr = Math.max(...list.map((a) => a.vw)) + 12;
   probe.remove();

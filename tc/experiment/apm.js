@@ -208,9 +208,8 @@ function apmPicker(b, spec, specs, opts) {
     // below it (a long list scrolled to put it mid-way), kept on screen. Placed against whatever box the menu is
     // positioned in, as the tab itself isn't one.
     const cur = list.querySelector('[aria-checked="true"]') || list.firstChild, pad = (e) => parseFloat(getComputedStyle(e).paddingLeft) || 0;
-    // The current spec is drawn just as the name it covers (font, size and highlight), so the name seems to stay put.
-    const bs = getComputedStyle(btn);
-    Object.assign(cur.style, { fontFamily: bs.fontFamily, fontSize: bs.fontSize, fontWeight: bs.fontWeight, letterSpacing: bs.letterSpacing, lineHeight: bs.lineHeight, background: 'color-mix(in srgb, var(--color-fg) 10%, transparent)' });
+    // The current choice is marked by its highlight alone, in the menu's own font.
+    cur.style.background = 'color-mix(in srgb, var(--color-fg) 10%, transparent)';
     list.scrollTop = Math.max(0, cur.offsetTop - (list.clientHeight - cur.offsetHeight) / 2);
     const bb = btn.getBoundingClientRect(), lb = list.getBoundingClientRect(), cb = cur.getBoundingClientRect(), ob = list.offsetParent.getBoundingClientRect();
     const x = Math.max(8, Math.min(innerWidth - lb.width - 8, bb.left + pad(btn) - (cb.left - lb.left + pad(cur))));
