@@ -506,6 +506,69 @@
    "name": "Victory Rush",
    "drop": true,
    "why": "Wowhead's tooltip switches between \"$apm\" and \"Attack Power\" from build to build; the spell didn't change"
+  },
+  {
+   "build": "70707",
+   "class": "warrior",
+   "name": "Revenge",
+   "kind": "buff",
+   "text": "Instantly counterattack an enemy for 138 to 168 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+   "was": "Instantly counterattack an enemy for 138 to 168 damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+   "ranks": [
+    [
+     6,
+     "Instantly counterattack an enemy for 138 to 168 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+     "Instantly counterattack an enemy for 138 to 168 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+    ],
+    [
+     5,
+     "Instantly counterattack an enemy for 109 to 133 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+     "Instantly counterattack an enemy for 109 to 133 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+    ],
+    [
+     4,
+     "Instantly counterattack an enemy for 73 to 91 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+     "Instantly counterattack an enemy for 73 to 91 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+    ],
+    [
+     3,
+     "Instantly counterattack an enemy for 43 to 53 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+     "Instantly counterattack an enemy for 43 to 53 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+    ],
+    [
+     2,
+     "Instantly counterattack an enemy for 31 to 37 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+     "Instantly counterattack an enemy for 31 to 37 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+    ],
+    [
+     1,
+     "Instantly counterattack an enemy for 20 to 24 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+     "Instantly counterattack an enemy for 20 to 24 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+    ]
+   ],
+   "why": "Wowhead's tooltip has its formula left in ([137.7 + (0.25 * $apm)]): worked out as the same damage plus 25% of Attack Power"
+  },
+  {
+   "build": "70707",
+   "class": "warrior",
+   "name": "Defensive Stance",
+   "drop": true,
+   "why": "Wowhead's change page says removed (gone from its trainer list; the stance comes from the level 10 quest), but the Protection talents that name it didn't change: not removed"
+  },
+  {
+   "build": "70707",
+   "class": "mage",
+   "name": "Frost Blast",
+   "drop": true,
+   "why": "Wowhead's change page says removed, but Winter's Chill and Arctic Reach, both changed in this build, still name Frost Blast: not removed"
+  },
+  {
+   "build": "70707",
+   "class": "mage",
+   "name": "Ice Lance",
+   "kind": "buff",
+   "text": "Deals 28 to 32 Frost damage to an enemy target. Deals {+300%} (up from 200%) increased damage to Frozen targets. Its cooldown is now shared with Fire Blast.†",
+   "why": "The client-file sentence listed every spell in Ice Lance's cooldown category, other classes' and NPC spells included (client_changes.py now names only the class's own)"
   }
  ]
 }

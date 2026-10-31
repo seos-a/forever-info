@@ -402,12 +402,12 @@ def changes(old, new):
                 for c in info['classes']:
                     found.setdefault((c, info['name']), {'info': info, 'fields': collections.OrderedDict()})['fields'] \
                         .setdefault((info.get('via', ''), 'affects'), []).append((info['rank'], sa, sb, sid))
-    for e in found.values(): e['lines'] = sentences(e, A, B)
+    for e in found.values(): e['lines'] = sentences(e, A, B, site)
     return {k: e for k, e in found.items() if e['lines']}, missing
 
 QUOTES_FIELDS = {f for fs in QUOTES.values() for f in fs}
 
-def sentences(e, A, B):
+def sentences(e, A, B, site):
     """[(sentence, 'good' / 'bad' / 'other')] for one talent or spell"""
     out = []
     ranks_total = e['info'].get('ranks') or 1
@@ -440,8 +440,11 @@ def sentences(e, A, B):
             elif base == 'dispel': txt = f"{subject} dispel type changed from {DISPELS.get(o, 'none')} to {DISPELS.get(n, 'none')}."
             elif base == 'school': txt = f"{subject} school changed from {school(o)} to {school(n)}."
             else:
-                ga = sorted({e2 for e2 in (A.name.get(x) for x, r in A.cat.items() if o and r['Category'] == str(o)) if e2} - {e['info']['name']})
-                gb = sorted({e2 for e2 in (B.name.get(x) for x, r in B.cat.items() if n and r['Category'] == str(n)) if e2} - {e['info']['name']})
+                # a category holds other classes' and NPC spells too (Ice Lance, 70707: Fire Blast, Earth Shock, Bite,
+                # Ragnaros Emerge...): only the site's spells of the same class share a cooldown with it in game
+                mates = lambda b, cat: sorted({site[x]['name'] for x, r in b.cat.items() if cat and r['Category'] == str(cat) and x in site
+                                               and set(site[x]['classes']) & set(e['info']['classes'])} - {e['info']['name']})
+                ga, gb = mates(A, o), mates(B, n)
                 if ga == gb: continue   # a new category of its own: the cooldown line says what changed
                 txt = (f"{subject} cooldown is now shared with {', '.join(gb)}." if gb else f"{subject} cooldown is no longer shared with {', '.join(ga)}.")
             out.append((txt.replace('Its ', 'Its ', 1), 'other')); continue

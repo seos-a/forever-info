@@ -1,6 +1,881 @@
 {
  "updates": [
   {
+   "date": "2026-10-31",
+   "version": "1.60.1",
+   "build": "70707",
+   "classes": {
+    "druid": [
+     [
+      "buff",
+      "Genesis",
+      "spell_arcane_arcane03",
+      "Balance talent",
+      "Increases the periodic damage and healing done by your spells and abilities by {+10%} (up from 5%).",
+      "",
+      [
+       [
+        5,
+        "Increases the periodic damage and healing done by your spells and abilities by {+10%} (up from 5%).",
+        ""
+       ],
+       [
+        4,
+        "Increases the periodic damage and healing done by your spells and abilities by {+8%} (up from 4%).",
+        ""
+       ],
+       [
+        3,
+        "Increases the periodic damage and healing done by your spells and abilities by {+6%} (up from 3%).",
+        ""
+       ],
+       [
+        2,
+        "Increases the periodic damage and healing done by your spells and abilities by {+4%} (up from 2%).",
+        ""
+       ],
+       [
+        1,
+        "Increases the periodic damage and healing done by your spells and abilities by {+2%} (up from 1%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Moonkin Form",
+      "spell_nature_forceofnature",
+      "Balance talent · reworded",
+      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party or raid members within 45 yards have their Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party or raid members within 45 yards have their {~spell~} Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
+     ],
+     [
+      "other",
+      "Lacerate",
+      "ability_druid_lacerate",
+      "Feral Combat talent · new",
+      "New talent: Lacerates the enemy target, making them bleed for 20 damage over 15 sec plus 10% weapon damage per existing application of Lacerate on the target. Causes a high amount of threat. This effect stacks up to 5 times on the same target."
+     ],
+     [
+      "other",
+      "Predatory Discipline",
+      "spell_druid_savagery",
+      "Feral Combat talent · new",
+      "New talent: Your Ferocious Bite ability no longer converts extra Energy into damage, but still deals extra damage based on your excess Energy."
+     ],
+     [
+      "other",
+      "Leader of the Pack",
+      "spell_nature_unyeildingstamina",
+      "Feral Combat talent · reworded",
+      "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the Critical Strike chance of all party or raid members within 45 yards by 3%.",
+      "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the {~melee and ranged~} Critical Strike chance of all party or raid members within 45 yards by 3%."
+     ],
+     [
+      "buff",
+      "Primal Bite",
+      "ability_racial_cannibalize",
+      "Feral Combat talent",
+      "Bite the target, dealing 100% normal damage plus {+42} (up from 26) and generating a high amount of threat."
+     ],
+     [
+      "buff",
+      "Shifting Power",
+      "spell_druid_displacement",
+      "Feral Combat talent",
+      "Cooldown reduced from 16 sec cooldown to {+8 sec cooldown}."
+     ],
+     [
+      "other",
+      "Naturalist",
+      "spell_nature_healingtouch",
+      "Restoration talent · reworked",
+      "Reduces the cast time of your Healing Touch {*and Wild Growth spells*} by 0.5 sec and increases all damage you deal by {*10*}%.",
+      "Reduces the cast time of your Healing Touch {~spell~} by 0.5 sec and increases all damage you deal by {~5~}%.",
+      [
+       [
+        5,
+        "Reduces the cast time of your Healing Touch {*and Wild Growth spells*} by 0.5 sec and increases all damage you deal by {*10*}%.",
+        "Reduces the cast time of your Healing Touch {~spell~} by 0.5 sec and increases all damage you deal by {~5~}%."
+       ],
+       [
+        4,
+        "Reduces the cast time of your Healing Touch {*and Wild Growth spells*} by 0.4 sec and increases all damage you deal by {*8*}%.",
+        "Reduces the cast time of your Healing Touch {~spell~} by 0.4 sec and increases all damage you deal by {~4~}%."
+       ],
+       [
+        3,
+        "Reduces the cast time of your Healing Touch {*and Wild Growth spells*} by 0.3 sec and increases all damage you deal by {*6*}%.",
+        "Reduces the cast time of your Healing Touch {~spell~} by 0.3 sec and increases all damage you deal by {~3~}%."
+       ],
+       [
+        2,
+        "Reduces the cast time of your Healing Touch {*and Wild Growth spells*} by 0.2 sec and increases all damage you deal by {*4*}%.",
+        "Reduces the cast time of your Healing Touch {~spell~} by 0.2 sec and increases all damage you deal by {~2~}%."
+       ],
+       [
+        1,
+        "Reduces the cast time of your Healing Touch {*and Wild Growth spells*} by 0.1 sec and increases all damage you deal by {*2*}%.",
+        "Reduces the cast time of your Healing Touch {~spell~} by 0.1 sec and increases all damage you deal by {~1~}%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Bloom",
+      "inv_misc_herb_felblossom",
+      "Restoration talent · new",
+      "New talent: When your Rejuvenation or Regrowth spell expires due to its duration, the target is instantly healed for an amount equal to 100% of your Spirit. If either spell expires due to being dispelled, the target is healed for 50% of your Spirit instead."
+     ],
+     [
+      "other",
+      "Swiftmend",
+      "inv_relics_idolofrejuvenation",
+      "Restoration talent · reworded",
+      "Instantly heals a target with {*your*} active Rejuvenation or Regrowth effect for an amount equal to the full duration of the periodic effect of {*the consumed spell*}.",
+      "Instantly heals a target with {~an~} active Rejuvenation or Regrowth effect for an amount equal to the full duration of the periodic effect of {~one of those spells~}."
+     ],
+     [
+      "other",
+      "Wild Growth",
+      "ability_druid_flourish",
+      "Restoration talent",
+      "Cast time changed from Instant to 3 sec cast."
+     ],
+     [
+      "other",
+      "Improved Shifting Power",
+      "ability_hunter_aspectmastery",
+      "Feral Combat talent · removed",
+      "Removed from the talent tree.",
+      "Reduces the cooldown of your Shifting Power spell by 8 sec."
+     ],
+     [
+      "other",
+      "Berserk",
+      "ability_druid_berserk",
+      "Feral Combat talent · removed",
+      "Removed from the talent tree.",
+      "Requires Cat Form, Bear Form, Dire Bear Form\nCauses your Primal Bite ability to strike up to 3 targets, removes its cooldown, and increases the critical strike chance of your Combo Point-generating abilities by 100%. Clears and grants immunity to Fear effects for the duration. Lasts 15 sec."
+     ],
+     [
+      "other",
+      "Gift of the Earthmother",
+      "spell_nature_spiritarmor",
+      "Restoration talent · removed",
+      "Removed from the talent tree.",
+      "Reduces the global cooldown by 0.5 seconds on your Rejuvenation, Swiftmend, and Wild Growth spells."
+     ]
+    ],
+    "mage": [
+     [
+      "other",
+      "Arcane Resilience",
+      "spell_arcane_arcaneresilience",
+      "Arcane talent",
+      "Increases your Armor by an amount equal to {+75%} (up from 50%) of your Intellect. Now has 3 ranks (was 2)."
+     ],
+     [
+      "other",
+      "Arcane Blast",
+      "spell_arcane_blast",
+      "Arcane talent",
+      "Blasts the target with energy, dealing 34 to 38 Arcane damage. Each time you cast Arcane Blast, you gain {-12%} (down from 15%) of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by {-100%} (down from 175%). Effect stacks up to 4 times and lasts {+18} (up from 15) sec from time of initial application."
+     ],
+     [
+      "buff",
+      "Ice Lance",
+      "spell_frost_frostblast",
+      "Frost talent",
+      "Deals 28 to 32 Frost damage to an enemy target. Deals {+300%} (up from 200%) increased damage to Frozen targets. Its cooldown is now shared with Fire Blast.†"
+     ],
+     [
+      "other",
+      "Arctic Reach",
+      "spell_shadow_darkritual",
+      "Frost talent · reworded",
+      "Increases the range of your Frostbolt, Frost Blast{*, Ice Lance*}, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+      "Increases the range of your Frostbolt, Frost Blast, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+      [
+       [
+        2,
+        "Increases the range of your Frostbolt, Frost Blast{*, Ice Lance*}, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+        "Increases the range of your Frostbolt, Frost Blast, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%."
+       ],
+       [
+        1,
+        "Increases the range of your Frostbolt, Frost Blast{*, Ice Lance*}, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%.",
+        "Increases the range of your Frostbolt, Frost Blast, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%."
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Winter's Chill",
+      "spell_frost_chillingblast",
+      "Frost talent",
+      "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by {+20%} (up from 5%) and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+      "",
+      [
+       [
+        5,
+        "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by {+20%} (up from 5%) and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        ""
+       ],
+       [
+        4,
+        "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 80% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by {+20%} (up from 5%) and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        ""
+       ],
+       [
+        3,
+        "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 60% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by {+20%} (up from 5%) and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        ""
+       ],
+       [
+        2,
+        "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 40% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by {+20%} (up from 5%) and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        ""
+       ],
+       [
+        1,
+        "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 20% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by {+20%} (up from 5%) and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Ice Barrier",
+      "spell_ice_lament",
+      "Frost talent",
+      "Shield yourself, absorbing 448 (plus 10% of your Frost spell power) damage and increasing your Frost damage by {+15%} (up from 3%) for 1 min. While shielded, your Frost damage is increased by an additional {+5%} (up from 3%) and you do not lose casting time when you take damage."
+     ],
+     [
+      "other",
+      "Accelerant",
+      "spell_fire_flamebolt",
+      "Fire talent",
+      "Now also affects Arcane Wrath.†",
+      ""
+     ],
+     [
+      "other",
+      "Frostbite",
+      "spell_frost_frostarmor",
+      "Frost talent",
+      "Its root effect now shares a diminishing returns group with Counterattack, Entrapment, Improved Hamstring, Improved Wing Clip (it had none).†",
+      ""
+     ]
+    ],
+    "paladin": [
+     [
+      "other",
+      "Spiritual Focus",
+      "spell_arcane_blink",
+      "Holy talent",
+      "Now has 5 ranks (was 2)."
+     ],
+     [
+      "other",
+      "Reverence",
+      "spell_holy_divineillumination",
+      "Holy talent",
+      "Now has 2 ranks (was 3)."
+     ],
+     [
+      "other",
+      "Improved Seals",
+      "ability_thunderbolt",
+      "Holy talent",
+      "Now has 5 ranks (was 3)."
+     ],
+     [
+      "other",
+      "Divine Precision",
+      "spell_holy_mindsooth",
+      "Holy talent · reworked",
+      "Improves your chance to hit with Holy spells by {*8%, and reduces the duration of Silence effects on you by 20*}%. Now has 2 ranks (was 3).",
+      "Improves your chance to hit with Holy spells by {~18~}%."
+     ],
+     [
+      "other",
+      "Oath of Light",
+      "spell_holy_greaterblessingoflight",
+      "Holy talent · new",
+      "New talent: Swear an Oath to protect target ally for 5 min, increasing the healing of your Holy Light on them by up to 0, your Flash of Light by up to 0, and your Holy Shock by up to 0. Only one Oath of Light may be sworn by the Paladin at any one time."
+     ],
+     [
+      "other",
+      "Boundless Light",
+      "ability_paladin_sacredcleansing",
+      "Holy talent · new",
+      "New talent: Increases the critical strike chance of your Holy Shock spell by 30% when cast on allies not affected by your Oath of Light."
+     ],
+     [
+      "other",
+      "Holy Power",
+      "spell_holy_power",
+      "Holy talent · reworked",
+      "Increases the critical strike {*healing bonus*} of your Holy spells by {*50*}%.",
+      "Increases the critical strike {~chance~} of your Holy {~Shock and Holy Strike~} spells by {~15%, and all other spells by 5~}%.",
+      [
+       [
+        5,
+        "Increases the critical strike {*healing bonus*} of your Holy spells by {*50*}%.",
+        "Increases the critical strike {~chance~} of your Holy {~Shock and Holy Strike~} spells by {~15%, and all other spells by 5~}%."
+       ],
+       [
+        4,
+        "Increases the critical strike {*healing bonus*} of your Holy spells by {*40*}%.",
+        "Increases the critical strike {~chance~} of your Holy {~Shock and Holy Strike~} spells by {~12%, and all other spells by 4~}%."
+       ],
+       [
+        3,
+        "Increases the critical strike {*healing bonus*} of your Holy spells by {*30*}%.",
+        "Increases the critical strike {~chance~} of your Holy {~Shock and Holy Strike~} spells by {~9%, and all other spells by 3~}%."
+       ],
+       [
+        2,
+        "Increases the critical strike {*healing bonus*} of your Holy spells by {*20*}%.",
+        "Increases the critical strike {~chance~} of your Holy {~Shock and Holy Strike~} spells by {~6%, and all other spells by 2~}%."
+       ],
+       [
+        1,
+        "Increases the critical strike {*healing bonus*} of your Holy spells by {*10*}%.",
+        "Increases the critical strike {~chance~} of your Holy {~Shock and Holy Strike~} spells by {~3%, and all other spells by 1~}%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Light's Vigil",
+      "ability_paladin_judgementofthepure",
+      "Holy talent · reworked",
+      "Applies Light's Vigil to {*a friendly*} target for 30 sec. {*The caster's*} next Holy Shock on {*the target incurs*} no cooldown and {*heals the target*} and their party for 326 to 344. {*Only one Vigil per Paladin*} may {*be*} active {*in each*} party. Range increased from 20 yd range to {+40 yd range}.",
+      "Applies Light's Vigil to {~the~} target for 30 sec. {~Your~} next Holy Shock {~cast~} on {~them triggers~} no cooldown and {~causes enemy targets to suffer 175 to 189 Holy damage~} and {~refund 75% of Light's Vigil's Mana cost, or allied targets to heal~} their party for 326 to 344. {~You~} may {~only have one Light's Vigil~} active {~per~} party."
+     ],
+     [
+      "buff",
+      "Redoubt",
+      "ability_defend",
+      "Protection talent",
+      "Damaging melee attacks against you have a 10% chance to increase your chance to block by {+30%} (up from 20%). Lasts 10 sec or 5 blocks.",
+      "",
+      [
+       [
+        5,
+        "Damaging melee attacks against you have a 10% chance to increase your chance to block by {+30%} (up from 20%). Lasts 10 sec or 5 blocks.",
+        ""
+       ],
+       [
+        4,
+        "Damaging melee attacks against you have a 10% chance to increase your chance to block by {+24%} (up from 16%). Lasts 10 sec or 5 blocks.",
+        ""
+       ],
+       [
+        3,
+        "Damaging melee attacks against you have a 10% chance to increase your chance to block by {+18%} (up from 12%). Lasts 10 sec or 5 blocks.",
+        ""
+       ],
+       [
+        2,
+        "Damaging melee attacks against you have a 10% chance to increase your chance to block by {+12%} (up from 8%). Lasts 10 sec or 5 blocks.",
+        ""
+       ],
+       [
+        1,
+        "Damaging melee attacks against you have a 10% chance to increase your chance to block by {+6%} (up from 4%). Lasts 10 sec or 5 blocks.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Sacred Duty",
+      "spell_holy_divineintervention",
+      "Protection talent · reworked",
+      "{*Reduces*} the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 60 sec{*, and reduces the duration of Forbearance by 10 sec*}.",
+      "{~Increases your total Stamina by 4% and reduces~} the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 60 sec.",
+      [
+       [
+        2,
+        "{*Reduces*} the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 60 sec{*, and reduces the duration of Forbearance by 10 sec*}.",
+        "{~Increases your total Stamina by 4% and reduces~} the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 60 sec."
+       ],
+       [
+        1,
+        "{*Reduces*} the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 30 sec{*, and reduces the duration of Forbearance by 5 sec*}.",
+        "{~Increases your total Stamina by 2% and reduces~} the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 30 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Shield Specialization",
+      "inv_shield_06",
+      "Protection talent",
+      "Now has 2 ranks (was 3)."
+     ],
+     [
+      "other",
+      "Swift Judgement",
+      "ability_paladin_judgementred",
+      "Protection talent · reworked",
+      "Unleash the energy of a Seal spell upon an enemy. Does not consume the Seal. Refer to individual Seals for Judgement effect. Does not share a cooldown with your Judgement ability. Now has a range: 10 yd range.",
+      "Finishes the remaining cooldown on your Judgement ability and reduces the Mana cost of your next Judgement by 100%."
+     ],
+     [
+      "buff",
+      "Improved Righteous Fury",
+      "spell_holy_sealoffury",
+      "Protection talent",
+      "While Righteous Fury is active, all damage taken is reduced by {+9%} (up from 6%).",
+      "",
+      [
+       [
+        3,
+        "While Righteous Fury is active, all damage taken is reduced by {+9%} (up from 6%).",
+        ""
+       ],
+       [
+        2,
+        "While Righteous Fury is active, all damage taken is reduced by {+6%} (up from 4%).",
+        ""
+       ],
+       [
+        1,
+        "While Righteous Fury is active, all damage taken is reduced by {+3%} (up from 2%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Stoicism",
+      "spell_holy_stoicism",
+      "Protection talent · new",
+      "New talent: Reduces the duration of Stun and Charm effects on you by 20%."
+     ],
+     [
+      "other",
+      "Holy Shield",
+      "spell_holy_blessingofprotection",
+      "Protection talent",
+      "Increases chance to block by 30% for 10 sec, and deals {-75} (down from 110) Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges. Cost reduced from 150 Mana to {+100 Mana}."
+     ],
+     [
+      "other",
+      "Iron Creed",
+      "spell_holy_improvedresistanceauras",
+      "Protection talent",
+      "Increases the threat generated by your Holy Strike ability by {+30%} (up from 25%). While Righteous Fury is active, Holy Strike also reduces your damage taken by {-6%} (down from 10%) for 6 sec. Now has 3 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Shieldsworn",
+      "spell_holy_greaterblessingofsanctuary",
+      "Protection talent · new",
+      "New talent: Reduces the cooldown of your Holy Strike ability by 4 sec. Additionally, Holy Strike now strikes with your shield, triggering your active Holy Shield and Shield Specialization talents without consuming their charges or triggering their cooldowns, and allowing you to Block spells for 6 sec."
+     ],
+     [
+      "other",
+      "Conviction",
+      "spell_holy_retributionaura",
+      "Retribution talent · reworked",
+      "Improves your chance to get a critical strike with {*all spells and*} attacks by {*6*}%. Now has 3 ranks (was 5).",
+      "Improves your chance to get a critical strike with {~melee~} attacks by {~5~}%."
+     ],
+     [
+      "other",
+      "Vindication",
+      "spell_holy_vindication",
+      "Retribution talent · reworked",
+      "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 6 for 30 sec.",
+      "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 6{~, and increase your Attack Power by 3%~} for 30 sec.",
+      [
+       [
+        3,
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 6 for 30 sec.",
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 6{~, and increase your Attack Power by 3%~} for 30 sec."
+       ],
+       [
+        2,
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 4 for 30 sec.",
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 4{~, and increase your Attack Power by 2%~} for 30 sec."
+       ],
+       [
+        1,
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 2 for 30 sec.",
+        "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 2{~, and increase your Attack Power by 1%~} for 30 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Two-Handed Weapon Specialization",
+      "inv_hammer_04",
+      "Retribution talent · reworked",
+      "Increases the {*physical*} damage you deal {*by 6%, and reduces all threat you generate by 20% while a*} two-handed melee {*weapon is equipped*}.",
+      "Increases the damage you deal {~with~} two-handed melee {~weapons by 6%~}.",
+      [
+       [
+        3,
+        "Increases the {*physical*} damage you deal {*by 6%, and reduces all threat you generate by 20% while a*} two-handed melee {*weapon is equipped*}.",
+        "Increases the damage you deal {~with~} two-handed melee {~weapons by 6%~}."
+       ],
+       [
+        2,
+        "Increases the {*physical*} damage you deal {*by 4%, and reduces all threat you generate by 14% while a*} two-handed melee {*weapon is equipped*}.",
+        "Increases the damage you deal {~with~} two-handed melee {~weapons by 4%~}."
+       ],
+       [
+        1,
+        "Increases the {*physical*} damage you deal {*by 2%, and reduces all threat you generate by 7% while a*} two-handed melee {*weapon is equipped*}.",
+        "Increases the damage you deal {~with~} two-handed melee {~weapons by 2%~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Turn Evil",
+      "spell_holy_turnundead",
+      "Retribution talent · new",
+      "New talent: Reduces the cast time of your Turn Undead spell by 1.0 sec, its cooldown by 10 sec, and allows it to affect Demons."
+     ],
+     [
+      "other",
+      "Champion of the Light",
+      "ability_paladin_enlightenedjudgements",
+      "Retribution talent · reworked",
+      "Increases your spell damage by up to 60% of your Intellect{*, and reduces the cast time of your Hammer of Wrath by 1.0 sec*}. Now has 5 ranks (was 3).",
+      "Increases your spell damage by up to 60% of your Intellect."
+     ],
+     [
+      "other",
+      "Unsealed Wrath",
+      "spell_holy_blessedresillience",
+      "Retribution talent · reworked",
+      "Renamed from Twist of Light. Your melee attacks store a copy of your active Seal for 15 sec, stacking up to 3 times. Landing an attack with a different Seal consumes all stacks, giving the stored Seal its normal chance to activate once per stack.",
+      "Reduces the Mana cost of your Seal spells by 20%, and when you replace your Seal of Command, Seal of Righteousness, Seal of Fury, or Seal of Justice with a different Seal, you gain an Echo of that Seal. Your next melee attack applies the replaced Seal's effects, consuming the Echo."
+     ],
+     [
+      "other",
+      "Improved Seal of Fury",
+      "spell_holy_righteousnessaura",
+      "Protection talent · removed",
+      "Removed from the talent tree.",
+      "When Seal of Fury's shield is fully absorbed, restore 0 Mana, increased by 15% per level the attacker is above you, up to 45%."
+     ],
+     [
+      "other",
+      "One-Handed Weapon Specialization",
+      "inv_sword_20",
+      "Protection talent · removed",
+      "Removed from the talent tree.",
+      "Increases the damage you deal with one-handed melee weapons by 10%."
+     ],
+     [
+      "other",
+      "Instrument of Law",
+      "spell_holy_divinepurpose",
+      "Retribution talent · removed",
+      "Removed from the talent tree.",
+      "Reduces the cast time of your Hammer of Wrath by 1.0 sec, and reduces all threat you generate by 20% while Righteous Fury is not active."
+     ],
+     [
+      "other",
+      "Seal of Righteousness",
+      "ability_thunderbolt",
+      "Spell · reworked",
+      "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 (plus about 8% of your Spell Power) to 82.72 (plus 12% of your Spell Power) Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.",
+      "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 (plus about 8% of your Spell Power) to 82.72 (plus 12% of your Spell Power) Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.\n{~0~}",
+      [
+       [
+        8,
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 (plus about 8% of your Spell Power) to 82.72 (plus 12% of your Spell Power) Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.",
+        "Fills the Paladin with holy spirit for 30 sec, granting each melee attack an additional 24 (plus about 8% of your Spell Power) to 82.72 (plus 12% of your Spell Power) Holy damage. Slower weapons cause more Holy damage per swing. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy will cause 187 to 203 Holy damage to an enemy.\n{~0~}"
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Righteous Fury",
+      "spell_holy_sealoffury",
+      "Spell · reworked",
+      "Increases {*all threat generated by 33%, and all*} threat generated by your Holy attacks by {*an additional*} 90%. Lasts 30 min.",
+      "Increases {~the~} threat generated by your Holy attacks by 90%. Lasts 30 min."
+     ],
+     [
+      "nerf",
+      "Seal of Fury",
+      "spell_holy_retributionaura",
+      "Spell",
+      "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 168 to 182 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+      "",
+      [
+       [
+        7,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 35 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 168 to 182 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        6,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 32 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 140 to 151 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        5,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 25 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 112 to 121 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        4,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 19 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 87 to 94 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        3,
+        "Fills the Paladin with divine fury for 30 sec, causing melee attacks to deal an additional 14 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 66 to 72 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        2,
+        "Fills you with divine fury for 30 sec, causing melee attacks to inflict an additional 9 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 48 to 52 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ],
+       [
+        1,
+        "Fills you with divine fury for 30 sec, causing melee attacks to deal an additional 6 Holy damage. While a shield is equipped, each attack also grants an absorb shield equal to 50% of the Holy damage dealt. Only one Seal can be active on the Paladin at any one time.\nUnleashing this Seal's energy inflicts 32 to 34 Holy damage to an enemy and taunts the target to attack you for {-3} (down from 4) sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Revoke",
+      "spell_holy_prayerofmendingtga",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "Remove target party or raid member's Salvation or Mass Salvation."
+     ],
+     [
+      "other",
+      "Salvation",
+      "spell_holy_sealofsalvation",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "Reduces all threat generated by target party member by 30% for 1 hour."
+     ],
+     [
+      "other",
+      "Blessing of Light",
+      "spell_holy_prayerofhealing02",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "Places a Blessing on the friendly target, increasing the effects of Holy Light spells used on the target by up to 400 and the effect Flash of Light spells used on the target by up to 115. Lasts 1 hour. Players may only have one Blessing on them per Paladin at any one time."
+     ],
+     [
+      "other",
+      "Greater Blessing of Light",
+      "spell_holy_greaterblessingoflight",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "Gives all members of the raid or group that share the same class with the target the Greater Blessing of Light, increasing the effects of Holy Light spells used on the target by up to 400 and the effect Flash of Light spells used on the target by up to 115. Lasts 1 hour. Players may only have one Blessing on them per Paladin at any one time."
+     ],
+     [
+      "other",
+      "Mass Salvation",
+      "spell_holy_greaterblessingofsalvation",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "Gives all members of the raid or group that share the same class with the target a reduction to all threat generated by 30% for 1 hour."
+     ]
+    ],
+    "priest": [
+     [
+      "other",
+      "Renewed Hope",
+      "spell_holy_holyprotection",
+      "Discipline talent · reworded",
+      "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 5 sec.",
+      "Your heals from Flash {~Heal, Binding~} Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 5 sec.",
+      [
+       [
+        5,
+        "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 5 sec.",
+        "Your heals from Flash {~Heal, Binding~} Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 5 sec."
+       ],
+       [
+        4,
+        "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 8% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 4 sec.",
+        "Your heals from Flash {~Heal, Binding~} Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 8% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 4 sec."
+       ],
+       [
+        3,
+        "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 6% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 3 sec.",
+        "Your heals from Flash {~Heal, Binding~} Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 6% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 3 sec."
+       ],
+       [
+        2,
+        "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 4% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 2 sec.",
+        "Your heals from Flash {~Heal, Binding~} Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 4% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 2 sec."
+       ],
+       [
+        1,
+        "Your heals from Flash Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 2% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 1 sec.",
+        "Your heals from Flash {~Heal, Binding~} Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 2% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 1 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Holy Binding",
+      "spell_holy_blindingheal",
+      "Holy talent · new",
+      "New talent: Each time you heal a target other than yourself with Flash Heal, you are healed for 50% as much. This healing generates no threat."
+     ],
+     [
+      "buff",
+      "Shadow Word: Death",
+      "spell_shadow_demonicfortitude",
+      "Spell",
+      "A word of dark binding that inflicts 447 to 474 Shadow damage to the target. If your target is not killed by Shadow Word: Death, you take backlash damage equal to {+30%} (up from 10%) of your maximum health.",
+      "",
+      [
+       [
+        4,
+        "A word of dark binding that inflicts 447 to 474 Shadow damage to the target. If your target is not killed by Shadow Word: Death, you take backlash damage equal to {+30%} (up from 10%) of your maximum health.",
+        ""
+       ],
+       [
+        3,
+        "A word of dark binding that inflicts 402 to 426 Shadow damage to the target. If your target is not killed by Shadow Word: Death, you take backlash damage equal to {+30%} (up from 10%) of your maximum health.",
+        ""
+       ],
+       [
+        2,
+        "A word of dark binding that inflicts 368 to 391 Shadow damage to the target. If your target is not killed by Shadow Word: Death, you take backlash damage equal to {+30%} (up from 10%) of your maximum health.",
+        ""
+       ],
+       [
+        1,
+        "A word of dark binding that inflicts 294 to 311 Shadow damage to the target. If your target is not killed by Shadow Word: Death, you take backlash damage equal to {+30%} (up from 10%) of your maximum health.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "warlock": [
+     [
+      "other",
+      "Improved Drains",
+      "spell_shadow_haunting",
+      "Affliction talent · reworded",
+      "Increases {*Health*} drained{*,*} damage done{*, or Mana drained*} by your Drain Life, Drain Soul, and {*Drain Mana*} spells by 20%.",
+      "Increases {~health~} drained {~or~} damage done by your Drain Life, Drain Soul, and {~Wrack~} spells by 20%.",
+      [
+       [
+        3,
+        "Increases {*Health*} drained{*,*} damage done{*, or Mana drained*} by your Drain Life, Drain Soul, and {*Drain Mana*} spells by 20%.",
+        "Increases {~health~} drained {~or~} damage done by your Drain Life, Drain Soul, and {~Wrack~} spells by 20%."
+       ],
+       [
+        2,
+        "Increases {*Health*} drained{*,*} damage done{*, or Mana drained*} by your Drain Life, Drain Soul, and {*Drain Mana*} spells by 13%.",
+        "Increases {~health~} drained {~or~} damage done by your Drain Life, Drain Soul, and {~Wrack~} spells by 13%."
+       ],
+       [
+        1,
+        "Increases {*Health*} drained{*,*} damage done{*, or Mana drained*} by your Drain Life, Drain Soul, and {*Drain Mana*} spells by 7%.",
+        "Increases {~health~} drained {~or~} damage done by your Drain Life, Drain Soul, and {~Wrack~} spells by 7%."
+       ]
+      ]
+     ]
+    ],
+    "warrior": [
+     [
+      "buff",
+      "Revenge",
+      "ability_warrior_revenge",
+      "Spell · reworked",
+      "Instantly counterattack an enemy for 138 to 168 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+      "Instantly counterattack an enemy for 138 to 168 damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+      [
+       [
+        6,
+        "Instantly counterattack an enemy for 138 to 168 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 138 to 168 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        5,
+        "Instantly counterattack an enemy for 109 to 133 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 109 to 133 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        4,
+        "Instantly counterattack an enemy for 73 to 91 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 73 to 91 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        3,
+        "Instantly counterattack an enemy for 43 to 53 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 43 to 53 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        2,
+        "Instantly counterattack an enemy for 31 to 37 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 31 to 37 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        1,
+        "Instantly counterattack an enemy for 20 to 24 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 20 to 24 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Improved Hamstring",
+      "ability_shockwave",
+      "Arms talent",
+      "Its root effect now shares a diminishing returns group with Counterattack, Entrapment, Frostbite, Improved Wing Clip (it had none).†",
+      ""
+     ]
+    ],
+    "hunter": [
+     [
+      "other",
+      "Counterattack",
+      "ability_warrior_challange",
+      "Survival talent",
+      "Now shares a diminishing returns group with Entrapment, Frostbite, Improved Hamstring, Improved Wing Clip (it had none).†",
+      ""
+     ],
+     [
+      "other",
+      "Entrapment",
+      "spell_nature_stranglevines",
+      "Survival talent",
+      "Its root effect now shares a diminishing returns group with Counterattack, Frostbite, Improved Hamstring, Improved Wing Clip (was Entangling Roots, Frost Nova, Nature's Grasp).†",
+      ""
+     ],
+     [
+      "other",
+      "Improved Wing Clip",
+      "ability_rogue_trip",
+      "Survival talent",
+      "Its root effect now shares a diminishing returns group with Counterattack, Entrapment, Frostbite, Improved Hamstring (it had none).†",
+      ""
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.70685",
+    "1.60.1.70707"
+   ]
+  },
+  {
    "date": "2026-10-29",
    "version": "1.60.1",
    "build": "70685",
