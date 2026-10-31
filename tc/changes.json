@@ -183,11 +183,11 @@
       "Blasts the target with energy, dealing 34 to 38 Arcane damage. Each time you cast Arcane Blast, you gain {-12%} (down from 15%) of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by {-100%} (down from 175%). Effect stacks up to 4 times and lasts {+18} (up from 15) sec from time of initial application."
      ],
      [
-      "other",
+      "buff",
       "Ice Lance",
       "spell_frost_frostblast",
       "Frost talent",
-      "Deals 28 to 32 Frost damage to an enemy target. Deals {+300%} (up from 200%) increased damage to Frozen targets. Its cooldown is now shared with Bite, Critically Injured, Dead Serrakis, Earth Shock, Electrified Net, Exorcism, Felfire, Fire Blast, Flame Shock, Frost Shock, Hand of Thaurissan, Injured, Magma Blast, Might of Ragnaros, Mind Blast, Near Death, Ragnaros Emerge, Scald, Scorpid Poison, Set 1% HP, Shock, Wind Strike, Worm Blast, Wrath of Ragnaros, dmg, dmg2, dmg3, dmg4, dmg5, dmg8.†"
+      "Deals 28 to 32 Frost damage to an enemy target. Deals {+300%} (up from 200%) increased damage to Frozen targets. Its cooldown is now shared with Fire Blast.†"
      ],
      [
       "other",
@@ -250,14 +250,6 @@
       "spell_ice_lament",
       "Frost talent",
       "Shield yourself, absorbing 448 (plus 10% of your Frost spell power) damage and increasing your Frost damage by {+15%} (up from 3%) for 1 min. While shielded, your Frost damage is increased by an additional {+5%} (up from 3%) and you do not lose casting time when you take damage."
-     ],
-     [
-      "other",
-      "Frost Blast",
-      "spell_ice_magicdamage",
-      "Spell · removed",
-      "Removed from the spellbook.",
-      "Quickly launch a weak blast of frost at the enemy, causing 80 to 88 Frost damage and slowing movement speed by 40% for 9 sec."
      ],
      [
       "other",
@@ -803,52 +795,44 @@
     ],
     "warrior": [
      [
-      "other",
+      "buff",
       "Revenge",
       "ability_warrior_revenge",
       "Spell · reworked",
-      "Instantly counterattack an enemy for {*[137.7 + (0.25 * $apm)]*} to {*[168.3 + (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
-      "Instantly counterattack an enemy for {~138~} to {~168~} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+      "Instantly counterattack an enemy for 138 to 168 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+      "Instantly counterattack an enemy for 138 to 168 damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
       [
        [
         6,
-        "Instantly counterattack an enemy for {*[137.7 + (0.25 * $apm)]*} to {*[168.3 + (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
-        "Instantly counterattack an enemy for {~138~} to {~168~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+        "Instantly counterattack an enemy for 138 to 168 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 138 to 168 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ],
        [
         5,
-        "Instantly counterattack an enemy for {*[109.07 + (0.25 * $apm)]*} to {*[132.93 + (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
-        "Instantly counterattack an enemy for {~109~} to {~133~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+        "Instantly counterattack an enemy for 109 to 133 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 109 to 133 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ],
        [
         4,
-        "Instantly counterattack an enemy for {*[*}73 {*+ (0.25 * $apm)]*} to {*[*}91 {*+ (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 73 to 91 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
         "Instantly counterattack an enemy for 73 to 91 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ],
        [
         3,
-        "Instantly counterattack an enemy for {*[*}43 {*+ (0.25 * $apm)]*} to {*[*}53 {*+ (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 43 to 53 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
         "Instantly counterattack an enemy for 43 to 53 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ],
        [
         2,
-        "Instantly counterattack an enemy for {*[30.6 + (0.25 * $apm)]*} to {*[37.4 + (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
-        "Instantly counterattack an enemy for {~31~} to {~37~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+        "Instantly counterattack an enemy for 31 to 37 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 31 to 37 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ],
        [
         1,
-        "Instantly counterattack an enemy for {*[*}20 {*+ (0.25 * $apm)]*} to {*[*}24 {*+ (0.25 * $apm)]*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for 20 to 24 {*(plus 25% of your Attack Power)*} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
         "Instantly counterattack an enemy for 20 to 24 damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ]
       ]
-     ],
-     [
-      "other",
-      "Defensive Stance",
-      "ability_warrior_defensivestance",
-      "Spell · removed",
-      "Removed from the spellbook.",
-      "A defensive combat stance. Decreases damage taken by 10% and damage caused by 10%. Increases all threat generated by 30%."
      ],
      [
       "other",
