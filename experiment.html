@@ -157,6 +157,7 @@ document.head.appendChild(t);})();
   .rr-fold:hover { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
   .rr-fold::before { content: ""; width: .45rem; height: .45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
   .rr-card.lx-bestcard { align-self: center; width: fit-content; max-width: 100%; } /* only as wide as its cards */
+  .rr-card.lx-bestcard.collapsed { align-self: stretch; width: auto; } /* folded: full width, like the other folded boxes */
   .rr .lx-matrix th:first-child { width: 1%; } /* the Race column fits its names */
   .rr-card.collapsed .rr-fold::before { transform: rotate(-45deg); }
   .rr-card.collapsed > :not(.rr-cardhead):not(.rr-title) { display: none; }
@@ -401,6 +402,7 @@ document.head.appendChild(t);})();
   .hr-fold:hover { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
   .hr-fold::before { content: ""; width: .45rem; height: .45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
   .hr-card.lx-bestcard { align-self: center; width: fit-content; max-width: 100%; } /* only as wide as its cards */
+  .hr-card.lx-bestcard.collapsed { align-self: stretch; width: auto; } /* folded: full width, like the other folded boxes */
   .hr-card.collapsed .hr-fold::before { transform: rotate(-45deg); }
   .hr-card.collapsed > :not(.hr-cardhead):not(.hr-title) { display: none; }
   .hr-card.collapsed .hr-cardhead > :not(.hr-title) { display: none; }
@@ -541,6 +543,7 @@ document.head.appendChild(t);})();
   .rr-fold:hover { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
   .rr-fold::before { content: ""; width: .45rem; height: .45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
   .rr-card.lx-bestcard { align-self: center; width: fit-content; max-width: 100%; } /* only as wide as its cards */
+  .rr-card.lx-bestcard.collapsed { align-self: stretch; width: auto; } /* folded: full width, like the other folded boxes */
   .rr .lx-matrix th:first-child { width: 1%; } /* the Race column fits its names */
   .rr-card.collapsed .rr-fold::before { transform: rotate(-45deg); }
   .rr-card.collapsed > :not(.rr-cardhead):not(.rr-title) { display: none; }
