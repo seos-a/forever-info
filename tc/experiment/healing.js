@@ -232,7 +232,7 @@ const sign = (v, d) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(
 const num = (v) => (v == null ? '' : d3.format(',')(v));
 const FIGHT = { all: 'all fight lengths', 120: '2 minute fights', 180: '3 minute fights', 300: '5 minute fights', 420: '7 minute fights' };
 const SCOPE = { All: 'all races', Alliance: 'Alliance races', Horde: 'Horde races' };
-const HEALERS = ['Holy Priest', 'Restoration Druid', 'Restoration Shaman'];
+const HEALERS = ['Holy Priest', 'Holy Paladin', 'Restoration Druid', 'Restoration Shaman'];
 // WoW class colours; Priest uses the page's text colour so it reads on a light theme too.
 const HEALER_COLOR = { 'Holy Paladin': '#F48CBA', 'Restoration Druid': '#FF7C0A', 'Restoration Shaman': '#0070DD' };
 const healerColor = (h) => (HEALER_COLOR[h] ? `color-mix(in srgb, ${HEALER_COLOR[h]} 85%, var(--color-fg))` : 'var(--color-fg)');
@@ -905,7 +905,8 @@ function drawHealBreakdown(p, view, data, fitH) {
   chPat.append('rect').attr('width', 6).attr('height', 8).style('fill', c).attr('fill-opacity', 0.35);
   chPat.append('rect').attr('width', 3).attr('height', 8).style('fill', c);
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
-  g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || null).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
+  // The icon from the ability icons, else the spell's own icon file (the healing sim names one for every spell).
+  g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || (a.icon ? `images/icons/${a.icon}.jpg` : null)).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
   g.append('text').attr('class', 'lab').attr('x', iz + 6).attr('y', bh / 2 + 4).text((a) => a.name);
   const direct = (a) => Math.max(0, a.hps - a.hot);
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('width', (a) => Math.max(0, x(direct(a)) - x(0))).style('fill', (a) => (isChannel(a) ? `url(#${pid}-ch)` : c)).attr('fill-opacity', (a) => (isAbsorb(a) ? 0.25 : 0.9)).style('stroke', (a) => (isAbsorb(a) ? c : 'none')).attr('stroke-width', 1.5);
