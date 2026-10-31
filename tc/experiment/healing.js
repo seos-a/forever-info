@@ -780,28 +780,30 @@ const SITUATIONS = [
   { id: 'rot', label: 'Raid-wide rot', about: 'Light damage on one tank; everyone else loses health slowly and steadily.' },
   { id: 'pulses', label: 'Raid hits', about: 'Light damage on one tank; every 20 sec the whole raid takes a big hit.' },
   { id: 'tank-raid', label: 'Tank, rot and raid hits', about: 'The sim’s default: both tanks hit steadily and the whole raid hit every 20 sec.' },
-  { id: 'heavy', label: 'Heavy raid hits', about: 'Steady tank damage, slow rot, and the whole raid hit hard every 15 sec; more than five healers can keep up with.' },
+  { id: 'heavy', label: 'Heavy raid hits', about: 'Steady tank damage, slow rot, and the whole raid hit hard every 15 sec; more than the healers can keep up with.' },
 ];
 const SIT_METRIC = {
   hps: { fmt: (v) => num(Math.round(v)), note: 'effective healing per second (the light end of each bar is the middle half of the runs)' },
-  share: { fmt: (v) => fx(v, 1) + '%', note: 'the healer’s share of the whole raid’s effective healing (five healers; both Shamans together for Shaman)' },
+  share: { fmt: (v) => fx(v, 1) + '%', note: 'the healer’s share of the whole raid’s effective healing (four healers)' },
   overPct: { fmt: (v) => fx(v, 1) + '%', note: 'the share of healing that was overhealing' },
   idle: { fmt: (v) => fx(v, 1) + '%', note: 'the share of the fight spent not casting' },
   manaEnd: { fmt: num, note: 'mana left when the fight ends' },
 };
 
 // Each situation is a group of bars, one per healer (no racials).
+const SIT_ORDER = ['priest', 'paladin', 'druid', 'shaman'];
 function drawSituations(p, rows, healers) {
   const box = $('.lx-sits'), key = SIT_METRIC[p.sitMetric] ? p.sitMetric : 'hps', m = SIT_METRIC[key];
   box.replaceChildren();
-  const groups = SITUATIONS.map((st) => ({ ...st, items: healers.map(([cls, name]) => {
+  // Every healer in the sim's raid, Holy Paladin too: it heals normally at the normal health this box runs at.
+  const all = [...healers, ...(healers.some(([c]) => c === 'paladin') ? [] : [['paladin', 'Holy Paladin']])].sort((a, b) => SIT_ORDER.indexOf(a[0]) - SIT_ORDER.indexOf(b[0]));
+  const groups = SITUATIONS.map((st) => ({ ...st, items: all.map(([cls, name]) => {
     const r = rows.find((x) => x.preset === st.id && x.cls === cls);
-    // Shaman's share counts both Shamans: the sim's raid has two, and its numbers are their average.
-    return r && { ...r, name, color: healerColor(name), value: key === 'share' && cls === 'shaman' ? r.share * 2 : r[key] };
+    return r && { ...r, name, color: healerColor(name), value: r[key] };
   }).filter(Boolean) })).filter((g) => g.items.length);
   const first = groups[0] && groups[0].items[0];
   $('.lx-sitnote').textContent = groups.length
-    ? `Each healer with no racials in each of the sim’s damage presets, at its normal health and damage, 3 minute fights. Bars show ${m.note}. In the sim’s raid the two Shamans heal the tanks and the Priest, Paladin and Druid heal the raid, so a fight that hits only the tanks leaves the raid healers little to do. Hover a bar for the numbers.`
+    ? `Each healer with no racials in each of the sim’s damage presets, at its normal health and damage, 3 minute fights. Bars show ${m.note}. In the sim’s raid the Shaman heals the tanks and the Priest, Paladin and Druid heal the raid, so a fight that hits only the tanks leaves the raid healers little to do. Hover a bar for the numbers.`
     : '';
   if (!first) return;
   const bh = 16, gap = 4, ggap = 14, iz = 16, W = Math.max(280, box.clientWidth);
@@ -835,7 +837,7 @@ function drawSituations(p, rows, healers) {
   row.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       tip.replaceChildren(el('div', 'h', `${d.name}: ${d.sit.label}`), el('div', 'about', d.sit.about),
-        tipLine('Healing per second', `${num(d.hps)} (middle half ${num(d.q1)}–${num(d.q3)})`), tipLine('Share of raid healing', fx(d.cls === 'shaman' ? d.share * 2 : d.share, 1) + '%' + (d.cls === 'shaman' ? ' (both Shamans)' : '')),
+        tipLine('Healing per second', `${num(d.hps)} (middle half ${num(d.q1)}–${num(d.q3)})`), tipLine('Share of raid healing', fx(d.share, 1) + '%'),
         tipLine('Overhealing', fx(d.overPct, 1) + '%'), tipLine('Time idle', fx(d.idle, 1) + '%'), tipLine('Mana left at end', num(d.manaEnd)),
         tipLine('Raid damage taken', num(d.raidDps) + ' per sec'), tipLine('Raid deaths', fx(d.deaths, 1) + ' per fight'));
       tip.hidden = false;
