@@ -74,7 +74,7 @@ body{position:relative;min-height:100vh}
 
 # The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown at the bottom, centered). WoWSims has no release
 # number for it: its version tags stop at v0.0.140 (September), on another line of history.
-SIMS_BUILD, SIMS_DATE = '5d4dd1c', 'Oct 27 2026'
+SIMS_BUILD, SIMS_DATE = '376a6aa', 'Oct 30 2026'
 
 
 def build(head_extra=''):
