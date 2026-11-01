@@ -1143,10 +1143,14 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
 .build-stamp{position:fixed;left:10px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap}
 @media (max-width:820px){.build-stamp{position:static;display:block;text-align:center;margin:8px 0 0;order:100}}
 @media (min-width:821px){.frame{padding-bottom:11px!important}}   /* the footer ends level with the version stamp */
-/* the Experiment page (race sims, tc/experiment.py): a barely visible link, bottom right */
-.xp-link{position:fixed;right:4px;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffffff59;text-decoration:none}
-.xp-link:hover{color:#ffffffb0}
-@media (max-width:820px){.xp-link{position:static;display:block;text-align:center;margin:4px 0 8px;order:101}}
+/* the Simulations page (race sims, tc/experiment.py): a red WoW menu button (the login screen's "Quit"), bottom right */
+.xp-link{position:fixed;right:10px;bottom:8px;z-index:30;min-width:84px;padding:3px 14px 4px;box-sizing:border-box;text-align:center;
+  font:700 13px/1.25 var(--font);color:#ffd100;text-decoration:none;text-shadow:1px 1px 0 #000,0 0 3px #000;border-radius:3px;
+  background:linear-gradient(180deg,#c21a10 0%,#8e0c06 45%,#6a0703 55%,#4a0402 100%);border:1px solid #000;
+  box-shadow:inset 0 1px 0 #ff6a4a66,inset 0 0 6px #000a,0 0 0 1px #8d8d8d,0 0 0 2px #3a3a3a,0 0 0 3px #000,0 2px 5px #000}
+.xp-link:hover{color:#fff;background:linear-gradient(180deg,#e0281a 0%,#a8140a 45%,#7e0c05 55%,#580703 100%)}
+.xp-link:active{background:linear-gradient(180deg,#4a0402 0%,#6a0703 45%,#8e0c06 100%);padding:4px 14px 3px}
+@media (max-width:820px){.xp-link{position:static;display:block;width:max-content;margin:6px auto 10px;order:101}}
 /* ---- Raid Composition page ---- */
 #app[data-mode="raid"] .main>.status,#app[data-mode="raid"] .trees,#app[data-mode="raid"] .orderbox,#app[data-mode="raid"] .code-grp{display:none}
 .raid{display:grid;gap:12px}
@@ -2611,6 +2615,6 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
   ["pointerenter","pointerdown","focus"].forEach(ev=>$("thHallow").addEventListener(ev,warm,{once:true}));
   set(f); $("thAlly").onclick=()=>set("a"); $("thHorde").onclick=()=>set("h"); $("thHallow").onclick=()=>set("w",true); })();
 </script>
-<a class="xp-link" href="experiment">Simulations</a>
+<a class="xp-link" href="sims">Sims</a>
 </body>
 </html>

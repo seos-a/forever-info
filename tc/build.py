@@ -210,9 +210,14 @@ for k,t,d in PAGES:
         pg=pg.replace(old,new)
     pg=_re.sub(r'<meta name="description" content="[^"]*">',f'<meta name="description" content="{d}">',pg,count=1)
     open(f'../web/{k}.html','w',encoding='utf-8',newline='\n').write(pg)
-# ---- the Experiment page (foreverinfo.io/experiment): the race sims dashboard, standalone (experiment.py) ----
+# ---- the Simulations page (foreverinfo.io/sims): the race sims dashboard, standalone (experiment.py) ----
 import experiment
-open('../web/experiment.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC))
+open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC))
+# its old address, /experiment, sends visitors on to /sims (keeping ?... and #healing)
+open('../web/experiment.html','w',encoding='utf-8',newline='\n').write('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex">'
+    '<title>Simulations – Forever Info</title><link rel="canonical" href="https://foreverinfo.io/sims">'
+    '<script>location.replace("sims"+location.search+location.hash)</script>'
+    '<meta http-equiv="refresh" content="0;url=sims"><a href="sims">Simulations</a>\n')
 A=_json.load(open('assets.json', encoding='utf-8'))
 models=sorted(set(_re.findall(r'images/models/(\d+)\.png',web)))
 # every icon the data uses (so a new talent, spell or tab from a beta sync gets its icon), plus the hand list in assets.json

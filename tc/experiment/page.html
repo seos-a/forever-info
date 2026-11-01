@@ -99,6 +99,7 @@
   .rr table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
   .rr th { position: sticky; top: 0; background: var(--color-panel); text-align: right; font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; z-index: 1; }
   .rr th.t, .rr td.t { text-align: left; }
+  .rr .lx-matrix th:not(.t), .rr .lx-matrix td:not(.t) { text-align: center; }
   .rr .lx-matrix td.lx-pickrace { cursor: pointer; }
   .rr .lx-matrix td.lx-pickrace:hover { text-decoration: underline; }
   .rr .lx-matrix td.lx-pickrace.picked { font-weight: 700; box-shadow: inset 2px 0 0 var(--color-fg); }
@@ -349,6 +350,7 @@
   .hr table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
   .hr th { position: sticky; top: 0; background: var(--color-panel); text-align: right; font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; z-index: 1; }
   .hr th.t, .hr td.t { text-align: left; }
+  .hr .lx-matrix th:not(.t), .hr .lx-matrix td:not(.t) { text-align: center; }
   .hr .lx-matrix td.lx-pickrace { cursor: pointer; }
   .hr .lx-matrix td.lx-pickrace:hover { text-decoration: underline; }
   .hr .lx-matrix td.lx-pickrace.picked { font-weight: 700; box-shadow: inset 2px 0 0 var(--color-fg); }
@@ -489,6 +491,7 @@
   .rr table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
   .rr th { position: sticky; top: 0; background: var(--color-panel); text-align: right; font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; z-index: 1; }
   .rr th.t, .rr td.t { text-align: left; }
+  .rr .lx-matrix th:not(.t), .rr .lx-matrix td:not(.t) { text-align: center; }
   .rr .lx-matrix td.lx-pickrace { cursor: pointer; }
   .rr .lx-matrix td.lx-pickrace:hover { text-decoration: underline; }
   .rr .lx-matrix td.lx-pickrace.picked { font-weight: 700; box-shadow: inset 2px 0 0 var(--color-fg); }
@@ -657,7 +660,6 @@
     <div class="rr-cardhead"><h2>Top Race for Each Spec</h2>
       <div class="rr-tools"><div class="rr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
     </div>
-    <p class="rr-note">Click a spec to see its charts and builds below.</p>
     <div class="rr-specs lx-cards" data-source="bestBySpec"></div>
   </section>
 
@@ -765,7 +767,6 @@
     <div class="hr-cardhead"><h2>Top Race for Each Healer</h2>
       <div class="hr-tools"><div class="hr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
     </div>
-    <p class="hr-note">Click a healer to see its charts and fights below.</p>
     <div class="hr-specs lx-cards" data-source="healBest"></div>
   </section>
 
@@ -867,7 +868,6 @@
     <div class="rr-cardhead"><h2>Top Race for Each Tank</h2>
       <div class="rr-tools"><div class="rr-seg lx-measure" data-p="bestMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-fight" data-p="bestFight" role="group" aria-label="Fight length"></div></div>
     </div>
-    <p class="rr-note">Click a spec to see its charts and builds below.</p>
     <div class="rr-specs lx-cards" data-source="tankBest"></div>
   </section>
 

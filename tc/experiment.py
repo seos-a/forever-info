@@ -1,4 +1,4 @@
-"""Builds the Experiment page (foreverinfo.io/experiment): the "Forever Race/Spec Comparison" dashboard
+"""Builds the Simulations page (foreverinfo.io/sims): the "Forever Race/Spec Comparison" dashboard
 (https://claude.ai/artifact/KhLhWEBf6f1ceiUyotPXUB, DPS / Healing / Tanks race sims) as a standalone page.
 
 experiment/ holds a copy of the dashboard's files: page.html (its index.html), the scripts it loads
@@ -21,7 +21,7 @@ RUNTIME = """
 (function(){
 const raw = window.__DATA, cache = {}, calcs = {}, subs = [], TABS = ['dps', 'healing', 'tanks'];
 const params = Object.assign({}, window.__PARAMS);
-const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /experiment#healing opens the Healing tab
+const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /sims#healing opens the Healing tab
 const run = (fn) => { try { fn(); } catch (e) { console.error(e); } };
 const redraw = () => subs.forEach(run);
 window.dash = {

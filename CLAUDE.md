@@ -85,10 +85,10 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       Server hotfixes are in no client table (they come from the realm, cached in the game's DBCache.bin): Blood Fury's
       2 min cooldown is still 3 min in 70685's table, so a client change that disagrees with the site's tooltip row is the
       server's to decide and isn't listed. Client changes before 70532 aren't recorded (wowf builds start at 70245)
-  - `experiment.py` + `experiment/`: the Experiment page (`/experiment`, linked faintly bottom right on every page as "Simulations"): DPS /
+  - `experiment.py` + `experiment/`: the Simulations page (`/sims`, linked bottom right on every page by a red WoW "Sims" button): DPS /
     Healing / Tanks race sims. `experiment/` is the only source: the page (`page.html`), its scripts and its datasets
     (`data/<id>.json`); edit them there and rebuild. `experiment.py` stands in for the dashboard runtime the page was first
-    written for and `build.py` writes `web/experiment.html` (not indexed). The page began as the "Forever Race/Spec
+    written for and `build.py` writes `web/sims.html` (not indexed), plus `web/experiment.html`, which forwards the old `/experiment` address to `/sims`. The page began as the "Forever Race/Spec
     Comparison" dashboard artifact (https://claude.ai/artifact/KhLhWEBf6f1ceiUyotPXUB), which is now an archive (last
     synced Oct 28, 2026, before the build renames): don't update it or copy from it. The DPS tab's Gear switch
     ("Classic pre-raid") reads `data/pb_<id>.json` in place of `<id>` (sims, targets, breakdown, apm, regear, setup, timeline); those
