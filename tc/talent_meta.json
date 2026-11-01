@@ -56,7 +56,7 @@
    [
     [
      "Instant",
-     "16 sec cooldown"
+     "8 sec cooldown"
     ]
    ]
   ],
@@ -79,7 +79,7 @@
      "40 yd range"
     ],
     [
-     "Instant",
+     "3 sec cast",
      "6 sec cooldown"
     ]
    ]
@@ -302,7 +302,7 @@
    [
     [
      "730 Mana",
-     "20 - 40 yd range"
+     "40 yd range"
     ],
     [
      "1.5 sec cast",
