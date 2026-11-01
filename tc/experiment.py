@@ -62,11 +62,18 @@ CSS = """
   --cds-shadow-popover:0 8px 24px #00000052,0 2px 6px #0003;--cds-surface-popover:#1f1e1c;--cds-text-secondary:#c3c2b7}
 html{background:var(--color-bg)}
 body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
-.xp-top{max-width:1400px;margin:0 auto;padding:14px 16px 0;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.xp-top a{color:var(--color-fg-muted);text-decoration:none;font-size:.8125rem}
-.xp-top a:hover{color:var(--color-fg)}
 #dash-root{max-width:1400px;margin:0 auto;padding:16px 16px 52px;box-sizing:border-box}
-@media (max-width:600px){#dash-root{padding:10px 10px 52px}.xp-top{padding:10px 10px 0}}
+@media (max-width:600px){#dash-root{padding:10px 10px 52px}}
+/* back to the main site: the red WoW menu button its "Sims" link uses (template2.html's .xp-link), as the login screen's
+   "Quit", in the page's bottom right corner */
+.xp-quit{position:absolute;right:10px;bottom:8px;z-index:30;width:118px;height:20px;padding:0;box-sizing:border-box;
+  display:flex;align-items:center;justify-content:center;font:700 12px/1 Verdana,Tahoma,"DejaVu Sans",Geneva,sans-serif;
+  color:#ffd100;text-decoration:none;text-shadow:1px 1px 0 #000,0 0 3px #000;border-radius:3px;
+  background:linear-gradient(180deg,#c21a10 0%,#8e0c06 45%,#6a0703 55%,#4a0402 100%);border:1px solid #000;
+  box-shadow:inset 0 1px 0 #ff6a4a66,inset 0 0 6px #000a,0 0 0 1px #8d8d8d,0 0 0 2px #3a3a3a,0 0 0 3px #000,0 2px 5px #000}
+.xp-quit:hover{color:#fff;background:linear-gradient(180deg,#e0281a 0%,#a8140a 45%,#7e0c05 55%,#580703 100%)}
+.xp-quit:active{background:linear-gradient(180deg,#4a0402 0%,#6a0703 45%,#8e0c06 100%);padding-top:2px}
+@media (max-width:600px){#dash-root{padding-bottom:84px}.xp-quit{right:auto;left:50%;margin-left:-59px;bottom:46px}}   /* phones: centered above the stamp */
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
 .xp-stamp{position:absolute;left:0;right:0;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap;text-align:center}
@@ -120,11 +127,11 @@ def build(head_extra=''):
 <script>{RUNTIME}</script>
 {head_extra}</head>
 <body>
-<header class="xp-top"><a href="/">&larr; Forever Info</a></header>
 <div id="dash-root">
 {markup}
 </div>
 <div class="xp-stamp">WoWSims Version {SIMS_BUILD} (Beta)<br>{SIMS_DATE}</div>
+<a class="xp-quit" href="/">Quit</a>
 {js}</body>
 </html>
 """
