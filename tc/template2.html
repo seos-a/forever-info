@@ -1295,6 +1295,7 @@ body.hallow .rc-pl,body.hallow .rc-pl b{color:#9be84a;text-shadow:-1px -1px 0 #0
 <section class="landing" id="landing" aria-label="Choose a class">
   <nav class="pick" id="pick"></nav>
   <nav class="lp-ql" id="lpLinks" aria-label="Quick Info"></nav>
+  <div class="build-stamp"></div>
 </section>
 <div class="frame" id="app" hidden>
 <nav class="mtabs" id="mtabs" aria-label="Pages"></nav>
@@ -2449,19 +2450,26 @@ document.querySelectorAll(".side .sgrp>.hdr").forEach(h=>{
 
 /* ---- Logo tagline: one of these is picked at random on every visit (the chat one only for someone refreshing fast) ---- */
 const TAGLINES=[
-  "Just when I thought I was out, they pull me back in",
-  "Walking today, towards tomorrow",
-  "Now with 100% more murlocs!!!",
-  "Party time!!!",
-  "My wife she took the kids",
-  "They couldn’t have picked a better name?",
-  "Beast mode: enabled",
+  "Just when i thought i was out, they pull me back in",
+  "walking today, towards tomorrow",
+  "now with 100% more murlocs!!!",
+  "party time!!!",
+  "Beast Mode: Enabled",
   "LF 2 DPS BRD ARENA RUNS SGC HR",
-  "Does anyone have any extra agi scrolls?",
-  "God has forgotten us",
   "<ALL MEN ARE FRIENDS>",
   "does rogue even have a dev",
   "recklessness is still a 30 min cd btw",
+  "my dad actually worked at blizzard",
+  "King’s honor, friend",
+  "Go with honor, friend",
+  "Ya got my attention",
+  "me not that kind of orc!",
+  "Stay away from the voodoo",
+  "Greetings, traveler",
+  "BY FIRE BE PURGED",
+  "DUST TO DUST",
+  "You there, check out that noise!",
+  "Lapdogs, all of you!",
 ];
 const CHAT_TAGLINE="chat is moving so fast no one will notice i'm gay";   // only after 5+ loads within 30 seconds
 let setTagline=()=>{};   // the Hallow's End theme always shows its own tagline; the others pick one at random
@@ -2596,9 +2604,9 @@ const GOBLIN_LINES=["GoblinMaleGruffNPCGreeting01","GoblinMaleGruffNPCGreeting02
   const idle=f=>window.requestIdleCallback?requestIdleCallback(f,{timeout:3000}):setTimeout(f,300);
   if(document.readyState==="complete") setTimeout(()=>idle(go),800); else addEventListener("load",()=>setTimeout(()=>idle(go),800)); })();
 /* the beta version, bottom left like the WoW login screen (tc/version.json, kept up to date by tc/changelog.py) */
-(function(){ const V=/*VERSION*/, el=$("buildStamp"); if(!el||!V||!V.version) return;
+(function(){ const V=/*VERSION*/; if(!V||!V.version) return;   // the calculator's stamp and the home page's
   const [y,m,d]=(V.date||"").split("-").map(Number), mon=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1];
-  el.innerHTML=`Version ${esc(V.version)}${V.build?` (${esc(V.build)})`:""} (Beta)`+(mon?`<br>${mon} ${d} ${y}`:""); })();
+  for(const el of document.querySelectorAll(".build-stamp")) el.innerHTML=`Version ${esc(V.version)}${V.build?` (${esc(V.build)})`:""} (Beta)`+(mon?`<br>${mon} ${d} ${y}`:""); })();
 /* faction theme toggle (remembered per visitor) */
 /* theme toggle (remembered per visitor): Alliance "a", Horde "h", Hallow's End "w".
    Hallow's End swaps the logo and corner models for their data-hw versions and rings the bell when picked. */
