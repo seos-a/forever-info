@@ -32,7 +32,8 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 @media (max-width:600px){#dash-root{padding-bottom:84px}.xp-quit{right:auto;left:50%;margin-left:-59px;bottom:46px}}   /* phones: centered above the stamp */
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
-.xp-stamp{position:absolute;left:0;right:0;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap;text-align:center}
+.xp-stamp{position:absolute;left:0;right:0;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap;text-align:left;padding-left:10px}
+@media (max-width:600px){.xp-stamp{text-align:center;padding-left:0}}   /* phones: centered, under the Quit button */
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <!-- Wowhead's tooltips on the Character setup's item, enchant and buff links (left as the page draws them) -->
