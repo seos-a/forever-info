@@ -3,7 +3,7 @@
   "name": "Find Treasure",
   "icon": "racial_dwarf_findtreasure",
   "cells": [],
-  "text": "Allows the dwarf to sense nearby treasure, making it appear on the minimap. Lasts until canceled."
+  "text": "Allows the dwarf to sense nearby treasure, making it appear on the minimap and sometimes increase treasure found. Lasts until canceled."
  },
  "5227": {
   "name": "Underwater Breathing",
@@ -33,12 +33,15 @@
   "name": "Endurance",
   "icon": "spell_nature_unyeildingstamina",
   "cells": [],
-  "text": "Total Health increased by 5% and critical strike bonus to damage and healing increased by 2%."
+  "text": "Total Health increased by 5%."
  },
  "20552": {
   "name": "Cultivation",
   "icon": "inv_misc_flower_01",
-  "cells": [],
+  "cells": [
+   "Instant",
+   "15 min cooldown"
+  ],
   "text": "Cultivate a nearby herb, growing a duplicate you can harvest without requiring Herbalism skill. Each herb may only be cultivated once."
  },
  "20554": {
@@ -141,13 +144,13 @@
   "name": "Ruthless",
   "icon": "ability_rogue_eviscerate",
   "cells": [],
-  "text": "Increases your critical strike chance with all spells and attacks by 2%."
+  "text": "Increases your critical strike chance with all spells and attacks by 1%."
  },
  "20598": {
   "name": "The Human Spirit",
   "icon": "inv_enchant_shardbrilliantsmall",
   "cells": [],
-  "text": "Spirit increased by 5%."
+  "text": "Spirit increased by 10%."
  },
  "20600": {
   "name": "Perception",
@@ -174,16 +177,16 @@
    "0.5 sec cast",
    "2 min cooldown"
   ],
-  "text": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 10%. Lasts 30 sec if no elemental convergence is nearby, and 15 min if one is found."
+  "text": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 15% for 30 sec. If an elemental convergence is nearby, you will become Charged for the next 1 hour and the effect of this ability will be increased by 100%."
  },
  "1259705": {
   "name": "Read Leyline",
   "icon": "ability_mage_incantersabsorbtion",
   "cells": [
-   "2 sec cast",
+   "0.5 sec cast",
    "2 min cooldown"
   ],
-  "text": "Attempt to tap into the power of a nearby leyline, increasing your Health and Mana regeneration by 100%. Lasts 30 sec if no leyline is nearby, and 15 min if one is found."
+  "text": "Attempt to tap into the power of a nearby leyline, increasing your Health and Mana regeneration by 50% for 15 sec. If a leyline is nearby, you will become Attuned for the next 1 hour and the effect of this ability will be increased by 100%."
  },
  "1259707": {
   "name": "Elemental Insight",
@@ -195,7 +198,7 @@
   "name": "Wind Blessed",
   "icon": "inv_misc_volatileair",
   "cells": [],
-  "text": "Increases your spellcasting, melee, and ranged Haste by 3%."
+  "text": "Increases your spellcasting, melee, and ranged Haste by 2%."
  },
  "1259718": {
   "name": "Will to Survive",
@@ -282,7 +285,7 @@
   "name": "Plainsrunning",
   "icon": "achievement_zone_barrens_01",
   "cells": [],
-  "text": "Gain 1% increased movement speed every 5 sec spent moving, up to a maximum of 30% increase. Taking damage or standing still will reduce this effect. In addition, you move 3% faster while mounted."
+  "text": "Gain 2% increased movement speed every 5 sec spent moving, up to a maximum of 60% increase. Taking damage or standing still will reduce this effect."
  },
  "1260189": {
   "name": "Touch of the Grave",
