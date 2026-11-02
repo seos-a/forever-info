@@ -269,6 +269,7 @@ document.head.appendChild(t);})();
   .su-head { color: var(--color-fg-muted); }
   .su-head b { color: var(--color-fg); font-weight: 600; }
   .su-head a { color: var(--color-fg); }
+  td a.lx-tal { color: var(--color-fg); text-underline-offset: 2px; white-space: nowrap; }   /* Sim Results by Build: the talents, linked to the calculator */
   .su h3 { margin: 0 0 var(--cds-gap-sm); font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--color-fg); }
   .su-gear { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px var(--cds-gap-md); }
   .su-item { display: grid; grid-template-columns: 32px 1fr; gap: 0 8px; align-items: center; min-width: 0; }
@@ -1258,6 +1259,7 @@ if (TABS.includes(location.hash.slice(1))) dash.setParams({ tab: location.hash.s
 (() => {
 
 const ROOT = document.querySelector('[data-tab-panel="dps"]');
+const SETUP_ID = 'setup';   // the builds' setups (the Gear switch reads pb_setup for Classic pre-raid gear)
 
 // The sims call the Skyborne races High Order and Windshaper; the page names them by faction.
 const RACE_NAME = { 'High Order Skyborne': 'Alliance Skyborne', 'Windshaper Skyborne': 'Horde Skyborne' };
@@ -2517,11 +2519,13 @@ function drawDetail(p, rows, trows) {
   const withSe = (r) => `${fx(r[DETAIL_VAL], dec)} ± ${fx(r.se, dec + 1)}`;
   const keep = (r) => (p.fight === 'all' || String(r.fight) === p.fight) && (sel.value === 'all' || r.build === sel.value) && (rsel.value === 'all' || r.race === rsel.value)
     && (!query || (r.race + ' ' + r.build).toLowerCase().includes(query));
+  const SU = rrData(dash.data(SETUP_ID)), tal = new Map(SU.status === 'ok' ? SU.data.filter((s) => s.spec === p.spec).map((s) => [s.build, s]) : []);
   let list, cols;
   if (!multi) {
     list = forSpec.filter((r) => keep(r) && (p.detailMark === 'all' || r.status === 'Best' || (p.detailMark === 'ties' && r.status === 'Tie')));
     cols = [
       { field: 'build', label: 'Build' },
+      { field: 'talents', label: 'Talents' },
       { field: 'length', label: 'Fight' },
       { field: 'race', label: 'Race' },
       { field: DETAIL_VAL, label: unit, num: true, cell: withSe },
@@ -2540,6 +2544,7 @@ function drawDetail(p, rows, trows) {
     });
     cols = [
       { field: 'build', label: 'Build' },
+      { field: 'talents', label: 'Talents' },
       { field: 'length', label: 'Fight' },
       { field: 'race', label: 'Race' },
       { field: DETAIL_VAL, label: unit, num: true, cell: withSe },
@@ -2547,6 +2552,8 @@ function drawDetail(p, rows, trows) {
       { field: 'addOne', label: `${unit} added over 1 target`, num: true, fmt: (v) => (v == null ? '' : sign(v, dec)) },
     ];
   }
+  // Each build's talents (points per tree), as the Setup view shows them, linked to the talent calculator.
+  list = list.map((r) => { const s = tal.get(r.build); return s ? { ...r, talents: [...suJson(s.points), 0, 0].slice(0, 3).join(' / ') } : r; });
   list = list.slice().sort((a, b) => a.build.localeCompare(b.build) || a.fight - b.fight || (+b[DETAIL_VAL] - +a[DETAIL_VAL]));
   const sortCols = cols.map((c) => (c.field === 'length' ? Object.assign({}, c, { field: 'fight', num: true }) : c));
   const s = sorts.detail.field === 'length' ? { field: 'fight', dir: sorts.detail.dir } : sorts.detail;
@@ -2555,6 +2562,11 @@ function drawDetail(p, rows, trows) {
     (c) => toggle('detail', c, (c) => (c.num ? 'desc' : 'asc')),
     (c, r) => {
       if (c.field === 'race') return raceCell(r);
+      if (c.field === 'talents') {
+        const td = el('td', 't'), s = tal.get(r.build);
+        if (s) { const a = el('a', 'lx-tal', r.talents); a.href = `/${s.cls}?${s.talents}`; a.target = '_blank'; a.rel = 'noopener'; a.title = 'Open these talents in the talent calculator'; td.append(a); }
+        return td;
+      }
       if (c.field === 'status') { const td = el('td', 't', r.status); if (r.status === 'Best') td.classList.add('top'); return td; }
       if (c.cell) return el('td', '', c.cell(r));
       return el('td', c.num ? '' : 't', c.fmt ? c.fmt(r[c.field]) : r[c.field]);
@@ -4230,6 +4242,7 @@ BOXES.forEach(setup);
 (() => {
 
 const ROOT = document.querySelector('[data-tab-panel="tanks"]');
+const SETUP_ID = 'tankSetup';
 // The bear tank is named Feral Druid here (experiment.py renames the sims' "Feral Bear"), drawn with the bear's icon.
 const TANK_ICON = { 'Feral Druid': 'Feral Bear' };
 
@@ -5508,11 +5521,13 @@ function drawDetail(p, rows, trows) {
   const withSe = (r) => `${fx(r[DETAIL_VAL], dec)} ± ${fx(r.se, dec + 1)}`;
   const keep = (r) => (p.fight === 'all' || String(r.fight) === p.fight) && (sel.value === 'all' || r.build === sel.value) && (rsel.value === 'all' || r.race === rsel.value)
     && (!query || (r.race + ' ' + r.build).toLowerCase().includes(query));
+  const SU = rrData(dash.data(SETUP_ID)), tal = new Map(SU.status === 'ok' ? SU.data.filter((s) => s.spec === p.spec).map((s) => [s.build, s]) : []);
   let list, cols;
   if (!multi) {
     list = forSpec.filter((r) => keep(r) && (p.detailMark === 'all' || r.status === 'Best' || (p.detailMark === 'ties' && r.status === 'Tie')));
     cols = [
       { field: 'build', label: 'Build' },
+      { field: 'talents', label: 'Talents' },
       { field: 'length', label: 'Fight' },
       { field: 'race', label: 'Race' },
       { field: DETAIL_VAL, label: unit, num: true, cell: withSe },
@@ -5531,6 +5546,7 @@ function drawDetail(p, rows, trows) {
     });
     cols = [
       { field: 'build', label: 'Build' },
+      { field: 'talents', label: 'Talents' },
       { field: 'length', label: 'Fight' },
       { field: 'race', label: 'Race' },
       { field: DETAIL_VAL, label: unit, num: true, cell: withSe },
@@ -5538,6 +5554,8 @@ function drawDetail(p, rows, trows) {
       { field: 'addOne', label: `${unit} added over 1 target`, num: true, fmt: (v) => (v == null ? '' : sign(v, dec)) },
     ];
   }
+  // Each build's talents (points per tree), as the Setup view shows them, linked to the talent calculator.
+  list = list.map((r) => { const s = tal.get(r.build); return s ? { ...r, talents: [...suJson(s.points), 0, 0].slice(0, 3).join(' / ') } : r; });
   list = list.slice().sort((a, b) => a.build.localeCompare(b.build) || a.fight - b.fight || (+b[DETAIL_VAL] - +a[DETAIL_VAL]));
   const sortCols = cols.map((c) => (c.field === 'length' ? Object.assign({}, c, { field: 'fight', num: true }) : c));
   const s = sorts.detail.field === 'length' ? { field: 'fight', dir: sorts.detail.dir } : sorts.detail;
@@ -5546,6 +5564,11 @@ function drawDetail(p, rows, trows) {
     (c) => toggle('detail', c, (c) => (c.num ? 'desc' : 'asc')),
     (c, r) => {
       if (c.field === 'race') return raceCell(r);
+      if (c.field === 'talents') {
+        const td = el('td', 't'), s = tal.get(r.build);
+        if (s) { const a = el('a', 'lx-tal', r.talents); a.href = `/${s.cls}?${s.talents}`; a.target = '_blank'; a.rel = 'noopener'; a.title = 'Open these talents in the talent calculator'; td.append(a); }
+        return td;
+      }
       if (c.field === 'status') { const td = el('td', 't', r.status); if (r.status === 'Best') td.classList.add('top'); return td; }
       if (c.cell) return el('td', '', c.cell(r));
       return el('td', c.num ? '' : 't', c.fmt ? c.fmt(r[c.field]) : r[c.field]);
