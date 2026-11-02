@@ -236,6 +236,7 @@
   .tl-tablewrap { overflow-x: auto; }
   .tl-scroll { margin-top: calc(6px - var(--cds-gap-md)); overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
   .tl-scroll svg { display: block; }
+  .tl-scroll, .rr-chart .tl-scroll svg { touch-action: pan-x pan-y; }   /* one finger scrolls the timeline either way (not the charts' pan-y); two pinch it, not the page */
   .tl-scroll { cursor: grab; }
   .tl-scroll.drag { cursor: grabbing; user-select: none; }
   .tl-zoombar { display: flex; align-items: center; justify-content: flex-end; gap: var(--cds-gap-sm); margin-top: calc(6px - var(--cds-gap-md)); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
@@ -1515,7 +1516,7 @@ function drawLines(p, rows) {
   const key = [p.faction, p.spec, p.lineTargets, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
-  // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
+  // On a touch screen one finger dragged sideways moves the chart, up or down scrolls the page; two fingers zoom.
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[ml, top], [W, bottom]]).translateExtent([[ml, top], [W, bottom]])
     .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => {
@@ -1528,6 +1529,7 @@ function drawLines(p, rows) {
   // The wheel always zooms the chart, never scrolls the page, even when fully zoomed out.
   svg.node().addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
   svg.call(zoom).on('dblclick.zoom', null).on('dblclick', () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity));
+  touchPanX(svg, zoom);
   reset.onclick = () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
   const apply = () => { paths.classed('fade', (s) => hl && s.race !== hl); leads.classed('fade', (s) => hl && s.race !== hl); dots.classed('fade', (s) => hl && s.race !== hl); legend.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.race === hl))); };
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
@@ -2062,7 +2064,18 @@ function drawTimeline(p, item, minH) {
   const zOut = zbtn('−', 'Zoom out', () => zoomTo(pps / 1.6)), zIn = zbtn('+', 'Zoom in', () => zoomTo(pps * 1.6)), zFit = zbtn('Fit', 'Show the whole fight', () => zoomTo(fit));
   sc.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); zoomTo(pps * Math.exp(-e.deltaY * 0.002), e.clientX); }, { passive: false });
   sc.addEventListener('scroll', () => labels && labels.attr('transform', `translate(${sc.scrollLeft},0)`));
-  // Drag with the mouse to move along the timeline (touch scrolls it natively).
+  // Two fingers pinch to zoom, keeping the moment between them under them as they move.
+  let pinch = null;
+  pinchZoom(sc, {
+    begin: (cx) => { const px = cx - sc.getBoundingClientRect().left; pinch = { pps, t: start + (sc.scrollLeft + px - lw - pad) / pps }; tip.hidden = true; },
+    move: (k, cx) => {
+      const px = cx - sc.getBoundingClientRect().left;
+      pps = Math.max(fit, Math.min(maxPps, pinch.pps * k)); tlZoom = pps / Math.max(fit, 14);
+      render();
+      sc.scrollLeft = lw + pad + (pinch.t - start) * pps - px;
+    },
+  });
+  // Drag with the mouse to move along the timeline (one finger scrolls it natively).
   let drag = null;
   sc.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && e.button === 0 && e.target !== sc) { drag = { x: e.clientX, s: sc.scrollLeft, id: e.pointerId, moved: false }; e.preventDefault(); } });
   sc.addEventListener('pointermove', (e) => {
@@ -3039,7 +3052,7 @@ function drawLines(p, rows) {
   const key = [p.faction, p.spec, p.lineTargets, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
-  // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
+  // On a touch screen one finger dragged sideways moves the chart, up or down scrolls the page; two fingers zoom.
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[ml, top], [W, bottom]]).translateExtent([[ml, top], [W, bottom]])
     .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => {
@@ -3052,6 +3065,7 @@ function drawLines(p, rows) {
   // The wheel always zooms the chart, never scrolls the page, even when fully zoomed out.
   svg.node().addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
   svg.call(zoom).on('dblclick.zoom', null).on('dblclick', () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity));
+  touchPanX(svg, zoom);
   reset.onclick = () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
   const apply = () => { paths.classed('fade', (s) => hl && s.race !== hl); leads.classed('fade', (s) => hl && s.race !== hl); dots.classed('fade', (s) => hl && s.race !== hl); legend.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.race === hl))); };
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
@@ -3562,7 +3576,18 @@ function drawTimeline(p, item, minH) {
   const zOut = zbtn('−', 'Zoom out', () => zoomTo(pps / 1.6)), zIn = zbtn('+', 'Zoom in', () => zoomTo(pps * 1.6)), zFit = zbtn('Fit', 'Show the whole fight', () => zoomTo(fit));
   sc.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); zoomTo(pps * Math.exp(-e.deltaY * 0.002), e.clientX); }, { passive: false });
   sc.addEventListener('scroll', () => labels && labels.attr('transform', `translate(${sc.scrollLeft},0)`));
-  // Drag with the mouse to move along the timeline (touch scrolls it natively).
+  // Two fingers pinch to zoom, keeping the moment between them under them as they move.
+  let pinch = null;
+  pinchZoom(sc, {
+    begin: (cx) => { const px = cx - sc.getBoundingClientRect().left; pinch = { pps, t: start + (sc.scrollLeft + px - lw - pad) / pps }; tip.hidden = true; },
+    move: (k, cx) => {
+      const px = cx - sc.getBoundingClientRect().left;
+      pps = Math.max(fit, Math.min(maxPps, pinch.pps * k)); tlZoom = pps / Math.max(fit, 14);
+      render();
+      sc.scrollLeft = lw + pad + (pinch.t - start) * pps - px;
+    },
+  });
+  // Drag with the mouse to move along the timeline (one finger scrolls it natively).
   let drag = null;
   sc.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && e.button === 0 && e.target !== sc) { drag = { x: e.clientX, s: sc.scrollLeft, id: e.pointerId, moved: false }; e.preventDefault(); } });
   sc.addEventListener('pointermove', (e) => {

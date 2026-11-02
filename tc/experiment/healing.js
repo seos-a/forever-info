@@ -547,7 +547,7 @@ function drawLines(p, rows) {
   const key = [p.faction, p.cls, W, H].join('|');
   if (zoomState.key !== key) zoomState = { key, t: d3.zoomIdentity };
   const reset = $('.lx-zoomreset');
-  // On a touch screen one finger scrolls the page; two fingers zoom and move the chart.
+  // On a touch screen one finger dragged sideways moves the chart, up or down scrolls the page; two fingers zoom.
   const zoom = d3.zoom().scaleExtent([1, 40]).extent([[ml, top], [W, bottom]]).translateExtent([[ml, top], [W, bottom]])
     .filter((ev) => (!ev.ctrlKey || ev.type === 'wheel') && !ev.button && (!ev.touches || ev.touches.length > 1))
     .on('zoom', (ev) => {
@@ -560,6 +560,7 @@ function drawLines(p, rows) {
   // The wheel always zooms the chart, never scrolls the page, even when fully zoomed out.
   svg.node().addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
   svg.call(zoom).on('dblclick.zoom', null).on('dblclick', () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity));
+  touchPanX(svg, zoom);
   reset.onclick = () => svg.transition().duration(250).call(zoom.transform, d3.zoomIdentity);
   const apply = () => { paths.classed('fade', (s) => hl && s.race !== hl); leads.classed('fade', (s) => hl && s.race !== hl); dots.classed('fade', (s) => hl && s.race !== hl); legend.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.race === hl))); };
   const tip = el('div', 'hr-tip'); tip.hidden = true; box.append(tip);
