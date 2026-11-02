@@ -695,24 +695,17 @@ document.head.appendChild(t);})();
     .rr-specs .rr-spec, .hr-specs .hr-spec { flex: 1 1 calc(50% - var(--cds-gap-sm)); }
     .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; }
   }
-  /* The tabs stay at the top of the screen while the page scrolls. Over the background picture they have no bar of their
-     own, like the main site's links: WoW-gold lettering, the open tab underlined in gold; once they stick to the top a dark
-     backdrop comes in behind them (.stuck) so the page doesn't show through. */
-  .rr-tabs { position: sticky; top: -1px; z-index: 15; justify-content: center; gap: var(--cds-gap-md); border-bottom: 0; margin: 0 -16px var(--cds-gap-md); padding: 3px 16px 0;
-    background: transparent; transition: background .2s, box-shadow .2s; font-family: Verdana, Tahoma, "DejaVu Sans", Geneva, sans-serif; }
-  .rr-tabs.stuck { background: #000000f0; box-shadow: 0 1px 0 #ffd10026, 0 6px 14px #000a; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-  .rr-tabs button { font-size: 15px; font-weight: 700; letter-spacing: .02em; padding: 8px 14px 6px; color: #cdbf98; text-shadow: 1px 1px 0 #000, 0 0 4px #000, 0 0 8px #000; border-bottom-width: 2px; }
-  .rr-tabs button:hover { color: #fff; }
-  .rr-tabs button[aria-selected="true"] { color: #ffd100; border-bottom-color: #ffd100; text-shadow: 1px 1px 0 #000, 0 0 4px #000, 0 0 10px #ffd10055; }
-  @media (max-width: 600px) { .rr-tabs { margin: 0 -10px var(--cds-gap-sm); padding: 0 10px; } .rr-tabs button { font-size: 14px; padding: 8px 12px 6px; } }
-  /* the page-wide filters under the tabs (faction, gear) sit on the background picture: centered, see-through dark buttons
-     with a faint gold rim, the picked one in gold */
-  .rr > .rr-filters, .hr > .hr-filters { justify-content: center; margin-bottom: var(--cds-gap-md); }
-  .hr > .hr-filters .hr-patched { background: #000000b3; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
-  .rr > .rr-filters .rr-seg, .hr > .hr-filters .hr-seg { border-color: #ffd10040; background: #0000008c; box-shadow: 0 1px 6px #0008; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
-  .rr > .rr-filters .rr-seg button, .hr > .hr-filters .hr-seg button { font-family: Verdana, Tahoma, "DejaVu Sans", Geneva, sans-serif; font-size: 12px; padding: 5px 12px; background: transparent; color: #e9e4d6; border-right-color: #ffd10026; text-shadow: 1px 1px 0 #000; }
-  .rr > .rr-filters .rr-seg button:hover, .hr > .hr-filters .hr-seg button:hover { color: #fff; background: #ffffff12; }
-  .rr > .rr-filters .rr-seg button[aria-pressed="true"], .hr > .hr-filters .hr-seg button[aria-pressed="true"] { color: #ffd100; background: #ffd1001f; box-shadow: inset 0 0 0 1px #ffd10073; font-weight: 700; }
+  /* The tabs and the page-wide filters under them (faction, gear) make one box of their own, styled like the cards below:
+     the tabs along its top, a line, then the filters. The tab row stays at the top of the screen while the page scrolls;
+     once it sticks (.stuck) its own bottom corners round off so it reads as a box on its own. */
+  .rr-tabs { position: sticky; top: -1px; z-index: 15; justify-content: center; margin: 0; padding: var(--cds-pad-xs) var(--cds-pad-lg) 0;
+    background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius) var(--cds-radius) 0 0; transition: border-radius .2s, box-shadow .2s; }
+  .rr-tabs.stuck { border-radius: 0 0 var(--cds-radius) var(--cds-radius); box-shadow: 0 6px 14px #000a; }
+  .rr-tabs button { font-weight: var(--cds-font-weight-medium); padding: var(--cds-pad-sm) var(--cds-pad-lg); }
+  .rr-tabs button[aria-selected="true"] { border-bottom-color: var(--color-fg); }
+  .rr > .rr-filters, .hr > .hr-filters { justify-content: center; align-items: center; margin-bottom: calc(var(--cds-gap-md) - var(--cds-gap-lg)); padding: var(--cds-pad-md) var(--cds-pad-lg);
+    background: var(--color-panel); border: 1px solid var(--color-border-line); border-top: 0; border-radius: 0 0 var(--cds-radius) var(--cds-radius); }
+  @media (max-width: 600px) { .rr-tabs, .rr > .rr-filters, .hr > .hr-filters { padding-left: 10px; padding-right: 10px; } .rr-tabs button { padding: var(--cds-pad-sm) var(--cds-pad-md); } }
   /* the re-geared Dwarf sentence in the Hunters' Racial Bonus note: hover it to see that run in the chart */
   .lx-regear { text-decoration: underline; text-underline-offset: 2px; cursor: help; }
   .lx-regear.on { color: var(--color-fg); }
