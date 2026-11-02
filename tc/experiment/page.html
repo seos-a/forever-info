@@ -119,8 +119,10 @@
   .rr .pill { display: inline-block; padding: 0 .4rem; border-radius: 999px; font-size: .85em; border: 1px solid var(--color-border-line); }
   .rr .pill.best { border-color: currentColor; font-weight: 600; }
   .rr-chart { position: relative; min-height: 260px; flex: 1 1 auto; }
-  .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
-  .rr-chart svg:active { cursor: grabbing; }
+  .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; }   /* one finger scrolls the page; two zoom */
+  /* the grab hand only where dragging does something: the Race Standings charts, which zoom and pan */
+  .rr-chart.lx-lines svg { cursor: grab; }
+  .rr-chart.lx-lines svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
   /* The spec breakdown's breadcrumb title: "Damage Per Second › Combat Rogue", the first part going back to all specs */
   .rr-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
@@ -510,8 +512,10 @@
   .rr .pill { display: inline-block; padding: 0 .4rem; border-radius: 999px; font-size: .85em; border: 1px solid var(--color-border-line); }
   .rr .pill.best { border-color: currentColor; font-weight: 600; }
   .rr-chart { position: relative; min-height: 260px; flex: 1 1 auto; }
-  .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; cursor: grab; }   /* one finger scrolls the page; two zoom */
-  .rr-chart svg:active { cursor: grabbing; }
+  .rr-chart svg { display: block; overflow: visible; touch-action: pan-y; }   /* one finger scrolls the page; two zoom */
+  /* the grab hand only where dragging does something: the Race Standings charts, which zoom and pan */
+  .rr-chart.lx-lines svg { cursor: grab; }
+  .rr-chart.lx-lines svg:active { cursor: grabbing; }
   .rr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
   /* The spec breakdown's breadcrumb title: "Damage Per Second › Combat Rogue", the first part going back to all specs */
   .rr-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
