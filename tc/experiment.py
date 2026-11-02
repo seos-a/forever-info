@@ -70,13 +70,13 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 @media (max-width:600px){#dash-root{padding:10px 10px 52px}}
 /* back to the main site: the red WoW menu button its "Sims" link uses (template2.html's .xp-link), as the login screen's
    "Quit", in the page's bottom right corner */
-.xp-quit{position:absolute;right:10px;bottom:8px;z-index:30;width:118px;height:20px;padding:0;box-sizing:border-box;
+.xp-quit{position:absolute;right:10px;bottom:8px;z-index:30;width:118px;height:20px;padding:0 0 2px;box-sizing:border-box;   /* the word 1px above the middle, as .xp-link */
   display:flex;align-items:center;justify-content:center;font:700 12px/1 Verdana,Tahoma,"DejaVu Sans",Geneva,sans-serif;
   color:#ffd100;text-decoration:none;text-shadow:1px 1px 0 #000,0 0 3px #000;border-radius:3px;
   background:linear-gradient(180deg,#c21a10 0%,#8e0c06 45%,#6a0703 55%,#4a0402 100%);border:1px solid #000;
   box-shadow:inset 0 1px 0 #ff6a4a66,inset 0 0 6px #000a,0 0 0 1px #8d8d8d,0 0 0 2px #3a3a3a,0 0 0 3px #000,0 2px 5px #000}
 .xp-quit:hover{color:#fff;background:linear-gradient(180deg,#e0281a 0%,#a8140a 45%,#7e0c05 55%,#580703 100%)}
-.xp-quit:active{background:linear-gradient(180deg,#4a0402 0%,#6a0703 45%,#8e0c06 100%);padding-top:2px}
+.xp-quit:active{background:linear-gradient(180deg,#4a0402 0%,#6a0703 45%,#8e0c06 100%);padding:2px 0 0}
 @media (max-width:600px){#dash-root{padding-bottom:84px}.xp-quit{right:auto;left:50%;margin-left:-59px;bottom:46px}}   /* phones: centered above the stamp */
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
