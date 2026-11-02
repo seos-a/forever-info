@@ -671,7 +671,7 @@ function drawGains(p, rows, runRows) {
   drawBoxes(box, list.map((r) => ({ ...r, label: r.race, color: tone(r), ring: fa(r), icon: rrIcons()[r.race] })), boxH, {
     zoomKey: [p.faction, p.cls, p.fight].join('|'),
     zero: true, fmt: (v) => sign(v, 1) + '%', value: (r) => sign(r.median, 2) + '%',
-    tip: (r) => { const s = summary(r.race); return [el('div', 'h', r.race), tipLine('Median run', sign(r.median, 2) + '%'), tipLine('Middle half of runs', `${sign(r.q1, 2)}% to ${sign(r.q3, 2)}%`),
+    tip: (r) => { const s = summary(r.race); return [el('div', 'h fa-' + r.faction, r.race), tipLine('Median run', sign(r.median, 2) + '%'), tipLine('Middle half of runs', `${sign(r.q1, 2)}% to ${sign(r.q3, 2)}%`),
       tipLine('Lowest to highest run', `${sign(r.min, 2)}% to ${sign(r.max, 2)}%`), ...(s ? [tipLine('Healing per second', num(s.hps)), tipLine('Mana left at end', num(s.manaEnd))] : []), tipLine('Runs', String(r.n))]; },
   });
 }
@@ -854,7 +854,7 @@ function drawSituations(p, rows, healers) {
   // a healer's tooltip from its icon and bar only, not the empty space after the bar
   row.append('rect').attr('x', ml).attr('width', (d) => (d.value == null ? iz : Math.max(iz, x(d.value) - ml))).attr('height', bh).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
-      tip.replaceChildren(el('div', 'h', `${d.name}: ${d.sit.label}`), el('div', 'about', d.sit.about),
+      tip.replaceChildren(Object.assign(el('div', 'h', d.name), { style: `color: ${d.color}` }), // the encounter is named on the left, where hovering it describes it
         tipLine('Healing per second', num(d.hps)), tipLine('Share of raid healing', fx(d.share, 1) + '%'),
         tipLine('Overhealing', d.overPct == null ? '–' : fx(d.overPct, 1) + '%'), tipLine('Time idle', fx(d.idle, 1) + '%'), tipLine('Mana left at end', num(d.manaEnd)),
         tipLine('Raid damage taken', num(d.raidDps) + ' per sec'), tipLine('Raid deaths', fx(d.deaths, 1) + ' per fight'));

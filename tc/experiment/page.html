@@ -611,6 +611,22 @@
   .rr-top .rr-tabs button:focus-visible, .rr-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
   .lx-facsrc { display: none !important; }
   @media (max-width: 600px) { .rr-top .rr-tabs button, .rr-fac button { width: 28px; height: 28px; } }
+  /* Tooltips, one look across the page: a near-black card with a faint rim; the title bold (in the class's colour, or the
+     faction's for a race) over a thin line; then labels muted on the left and values bright on the right. */
+  .rr-tip, .hr-tip { background: #0c0c0bf5; border: 1px solid #ffffff26; border-radius: 6px; box-shadow: 0 10px 28px #000d, 0 0 0 1px #000; padding: 8px 11px 9px;
+    font-size: 12px; line-height: 1.5; color: var(--color-fg); min-width: 150px; }
+  .rr-tip .h, .hr-tip .h { color: #fff; font-weight: 700; font-size: 13px; line-height: 1.35; margin: 0 0 6px; padding-bottom: 6px; border-bottom: 1px solid #ffffff1f; }
+  .rr-tip .h:has(+ .sub), .hr-tip .h:has(+ .sub), .rr-tip .h:has(+ .about), .hr-tip .h:has(+ .about) { margin-bottom: 1px; padding-bottom: 0; border-bottom: 0; }
+  .rr-tip .h:last-child, .hr-tip .h:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+  .rr-tip .sub, .hr-tip .sub { font-weight: 600; color: var(--color-fg); }
+  .rr-tip .about, .hr-tip .about { color: #9c998f; font-size: 11.5px; max-width: 32ch; white-space: normal; margin: 0 0 6px; padding-bottom: 6px; border-bottom: 1px solid #ffffff1f; }
+  .rr-tip .about:last-child, .hr-tip .about:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+  .rr-tip .row, .hr-tip .row { display: flex; gap: .5rem; align-items: center; padding: 1px 0; }
+  .rr-tip .row > span, .hr-tip .row > span { color: #a7a49b; }
+  .rr-tip .row b, .hr-tip .row b { margin-left: auto; padding-left: 1rem; font-weight: 600; color: #f4f2ea; }
+  .rr-tip .sep, .hr-tip .sep { background: #ffffff1f; margin: 5px 0; }
+  .rr-tip .fa-Alliance, .hr-tip .fa-Alliance { color: #74a9ff; }
+  .rr-tip .fa-Horde, .hr-tip .fa-Horde { color: #ff6d5f; }
   /* the re-geared Dwarf sentence in the Hunters' Racial Bonus note: hover it to see that run in the chart */
   .lx-regear { text-decoration: underline; text-underline-offset: 2px; cursor: help; }
   .lx-regear.on { color: var(--color-fg); }
@@ -1649,7 +1665,7 @@ function drawGains(p, rows, keepNote) {
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, r) => {
-      tip.replaceChildren(el('div', 'h', r.race), line('Average ' + unit, fx(r.dps, 1)), line('Over no racials', `${sign(r.gainDps, 1)} ${unit} (${sign(r.gain, 2)}%)`),
+      tip.replaceChildren(el('div', 'h fa-' + r.faction, r.race), line('Average ' + unit, fx(r.dps, 1)), line('Over no racials', `${sign(r.gainDps, 1)} ${unit} (${sign(r.gain, 2)}%)`),
         line('Behind the best race', `${fx(r.gapDps, 1)} ${unit}`));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
@@ -3146,7 +3162,7 @@ function drawGains(p, rows, keepNote) {
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
   g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, r) => {
-      tip.replaceChildren(el('div', 'h', r.race), line('Average ' + unit, fx(r.dps, 1)), line('Over no racials', `${sign(r.gainDps, 1)} ${unit} (${sign(r.gain, 2)}%)`),
+      tip.replaceChildren(el('div', 'h fa-' + r.faction, r.race), line('Average ' + unit, fx(r.dps, 1)), line('Over no racials', `${sign(r.gainDps, 1)} ${unit} (${sign(r.gain, 2)}%)`),
         line('Behind the best race', `${fx(r.gapDps, 1)} ${unit}`));
       tip.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = tip.offsetWidth;
