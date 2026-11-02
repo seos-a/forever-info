@@ -745,7 +745,7 @@
     <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
       <div><b>Sim</b><p>WoWSims Forever 376a6aa (30 Oct) on build 70707 data, hotfixes to 31 Oct. 1, 2, 3 and 5 minute fights against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%). Its Paladin and Priest spells predate 70707, so treat Retribution and Shadow with care.</p></div>
-      <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Elemental, Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Classic stats for items Forever lacks and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (Survival, the Marksmanship weave, Arms) trades the hit past the cap for as much crit.</p></div>
+      <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Elemental, Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Classic stats for items Forever lacks and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (Survival, the Marksmanship weave, Arms) trades the hit past the cap for what item budgets price the same, picking the stat that sims best: 14 Agility per 1% for Hunters, the same % crit for Arms.</p></div>
       <div><b>Racials</b><p>Racial Bonus compares each race with the same build with no racial abilities, passives or stat offsets. Active racials fire on cooldown, so timing them with other cooldowns may be worth a little more. Situational ones (Big Game Hunter, Beast Slaying, Elemental Insight) aren't counted.</p></div>
       <div><b>Targets</b><p>Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view. Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
     </div>
@@ -1559,19 +1559,22 @@ function drawLines(p, rows) {
 // Racial Bonus bars: the top race gold, other gains blue, losses red, no change grey.
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
 // Dwarf's hit past the hit cap, on the WoWSims preset gear: where its +1% hit racial would go over the 8% cap, the
-// Dwarf rows (every view, 1 to 5 targets) are a Dwarf geared for it, trading the hit past the cap for as much crit
-// (race-sims-harness README "Dwarf hit over the cap"), and a line under the Racial Bonus chart says so. Enhancement
-// (also 0.9% past) lost DPS that way, since its hit rating is spell hit for its shocks too, so it keeps the plain Dwarf.
-// The Classic pre-raid Dwarf swaps real items instead (the Setup view's "As a Dwarf").
-const DWARF_TRADE = { 'Survival Hunter|SV': 1, 'Survival Hunter|SV Weave': 1, 'Marksmanship Hunter|MM Weave': 1, 'Arms Warrior|Arms (Pre-BiS)': 0.9 };
-const dwarfTrade = (p, spec, build) => (p.gear === 'classic' ? 0 : DWARF_TRADE[`${spec}|${build}`] || 0);
+// Dwarf rows (every view, 1 to 5 targets) are a Dwarf geared for it, trading the hit past the cap for what Classic
+// item budgets price the same (1% hit = 1% crit = 14 Agility or Strength = 28 attack power), whichever simmed best on
+// that build (race-sims-harness README "Dwarf hit over the cap"); a line under the Racial Bonus chart says so.
+// Enhancement (also 0.9% past) lost DPS that way, since its hit rating is spell hit for its shocks too, so it keeps the
+// plain Dwarf. The Classic pre-raid Dwarf swaps real items instead (the Setup view's "As a Dwarf").
+const DWARF_TRADE = { 'Survival Hunter|SV': [1, 'agi'], 'Survival Hunter|SV Weave': [1, 'agi'], 'Marksmanship Hunter|MM Weave': [1, 'agi'], 'Arms Warrior|Arms (Pre-BiS)': [0.9, 'crit'] };
+const TRADE_OTHERS = { agi: 'crit, Strength and attack power', crit: 'Strength, attack power and Agility' };
+const dwarfTrade = (p, spec, build) => (p.gear === 'classic' ? null : DWARF_TRADE[`${spec}|${build}`] || null);
+const tradeGets = ([amt, stat]) => (stat === 'agi' ? `${fx(14 * amt, amt === 1 ? 0 : 1)} Agility` : `${fx(amt, 1)}% crit`);
 function tradeLine(p, plain, cls) {
   const builds = Object.keys(DWARF_TRADE).filter((k) => k.startsWith(p.spec + '|')).map((k) => k.split('|')[1]);
   if (p.gear === 'classic' || !builds.length || !plain.some((r) => r.race === 'Dwarf')) return null;
-  const amts = [...new Set(builds.map((b) => DWARF_TRADE[`${p.spec}|${b}`]))];
+  const t = DWARF_TRADE[`${p.spec}|${builds[0]}`];   // a spec's traded builds share an amount and a stat
   const names = builds.length > 1 ? builds.slice(0, -1).join(', ') + ' and ' + builds.at(-1) : builds[0];
   const line = el('span', cls);
-  line.append(el('b', null, 'Dwarf: '), `its +1% hit would go past the 8% hit cap on ${names}, so its gear there trades ${amts.length === 1 ? (amts[0] === 1 ? 'that 1% of hit' : `the ${fx(amts[0], 1)}% past the cap`) : 'the hit past the cap'} for as much crit, as a Dwarf would gear.`);
+  line.append(el('b', null, 'Dwarf: '), `its +1% hit would go past the 8% hit cap on ${names}, so its gear there trades ${t[0] === 1 ? 'that 1% of hit' : `the ${fx(t[0], 1)}% past the cap`} for ${tradeGets(t)}, which item budgets price the same and which simmed better there than ${TRADE_OTHERS[t[1]]}.`);
   return line;
 }
 // Specs whose biggest racial bonus is more than 1.5 times any other spec's: their Racial Bonus chart gets its own scale.
@@ -2115,8 +2118,8 @@ function drawSetup(p, item, race, minH, headTo) {
   const extra = [], swap = suJson(s.swap), dwarf = suJson(s.dwarf);
   if (swap.length) extra.push(el('div', 'su-note', `Item swap: ${swap.map((g) => g.name).join(', ')} (the sim switches to it during the fight).`));
   if (dwarf.length) extra.push(el('div', 'su-note', `As a Dwarf: ${dwarf.map(([i, g]) => `${g.name} in place of ${gear[i].name}`).join(', ')} (Dwarf's +1% hit stands in for the list's hit).`));
-  const trade = race === 'Dwarf' ? dwarfTrade(p, item.key, item.build) : 0;
-  if (trade) extra.push(el('div', 'su-note', `As a Dwarf: ${fx(trade, 1)}% less hit and ${fx(trade, 1)}% more crit than this gear gives, trading the hit Dwarf's +1% would put past the 8% cap.`));
+  const trade = race === 'Dwarf' ? dwarfTrade(p, item.key, item.build) : null;
+  if (trade) extra.push(el('div', 'su-note', `As a Dwarf: ${fx(trade[0], 1)}% less hit and ${tradeGets(trade)} more than this gear gives, trading the hit Dwarf's +1% would put past the 8% cap.`));
   section('Gear', list, ...extra);
   // The character sheet at the race shown: fully buffed against the one-target boss, as the sim works it out.
   const sheet = suJson(s.stats)[race];
