@@ -2772,16 +2772,16 @@ dash.calc('healByFight', {
 dash.calc('healSitStats', {
   inputs: ['healSitRuns'],
   title: 'Each healer per raid situation',
-  description: 'Each healer with no racials in each of the sim’s damage presets, at the sim’s normal health and damage (3 minute fights, 40 runs): healing per second with its spread over the runs, share of the raid’s healing, overhealing, time idle, mana left, raid damage per second and raid deaths.',
+  description: 'Each healer with no racials in each of the sim’s damage presets, at the sim’s normal health and damage (3 minute fights, 40 runs): healing per second, share of the raid’s healing, overhealing, time idle, mana left, raid damage per second and raid deaths.',
   fn: (runs) => runs.map((r) => {
     // The 40 per-run totals can arrive as JSON text rather than a list.
     const fight = +r.fight, hps = (typeof r.effRuns === 'string' ? JSON.parse(r.effRuns) : r.effRuns).map((x) => Number(x) / fight).sort((a, b) => a - b);
     const mean = hps.reduce((a, b) => a + b, 0) / hps.length, sd = Math.sqrt(hps.reduce((a, x) => a + (x - mean) ** 2, 0) / (hps.length - 1));
-    const q = (p) => { const i = (hps.length - 1) * p, lo = Math.floor(i); return hps[lo] + (hps[Math.ceil(i)] - hps[lo]) * (i - lo); };
     return {
       key: r.preset + '|' + r.cls, preset: r.preset, cls: r.cls, hps: Math.round(mean), hpsSE: Math.round((sd / Math.sqrt(hps.length)) * 10) / 10,
-      q1: Math.round(q(0.25)), q3: Math.round(q(0.75)), share: Math.round(((mean * fight) / +r.raidEff) * 1000) / 10,
-      overPct: Math.round((+r.over / (mean * fight + +r.over)) * 1000) / 10, idle: Math.round((+r.idle / fight) * 1000) / 10, // the sim gives idle time in seconds
+      share: Math.round(((mean * fight) / +r.raidEff) * 1000) / 10,
+      // no share of overhealing for a healer that healed nothing (Holy Paladin when only the tanks take damage)
+      overPct: mean * fight + +r.over ? Math.round((+r.over / (mean * fight + +r.over)) * 1000) / 10 : null, idle: Math.round((+r.idle / fight) * 1000) / 10, // the sim gives idle time in seconds
       manaEnd: +r.manaEnd, oom: +r.oom, deaths: +r.deaths, raidDps: Math.round(+r.dmg / fight), raidHps: Math.round(+r.raidEff / fight), runs: hps.length,
     };
   }),
@@ -3523,8 +3523,8 @@ function drawSituations(p, rows, healers) {
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
-  const items = groups.flatMap((g) => g.items), hi = (d) => (key === 'hps' ? Math.max(d.value, d.q3) : d.value);
-  const mr = Math.max(...items.map((d) => textW(m.fmt(d.value)))) + 14;
+  const items = groups.flatMap((g) => g.items), hi = (d) => d.value ?? 0;
+  const lab = (d) => (d.value == null ? '–' : m.fmt(d.value)), mr = Math.max(...items.map((d) => textW(lab(d)))) + 14;
   probe.style('font-weight', 600);
   const ml = Math.max(...groups.map((g) => textW(g.label))) + 16;
   probe.remove();
@@ -3543,9 +3543,8 @@ function drawSituations(p, rows, healers) {
   }
   const row = svg.append('g').selectAll('g').data(flat).join('g').attr('transform', (d) => `translate(0,${d.y})`);
   row.append('image').attr('href', (d) => (window.SPEC_ICONS || {})[d.name] || null).attr('x', ml).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);
-  if (key === 'hps') row.append('rect').attr('x', (d) => x(d.q1)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.q3) - x(d.q1))).style('fill', (d) => d.color).attr('fill-opacity', 0.3);
-  row.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.value) - x(0))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
-  row.append('text').attr('class', 'lab').attr('x', (d) => x(hi(d)) + 6).attr('y', bh / 2 + 4).text((d) => m.fmt(d.value));
+  row.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => (d.value == null ? 0 : Math.max(1, x(d.value) - x(0)))).style('fill', (d) => d.color).attr('fill-opacity', 0.85);
+  row.append('text').attr('class', 'lab').attr('x', (d) => x(hi(d)) + 6).attr('y', bh / 2 + 4).text(lab);
   const tip = el('div', 'hr-tip'); tip.hidden = true; box.append(tip);
   const place = (ev) => {
     tip.hidden = false;
@@ -3559,8 +3558,8 @@ function drawSituations(p, rows, healers) {
   row.append('rect').attr('x', ml).attr('y', -gap / 2).attr('width', W - ml).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       tip.replaceChildren(el('div', 'h', `${d.name}: ${d.sit.label}`), el('div', 'about', d.sit.about),
-        tipLine('Healing per second', `${num(d.hps)} (middle half ${num(d.q1)}–${num(d.q3)})`), tipLine('Share of raid healing', fx(d.share, 1) + '%'),
-        tipLine('Overhealing', fx(d.overPct, 1) + '%'), tipLine('Time idle', fx(d.idle, 1) + '%'), tipLine('Mana left at end', num(d.manaEnd)),
+        tipLine('Healing per second', num(d.hps)), tipLine('Share of raid healing', fx(d.share, 1) + '%'),
+        tipLine('Overhealing', d.overPct == null ? '–' : fx(d.overPct, 1) + '%'), tipLine('Time idle', fx(d.idle, 1) + '%'), tipLine('Mana left at end', num(d.manaEnd)),
         tipLine('Raid damage taken', num(d.raidDps) + ' per sec'), tipLine('Raid deaths', fx(d.deaths, 1) + ' per fight'));
       place(ev);
     })
