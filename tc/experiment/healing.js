@@ -851,7 +851,8 @@ function drawSituations(p, rows, healers) {
   svg.append('g').selectAll('rect').data(labels).join('rect').attr('x', 0).attr('y', (g) => g.y - gap / 2).attr('width', ml).attr('height', (g) => g.gh + gap).attr('fill', 'transparent')
     .on('mousemove', (ev, g) => { tip.replaceChildren(el('div', 'h', g.label), el('div', 'about', g.about)); place(ev); })
     .on('mouseleave', () => { tip.hidden = true; });
-  row.append('rect').attr('x', ml).attr('y', -gap / 2).attr('width', W - ml).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
+  // a healer's tooltip from its icon and bar only, not the empty space after the bar
+  row.append('rect').attr('x', ml).attr('width', (d) => (d.value == null ? iz : Math.max(iz, x(d.value) - ml))).attr('height', bh).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       tip.replaceChildren(el('div', 'h', `${d.name}: ${d.sit.label}`), el('div', 'about', d.sit.about),
         tipLine('Healing per second', num(d.hps)), tipLine('Share of raid healing', fx(d.share, 1) + '%'),
