@@ -3544,7 +3544,7 @@ function drawSituations(p, rows, healers) {
     ? `*${name} heals nothing in ${sit.label}: the sim assigns it to the raid, and nobody in the raid takes damage there. The Priest and Druid, also on the raid, still heal the tanks some.`
     : `*${name} heals nothing in ${sit.label}.`).join(' ');
   $('.lx-sitnote').textContent = groups.length
-    ? '3 min fights. No racials. Shaman heals the tanks. Priest, Paladin and Druid heal the raid. Fights that only damage the tanks leave the healers little to do.'
+    ? '3 min fights. No racials. 20-player raid: 2 tanks, 6 melee, 8 ranged and 4 healers. Shaman heals the tanks. Priest, Paladin and Druid heal the raid. Fights that only damage the tanks leave the healers little to do.'
     : '';
   if (!first) return;
   const bh = 16, gap = 4, ggap = 14, iz = 16, W = Math.max(280, box.clientWidth);
