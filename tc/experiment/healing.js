@@ -340,7 +340,7 @@ document.addEventListener('keydown', (e) => {
 $('.lx-q').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); draw(); });
 $('.lx-cards').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-cls]');
-  if (b) pickHealer(b.dataset.cls);
+  if (b) pickHealer(b.dataset.cls, false); // the page stays put: the boxes below follow the pick
 });
 
 function table(tbl, cols, rows, sort, onSort, cell) {
@@ -686,7 +686,7 @@ const healerItems = (p, rows) => [...new Set(rows.map((r) => r.cls))].map((cls) 
 const HEALER_NAME = { priest: 'Holy Priest', paladin: 'Holy Paladin', druid: 'Restoration Druid', shaman: 'Restoration Shaman' };
 // Picking a healer opens its two charts if they were folded.
 const unfold = (sel) => $(sel).querySelectorAll('.collapsed > .hr-cardhead .hr-fold').forEach((f) => f.click());
-const pickHealer = (c) => { unfold('#h-healer'); setP({ lineCls: c, gainCls: c, detailCls: c }); $('#h-healer').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('h-healer'); };
+const pickHealer = (c, scroll = true) => { unfold('#h-healer'); setP({ lineCls: c, gainCls: c, detailCls: c }); if (scroll) $('#h-healer').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('h-healer'); };
 
 // Spec comparison: every healer at its best race, ranked. The bar is solid up to the healer's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between healers.

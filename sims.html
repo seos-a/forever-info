@@ -1513,7 +1513,7 @@ $('.lx-build').addEventListener('change', (e) => dash.setParams({ build: e.targe
 $('.lx-q').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); draw(); });
 $('.lx-cards').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-spec]');
-  if (b) pickSpec(b.dataset.spec);
+  if (b) pickSpec(b.dataset.spec, false); // the page stays put: the boxes below follow the pick
 });
 
 // Sortable table: cols = [{field, label, num, fmt, cls, title}]
@@ -1920,7 +1920,7 @@ const targetScale = (p, one, rows, spec, build, race) => [1, 2, 3, 4, 5].map((n)
 });
 // Picking a spec opens its two charts if they were folded.
 const unfold = (sel) => $(sel).querySelectorAll('.collapsed > .rr-cardhead .rr-fold').forEach((f) => f.click());
-const pickSpec = (s) => { unfold('#spec'); dash.setParams({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); $('#spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('spec'); };
+const pickSpec = (s, scroll = true) => { unfold('#spec'); dash.setParams({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); if (scroll) $('#spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('spec'); };
 
 // Spec comparison: every spec at its best race, ranked. The bar is solid up to the spec's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between specs.
@@ -3044,7 +3044,7 @@ document.addEventListener('keydown', (e) => {
 $('.lx-q').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); draw(); });
 $('.lx-cards').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-cls]');
-  if (b) pickHealer(b.dataset.cls);
+  if (b) pickHealer(b.dataset.cls, false); // the page stays put: the boxes below follow the pick
 });
 
 function table(tbl, cols, rows, sort, onSort, cell) {
@@ -3390,7 +3390,7 @@ const healerItems = (p, rows) => [...new Set(rows.map((r) => r.cls))].map((cls) 
 const HEALER_NAME = { priest: 'Holy Priest', paladin: 'Holy Paladin', druid: 'Restoration Druid', shaman: 'Restoration Shaman' };
 // Picking a healer opens its two charts if they were folded.
 const unfold = (sel) => $(sel).querySelectorAll('.collapsed > .hr-cardhead .hr-fold').forEach((f) => f.click());
-const pickHealer = (c) => { unfold('#h-healer'); setP({ lineCls: c, gainCls: c, detailCls: c }); $('#h-healer').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('h-healer'); };
+const pickHealer = (c, scroll = true) => { unfold('#h-healer'); setP({ lineCls: c, gainCls: c, detailCls: c }); if (scroll) $('#h-healer').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('h-healer'); };
 
 // Spec comparison: every healer at its best race, ranked. The bar is solid up to the healer's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between healers.
@@ -4500,7 +4500,7 @@ $('.lx-build').addEventListener('change', (e) => setP({ build: e.target.value })
 $('.lx-q').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); draw(); });
 $('.lx-cards').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-spec]');
-  if (b) pickSpec(b.dataset.spec);
+  if (b) pickSpec(b.dataset.spec, false); // the page stays put: the boxes below follow the pick
 });
 
 // Sortable table: cols = [{field, label, num, fmt, cls, title}]
@@ -4887,7 +4887,7 @@ const targetScale = (p, one, rows, spec, build, race) => [1, 2, 3, 4, 5].map((n)
 });
 // Picking a spec opens its two charts if they were folded.
 const unfold = (sel) => $(sel).querySelectorAll('.collapsed > .rr-cardhead .rr-fold').forEach((f) => f.click());
-const pickSpec = (s) => { unfold('#t-spec'); setP({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); $('#t-spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('t-spec'); };
+const pickSpec = (s, scroll = true) => { unfold('#t-spec'); setP({ lineSpec: s, gainSpec: s, detailSpec: s, build: 'all' }); if (scroll) $('#t-spec').scrollIntoView({ behavior: 'smooth', block: 'start' }); dash.setLink('t-spec'); };
 
 // Spec comparison: every spec at its best race, ranked. The bar is solid up to the spec's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between specs.
