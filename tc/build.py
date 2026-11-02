@@ -184,7 +184,7 @@ assert 'zamimg' not in web, _re.findall(r'.{40}zamimg.{40}',web)[:3]
 # Burning Crusade-era WoW site's: a parchment panel with a red title bar. It borrows the page's own textures. ----
 _T=open('template2.html',encoding='utf-8').read()
 _vars='\n'.join(l for l in _T.split('\n')[:60] if _re.match(r'\s*--(tex-weather|tex-paper|tex-fibre|tex-speck|tex-stain|parch-bg):',l))
-P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars).replace('/*PAGES*/','|'.join(k for k,_,_ in CLASSES)+'|legacy|racials|spellbook|changes|raid')
+P404=open('page404.html',encoding='utf-8').read().replace('/*VARS*/',_vars).replace('/*PAGES*/','|'.join(k for k,_,_ in CLASSES)+'|legacy|racials|spellbook|changes|raid').replace('.png">',f'.png?v={ICONV}">')
 open('../404.html','w',encoding='utf-8',newline='\n').write(P404)
 _os.makedirs('../web',exist_ok=True)
 open('../web/index.html', 'w', encoding='utf-8', newline='\n').write(web)
@@ -212,7 +212,7 @@ for k,t,d in PAGES:
     open(f'../web/{k}.html','w',encoding='utf-8',newline='\n').write(pg)
 # ---- the Simulations page (foreverinfo.io/sims): the race sims dashboard, standalone (experiment.py) ----
 import experiment
-open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC))
+open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">',1))
 # its old address, /experiment, sends visitors on to /sims (keeping ?... and #healing)
 open('../web/experiment.html','w',encoding='utf-8',newline='\n').write('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex">'
     '<title>Simulations – Forever Info</title><link rel="canonical" href="https://foreverinfo.io/sims">'
