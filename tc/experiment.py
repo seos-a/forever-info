@@ -56,7 +56,7 @@ let w = innerWidth, t; addEventListener('resize', () => { if (innerWidth === w) 
 
 CSS = """
 :root{color-scheme:dark;--rem:1;
-  --color-bg:#0a0a09;--color-panel:#141413;--color-fg:#ecebe4;--color-fg-muted:#9a978e;--color-border-line:#ffffff17;
+  --color-bg:#000000;--color-panel:#141413;--color-fg:#ecebe4;--color-fg-muted:#9a978e;--color-border-line:#ffffff17;
   --color-ok:#6dbb6a;--color-warn:#e0a83c;--color-bad:#e05a4f;
   --font-anthropic-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-anthropic-serif:ui-serif,Georgia,"Times New Roman",serif;
   --cds-border:#ffffff17;--cds-chart-grid:#ffffff14;--cds-chart-muted:#5f5e5a;--cds-chart-reference:#97958d;--cds-chart-status-critical:#d03b3b;
