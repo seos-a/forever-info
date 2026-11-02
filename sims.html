@@ -3306,7 +3306,8 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const probe = svg.append('text').attr('class', 'lab'), textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   // A phone: short healer names and only the number after each box, so the boxes keep room.
   const narrow = narrowChart(W), lab = (r) => (narrow ? shortSpec(r.label) : r.label), val = (r) => (narrow ? value(r).split(' · ')[0].replace(/ HPS$/, '') : value(r));
-  const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...rows.map((r) => textW(lab(r)))) + 14, mr = Math.max(...rows.map((r) => textW(val(r)))) + 14;
+  const labW = rows.map((r) => textW(lab(r)));
+  const iz = Math.min(30, bh), ix = iz + 8, ml = ix + Math.max(...labW) + 14, mr = Math.max(...rows.map((r) => textW(val(r)))) + 14;
   probe.remove();
   const lo = Math.min(...rows.map((r) => r.lo), zero ? 0 : Infinity), hi = Math.max(...rows.map((r) => r.hi), zero ? 0 : -Infinity);
   const x0 = d3.scaleLinear([lo, hi], [ml, W - mr]).nice();
@@ -3326,6 +3327,8 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
   const boxes = pg.append('rect').attr('y', bh * 0.12).attr('height', bh * 0.76).attr('rx', 3).style('fill', (r) => r.color).attr('fill-opacity', 0.55).style('stroke', (r) => r.color);
   const meds = pg.append('line').attr('y1', bh * 0.12).attr('y2', bh * 0.88).attr('stroke', 'var(--color-fg)').attr('stroke-width', 2);
   const vals = pg.append('text').attr('y', mid + 4).text(val);
+  // what the pointer finds over the plot: each row's whiskers and box, end to end
+  const hits = pg.append('rect').attr('y', mid - bh * 0.4).attr('height', bh * 0.8).attr('fill', 'transparent');
   const render = (x) => {
     grid.selectAll('line').data(x.ticks(narrow ? 3 : 6)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
     ticks.selectAll('text').data(x.ticks(narrow ? 3 : 6)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => fmt(t));
@@ -3335,10 +3338,13 @@ function drawBoxes(box, rows, H0, { fmt, zero, value, tip, onPick, labelColor, z
     boxes.attr('x', (r) => x(r.q1)).attr('width', (r) => Math.max(2, x(r.q3) - x(r.q1)));
     meds.attr('x1', (r) => x(r.median)).attr('x2', (r) => x(r.median));
     vals.attr('x', (r) => x(r.hi) + 8);
+    hits.attr('x', (r) => x(r.lo) - 4).attr('width', (r) => Math.max(8, x(r.hi) - x(r.lo) + 8));
   };
   render(x0);
   const t = el('div', 'hr-tip'); t.hidden = true; box.append(t);
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', onPick ? 'pointer' : null)
+  // The tooltip (and a click's pick) come from a row's portrait and name or its box and whiskers, not the space between.
+  const names = g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('width', (r, i) => ix + labW[i] + 4).attr('height', iz).attr('fill', 'transparent');
+  for (const sel of [names, hits]) sel.style('cursor', onPick ? 'pointer' : null)
     .on('mousemove', (ev, r) => {
       t.replaceChildren(...tip(r)); t.hidden = false;
       const [mx, my] = d3.pointer(ev, box), tw = t.offsetWidth;
