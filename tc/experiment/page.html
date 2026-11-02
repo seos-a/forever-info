@@ -598,17 +598,28 @@
     .rr-specs .rr-spec, .hr-specs .hr-spec { flex: 1 1 calc(50% - var(--cds-gap-sm)); }
     .lx-wide .rr-spec, .lx-wide .hr-spec { flex-basis: 100%; }
   }
-  /* The tabs and the page-wide filters under them (faction, gear) make one box of their own, styled like the cards below:
-     the tabs along its top, a line, then the filters. The tab row stays at the top of the screen while the page scrolls;
-     once it sticks (.stuck) its own bottom corners round off so it reads as a box on its own. */
-  .rr-tabs { position: sticky; top: -1px; z-index: 15; justify-content: center; margin: 0; padding: var(--cds-pad-xs) var(--cds-pad-lg) 0;
-    background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius) var(--cds-radius) 0 0; transition: border-radius .2s, box-shadow .2s; }
-  .rr-tabs.stuck { border-radius: 0 0 var(--cds-radius) var(--cds-radius); box-shadow: 0 6px 14px #000a; }
-  .rr-tabs button { font-weight: var(--cds-font-weight-medium); padding: var(--cds-pad-sm) var(--cds-pad-lg); }
-  .rr-tabs button[aria-selected="true"] { border-bottom-color: var(--color-fg); }
-  .rr > .rr-filters, .hr > .hr-filters { justify-content: center; align-items: center; margin-bottom: calc(var(--cds-gap-md) - var(--cds-gap-lg)); padding: var(--cds-pad-md) var(--cds-pad-lg);
-    background: var(--color-panel); border: 1px solid var(--color-border-line); border-top: 0; border-radius: 0 0 var(--cds-radius) var(--cds-radius); }
-  @media (max-width: 600px) { .rr-tabs, .rr > .rr-filters, .hr > .hr-filters { padding-left: 10px; padding-right: 10px; } .rr-tabs button { padding: var(--cds-pad-sm) var(--cds-pad-md); } }
+  /* The box along the top, styled like the cards below: the role tabs as Classic's round role icons (DPS, Healer, Tank),
+     then the faction buttons (the main site's Alliance / Horde crests; pick one to show only its races, pick it again for
+     all races). It stays at the top of the screen while the page scrolls, with a shadow once it sticks (.stuck). The
+     tabs' own faction buttons (.lx-facsrc) stay hidden: the crests press them, so each tab keeps its own filter. */
+  .rr-top { position: sticky; top: -1px; z-index: 15; display: flex; align-items: center; gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-md); padding: var(--cds-pad-sm) var(--cds-pad-lg);
+    background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); transition: box-shadow .2s; }
+  .rr-top.stuck { box-shadow: 0 6px 14px #000a; }
+  .rr-top .rr-tabs { gap: var(--cds-gap-sm); border: 0; margin: 0; }
+  .rr-top .rr-tabs button { width: 40px; height: 40px; padding: 0; margin: 0; border: 0; border-radius: 50%; opacity: .5; filter: grayscale(.7); transition: opacity .15s, filter .15s, box-shadow .15s; }
+  .rr-top .rr-tabs button img { width: 100%; height: 100%; display: block; }
+  .rr-top .rr-tabs button:hover { opacity: .9; filter: none; }
+  .rr-top .rr-tabs button[aria-selected="true"] { opacity: 1; filter: none; box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99; }
+  .rr-top .rr-tabs button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
+  .rr-fac { display: flex; gap: var(--cds-gap-sm); padding-left: var(--cds-gap-md); border-left: 1px solid var(--color-border-line); }
+  .rr-fac button { width: 32px; height: 32px; padding: 0; border: 2px solid #000; border-radius: 4px; overflow: hidden; background: #111; box-shadow: 0 0 0 1px #8a6a2a; opacity: .55; filter: grayscale(.6); cursor: pointer; transition: opacity .15s, filter .15s, box-shadow .15s; }
+  .rr-fac button img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .rr-fac button:hover { opacity: .9; filter: none; }
+  .rr-fac button[aria-pressed="true"] { opacity: 1; filter: none; box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99; }
+  .rr-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+  .lx-facsrc { display: none !important; }
+  .hr > .hr-patched { background: var(--color-panel); margin: 0; max-width: none; }
+  @media (max-width: 600px) { .rr-top { padding: var(--cds-pad-xs) 10px; } .rr-top .rr-tabs button { width: 36px; height: 36px; } .rr-fac button { width: 28px; height: 28px; } }
   /* the re-geared Dwarf sentence in the Hunters' Racial Bonus note: hover it to see that run in the chart */
   .lx-regear { text-decoration: underline; text-underline-offset: 2px; cursor: help; }
   .lx-regear.on { color: var(--color-fg); }
@@ -616,20 +627,23 @@
   .lx-gnext { display: block; margin-top: .6em; }
 </style>
 
+<div class="rr-top">
 <nav class="rr-tabs" role="tablist" aria-label="Role">
-  <button type="button" role="tab" id="tab-dps" data-tab="dps" aria-controls="panel-dps" aria-selected="true">DPS</button>
-  <button type="button" role="tab" id="tab-tanks" data-tab="tanks" aria-controls="panel-tanks" aria-selected="false" tabindex="-1">Tank</button>
-  <button type="button" role="tab" id="tab-healing" data-tab="healing" aria-controls="panel-healing" aria-selected="false" tabindex="-1">Heals</button>
+  <button type="button" role="tab" id="tab-dps" data-tab="dps" aria-controls="panel-dps" aria-selected="true" title="DPS" aria-label="DPS"><img src="images/icons/role_dps.png" alt=""></button>
+  <button type="button" role="tab" id="tab-healing" data-tab="healing" aria-controls="panel-healing" aria-selected="false" tabindex="-1" title="Healers" aria-label="Healers"><img src="images/icons/role_heal.png" alt=""></button>
+  <button type="button" role="tab" id="tab-tanks" data-tab="tanks" aria-controls="panel-tanks" aria-selected="false" tabindex="-1" title="Tanks" aria-label="Tanks"><img src="images/icons/role_tank.png" alt=""></button>
 </nav>
+<div class="rr-fac" role="group" aria-label="Faction">
+  <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
+  <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
+</div>
+</div>
 
 <div id="panel-dps" role="tabpanel" aria-labelledby="tab-dps" data-tab-panel="dps">
 <div class="rr">
-  <div class="rr-filters" role="group" aria-label="Filters">
+  <div class="rr-filters lx-facsrc" role="group" aria-label="Filters">
     <div class="rr-filter"><div class="rr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
-    </div></div>
-    <div class="rr-filter"><div class="rr-seg lx-gear" role="group" aria-label="Gear">
-      <button type="button" data-v="sims" title="Each build's WoWSims preset gear">WoWSims presets</button><button type="button" data-v="classic" title="Classic Phase 1 pre-raid best in slot, on Forever's engine">Classic pre-raid</button>
     </div></div>
   </div>
 
@@ -641,6 +655,9 @@
           <button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button>
         </div>
         <div class="rr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div>
+        <div class="rr-seg lx-gear" role="group" aria-label="Gear">
+          <button type="button" data-v="sims" title="Each build's WoWSims preset gear">WoWSims presets</button><button type="button" data-v="classic" title="Classic Phase 1 pre-raid best in slot, on Forever's engine">Classic pre-raid</button>
+        </div>
       </div>
     </div>
     <p class="rr-note lx-specnote" data-source="breakdown"></p>
@@ -726,11 +743,11 @@
 <div id="panel-healing" role="tabpanel" aria-labelledby="tab-healing" data-tab-panel="healing" hidden>
 <div class="hr">
 
-  <div class="hr-filters" role="group" aria-label="Filters">
+  <p class="hr-patched" id="h-patched"><b>TESTING:</b>Run on ForeverHealing-TC's Oct 30 hotfix data (build 70707 + hotfix, data updated Oct 31; simmed Nov 1), with the Holy Paladin rework, Blessing of Light removed and Wild Growth's 3 sec cast. A healing-limited test fight; take with a grain of salt.</p>
+  <div class="hr-filters lx-facsrc" role="group" aria-label="Filters">
     <div class="hr-filter"><div class="hr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
     </div></div>
-    <p class="hr-patched" id="h-patched"><b>TESTING:</b>Run on ForeverHealing-TC's Oct 30 hotfix data (build 70707 + hotfix, data updated Oct 31; simmed Nov 1), with the Holy Paladin rework, Blessing of Light removed and Wild Growth's 3 sec cast. A healing-limited test fight; take with a grain of salt.</p>
   </div>
 
   <section class="hr-card" id="h-speccmp" data-fixed data-label="HPS Ranking by Spec">
@@ -825,12 +842,9 @@
 
 <div id="panel-tanks" role="tabpanel" aria-labelledby="tab-tanks" data-tab-panel="tanks" hidden>
 <div class="rr">
-  <div class="rr-filters" role="group" aria-label="Filters">
+  <div class="rr-filters lx-facsrc" role="group" aria-label="Filters">
     <div class="rr-filter"><div class="rr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
-    </div></div>
-    <div class="rr-filter"><div class="rr-seg lx-measure" data-p="measure" role="group" aria-label="Measure">
-      <button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button>
     </div></div>
   </div>
 
@@ -842,6 +856,9 @@
           <button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button>
         </div>
         <div class="rr-seg lx-fight" data-p="specFight" role="group" aria-label="Fight length"></div>
+        <div class="rr-seg lx-measure" data-p="measure" role="group" aria-label="Measure">
+          <button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button>
+        </div>
       </div>
     </div>
     <p class="rr-note lx-specnote" data-source="tankBreakdown"></p>
@@ -934,9 +951,19 @@ document.addEventListener('wheel', (e) => {
   const m = e.target.closest && e.target.closest('.rr-menu, .hr-menu');
   if (m && (e.deltaY < 0 ? m.scrollTop <= 0 : m.scrollTop + m.clientHeight >= m.scrollHeight - 1)) e.preventDefault();
 }, { passive: false });
-const nav = document.querySelector('.rr-tabs');
-// a backdrop behind the tabs only once they stick to the top of the screen
-new IntersectionObserver(([e]) => nav.classList.toggle('stuck', e.intersectionRatio < 1), { threshold: [1] }).observe(nav);
+const nav = document.querySelector('.rr-tabs'), top = document.querySelector('.rr-top'), fac = document.querySelector('.rr-fac');
+// a shadow under the top box only once it sticks to the top of the screen
+new IntersectionObserver(([e]) => top.classList.toggle('stuck', e.intersectionRatio < 1), { threshold: [1] }).observe(top);
+// The faction crests: one shows only that faction's races, pressing it again shows all. They press every tab's own
+// (hidden) faction buttons, so the three tabs stay in step; the crests then show what the open tab is filtered to.
+const facNow = () => { const t = TABS.includes(dash.params().tab) ? dash.params().tab : 'dps', b = document.querySelector(`[data-tab-panel="${t}"] .lx-faction [aria-pressed="true"]`); return b ? b.dataset.v : 'All'; };
+const facShow = () => { const v = facNow(); fac.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v))); };
+fac.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-v]'); if (!b) return;
+  const v = facNow() === b.dataset.v ? 'All' : b.dataset.v;
+  document.querySelectorAll(`.lx-faction button[data-v="${v}"]`).forEach((x) => x.click());
+  facShow();
+});
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-tab]');
   if (b) { dash.setParams({ tab: b.dataset.tab }); dash.setLink(b.dataset.tab); }
@@ -950,6 +977,7 @@ dash.onData(() => {
   const t = TABS.includes(dash.params().tab) ? dash.params().tab : 'dps';
   for (const panel of document.querySelectorAll('[data-tab-panel]')) panel.hidden = panel.dataset.tabPanel !== t;
   for (const b of nav.querySelectorAll('button[data-tab]')) { b.setAttribute('aria-selected', String(b.dataset.tab === t)); b.tabIndex = b.dataset.tab === t ? 0 : -1; }
+  requestAnimationFrame(facShow); // after the tabs have marked their own faction buttons
 });
 if (TABS.includes(location.hash.slice(1))) dash.setParams({ tab: location.hash.slice(1) });
 </script>
