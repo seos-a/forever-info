@@ -597,11 +597,8 @@
   }
   /* Along the top, on the background picture: the role tabs as Classic's round role icons (DPS, Healer, Tank; the game's
      interface/lfgframe/ui-lfg-icon-roles texture), then the faction buttons (the main site's Alliance / Horde crests; pick
-     one to show only its races, pick it again for all races). It stays at the top of the screen while the page scrolls, on a dark backing once it sticks (.stuck). The
-     tabs' own faction buttons (.lx-facsrc) stay hidden: the crests press them, so each tab keeps its own filter. */
-  .rr-top { position: sticky; top: -1px; z-index: 15; display: flex; align-items: center; gap: var(--cds-gap-sm); width: fit-content; margin-bottom: var(--cds-gap-md); padding: var(--cds-pad-xs) 2px;
-    border-radius: var(--cds-radius); transition: background .2s, box-shadow .2s; }
-  .rr-top.stuck { background: #000000e0; box-shadow: 0 6px 14px #000a; padding: var(--cds-pad-xs) var(--cds-pad-sm); }
+     one to show only its races, pick it again for all races). They scroll away with the page. The tabs' own faction buttons (.lx-facsrc) stay hidden: the crests press them, so each tab keeps its own filter. */
+  .rr-top { display: flex; align-items: center; gap: var(--cds-gap-sm); width: fit-content; margin-bottom: var(--cds-gap-md); padding: var(--cds-pad-xs) 2px; }
   .rr-top .rr-tabs { gap: var(--cds-gap-sm); border: 0; margin: 0; }
   /* both groups in full colour; the picked one gets the main site's theme-button gold ring and glow */
   .rr-top .rr-tabs button, .rr-fac button { width: 32px; height: 32px; padding: 0; margin: 0; cursor: pointer; transition: box-shadow .15s, filter .15s; }
@@ -944,9 +941,7 @@ document.addEventListener('wheel', (e) => {
   const m = e.target.closest && e.target.closest('.rr-menu, .hr-menu');
   if (m && (e.deltaY < 0 ? m.scrollTop <= 0 : m.scrollTop + m.clientHeight >= m.scrollHeight - 1)) e.preventDefault();
 }, { passive: false });
-const nav = document.querySelector('.rr-tabs'), top = document.querySelector('.rr-top'), fac = document.querySelector('.rr-fac');
-// a shadow under the top box only once it sticks to the top of the screen
-new IntersectionObserver(([e]) => top.classList.toggle('stuck', e.intersectionRatio < 1), { threshold: [1] }).observe(top);
+const nav = document.querySelector('.rr-tabs'), fac = document.querySelector('.rr-fac');
 // The faction crests: one shows only that faction's races, pressing it again shows all. They press every tab's own
 // (hidden) faction buttons, so the three tabs stay in step; the crests then show what the open tab is filtered to.
 const facNow = () => { const t = TABS.includes(dash.params().tab) ? dash.params().tab : 'dps', b = document.querySelector(`[data-tab-panel="${t}"] .lx-faction [aria-pressed="true"]`); return b ? b.dataset.v : 'All'; };
