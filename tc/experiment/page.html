@@ -237,6 +237,8 @@
   .tl-tablewrap { overflow-x: auto; }
   .tl-scroll { margin-top: calc(6px - var(--cds-gap-md)); overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: #0000002e; }
   .tl-scroll svg { display: block; }
+  .tl-line { display: flex; width: max-content; }   /* the pinned ability names, then the timeline drawn under them */
+  .tl-scroll .tl-labels { position: sticky; left: 0; z-index: 1; flex: none; }
   .tl-scroll, .rr-chart .tl-scroll svg { touch-action: pan-x pan-y; }   /* one finger scrolls the timeline either way (not the charts' pan-y); two pinch it, not the page */
   .tl-scroll { cursor: grab; }
   .tl-scroll.drag { cursor: grabbing; user-select: none; }
@@ -1964,7 +1966,7 @@ function drawTimeline(p, item, minH) {
   // − / + buttons zoom in around the pointer, down to single seconds; drag the timeline to move along it.
   const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, fit = (W - 2 - lw - pad - 16) / (fight - start), maxPps = 160;  // W - 2: inside the box's border
   // It opens at least 14 px a second (as it always has; tlZoom keeps a zoom from view to view), zooming out to fit the whole fight.
-  let pps = Math.max(fit, Math.min(maxPps, Math.max(fit, 14) * tlZoom)), labels = null;
+  let pps = Math.max(fit, Math.min(maxPps, Math.max(fit, 14) * tlZoom));
   const bar = el('div', 'tl-zoombar'), seg = el('div', 'rr-seg'), sc = el('div', 'tl-scroll');
   const zbtn = (text, title, f) => { const b = el('button', null, text); b.type = 'button'; b.title = title; b.addEventListener('click', f); seg.append(b); return b; };
   bar.append(el('span', null, 'Ctrl + scroll to zoom, drag to move'), seg);
@@ -1978,7 +1980,8 @@ function drawTimeline(p, item, minH) {
     const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
     const x = (t) => lw + pad + (t - start) * pps;
     sc.replaceChildren();
-    const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
+    const strip = el('div', 'tl-line'); sc.append(strip);
+    const svg = d3.select(strip).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH).style('margin-left', -(lw - 4) + 'px');
     const rows = svg.append('g').attr('transform', 'translate(0,20)');
     names.forEach((name, i) => {
       const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
@@ -2020,11 +2023,11 @@ function drawTimeline(p, item, minH) {
         })
         .on('mouseleave', () => { tip.hidden = true; });
     }
-    // The labels stay in view while the timeline scrolls.
-    labels = svg.append('g');
+    // The labels stay in view while the timeline scrolls: their own svg, sticky at the left (the browser keeps it
+    // there as it scrolls, so it doesn't shake behind a fast swipe as a position set on each scroll event did).
+    const labels = d3.select(strip).insert('svg', ':first-child').attr('class', 'tl-svg tl-labels').attr('width', lw - 4).attr('height', TH);
     labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
     labels.node().append(...rows.selectAll(':scope > g').filter(function () { return this.querySelector('text.lab'); }).nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
-    labels.attr('transform', `translate(${sc.scrollLeft},0)`);
     zOut.disabled = pps <= fit + 1e-6; zIn.disabled = pps >= maxPps - 1e-6; zFit.disabled = zOut.disabled;
   };
   // Zoom to a new scale, keeping the moment under the pointer (or the middle of the view) where it is.
@@ -2037,7 +2040,6 @@ function drawTimeline(p, item, minH) {
   };
   const zOut = zbtn('−', 'Zoom out', () => zoomTo(pps / 1.6)), zIn = zbtn('+', 'Zoom in', () => zoomTo(pps * 1.6)), zFit = zbtn('Fit', 'Show the whole fight', () => zoomTo(fit));
   sc.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); zoomTo(pps * Math.exp(-e.deltaY * 0.002), e.clientX); }, { passive: false });
-  sc.addEventListener('scroll', () => labels && labels.attr('transform', `translate(${sc.scrollLeft},0)`));
   // Two fingers pinch to zoom, keeping the moment between them under them as they move.
   let pinch = null;
   pinchZoom(sc, {
@@ -3487,7 +3489,7 @@ function drawTimeline(p, item, minH) {
   // − / + buttons zoom in around the pointer, down to single seconds; drag the timeline to move along it.
   const start = Math.min(0, ...tl.map((c) => c[1])), rowH = 22, lw = 150, pad = 12, fit = (W - 2 - lw - pad - 16) / (fight - start), maxPps = 160;  // W - 2: inside the box's border
   // It opens at least 14 px a second (as it always has; tlZoom keeps a zoom from view to view), zooming out to fit the whole fight.
-  let pps = Math.max(fit, Math.min(maxPps, Math.max(fit, 14) * tlZoom)), labels = null;
+  let pps = Math.max(fit, Math.min(maxPps, Math.max(fit, 14) * tlZoom));
   const bar = el('div', 'tl-zoombar'), seg = el('div', 'rr-seg'), sc = el('div', 'tl-scroll');
   const zbtn = (text, title, f) => { const b = el('button', null, text); b.type = 'button'; b.title = title; b.addEventListener('click', f); seg.append(b); return b; };
   bar.append(el('span', null, 'Ctrl + scroll to zoom, drag to move'), seg);
@@ -3501,7 +3503,8 @@ function drawTimeline(p, item, minH) {
     const TW = Math.ceil(lw + pad + (fight - start) * pps + 16), TH = names.length * rowH + 24;
     const x = (t) => lw + pad + (t - start) * pps;
     sc.replaceChildren();
-    const svg = d3.select(sc).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH);
+    const strip = el('div', 'tl-line'); sc.append(strip);
+    const svg = d3.select(strip).append('svg').attr('class', 'tl-svg').attr('width', TW).attr('height', TH).style('margin-left', -(lw - 4) + 'px');
     const rows = svg.append('g').attr('transform', 'translate(0,20)');
     names.forEach((name, i) => {
       const g = rows.append('g').attr('transform', `translate(0,${i * rowH})`);
@@ -3543,11 +3546,11 @@ function drawTimeline(p, item, minH) {
         })
         .on('mouseleave', () => { tip.hidden = true; });
     }
-    // The labels stay in view while the timeline scrolls.
-    labels = svg.append('g');
+    // The labels stay in view while the timeline scrolls: their own svg, sticky at the left (the browser keeps it
+    // there as it scrolls, so it doesn't shake behind a fast swipe as a position set on each scroll event did).
+    const labels = d3.select(strip).insert('svg', ':first-child').attr('class', 'tl-svg tl-labels').attr('width', lw - 4).attr('height', TH);
     labels.append('rect').attr('width', lw - 4).attr('height', TH).attr('fill', 'var(--color-panel, #141413)');
     labels.node().append(...rows.selectAll(':scope > g').filter(function () { return this.querySelector('text.lab'); }).nodes().map((g) => { const c = g.cloneNode(true); c.querySelector('rect').setAttribute('width', lw - 4); return c; }).map((c) => { const h = document.createElementNS('http://www.w3.org/2000/svg', 'g'); h.setAttribute('transform', 'translate(0,20)'); h.append(c); return h; }));
-    labels.attr('transform', `translate(${sc.scrollLeft},0)`);
     zOut.disabled = pps <= fit + 1e-6; zIn.disabled = pps >= maxPps - 1e-6; zFit.disabled = zOut.disabled;
   };
   // Zoom to a new scale, keeping the moment under the pointer (or the middle of the view) where it is.
@@ -3560,7 +3563,6 @@ function drawTimeline(p, item, minH) {
   };
   const zOut = zbtn('−', 'Zoom out', () => zoomTo(pps / 1.6)), zIn = zbtn('+', 'Zoom in', () => zoomTo(pps * 1.6)), zFit = zbtn('Fit', 'Show the whole fight', () => zoomTo(fit));
   sc.addEventListener('wheel', (e) => { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); zoomTo(pps * Math.exp(-e.deltaY * 0.002), e.clientX); }, { passive: false });
-  sc.addEventListener('scroll', () => labels && labels.attr('transform', `translate(${sc.scrollLeft},0)`));
   // Two fingers pinch to zoom, keeping the moment between them under them as they move.
   let pinch = null;
   pinchZoom(sc, {
