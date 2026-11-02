@@ -353,8 +353,6 @@ document.head.appendChild(t);})();
   .hr-take { font-size: var(--cds-font-size-body); max-width: 72ch; line-height: 1.5; }
   .hr .hr-take b { font-weight: 600; }
   .hr-sub, .hr-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
-  .hr-patched { border: 1px solid var(--color-warn); border-radius: var(--cds-radius); padding: var(--cds-pad-sm) var(--cds-pad-md); font-size: var(--cds-font-size-caption); line-height: 1.5; max-width: 90ch; }
-  .hr .hr-patched b { color: var(--color-warn); font-weight: 600; letter-spacing: .04em; margin-right: .35rem; }
   .hr-filters { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: end; }
   .hr-filter { display: flex; flex-direction: column; gap: var(--cds-gap-xs); min-width: 0; }
   .hr-filter > span { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); letter-spacing: .02em; }
@@ -674,7 +672,6 @@ document.head.appendChild(t);})();
   .rr-spec .r, .hr-spec .r { font-size: 12px; }
   /* the filter rows: buttons only (no labels), and the Healing tab's TESTING note beside them so the page doesn't move */
   .rr-filters, .hr-filters { align-items: center; }
-  .hr-filters .hr-patched { margin: 0; flex: 0 1 auto; max-width: none; padding: 3px var(--cds-pad-md); line-height: 1.45; }
   /* Healing and Tanks: the Top Race box spans the page, its three cards share the row, bigger, with the runner-up */
   .lx-bestcard.lx-wide { align-self: stretch; width: auto; }
   .lx-wide .rr-specs, .lx-wide .hr-specs { flex-wrap: nowrap; }
@@ -713,7 +710,6 @@ document.head.appendChild(t);})();
   .rr-top .rr-tabs button[aria-selected="true"], .rr-fac button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
   .rr-top .rr-tabs button:focus-visible, .rr-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
   .lx-facsrc { display: none !important; }
-  .hr > .hr-patched { background: var(--color-panel); margin: 0; max-width: none; }
   @media (max-width: 600px) { .rr-top .rr-tabs button, .rr-fac button { width: 28px; height: 28px; } }
   /* the picked button in each box's button groups: light grey rather than white */
   .rr-seg button[aria-pressed="true"], .hr-seg button[aria-pressed="true"] { background: #c4c2bb; color: #141413; }
@@ -840,7 +836,6 @@ document.head.appendChild(t);})();
 <div id="panel-healing" role="tabpanel" aria-labelledby="tab-healing" data-tab-panel="healing" hidden>
 <div class="hr">
 
-  <p class="hr-patched" id="h-patched"><b>TESTING:</b>Run on ForeverHealing-TC's Oct 30 hotfix data (build 70707 + hotfix, data updated Oct 31; simmed Nov 1), with the Holy Paladin rework, Blessing of Light removed and Wild Growth's 3 sec cast. A healing-limited test fight; take with a grain of salt.</p>
   <div class="hr-filters lx-facsrc" role="group" aria-label="Filters">
     <div class="hr-filter"><div class="hr-seg lx-faction" role="group" aria-label="Faction">
       <button type="button" data-v="All">All races</button><button type="button" data-v="Alliance">Alliance</button><button type="button" data-v="Horde">Horde</button>
