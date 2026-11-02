@@ -706,9 +706,8 @@
     <div class="rr-notes">
       <div><b>Sim</b><p>WoWSims Forever 376a6aa (30 Oct) on build 70707 data, hotfixes to 31 Oct. 1, 2, 3 and 5 minute fights against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%). Its Paladin and Priest spells predate 70707, so treat Retribution and Shadow with care.</p></div>
       <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Elemental, Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Classic stats for items Forever lacks and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better.</p></div>
-      <div><b>Dwarf's hit</b><p>Wasted on builds already past the hit cap: the Survival and weave Hunter builds, and rogue and Fury special attacks (their off-hand swings still use it). On those Hunter builds, 1% hit swapped for 1% crit adds up to about 1 point to Dwarf, never enough to make it the top race.</p></div>
       <div><b>Racials</b><p>Racial Bonus compares each race with the same build with no racial abilities, passives or stat offsets. Active racials fire on cooldown, so timing them with other cooldowns may be worth a little more. Situational ones (Big Game Hunter, Beast Slaying, Elemental Insight) aren't counted.</p></div>
-      <div><b>Targets</b><p>The race table and Racial Bonus run every race at 1 to 5 targets; the spec ranking at 2 to 5 targets and the ability breakdowns use each build's best race (and the other faction's best). Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
+      <div><b>Targets</b><p>Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view. Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
     </div>
   </section>
 </div>
@@ -907,7 +906,7 @@
       <div><b>Sim</b><p>WoWSims Forever 376a6aa (30 Oct) on build 70707 data. A level 63 boss hitting every 2 sec, with each spec's default incoming healing, so no tank died; 1, 2, 3 and 5 minutes, 10,000 iterations, every race on the same seed. Its Protection Paladin predates 70707's rework (no Shieldsworn), so treat it with care.</p></div>
       <div><b>Setups</b><p>Each tank's WoWSims talents, rotation, consumables, buffs and gear presets (Protection Warrior has two: Defense Cap and Threat). Every race wears the same gear.</p></div>
       <div><b>Measures</b><p>DPS and threat: higher is better. Damage taken (after armor, avoidance and mitigation) and spikes (the worst bursts against the tank's health): lower is better.</p></div>
-      <div><b>Targets</b><p>Only the first target attacks; extra targets add threat and damage, not damage taken. Racial Bonus runs every race at 1 to 5 targets; the spec ranking uses each build's best race.</p></div>
+      <div><b>Targets</b><p>Only the first target attacks; extra targets add threat and damage, not damage taken. Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view.</p></div>
       <div><b>Racials</b><p>Active racials fire on cooldown rather than timed for big hits, and Dwarves press Stoneform whenever it's ready (WoWSims would save it for low health, which the steady healing never reaches). Situational racials aren't counted.</p></div>
     </div>
   </section>
@@ -1124,9 +1123,9 @@ const BELOW = {
   'Marksmanship Hunter|Horde Skyborne': WEAVE_NOTE('Marksmanship', 'about 1%', 'about 0.7%'),
   'Survival Hunter|Alliance Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
   'Survival Hunter|Horde Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
-  'Beast Mastery Hunter|Dwarf': 'Its innate −4 Agility takes back what its 1% hit racial adds here. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
+  'Beast Mastery Hunter|Dwarf': 'Its innate −4 Agility takes back what its 1% hit racial adds here.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows.',
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   // At 2 to 5 targets (the Racial Bonus box's target switch): Chain Lightning runs Elemental's mana down after the first minute.
   'Elemental Shaman|Tauren|aoe': 'Tauren racials provide no value to Elemental DPS. At more targets Chain Lightning runs the mana pool down on fights of 2 minutes or more, so its innate −5 Intellect (less mana, a sliver of spell crit) costs more than on one target.',
@@ -1508,10 +1507,37 @@ function drawLines(p, rows) {
 
 // Racial Bonus bars: the top race gold, other gains blue, losses red, no change grey.
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
-// The Hunters' Dwarf note says how a Dwarf geared for it (1% hit traded for 1% crit) would do. Hovering that sentence (or
-// tapping it) shows that run in the chart, from the "regear" dataset: the same builds and fight lengths with the regear.
-const REGEAR_TEXT = 'With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.';
-let regearOn = false, gainArgs = null;
+// Dwarf's hit on builds already past the hit cap: when a Dwarf geared for it (1% hit traded for 1% crit, the "regear"
+// dataset, simmed at 1 target) beats the plain Dwarf in this view, a line under the chart says so. Hovering its last
+// sentence shows the re-geared Dwarf in the chart; clicking (or tapping) keeps it there until clicked again.
+let regearOn = false, regearLock = false, gainArgs = null;
+function regearInfo(p, plain) {
+  const R = rrData(dash.data('regear')), S = rrData(dash.data('sims')), d = plain.find((r) => r.race === 'Dwarf');
+  if (p.targets !== 1 || R.status !== 'ok' || S.status !== 'ok' || !d) return null;
+  const inView = (r) => r.spec === p.spec && (p.fight === 'all' || String(r.fight) === p.fight);
+  const runs = R.data.filter(inView), avg = (rs) => rs.reduce((t, r) => t + +r.gain, 0) / rs.length;
+  if (!runs.length || avg(runs) - d.gain < 0.1) return null;
+  // the builds it comes from: those where the swap is worth at least 0.2 points
+  const builds = [...new Set(runs.map((r) => r.build))].filter((b) => {
+    const was = S.data.filter((r) => inView(r) && r.build === b && r.race === 'Dwarf' && tgt(r) === 1);
+    return was.length && avg(runs.filter((r) => r.build === b)) - avg(was) >= 0.2;
+  });
+  return { more: avg(runs) - d.gain, builds };
+}
+function regearLine(info, cls) {
+  const names = info.builds.length > 1 ? info.builds.slice(0, -1).join(', ') + ' and ' + info.builds.at(-1) : info.builds[0];
+  const line = el('span', cls, names ? `Dwarf: its extra 1% hit is wasted on ${names}, ${info.builds.length > 1 ? 'which are' : 'which is'} already over the hit cap. `
+    : 'Dwarf: its extra 1% hit is partly wasted, as some of these builds are already over the hit cap. ');
+  const span = el('span', 'lx-regear', `1% hit swapped for 1% crit adds about ${fx(info.more, 1)}% more DPS for Dwarf.`);
+  span.classList.toggle('on', regearOn);
+  span.title = 'Hover to show the re-geared Dwarf in the chart; click to keep it';
+  const show = (on) => { regearOn = on; span.classList.toggle('on', on); if (gainArgs) drawGains(gainArgs[0], gainArgs[1], true); };
+  span.addEventListener('mouseenter', () => { if (!regearLock) show(true); });
+  span.addEventListener('mouseleave', () => { if (!regearLock) show(false); });
+  span.addEventListener('click', () => { regearLock = !regearLock; show(regearLock); });
+  line.append(span);
+  return line;
+}
 function withRegear(p, list) {
   const R = rrData(dash.data('regear'));
   const runs = R.status === 'ok' ? R.data.filter((r) => r.spec === p.spec && (p.fight === 'all' || String(r.fight) === p.fight)) : [];
@@ -1520,22 +1546,6 @@ function withRegear(p, list) {
   const avg = (f) => runs.reduce((t, r) => t + f(r), 0) / runs.length, gain = avg((r) => +r.gain), dps = avg((r) => +r.dps);
   const swap = { ...d, regear: true, gain, dps, gainDps: avg((r) => r.dps - r.base), gapDps: d.gapDps - (dps - d.dps) };
   return list.map((r) => (r === d ? swap : r)).sort((a, b) => b.gain - a.gain);
-}
-function markRegear(note) {
-  const walk = document.createTreeWalker(note, NodeFilter.SHOW_TEXT), texts = [];
-  while (walk.nextNode()) texts.push(walk.currentNode);
-  for (const n of texts) {
-    const i = n.textContent.indexOf(REGEAR_TEXT);
-    if (i < 0) continue;
-    const span = el('span', 'lx-regear', REGEAR_TEXT);
-    span.classList.toggle('on', regearOn);
-    span.title = 'Hover (or tap) to show the re-geared Dwarf in the chart';
-    const show = (on) => { regearOn = on; span.classList.toggle('on', on); if (gainArgs) drawGains(gainArgs[0], gainArgs[1], true); };
-    span.addEventListener('mouseenter', () => show(true));
-    span.addEventListener('mouseleave', () => show(false));
-    span.addEventListener('click', () => show(!regearOn));
-    n.replaceWith(n.textContent.slice(0, i), span, n.textContent.slice(i + REGEAR_TEXT.length));
-  }
 }
 // Specs whose biggest racial bonus is more than 1.5 times any other spec's: their Racial Bonus chart gets its own scale.
 function gainOutliers(rows) {
@@ -1550,16 +1560,16 @@ function drawGains(p, rows, keepNote) {
   const box = $('.lx-gains');
   box.replaceChildren();
   const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight && (r.targets || 1) === p.targets).sort((a, b) => b.gain - a.gain);
-  // Explain each race that lands below "no racials" in this view; hidden when none do.
-  const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
-  note.hidden = !below.length;
+  // Explain each race that lands below "no racials" in this view, and Dwarf's hit past the hit cap; hidden when neither applies.
+  const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote'), dwarf = regearInfo(p, plain);
+  if (!dwarf) regearOn = regearLock = false;
+  note.hidden = !below.length && !dwarf;
   if (!keepNote) {
-    // The re-geared Dwarf was simmed at 1 target only, so its sentence (and its hover) go at more targets.
-    const text = (r) => (p.targets > 1 ? belowNote(p, r.race).replace(' ' + REGEAR_TEXT, '') : belowNote(p, r.race));
-    note.replaceChildren(...(below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map(text))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : []));
-    markRegear(note);
+    const parts = below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map((r) => belowNote(p, r.race)))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : [];
+    if (dwarf) parts.push(regearLine(dwarf, below.length ? 'lx-gnext' : null));
+    note.replaceChildren(...parts);
   }
-  const list = regearOn && p.targets === 1 ? withRegear(p, plain) : plain;
+  const list = regearOn ? withRegear(p, plain) : plain;
   // A fixed height, room for the 10 races the most a spec can have, so the box keeps its size from spec to spec;
   // a note below the bars takes its room from the bars.
   const gap = 6, noteH = note.hidden ? 0 : note.getBoundingClientRect().height + (parseFloat(getComputedStyle(box.parentElement).rowGap) || 0);
@@ -1645,44 +1655,14 @@ const specItems = (p, rows) => {
   }
   return [...specs.values()];
 };
-// At 2 to 5 targets: each spec's best build at that many targets, run with the race that does best on it at one target.
-const targetItems = (p, rows) => {
-  const acc = new Map(), specs = new Map();
-  for (const r of rows) {
-    if (+r.targets !== +p.targets || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
-    const k = r.spec + '|' + r.build;
-    if (!acc.has(k)) acc.set(k, { spec: r.spec, build: r.build, race: r.race, faction: r.faction, sum: 0, n: 0 });
-    const a = acc.get(k); a.sum += VAL(r); a.n++;
-  }
-  const up = HIGHER(p);
-  for (const a of acc.values()) {
-    const v = a.sum / a.n, cur = specs.get(a.spec);
-    if (cur && (up ? v <= cur.top : v >= cur.top)) { cur.builds++; continue; }
-    specs.set(a.spec, { key: a.spec, name: a.spec, icon: a.spec, color: specColor(a.spec), build: a.build, builds: (cur ? cur.builds : 0) + 1,
-      top: v, best: a.race, faction: a.faction, worst: v, worstRace: a.race, single: true });
-  }
-  return [...specs.values()];
-};
-// The bars at 2 to 5 targets use each build's best race at one target, but every race was simmed at those counts too
-// (`rows`: simsTargets / tankRunsTargets), so the tooltip still names the build's best and weakest race there.
-const addSpread = (p, rows, items) => {
-  const up = HIGHER(p), better = (a, b) => (up ? a.v > b.v : a.v < b.v);
-  for (const it of items) {
-    const acc = new Map();
-    for (const r of rows) {
-      if (r.spec !== it.key || r.build !== it.build || +r.targets !== +p.targets || (p.faction !== 'All' && r.faction !== p.faction) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
-      if (!acc.has(r.race)) acc.set(r.race, { race: r.race, sum: 0, n: 0 });
-      const a = acc.get(r.race); a.sum += VAL(r); a.n++;
-    }
-    const g = [...acc.values()].map((a) => ({ race: a.race, v: a.sum / a.n }));
-    if (g.length < 2) continue;
-    const best = g.reduce((a, b) => (better(b, a) ? b : a)), worst = g.reduce((a, b) => (better(a, b) ? b : a));
-    Object.assign(it, { single: false, tipBest: best.race, tipTop: best.v, worst: worst.v, worstRace: worst.race });
-  }
-};
-// A build's DPS at 1 to 5 targets (averaged over the fight lengths for "All").
-const targetScale = (p, rows, spec, build) => [1, 2, 3, 4, 5].map((n) => {
-  const v = rows.filter((r) => r.spec === spec && r.build === build && +r.targets === n && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
+// At 2 to 5 targets: the same as at one target (each spec's best race on its best build, with its weakest race on that
+// build), from every race's runs at that many targets (`rows`: simsTargets / tankRunsTargets) within the faction picked.
+const targetItems = (p, rows) => specItems(p, rows.filter((r) => +r.targets === +p.targets && (p.faction === 'All' || r.faction === p.faction)).map((r) => ({ ...r, scope: p.faction })));
+// The shown race's value on its build at 1 to 5 targets (averaged over the fight lengths for "All"): one target from
+// `one` (the scoped rows), more from `rows`.
+const targetScale = (p, one, rows, spec, build, race) => [1, 2, 3, 4, 5].map((n) => {
+  const v = (n === 1 ? one.filter((r) => r.scope === 'All') : rows.filter((r) => +r.targets === n))
+    .filter((r) => r.spec === spec && r.build === build && r.race === race && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
   return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
 });
 // Picking a spec opens its two charts if they were folded.
@@ -1692,8 +1672,8 @@ const pickSpec = (s) => { unfold('#spec'); dash.setParams({ lineSpec: s, gainSpe
 // Spec comparison: every spec at its best race, ranked. The bar is solid up to the spec's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between specs.
 // Ability breakdown: clicking a spec's bar turns the DPS Ranking by Spec box into where that spec's damage comes from,
-// like a damage meter. Rows come from the `breakdown` dataset: each build's best race (at one target) at 1 to 5
-// targets and each fight length, with every ability's damage and threat per second.
+// like a damage meter. Rows come from the `breakdown` dataset: at each target count and fight length, the races that top
+// each build (in any fight-length and faction view), with every ability's damage and threat per second.
 const BD_KEY = () => 'dps';
 // WoW's combat-log school colours (what Details! and Warcraft Logs use), softened a little for a dark page.
 const SCHOOL_COLOR = { Physical: '#f0d24a', Holy: '#ffe680', Fire: '#ff8a1f', Nature: '#5fd35f', Frost: '#7fdcff', Shadow: '#9d8cff', Arcane: '#ff8cf2' };
@@ -2346,13 +2326,11 @@ function draw() {
   const DT = rrData(dash.data('targets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, d.scoped.data, DT.status === 'ok' ? DT.data : []);
   {
-    // Spec comparison: every race at one target, or each build's best race at 2 to 5 targets.
+    // Spec comparison: every race at the target count picked (1 to 5), within the faction picked.
     SCOPED = d.scoped.data;
-    const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, T = $('.lx-targets') ? rrData(dash.data('targets')) : null;
-    const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, d.scoped.data) : tOk ? targetItems(sp, T.data) : [];
-    if (tOk) for (const it of items) it.scale = targetScale(sp, T.data, it.key, it.build);
-    const ST = sp.targets > 1 ? rrData(dash.data('simsTargets')) : null;
-    if (ST && ST.status === 'ok') addSpread(sp, ST.data, items);
+    const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, ST = $('.lx-targets') ? rrData(dash.data('simsTargets')) : null;
+    const tOk = ST && ST.status === 'ok', items = sp.targets === 1 ? specItems(sp, d.scoped.data) : tOk ? targetItems(sp, ST.data) : [];
+    if (tOk) for (const it of items) it.scale = targetScale(sp, d.scoped.data, ST.data, it.key, it.build, it.best);
     // A spec picked from the bars shows its ability breakdown in this box until "All specs" is clicked.
     const B = rrData(dash.data('breakdown'));
     let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
@@ -2368,7 +2346,7 @@ function draw() {
       for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
       view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
     }
-    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams(SPEC_SYNC(k)), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The faction filter doesn't apply here. Hover for DPS at every target count, click a spec for its ability breakdown.`);
+    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => dash.setParams(SPEC_SYNC(k)), sp.targets === 1 ? '' : `Each spec's best race on its best build at ${sp.targets} targets. Hover for DPS at every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
     // plain again when none is, and left alone in the APM view, which shows its own.
     const h2 = $('.lx-cmptitle');
@@ -2653,9 +2631,9 @@ const BELOW = {
   'Marksmanship Hunter|Horde Skyborne': WEAVE_NOTE('Marksmanship', 'about 1%', 'about 0.7%'),
   'Survival Hunter|Alliance Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
   'Survival Hunter|Horde Skyborne': WEAVE_NOTE('Survival', 'about 1%', '1.5 to 2.5%'),
-  'Beast Mastery Hunter|Dwarf': 'Its innate −4 Agility takes back what its 1% hit racial adds here. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
-  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
-  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows. With 1% hit swapped for 1% crit, its bonus is up to about 1 point higher on the builds past the hit cap.',
+  'Beast Mastery Hunter|Dwarf': 'Its innate −4 Agility takes back what its 1% hit racial adds here.',
+  'Marksmanship Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing on the Marksmanship weave, which is past the hit cap, so its innate −4 Agility is all that shows.',
+  'Survival Hunter|Dwarf': 'Dwarf’s 1% hit racial gains nothing, as the Survival presets are past the hit cap (Surefooted adds 3%), so its innate −4 Agility is all that shows.',
   'Shadow Priest|Troll': 'Troll’s innate −4 Intellect costs a little spell crit. Berserking (10% faster casting for 10 sec) only about makes up for it, so Troll lands around zero, just below on 1 minute fights.',
   'Feral Druid|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
   'Protection Warrior|dtps|Tauren': 'Tauren racials provide no value to damage taken: Endurance’s extra health shrinks spikes but doesn’t lower damage taken. Its innate −5 Agility (a little less dodge) is all that shows.',
@@ -3049,13 +3027,13 @@ function drawLines(p, rows) {
 // Racial Bonus bars: the top race gold, other gains blue, losses red, no change grey.
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
 // Prot Warrior's Threat build is already at the 8% melee hit cap, so Dwarf's 1% hit gains nothing there. Hovering the
-// sentence about a Dwarf geared for it (or tapping it) shows that run in the chart, from the "tankRegear" dataset: the
+// sentence about a Dwarf geared for it shows that run in the chart (a click keeps it), from the "tankRegear" dataset: the
 // Threat build with 1% hit traded for 1% crit, and the Defense Cap build (under the cap) as it is.
 const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit on that build, as a Dwarf would gear, its bonus here is about 1 percentage point higher.';
 const REGEAR_LEAD = 'Dwarf: the Threat build is already at the 8% hit cap, so Dwarf’s 1% hit (Artisan’s Precision) gains nothing there. ';
 // (at 1 target: the re-geared runs are one-target runs)
 const hasRegear = (p) => p.spec === 'Protection Warrior' && (p.measure === 'tps' || p.measure === 'dps') && p.targets === 1;
-let regearOn = false, gainArgs = null;
+let regearOn = false, regearLock = false, gainArgs = null;
 function withRegear(p, list) {
   const R = rrData(dash.data('tankRegear'));
   const runs = R.status === 'ok' ? R.data.filter((r) => r.spec === p.spec && r.measure === p.measure && (p.fight === 'all' || String(r.fight) === p.fight)) : [];
@@ -3068,11 +3046,11 @@ function withRegear(p, list) {
 function regearSpan() {
   const span = el('span', 'lx-regear', REGEAR_TEXT);
   span.classList.toggle('on', regearOn);
-  span.title = 'Hover (or tap) to show the re-geared Dwarf in the chart';
+  span.title = 'Hover to show the re-geared Dwarf in the chart; click to keep it';
   const show = (on) => { regearOn = on; span.classList.toggle('on', on); if (gainArgs) drawGains(gainArgs[0], gainArgs[1], true); };
-  span.addEventListener('mouseenter', () => show(true));
-  span.addEventListener('mouseleave', () => show(false));
-  span.addEventListener('click', () => show(!regearOn));
+  span.addEventListener('mouseenter', () => { if (!regearLock) show(true); });
+  span.addEventListener('mouseleave', () => { if (!regearLock) show(false); });
+  span.addEventListener('click', () => { regearLock = !regearLock; show(regearLock); });
   return span;
 }
 function drawGains(p, rows, keepNote) {
@@ -3083,7 +3061,7 @@ function drawGains(p, rows, keepNote) {
   // Explain each race that lands below "no racials" in this view, and Dwarf's hit on Prot Warrior; hidden when neither applies.
   const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
   const dwarf = hasRegear(p) && plain.some((r) => r.race === 'Dwarf');
-  if (!dwarf) regearOn = false;
+  if (!dwarf) regearOn = regearLock = false;
   note.hidden = !below.length && !dwarf;
   if (!keepNote) {
     const parts = below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map((r) => belowNote(p, r.race)))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : [];
@@ -3173,44 +3151,14 @@ const specItems = (p, rows) => {
   }
   return [...specs.values()];
 };
-// At 2 to 5 targets: each spec's best build at that many targets, run with the race that does best on it at one target.
-const targetItems = (p, rows) => {
-  const acc = new Map(), specs = new Map();
-  for (const r of rows) {
-    if (+r.targets !== +p.targets || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
-    const k = r.spec + '|' + r.build;
-    if (!acc.has(k)) acc.set(k, { spec: r.spec, build: r.build, race: r.race, faction: r.faction, sum: 0, n: 0 });
-    const a = acc.get(k); a.sum += VAL(r); a.n++;
-  }
-  const up = HIGHER(p);
-  for (const a of acc.values()) {
-    const v = a.sum / a.n, cur = specs.get(a.spec);
-    if (cur && (up ? v <= cur.top : v >= cur.top)) { cur.builds++; continue; }
-    specs.set(a.spec, { key: a.spec, name: a.spec, icon: a.spec, color: specColor(a.spec), build: a.build, builds: (cur ? cur.builds : 0) + 1,
-      top: v, best: a.race, faction: a.faction, worst: v, worstRace: a.race, single: true });
-  }
-  return [...specs.values()];
-};
-// The bars at 2 to 5 targets use each build's best race at one target, but every race was simmed at those counts too
-// (`rows`: simsTargets / tankRunsTargets), so the tooltip still names the build's best and weakest race there.
-const addSpread = (p, rows, items) => {
-  const up = HIGHER(p), better = (a, b) => (up ? a.v > b.v : a.v < b.v);
-  for (const it of items) {
-    const acc = new Map();
-    for (const r of rows) {
-      if (r.spec !== it.key || r.build !== it.build || +r.targets !== +p.targets || (p.faction !== 'All' && r.faction !== p.faction) || (p.fight !== 'all' && String(r.fight) !== p.fight)) continue;
-      if (!acc.has(r.race)) acc.set(r.race, { race: r.race, sum: 0, n: 0 });
-      const a = acc.get(r.race); a.sum += VAL(r); a.n++;
-    }
-    const g = [...acc.values()].map((a) => ({ race: a.race, v: a.sum / a.n }));
-    if (g.length < 2) continue;
-    const best = g.reduce((a, b) => (better(b, a) ? b : a)), worst = g.reduce((a, b) => (better(a, b) ? b : a));
-    Object.assign(it, { single: false, tipBest: best.race, tipTop: best.v, worst: worst.v, worstRace: worst.race });
-  }
-};
-// A build's DPS at 1 to 5 targets (averaged over the fight lengths for "All").
-const targetScale = (p, rows, spec, build) => [1, 2, 3, 4, 5].map((n) => {
-  const v = rows.filter((r) => r.spec === spec && r.build === build && +r.targets === n && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
+// At 2 to 5 targets: the same as at one target (each spec's best race on its best build, with its weakest race on that
+// build), from every race's runs at that many targets (`rows`: simsTargets / tankRunsTargets) within the faction picked.
+const targetItems = (p, rows) => specItems(p, rows.filter((r) => +r.targets === +p.targets && (p.faction === 'All' || r.faction === p.faction)).map((r) => ({ ...r, scope: p.faction })));
+// The shown race's value on its build at 1 to 5 targets (averaged over the fight lengths for "All"): one target from
+// `one` (the scoped rows), more from `rows`.
+const targetScale = (p, one, rows, spec, build, race) => [1, 2, 3, 4, 5].map((n) => {
+  const v = (n === 1 ? one.filter((r) => r.scope === 'All') : rows.filter((r) => +r.targets === n))
+    .filter((r) => r.spec === spec && r.build === build && r.race === race && (p.fight === 'all' || String(r.fight) === p.fight)).map(VAL);
   return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
 });
 // Picking a spec opens its two charts if they were folded.
@@ -3220,8 +3168,8 @@ const pickSpec = (s) => { unfold('#t-spec'); setP({ lineSpec: s, gainSpec: s, de
 // Spec comparison: every spec at its best race, ranked. The bar is solid up to the spec's weakest race and
 // lighter beyond it, so the lighter end shows how much race choice matters next to the gaps between specs.
 // Ability breakdown: clicking a spec's bar turns the DPS Ranking by Spec box into where that spec's damage comes from,
-// like a damage meter. Rows come from the `breakdown` dataset: each build's best race (at one target) at 1 to 5
-// targets and each fight length, with every ability's damage and threat per second.
+// like a damage meter. Rows come from the `breakdown` dataset: at each target count and fight length, the races that top
+// each build (in any fight-length and faction view), with every ability's damage and threat per second.
 const BD_KEY = (p) => (p.measure === 'dps' ? 'dps' : 'tps');
 // WoW's combat-log school colours (what Details! and Warcraft Logs use), softened a little for a dark page.
 const SCHOOL_COLOR = { Physical: '#f0d24a', Holy: '#ffe680', Fire: '#ff8a1f', Nature: '#5fd35f', Frost: '#7fdcff', Shadow: '#9d8cff', Arcane: '#ff8cf2' };
@@ -3890,13 +3838,11 @@ function draw() {
   const DT = rrData(dash.data('tankTargets'));
   drawDetail({ ...p, spec: p.detailSpec, fight: p.detailFight }, M(d.scoped.data), DT.status === 'ok' ? M(DT.data) : []);
   {
-    // Spec comparison: every race at one target, or each build's best race at 2 to 5 targets.
+    // Spec comparison: every race at the target count picked (1 to 5), within the faction picked.
     SCOPED = d.scoped.data;
-    const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, T = $('.lx-targets') ? rrData(dash.data('tankTargets')) : null;
-    const tOk = T && T.status === 'ok', items = sp.targets === 1 ? specItems(sp, M(d.scoped.data)) : tOk ? targetItems(sp, M(T.data)) : [];
-    if (tOk) for (const it of items) it.scale = targetScale(sp, M(T.data), it.key, it.build);
-    const ST = sp.targets > 1 ? rrData(dash.data('tankRunsTargets')) : null;
-    if (ST && ST.status === 'ok') addSpread(sp, M(ST.data), items);
+    const sp = { ...p, fight: p.specFight, targets: $('.lx-targets') ? +p.specTargets || 1 : 1 }, ST = $('.lx-targets') ? rrData(dash.data('tankRunsTargets')) : null;
+    const tOk = ST && ST.status === 'ok', items = sp.targets === 1 ? specItems(sp, M(d.scoped.data)) : tOk ? targetItems(sp, M(ST.data)) : [];
+    if (tOk) for (const it of items) it.scale = targetScale(sp, M(d.scoped.data), M(ST.data), it.key, it.build, it.best);
     // A spec picked from the bars shows its ability breakdown in this box until "All specs" is clicked.
     const B = rrData(dash.data('tankBreakdown'));
     let view = p.specView && B.status === 'ok' && items.find((it) => it.key === p.specView);
@@ -3912,7 +3858,7 @@ function draw() {
       for (const r of SCOPED) if (r.scope === 'All' && r.spec === view.key && (!r.measure || r.measure === p.measure) && (sp.fight === 'all' || String(r.fight) === sp.fight)) bs.set(r.build, Math.max(bs.get(r.build) ?? -Infinity, HIGHER(p) ? VAL(r) : -VAL(r)));
       view.builds = [...bs].sort((a, b) => b[1] - a[1]).map(([k]) => k);
     }
-    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP(SPEC_SYNC(k)), sp.targets === 1 ? '' : `Each spec's best build at ${sp.targets} targets, run with the race that does best on it at one target: race choice barely moves with the number of targets, so only that race was run. The extra mobs deal no damage, so they change threat but hardly damage taken. The faction filter doesn't apply here. Hover for every target count, click a spec for its ability breakdown.`);
+    drawSpecCompare(sp, items, HIGHER(p), UNIT(p), (k) => setP(SPEC_SYNC(k)), sp.targets === 1 ? '' : `Each spec's best race on its best build at ${sp.targets} targets. The extra mobs deal no damage, so they change threat but hardly damage taken. Hover for every target count, click a spec for its ability breakdown.`);
     // The card's title (apm.js names it, in dataset.base): a breadcrumb while a spec's breakdown is open (drawBreakdown),
     // plain again when none is, and left alone in the APM view, which shows its own.
     const h2 = $('.lx-cmptitle');
