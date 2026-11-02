@@ -6,7 +6,7 @@ experiment/ holds a copy of the dashboard's files: page.html (its index.html), t
 for the dashboard's runtime, so RUNTIME below stands in for the parts it uses (dash.data / calc / onData / params /
 setParams) and the CSS gives values to the dashboard's theme tokens. To update it, copy the dashboard's files and
 datasets into experiment/ again and rebuild. Called by build.py, which adds the analytics snippet."""
-import json, os, re
+import base64, json, os, re
 
 # the dashboard's params document (dash/params): every filter's starting value
 PARAMS = {"bestFight": "all", "gear": "sims", "specTab": "abilities", "build": "all", "detailFight": "all", "detailMark": "all", "detailRace": "all", "detailSpec": "Beast Mastery Hunter",
@@ -23,7 +23,11 @@ const raw = window.__DATA, cache = {}, calcs = {}, subs = [], TABS = ['dps', 'he
 const params = Object.assign({}, window.__PARAMS);
 const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /sims#healing opens the Healing tab
 const run = (fn) => { try { fn(); } catch (e) { console.error(e); } };
-const redraw = () => subs.forEach(run);
+// the corner stamp names the Healing tab's own sim while that tab is open
+let stampDps = null;
+const stamp = () => { const el = document.querySelector('.xp-stamp'); if (!el) return; if (stampDps == null) stampDps = el.innerHTML; el.innerHTML = params.tab === 'healing' ? el.dataset.heal : stampDps; };
+const redraw = () => { subs.forEach(run); stamp(); };
+addEventListener('DOMContentLoaded', stamp);
 window.dash = {
   colors: ['#5b9bd5', '#e07b53', '#6dbb6a', '#b07cc6', '#d9b44a', '#4fb3b0', '#c9805b', '#8a8fd6'],
   // like the dashboard: nested values reach the page as JSON text
@@ -83,10 +87,18 @@ body{position:relative;min-height:100vh}
 # The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown bottom left). WoWSims has no release
 # number for it: its version tags stop at v0.0.140 (September), on another line of history.
 SIMS_BUILD, SIMS_DATE = '376a6aa', 'Oct 30 2026'
+# The Healing tab's sim (ForeverHealing-TC): the game build its data is from and the day that data was updated, shown in
+# the same corner while the Healing tab is open.
+HEAL_BUILD, HEAL_DATE = '70707 + Oct 30 hotfix', 'Oct 31 2026'
 
 
 def build(head_extra=''):
     D = 'experiment/'
+    # the main site's background (bg.jpg, which build.py embeds there too): along the top, 540px tall, repeated across
+    bg = ''
+    if os.path.exists('bg.jpg'):
+        bg = ('body{background:url("data:image/jpeg;base64,' + base64.b64encode(open('bg.jpg', 'rb').read()).decode()
+              + '") top center/auto 540px repeat-x,var(--color-bg)}')
     page = open(D + 'page.html', encoding='utf-8').read()
     data = {f[:-5]: json.load(open(D + 'data/' + f, encoding='utf-8')) for f in sorted(os.listdir(D + 'data')) if f.endswith('.json')}
     # The sims call the bear tank "Feral Bear"; the Tanks tab names it Feral Druid (its icon stays the bear's: page.html's
@@ -119,7 +131,7 @@ def build(head_extra=''):
 <title>Simulations – Forever Info</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-<style>{CSS}</style>
+<style>{CSS}{bg}</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <!-- Wowhead's tooltips on the Character setup's item, enchant and buff links (left as the page draws them) -->
 <script>const whTooltips = {{colorLinks: false, iconizeLinks: false, renameLinks: false}};</script>
@@ -131,7 +143,7 @@ def build(head_extra=''):
 <div id="dash-root">
 {markup}
 </div>
-<div class="xp-stamp">WoWSims Version {SIMS_BUILD} (Beta)<br>{SIMS_DATE}</div>
+<div class="xp-stamp" data-heal="ForeverHealing-TC Build {HEAL_BUILD} (Beta)<br>{HEAL_DATE}">WoWSims Version {SIMS_BUILD} (Beta)<br>{SIMS_DATE}</div>
 <a class="xp-quit" href="/">Quit</a>
 {js}</body>
 </html>
