@@ -810,6 +810,11 @@ function drawSituations(p, rows, healers) {
     return r && { ...r, name, color: healerColor(name), value: r[key] };
   }).filter(Boolean) })).filter((g) => g.items.length);
   const first = groups[0] && groups[0].items[0];
+  const idle = groups.flatMap((g) => g.items.filter((d) => d.hps === 0).map((d) => ({ name: d.name, sit: g }))), foot = $('.lx-sitfoot');
+  foot.hidden = !idle.length;
+  foot.textContent = idle.map(({ name, sit }) => sit.id === 'tank'
+    ? `*${name} heals nothing in ${sit.label}: the sim assigns it to the raid, and nobody in the raid takes damage there. The Priest and Druid, also on the raid, still heal the tanks some.`
+    : `*${name} heals nothing in ${sit.label}.`).join(' ');
   $('.lx-sitnote').textContent = groups.length
     ? '3 min fights. No racials. Shaman heals the tanks. Priest, Paladin and Druid heal the raid. Fights that only damage the tanks leave the healers little to do.'
     : '';
@@ -820,7 +825,8 @@ function drawSituations(p, rows, healers) {
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const items = groups.flatMap((g) => g.items), hi = (d) => d.value ?? 0;
-  const lab = (d) => (d.value == null ? '–' : m.fmt(d.value)), mr = Math.max(...items.map((d) => textW(lab(d)))) + 14;
+  // A healer that healed nothing in an encounter gets an asterisk on its value, explained under the chart.
+  const lab = (d) => (d.value == null ? '–' : m.fmt(d.value)) + (d.hps === 0 ? '*' : ''), mr = Math.max(...items.map((d) => textW(lab(d)))) + 14;
   probe.style('font-weight', 600);
   const ml = Math.max(...groups.map((g) => textW(g.label))) + 16;
   probe.remove();

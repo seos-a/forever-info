@@ -148,10 +148,10 @@ function draw(b, box, items) {
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.apm) - x(0))).style('fill', (d) => specColor(d.spec)).attr('fill-opacity', 0.85);
   g.append('text').attr('class', 'lab').attr('x', (d) => x(d.apm) + 8).attr('y', bh / 2 + 4).text(label);
   g.append('text').attr('x', (d) => x(d.apm) + 8 + d.lw + 8).attr('y', bh / 2 + 4).text(side);
-  // Hover a spec for its numbers; click it for what it presses.
+  // Hover a spec's icon, name or bar for its numbers; click it for what it presses.
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', (d) => x(d.apm)).attr('height', bh).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const head = el('div', 'h', d.spec); head.style.color = specColor(d.spec);
       tip.replaceChildren(head, line('Actions per minute', d.apm.toFixed(1)),

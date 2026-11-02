@@ -873,6 +873,7 @@ document.head.appendChild(t);})();
     </div>
     <p class="hr-note lx-sitnote"></p>
     <div class="hr-chart lx-sits" data-source="healSitStats"></div>
+    <p class="hr-note lx-sitfoot" hidden></p>
   </section>
 
   <section class="hr-card" id="h-matrix">
@@ -1873,6 +1874,7 @@ function drawGains(p, rows, keepNote) {
   const pg = plot.selectAll('g.row').data(list).join('g').attr('class', 'row').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
   const vals = pg.append('text').attr('y', bh / 2 + 4).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start')).text((r) => sign(r.gain, 2) + '%');
+  const hits = pg.append('rect').attr('y', 0).attr('height', bh).attr('fill', 'transparent'); // what the pointer finds over a bar
   const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
   const render = (x) => {
     const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
@@ -1880,15 +1882,17 @@ function drawGains(p, rows, keepNote) {
     grid.selectAll('text').data(whole).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
+    hits.attr('x', (r) => Math.min(x(0), x(r.gain)) - 2).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))) + 4);
     zero.attr('x1', x(0)).attr('x2', x(0));
   };
   render(x0);
-  // Hover a row for the race's actual numbers.
+  // Hover a race's portrait, name or bar for its actual numbers (not the empty rest of the row).
   const tip = el('div', 'rr-tip'), unit = UNIT(p);
   tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
-    .on('mousemove', (ev, r) => {
+  const names = g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('height', iz).attr('fill', 'transparent')
+    .attr('width', function () { return ix + this.parentNode.querySelector('text.lab').getComputedTextLength() + 4; });
+  for (const sel of [names, hits]) sel.on('mousemove', (ev, r) => {
       tip.replaceChildren(el('div', 'h fa-' + r.faction, r.race), line('Average ' + unit, fx(r.dps, 1)), line('Over no racials', `${sign(r.gainDps, 1)} ${unit} (${sign(r.gain, 2)}%)`),
         line('Behind the best race', `${fx(r.gapDps, 1)} ${unit}`));
       tip.hidden = false;
@@ -2441,11 +2445,11 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('rect').attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (d) => (d.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
   g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text(rn);
-  // Hover a row for its numbers; click it to show that spec in the boxes below.
+  // Hover a spec's icon, name or bar for its numbers; click it to show that spec in the boxes below.
   const tip = el('div', 'rr-tip');
   tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', (d) => x(hi(d))).attr('height', bh).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const top = d.tipTop ?? d.top, spread = (Math.abs(top - d.worst) / (up ? d.worst : top)) * 100;
       const head = el('div', 'h', d.name); head.style.color = d.color;  // the spec in its class colour
@@ -3530,6 +3534,11 @@ function drawSituations(p, rows, healers) {
     return r && { ...r, name, color: healerColor(name), value: r[key] };
   }).filter(Boolean) })).filter((g) => g.items.length);
   const first = groups[0] && groups[0].items[0];
+  const idle = groups.flatMap((g) => g.items.filter((d) => d.hps === 0).map((d) => ({ name: d.name, sit: g }))), foot = $('.lx-sitfoot');
+  foot.hidden = !idle.length;
+  foot.textContent = idle.map(({ name, sit }) => sit.id === 'tank'
+    ? `*${name} heals nothing in ${sit.label}: the sim assigns it to the raid, and nobody in the raid takes damage there. The Priest and Druid, also on the raid, still heal the tanks some.`
+    : `*${name} heals nothing in ${sit.label}.`).join(' ');
   $('.lx-sitnote').textContent = groups.length
     ? '3 min fights. No racials. Shaman heals the tanks. Priest, Paladin and Druid heal the raid. Fights that only damage the tanks leave the healers little to do.'
     : '';
@@ -3540,7 +3549,8 @@ function drawSituations(p, rows, healers) {
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
   const items = groups.flatMap((g) => g.items), hi = (d) => d.value ?? 0;
-  const lab = (d) => (d.value == null ? '–' : m.fmt(d.value)), mr = Math.max(...items.map((d) => textW(lab(d)))) + 14;
+  // A healer that healed nothing in an encounter gets an asterisk on its value, explained under the chart.
+  const lab = (d) => (d.value == null ? '–' : m.fmt(d.value)) + (d.hps === 0 ? '*' : ''), mr = Math.max(...items.map((d) => textW(lab(d)))) + 14;
   probe.style('font-weight', 600);
   const ml = Math.max(...groups.map((g) => textW(g.label))) + 16;
   probe.remove();
@@ -3994,10 +4004,10 @@ function draw(b, box, items) {
   g.append('rect').attr('x', x(0)).attr('height', bh).attr('rx', 3).attr('width', (d) => Math.max(1, x(d.apm) - x(0))).style('fill', (d) => specColor(d.spec)).attr('fill-opacity', 0.85);
   g.append('text').attr('class', 'lab').attr('x', (d) => x(d.apm) + 8).attr('y', bh / 2 + 4).text(label);
   g.append('text').attr('x', (d) => x(d.apm) + 8 + d.lw + 8).attr('y', bh / 2 + 4).text(side);
-  // Hover a spec for its numbers; click it for what it presses.
+  // Hover a spec's icon, name or bar for its numbers; click it for what it presses.
   const tip = el('div', 'rr-tip'); tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', (d) => x(d.apm)).attr('height', bh).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const head = el('div', 'h', d.spec); head.style.color = specColor(d.spec);
       tip.replaceChildren(head, line('Actions per minute', d.apm.toFixed(1)),
@@ -4840,6 +4850,7 @@ function drawGains(p, rows, keepNote) {
   const pg = plot.selectAll('g.row').data(list).join('g').attr('class', 'row').attr('transform', (r, i) => `translate(0,${yOf(i)})`);
   const bars = pg.append('rect').attr('y', 0).attr('height', bh).attr('rx', 4).attr('fill', (r) => GAIN_COLOR(r.gain, r === list[0])).attr('fill-opacity', 0.9);
   const vals = pg.append('text').attr('y', bh / 2 + 4).attr('text-anchor', (r) => (r.gain < 0 ? 'end' : 'start')).text((r) => sign(r.gain, 2) + '%');
+  const hits = pg.append('rect').attr('y', 0).attr('height', bh).attr('fill', 'transparent'); // what the pointer finds over a bar
   const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
   const render = (x) => {
     const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
@@ -4847,15 +4858,17 @@ function drawGains(p, rows, keepNote) {
     grid.selectAll('text').data(whole).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
+    hits.attr('x', (r) => Math.min(x(0), x(r.gain)) - 2).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))) + 4);
     zero.attr('x1', x(0)).attr('x2', x(0));
   };
   render(x0);
-  // Hover a row for the race's actual numbers.
+  // Hover a race's portrait, name or bar for its actual numbers (not the empty rest of the row).
   const tip = el('div', 'rr-tip'), unit = UNIT(p);
   tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent')
-    .on('mousemove', (ev, r) => {
+  const names = g.append('rect').attr('x', 0).attr('y', (bh - iz) / 2).attr('height', iz).attr('fill', 'transparent')
+    .attr('width', function () { return ix + this.parentNode.querySelector('text.lab').getComputedTextLength() + 4; });
+  for (const sel of [names, hits]) sel.on('mousemove', (ev, r) => {
       tip.replaceChildren(el('div', 'h fa-' + r.faction, r.race), line('Average ' + unit, fx(r.dps, 1)), line('Over no racials', `${sign(r.gainDps, 1)} ${unit} (${sign(r.gain, 2)}%)`),
         line('Behind the best race', `${fx(r.gapDps, 1)} ${unit}`));
       tip.hidden = false;
@@ -5412,11 +5425,11 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   g.append('rect').attr('x', (d) => ex(d) + d.vw + 6).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz).attr('rx', 3).attr('fill', 'none').attr('stroke-width', 1.5)
     .attr('stroke', (d) => (d.faction === 'Horde' ? 'var(--rr-horde)' : 'var(--rr-alliance)'));
   g.append('text').attr('x', (d) => ex(d) + d.vw + 6 + iz + 6).attr('y', bh / 2 + 4).text(rn);
-  // Hover a row for its numbers; click it to show that spec in the boxes below.
+  // Hover a spec's icon, name or bar for its numbers; click it to show that spec in the boxes below.
   const tip = el('div', 'rr-tip');
   tip.hidden = true; box.append(tip);
   const line = (k, v) => { const row = el('div', 'row'); row.append(el('span', null, k), el('b', null, v)); return row; };
-  g.append('rect').attr('x', 0).attr('y', -gap / 2).attr('width', W).attr('height', bh + gap).attr('fill', 'transparent').style('cursor', 'pointer')
+  g.append('rect').attr('x', 0).attr('y', 0).attr('width', (d) => x(hi(d))).attr('height', bh).attr('fill', 'transparent').style('cursor', 'pointer')
     .on('mousemove', (ev, d) => {
       const top = d.tipTop ?? d.top, spread = (Math.abs(top - d.worst) / (up ? d.worst : top)) * 100;
       const head = el('div', 'h', d.name); head.style.color = d.color;  // the spec in its class colour
