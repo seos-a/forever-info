@@ -791,11 +791,11 @@ const SITUATIONS = [
   { id: 'heavy', label: 'Heavy raid hits', about: 'Steady tank damage, slow rot, and the whole raid hit hard every 15 sec; more than the healers can keep up with.' },
 ];
 const SIT_METRIC = {
-  hps: { fmt: (v) => num(Math.round(v)), note: 'effective healing per second (the light end of each bar is the middle half of the runs)' },
-  share: { fmt: (v) => fx(v, 1) + '%', note: 'the healer’s share of the whole raid’s effective healing (four healers)' },
-  overPct: { fmt: (v) => fx(v, 1) + '%', note: 'the share of healing that was overhealing' },
-  idle: { fmt: (v) => fx(v, 1) + '%', note: 'the share of the fight spent not casting' },
-  manaEnd: { fmt: num, note: 'mana left when the fight ends' },
+  hps: { fmt: (v) => num(Math.round(v)) },
+  share: { fmt: (v) => fx(v, 1) + '%' },
+  overPct: { fmt: (v) => fx(v, 1) + '%' },
+  idle: { fmt: (v) => fx(v, 1) + '%' },
+  manaEnd: { fmt: num },
 };
 
 // Each situation is a group of bars, one per healer (no racials).
@@ -811,7 +811,7 @@ function drawSituations(p, rows, healers) {
   }).filter(Boolean) })).filter((g) => g.items.length);
   const first = groups[0] && groups[0].items[0];
   $('.lx-sitnote').textContent = groups.length
-    ? `Each healer with no racials in each of the sim’s damage presets, at its normal health and damage, 3 minute fights. Bars show ${m.note}. In the sim’s raid the Shaman heals the tanks and the Priest, Paladin and Druid heal the raid, so a fight that hits only the tanks leaves the raid healers little to do. Hover a bar for the numbers.`
+    ? '3 min fights. No racials. Shaman heals the tanks. Priest, Paladin and Druid heal the raid. Fights that only damage the tanks leave the healers little to do.'
     : '';
   if (!first) return;
   const bh = 16, gap = 4, ggap = 14, iz = 16, W = Math.max(280, box.clientWidth);
