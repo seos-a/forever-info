@@ -3,6 +3,1404 @@
   {
    "date": "2026-11-03",
    "version": "1.60.1",
+   "build": "70756",
+   "classes": {
+    "hunter": [
+     [
+      "buff",
+      "Trueshot Aura",
+      "ability_trueshot",
+      "Marksmanship talent",
+      "Increases the Ranged Attack Power of party or raid members within 45 yds by {+20} (up from 15)."
+     ],
+     [
+      "buff",
+      "Barrage",
+      "ability_upgrademoonglaive",
+      "Marksmanship talent",
+      "Increases the damage done by your Multi-Shot, Aimed Shot, and Volley abilities by {+15%} (up from 10%).",
+      "",
+      [
+       [
+        3,
+        "Increases the damage done by your Multi-Shot, Aimed Shot, and Volley abilities by {+15%} (up from 10%).",
+        ""
+       ],
+       [
+        2,
+        "Increases the damage done by your Multi-Shot, Aimed Shot, and Volley abilities by {+10%} (up from 7%).",
+        ""
+       ],
+       [
+        1,
+        "Increases the damage done by your Multi-Shot, Aimed Shot, and Volley abilities by {+5%} (up from 3%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Sniper Shot",
+      "hunter_pvp_snipershot",
+      "Marksmanship talent",
+      "A long-range shot that deals ranged damage plus {+320} (up from 160) and increases the range of your next 3 Shots by 10 yards for 10 sec."
+     ],
+     [
+      "buff",
+      "Lightning Reflexes",
+      "spell_nature_invisibilty",
+      "Survival talent",
+      "Increases your Agility by {+12%} (up from 8%).",
+      "",
+      [
+       [
+        4,
+        "Increases your Agility by {+12%} (up from 8%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Serpent Sting",
+      "ability_hunter_quickshot",
+      "Spell",
+      "Stings the target, causing {+675} (up from 555) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+      "",
+      [
+       [
+        9,
+        "Stings the target, causing {+675} (up from 555) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        8,
+        "Stings the target, causing {+500} (up from 415) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        7,
+        "Stings the target, causing {+375} (up from 320) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        6,
+        "Stings the target, causing {+290} (up from 240) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        5,
+        "Stings the target, causing {+200} (up from 170) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        4,
+        "Stings the target, causing {+130} (up from 110) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        3,
+        "Stings the target, causing {+70} (up from 60) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        2,
+        "Stings the target, causing {+35} (up from 30) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ],
+       [
+        1,
+        "Stings the target, causing {+15} (up from 10) Nature damage over 15 sec. Only one Sting per Hunter can be active on any one target.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Arcane Shot",
+      "ability_impalingbolt",
+      "Spell",
+      "An instant shot that causes {+280} (up from 217) Arcane damage.",
+      "",
+      [
+       [
+        8,
+        "An instant shot that causes {+280} (up from 217) Arcane damage.",
+        ""
+       ],
+       [
+        7,
+        "An instant shot that causes {+220} (up from 170) Arcane damage.",
+        ""
+       ],
+       [
+        6,
+        "An instant shot that causes {+175} (up from 134) Arcane damage.",
+        ""
+       ],
+       [
+        5,
+        "An instant shot that causes {+120} (up from 94) Arcane damage.",
+        ""
+       ],
+       [
+        4,
+        "An instant shot that causes {+85} (up from 65) Arcane damage.",
+        ""
+       ],
+       [
+        3,
+        "An instant shot that causes {+50} (up from 39) Arcane damage.",
+        ""
+       ],
+       [
+        2,
+        "An instant shot that causes {+35} (up from 26) Arcane damage.",
+        ""
+       ],
+       [
+        1,
+        "An instant shot that causes {+25} (up from 20) Arcane damage.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Aspect of the Hawk",
+      "spell_nature_ravenform",
+      "Spell",
+      "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+110} (up from 55). Only one Aspect can be active at a time.",
+      "",
+      [
+       [
+        6,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+110} (up from 55). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        5,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+90} (up from 47). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        4,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+70} (up from 38). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        3,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+50} (up from 30). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        2,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+35} (up from 22). Only one Aspect can be active at a time.",
+        ""
+       ],
+       [
+        1,
+        "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by {+20} (up from 15). Only one Aspect can be active at a time.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Aimed Shot",
+      "inv_spear_07",
+      "Spell",
+      "An aimed shot that increases ranged damage by {+350} (up from 166). Aimed Shot shares its cooldown with Multi-Shot.",
+      "",
+      [
+       [
+        6,
+        "An aimed shot that increases ranged damage by {+350} (up from 166). Aimed Shot shares its cooldown with Multi-Shot.",
+        ""
+       ],
+       [
+        5,
+        "An aimed shot that increases ranged damage by {+260} (up from 125). Aimed Shot shares its cooldown with Multi-Shot.",
+        ""
+       ],
+       [
+        4,
+        "An aimed shot that increases ranged damage by {+185} (up from 89). Aimed Shot shares its cooldown with Multi-Shot.",
+        ""
+       ],
+       [
+        3,
+        "An aimed shot that increases ranged damage by {+115} (up from 55). Aimed Shot shares its cooldown with Multi-Shot.",
+        ""
+       ],
+       [
+        2,
+        "An aimed shot that increases ranged damage by {+70} (up from 34). Aimed Shot shares its cooldown with Multi-Shot.",
+        ""
+       ],
+       [
+        1,
+        "An aimed shot that increases ranged damage by {+40} (up from 20). Aimed Shot shares its cooldown with Multi-Shot.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "mage": [
+     [
+      "other",
+      "Missile Barrage",
+      "ability_mage_missilebarrage",
+      "Arcane talent · reworded",
+      "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+      "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt{~, Frost Blast~}, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+      [
+       [
+        2,
+        "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+        "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt{~, Frost Blast~}, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+       ],
+       [
+        1,
+        "Gives your Arcane Blast spell a 20% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 10% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec.",
+        "Gives your Arcane Blast spell a 20% chance, and your Arcane Wrath, Fireball, Frostbolt{~, Frost Blast~}, and Frostfire Bolt spells a 10% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Improved Frostbolt",
+      "spell_frost_frostbolt02",
+      "Frost talent · reworded",
+      "Reduces the casting time of your Frostbolt {*spell*} by 0.5 sec.",
+      "Reduces the casting time of your Frostbolt {~and Frost Blast spells~} by 0.5 sec.",
+      [
+       [
+        5,
+        "Reduces the casting time of your Frostbolt {*spell*} by 0.5 sec.",
+        "Reduces the casting time of your Frostbolt {~and Frost Blast spells~} by 0.5 sec."
+       ],
+       [
+        4,
+        "Reduces the casting time of your Frostbolt {*spell*} by 0.4 sec.",
+        "Reduces the casting time of your Frostbolt {~and Frost Blast spells~} by 0.4 sec."
+       ],
+       [
+        3,
+        "Reduces the casting time of your Frostbolt {*spell*} by 0.3 sec.",
+        "Reduces the casting time of your Frostbolt {~and Frost Blast spells~} by 0.3 sec."
+       ],
+       [
+        2,
+        "Reduces the casting time of your Frostbolt {*spell*} by 0.2 sec.",
+        "Reduces the casting time of your Frostbolt {~and Frost Blast spells~} by 0.2 sec."
+       ],
+       [
+        1,
+        "Reduces the casting time of your Frostbolt {*spell*} by 0.1 sec.",
+        "Reduces the casting time of your Frostbolt {~and Frost Blast spells~} by 0.1 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Arctic Reach",
+      "spell_shadow_darkritual",
+      "Frost talent · reworded",
+      "Increases the range of your Frostbolt, Ice Lance, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+      "Increases the range of your Frostbolt{~, Frost Blast~}, Ice Lance, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+      [
+       [
+        2,
+        "Increases the range of your Frostbolt, Ice Lance, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",
+        "Increases the range of your Frostbolt{~, Frost Blast~}, Ice Lance, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%."
+       ],
+       [
+        1,
+        "Increases the range of your Frostbolt, Ice Lance, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%.",
+        "Increases the range of your Frostbolt{~, Frost Blast~}, Ice Lance, and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Winter's Chill",
+      "spell_frost_chillingblast",
+      "Frost talent · reworded",
+      "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+      "Gives your Frostbolt{~, Frost Blast,~} and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+      [
+       [
+        5,
+        "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        "Gives your Frostbolt{~, Frost Blast,~} and Fingers of Frost empowered Ice Lance spells a 100% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times."
+       ],
+       [
+        4,
+        "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 80% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        "Gives your Frostbolt{~, Frost Blast,~} and Fingers of Frost empowered Ice Lance spells a 80% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times."
+       ],
+       [
+        3,
+        "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 60% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        "Gives your Frostbolt{~, Frost Blast,~} and Fingers of Frost empowered Ice Lance spells a 60% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times."
+       ],
+       [
+        2,
+        "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 40% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        "Gives your Frostbolt{~, Frost Blast,~} and Fingers of Frost empowered Ice Lance spells a 40% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times."
+       ],
+       [
+        1,
+        "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 20% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+        "Gives your Frostbolt{~, Frost Blast,~} and Fingers of Frost empowered Ice Lance spells a 20% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times."
+       ]
+      ]
+     ]
+    ],
+    "paladin": [
+     [
+      "other",
+      "Two-Handed Weapon Specialization",
+      "inv_hammer_04",
+      "Retribution talent · reworded",
+      "Increases the {*Physical and Holy*} damage you deal by 6%, and reduces all threat you generate by 20% while a two-handed melee weapon is equipped.",
+      "Increases the {~physical~} damage you deal by 6%, and reduces all threat you generate by 20% while a two-handed melee weapon is equipped.",
+      [
+       [
+        3,
+        "Increases the {*Physical and Holy*} damage you deal by 6%, and reduces all threat you generate by 20% while a two-handed melee weapon is equipped.",
+        "Increases the {~physical~} damage you deal by 6%, and reduces all threat you generate by 20% while a two-handed melee weapon is equipped."
+       ],
+       [
+        2,
+        "Increases the {*Physical and Holy*} damage you deal by 4%, and reduces all threat you generate by 14% while a two-handed melee weapon is equipped.",
+        "Increases the {~physical~} damage you deal by 4%, and reduces all threat you generate by 14% while a two-handed melee weapon is equipped."
+       ],
+       [
+        1,
+        "Increases the {*Physical and Holy*} damage you deal by 2%, and reduces all threat you generate by 7% while a two-handed melee weapon is equipped.",
+        "Increases the {~physical~} damage you deal by 2%, and reduces all threat you generate by 7% while a two-handed melee weapon is equipped."
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Vengeance",
+      "ability_racial_avatar",
+      "Retribution talent",
+      "Increases your Physical and Holy damage dealt by 3% for 30 sec after landing a non-periodic critical strike. Stacks up to {+5} (up from 3) times.",
+      "",
+      [
+       [
+        3,
+        "Increases your Physical and Holy damage dealt by 3% for 30 sec after landing a non-periodic critical strike. Stacks up to {+5} (up from 3) times.",
+        ""
+       ],
+       [
+        2,
+        "Increases your Physical and Holy damage dealt by 2% for 30 sec after landing a non-periodic critical strike. Stacks up to {+5} (up from 3) times.",
+        ""
+       ],
+       [
+        1,
+        "Increases your Physical and Holy damage dealt by 1% for 30 sec after landing a non-periodic critical strike. Stacks up to {+5} (up from 3) times.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "rogue": [
+     [
+      "other",
+      "Blood Splatter",
+      "ability_rogue_rupture",
+      "Assassination talent · new",
+      "New talent: Increases the duration of your Rupture ability by 6 sec and your Garrote ability by 9 sec."
+     ],
+     [
+      "other",
+      "Lethality",
+      "ability_criticalstrike",
+      "Assassination talent",
+      "Now has 2 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Relentless Strikes",
+      "ability_warrior_decisivestrike",
+      "Assassination talent",
+      "Now has 5 ranks (was 1)."
+     ],
+     [
+      "other",
+      "Venom",
+      "inv_sword_31",
+      "Assassination talent · reworked",
+      "Causes your Shank ability to increase your Poison damage by 30% and your chance to apply Poisons by 20% for 6 sec. No longer has a cost (was 25 Energy). No longer has a cast time (was Instant). No longer has a range (was 100 yd range).",
+      "Finishing move that increases the damage of your Poisons by 30% and your chance to apply Poisons by 10%. Lasts longer per combo point:\n1 point: 9 sec\n2 points: 12 sec\n3 points: 15 sec\n4 points: 18 sec\n5 points: 21 sec"
+     ],
+     [
+      "other",
+      "Seal Fate",
+      "spell_shadow_chilltouch",
+      "Assassination talent",
+      "Now has 3 ranks (was 5)."
+     ],
+     [
+      "buff",
+      "Mutilate",
+      "ability_rogue_deadlybrew",
+      "Assassination talent",
+      "Instantly attacks with both weapons for {+90%} (up from 75%) weapon damage plus an additional {+40} (up from 17) with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points."
+     ],
+     [
+      "other",
+      "Coup de Grace",
+      "ability_rogue_eviscerate",
+      "Combat talent · reworked",
+      "Renamed from Improved Eviscerate. Increases the damage done by your Eviscerate ability by 20%{*, and the damage and storage rate of your Death Mark ability by 20%*}.",
+      "Increases the damage done by your Eviscerate ability by 20%.",
+      [
+       [
+        3,
+        "Renamed from Improved Eviscerate. Increases the damage done by your Eviscerate ability by 20%{*, and the damage and storage rate of your Death Mark ability by 20%*}.",
+        "Increases the damage done by your Eviscerate ability by 20%."
+       ],
+       [
+        2,
+        "Renamed from Improved Eviscerate. Increases the damage done by your Eviscerate ability by 13%{*, and the damage and storage rate of your Death Mark ability by 13%*}.",
+        "Increases the damage done by your Eviscerate ability by 13%."
+       ],
+       [
+        1,
+        "Renamed from Improved Eviscerate. Increases the damage done by your Eviscerate ability by 7%{*, and the damage and storage rate of your Death Mark ability by 7%*}.",
+        "Increases the damage done by your Eviscerate ability by 7%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Efficient Strikes",
+      "spell_shadow_ritualofsacrifice",
+      "Combat talent · reworded",
+      "Renamed from Improved Sinister Strike. Reduces the Energy cost of your Sinister Strike {*and Hemorrhage abilities*} by 5.",
+      "Reduces the Energy cost of your Sinister Strike {~ability~} by 5.",
+      [
+       [
+        2,
+        "Renamed from Improved Sinister Strike. Reduces the Energy cost of your Sinister Strike {*and Hemorrhage abilities*} by 5.",
+        "Reduces the Energy cost of your Sinister Strike {~ability~} by 5."
+       ],
+       [
+        1,
+        "Renamed from Improved Sinister Strike. Reduces the Energy cost of your Sinister Strike {*and Hemorrhage abilities*} by 3.",
+        "Reduces the Energy cost of your Sinister Strike {~ability~} by 3."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Composure",
+      "ability_rogue_fleetfooted",
+      "Combat talent · new",
+      "New talent: Increases the Energy cost reduction of your Poised ability by 10."
+     ],
+     [
+      "buff",
+      "Flawless Execution",
+      "inv_sword_35",
+      "Combat talent",
+      "Reduces the Energy cost of your Eviscerate ability by {+15} (up from 10)."
+     ],
+     [
+      "other",
+      "Aggression",
+      "ability_racial_avatar",
+      "Combat talent · reworked",
+      "Increases the damage of your Sinister Strike and Eviscerate abilities by {*15*}%.",
+      "Increases the damage of your Sinister Strike{~, Backstab,~} and Eviscerate abilities by {~6~}%.",
+      [
+       [
+        3,
+        "Increases the damage of your Sinister Strike and Eviscerate abilities by {*15*}%.",
+        "Increases the damage of your Sinister Strike{~, Backstab,~} and Eviscerate abilities by {~6~}%."
+       ],
+       [
+        2,
+        "Increases the damage of your Sinister Strike and Eviscerate abilities by {*10*}%.",
+        "Increases the damage of your Sinister Strike{~, Backstab,~} and Eviscerate abilities by {~4~}%."
+       ],
+       [
+        1,
+        "Increases the damage of your Sinister Strike and Eviscerate abilities by {*5*}%.",
+        "Increases the damage of your Sinister Strike{~, Backstab,~} and Eviscerate abilities by {~2~}%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Dual Wield Specialization",
+      "ability_dualwield",
+      "Combat talent",
+      "Increases the damage done by your off-hand weapon by {+50%} (up from 25%). Now has 2 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Flash of Steel",
+      "ability_rogue_restlessblades",
+      "Combat talent · new",
+      "New talent: Increases the Energy generated by your Shank ability by 15 and reduces its cooldown by 2.0 sec."
+     ],
+     [
+      "other",
+      "Setup",
+      "spell_nature_mirrorimage",
+      "Subtlety talent · reworked",
+      "Gives you a {*45*}% chance to add a Combo Point to your target after Dodging their {*attack*} or fully resisting one of their spells.",
+      "Gives you a {~100~}% chance to add a Combo Point to your target after Dodging {~one of~} their {~attacks~} or fully resisting one of their spells.",
+      [
+       [
+        3,
+        "Gives you a {*45*}% chance to add a Combo Point to your target after Dodging their {*attack*} or fully resisting one of their spells.",
+        "Gives you a {~100~}% chance to add a Combo Point to your target after Dodging {~one of~} their {~attacks~} or fully resisting one of their spells."
+       ],
+       [
+        2,
+        "Gives you a {*30*}% chance to add a Combo Point to your target after Dodging their {*attack*} or fully resisting one of their spells.",
+        "Gives you a {~67~}% chance to add a Combo Point to your target after Dodging {~one of~} their {~attacks~} or fully resisting one of their spells."
+       ],
+       [
+        1,
+        "Gives you a {*15*}% chance to add a Combo Point to your target after Dodging their {*attack*} or fully resisting one of their spells.",
+        "Gives you a {~33~}% chance to add a Combo Point to your target after Dodging {~one of~} their {~attacks~} or fully resisting one of their spells."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Opportunity",
+      "ability_warrior_warcry",
+      "Subtlety talent",
+      "Increases the damage dealt by your Backstab, Garrote, Ambush, and Mutilate abilities by {+20%} (up from 10%). Now has 5 ranks (was 2)."
+     ],
+     [
+      "other",
+      "Camouflage",
+      "ability_stealth",
+      "Subtlety talent",
+      "Now has 3 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Ghostly Strike",
+      "spell_shadow_curse",
+      "Subtlety talent · reworked",
+      "A strike that deals 125% (180% if a Dagger is equipped in your Main Hand) weapon damage{*,*} increases your chance to dodge by 15% for 7 sec{*, and causes your next Ambush or Garrote cast within 7 sec to not require Stealth*}. Awards 1 combo point.",
+      "A strike that deals 125% (180% if a Dagger is equipped in your Main Hand) weapon damage {~and~} increases your chance to dodge by 15% for 7 sec. Awards 1 combo point."
+     ],
+     [
+      "other",
+      "Quick Getaway",
+      "ability_rogue_blackjack",
+      "Subtlety talent · reworked",
+      "Renamed from Quietus. Increases the maximum number of targets you may have Sapped by 1, and increases your movement speed by 30% for 3 sec after Sapping a target. Now has 2 ranks (was 5).",
+      "Your Sinister Strike, Ghostly Strike, and Hemorrhage abilities cause 10% more damage against targets below 35% health."
+     ],
+     [
+      "other",
+      "Hemorrhage",
+      "spell_shadow_lifedrain",
+      "Subtlety talent · reworded",
+      "An instant strike that deals 100% weapon damage (145% if a Dagger is equipped) and causes the target to take 15% increased Rupture {*and Garrote*} damage from the Rogue. Lasts 15 sec. Awards 1 Combo Point.",
+      "An instant strike that deals 100% weapon damage (145% if a Dagger is equipped) and causes the target to take 15% increased Rupture damage from the Rogue. Lasts 15 sec. Awards 1 Combo Point."
+     ],
+     [
+      "other",
+      "Boot Knife",
+      "inv_sword_32",
+      "Subtlety talent · new",
+      "New talent: Grants your Shank ability a 100% chance to add 2 Combo Points to the target."
+     ],
+     [
+      "other",
+      "Death Mark",
+      "ability_creature_cursed_02",
+      "Subtlety talent · new",
+      "New talent: Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. Garrote and Rupture damage is stored at twice the rate. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\n1 point: 12% stored, 165 (plus 4% of your Attack Power) damage cap\n2 points: 24% stored, 267 (plus 8% of your Attack Power) damage cap\n3 points: 36% stored, 369 (plus 12% of your Attack Power) damage cap\n4 points: 48% stored, 471 (plus 16% of your Attack Power) damage cap\n5 points: 60% stored, 573 (plus 20% of your Attack Power) damage cap"
+     ],
+     [
+      "other",
+      "Murder",
+      "spell_shadow_deathscream",
+      "Assassination talent · removed",
+      "Removed from the talent tree.",
+      "Increases all damage dealt by 4% against Humanoid and Giant targets."
+     ],
+     [
+      "other",
+      "Improved Distract",
+      "ability_rogue_distract",
+      "Subtlety talent · removed",
+      "Removed from the talent tree.",
+      "Increases the radius of your Distract ability by 5 yds, and further reduces the Stealth detection of distracted enemies as though they were an additional 2 levels lower."
+     ],
+     [
+      "other",
+      "Cutthroat",
+      "classicon_rogue",
+      "Subtlety talent · removed",
+      "Removed from the talent tree.",
+      "Your Backstab has a 15% chance to cause your next Ambush within 10 sec to not require Stealth."
+     ],
+     [
+      "other",
+      "Thousand Cuts",
+      "ability_rogue_rupture",
+      "Subtlety talent · removed",
+      "Removed from the talent tree.",
+      "When your Rupture ability deals periodic damage, the Energy cost of your next Hemorrhage or Backstab ability within 10 sec is reduced by 3, stacking up to 5 times."
+     ],
+     [
+      "buff",
+      "Instant Poison VI",
+      "ability_poisons",
+      "Spell",
+      "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 76 to 100 Nature damage. {+250} (up from 175) charges.",
+      "",
+      [
+       [
+        6,
+        "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 76 to 100 Nature damage. {+250} (up from 175) charges.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Mind-numbing Poison III",
+      "spell_nature_nullifydisease",
+      "Spell",
+      "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 20% chance of poisoning the enemy, increasing their casting time by 60% for 14 sec. {+225} (up from 150) charges.",
+      "",
+      [
+       [
+        3,
+        "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 20% chance of poisoning the enemy, increasing their casting time by 60% for 14 sec. {+225} (up from 150) charges.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Deadly Poison V",
+      "ability_rogue_dualweild",
+      "Spell",
+      "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 30% chance of poisoning the enemy for 92 Nature damage over 12 sec. Stacks up to 5 times on a single target. {+240} (up from 180) charges.",
+      "",
+      [
+       [
+        5,
+        "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 30% chance of poisoning the enemy for 92 Nature damage over 12 sec. Stacks up to 5 times on a single target. {+240} (up from 180) charges.",
+        ""
+       ],
+       [
+        4,
+        "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 30% chance of poisoning the enemy for 72 Nature damage over 12 sec. Stacks up to 5 times on a single target. {+240} (up from 160) charges.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Wound Poison IV",
+      "inv_misc_herb_16",
+      "Spell",
+      "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 165 for 15 sec. Stacks up to 5 times on a single target. {+240} (up from 160) charges.",
+      "",
+      [
+       [
+        4,
+        "Coats a weapon with poison that lasts for 30 minutes.\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 165 for 15 sec. Stacks up to 5 times on a single target. {+240} (up from 160) charges.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "shaman": [
+     [
+      "other",
+      "Convection",
+      "spell_nature_wispsplode",
+      "Elemental talent · reworded",
+      "Reduces the mana cost of your Shock, Lightning Bolt, and Chain Lightning spells by 10%.",
+      "Reduces the mana cost of your Shock, Lightning Bolt, {~Lava Burst,~} and Chain Lightning spells by 10%.",
+      [
+       [
+        5,
+        "Reduces the mana cost of your Shock, Lightning Bolt, and Chain Lightning spells by 10%.",
+        "Reduces the mana cost of your Shock, Lightning Bolt, {~Lava Burst,~} and Chain Lightning spells by 10%."
+       ],
+       [
+        4,
+        "Reduces the mana cost of your Shock, Lightning Bolt, and Chain Lightning spells by 8%.",
+        "Reduces the mana cost of your Shock, Lightning Bolt, {~Lava Burst,~} and Chain Lightning spells by 8%."
+       ],
+       [
+        3,
+        "Reduces the mana cost of your Shock, Lightning Bolt, and Chain Lightning spells by 6%.",
+        "Reduces the mana cost of your Shock, Lightning Bolt, {~Lava Burst,~} and Chain Lightning spells by 6%."
+       ],
+       [
+        2,
+        "Reduces the mana cost of your Shock, Lightning Bolt, and Chain Lightning spells by 4%.",
+        "Reduces the mana cost of your Shock, Lightning Bolt, {~Lava Burst,~} and Chain Lightning spells by 4%."
+       ],
+       [
+        1,
+        "Reduces the mana cost of your Shock, Lightning Bolt, and Chain Lightning spells by 2%.",
+        "Reduces the mana cost of your Shock, Lightning Bolt, {~Lava Burst,~} and Chain Lightning spells by 2%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Elemental Alacrity",
+      "spell_lightning_lightningbolt01",
+      "Elemental talent · reworded",
+      "Reduces the cast time of your Lightning Bolt {*and*} Chain Lightning spells by 0.50 sec.",
+      "Reduces the cast time of your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells by 0.50 sec.",
+      [
+       [
+        3,
+        "Reduces the cast time of your Lightning Bolt {*and*} Chain Lightning spells by 0.50 sec.",
+        "Reduces the cast time of your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells by 0.50 sec."
+       ],
+       [
+        2,
+        "Reduces the cast time of your Lightning Bolt {*and*} Chain Lightning spells by 0.33 sec.",
+        "Reduces the cast time of your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells by 0.33 sec."
+       ],
+       [
+        1,
+        "Reduces the cast time of your Lightning Bolt {*and*} Chain Lightning spells by 0.17 sec.",
+        "Reduces the cast time of your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells by 0.17 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Call of Flame",
+      "spell_fire_immolation",
+      "Elemental talent · reworded",
+      "Increases the damage done by your Fire Totems and by your Flame Shock {*and*} Fire Nova spells by 15%, as well as increases the duration of your Flame Shock spell by 9 sec.",
+      "Increases the damage done by your Fire Totems and by your Flame Shock{~,~} Fire Nova{~, and Lava Burst~} spells by 15%, as well as increases the duration of your Flame Shock spell by 9 sec.",
+      [
+       [
+        3,
+        "Increases the damage done by your Fire Totems and by your Flame Shock {*and*} Fire Nova spells by 15%, as well as increases the duration of your Flame Shock spell by 9 sec.",
+        "Increases the damage done by your Fire Totems and by your Flame Shock{~,~} Fire Nova{~, and Lava Burst~} spells by 15%, as well as increases the duration of your Flame Shock spell by 9 sec."
+       ],
+       [
+        2,
+        "Increases the damage done by your Fire Totems and by your Flame Shock {*and*} Fire Nova spells by 10%, as well as increases the duration of your Flame Shock spell by 6 sec.",
+        "Increases the damage done by your Fire Totems and by your Flame Shock{~,~} Fire Nova{~, and Lava Burst~} spells by 10%, as well as increases the duration of your Flame Shock spell by 6 sec."
+       ],
+       [
+        1,
+        "Increases the damage done by your Fire Totems and by your Flame Shock {*and*} Fire Nova spells by 5%, as well as increases the duration of your Flame Shock spell by 3 sec.",
+        "Increases the damage done by your Fire Totems and by your Flame Shock{~,~} Fire Nova{~, and Lava Burst~} spells by 5%, as well as increases the duration of your Flame Shock spell by 3 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Eye of the Storm",
+      "spell_nature_eyeofthestorm",
+      "Elemental talent · reworded",
+      "Gives your Lightning Bolt {*and*} Chain Lightning spells a 70% chance to not lose casting time when you take damage.",
+      "Gives your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells a 70% chance to not lose casting time when you take damage.",
+      [
+       [
+        3,
+        "Gives your Lightning Bolt {*and*} Chain Lightning spells a 70% chance to not lose casting time when you take damage.",
+        "Gives your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells a 70% chance to not lose casting time when you take damage."
+       ],
+       [
+        2,
+        "Gives your Lightning Bolt {*and*} Chain Lightning spells a 47% chance to not lose casting time when you take damage.",
+        "Gives your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells a 47% chance to not lose casting time when you take damage."
+       ],
+       [
+        1,
+        "Gives your Lightning Bolt {*and*} Chain Lightning spells a 23% chance to not lose casting time when you take damage.",
+        "Gives your Lightning Bolt{~,~} Chain Lightning{~, and Lava Burst~} spells a 23% chance to not lose casting time when you take damage."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Elemental Reach",
+      "spell_nature_stormreach",
+      "Elemental talent · reworked",
+      "Increases the range of your Lightning Bolt, Chain Lightning, {*and*} Fire Nova spells by 6 yards.",
+      "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova{~, and Lava Burst~} spells by 6 yards {~and reduces the cooldown of Totemic Projection by 20 sec~}.",
+      [
+       [
+        2,
+        "Increases the range of your Lightning Bolt, Chain Lightning, {*and*} Fire Nova spells by 6 yards.",
+        "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova{~, and Lava Burst~} spells by 6 yards {~and reduces the cooldown of Totemic Projection by 20 sec~}."
+       ],
+       [
+        1,
+        "Increases the range of your Lightning Bolt, Chain Lightning, {*and*} Fire Nova spells by 3 yards.",
+        "Increases the range of your Lightning Bolt, Chain Lightning, Fire Nova{~, and Lava Burst~} spells by 3 yards {~and reduces the cooldown of Totemic Projection by 10 sec~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Call of Thunder",
+      "spell_nature_callstorm",
+      "Elemental talent · new",
+      "New talent: Increases the critical strike chance of your Lightning Bolt and Chain Lightning spells by 5%."
+     ],
+     [
+      "buff",
+      "Lightning Overload",
+      "spell_nature_lightningoverload",
+      "Elemental talent",
+      "Gives your Lightning Bolt and Chain Lightning spells a {+30%} (up from 10%) chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+      "",
+      [
+       [
+        3,
+        "Gives your Lightning Bolt and Chain Lightning spells a {+30%} (up from 10%) chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+        ""
+       ],
+       [
+        2,
+        "Gives your Lightning Bolt and Chain Lightning spells a {+20%} (up from 7%) chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+        ""
+       ],
+       [
+        1,
+        "Gives your Lightning Bolt and Chain Lightning spells a {+10%} (up from 3%) chance to cast a second, similar spell on the same target at no additional cost that causes half damage and no threat.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Lightning Mastery",
+      "spell_nature_unrelentingstorm",
+      "Elemental talent · reworded",
+      "Renamed from Elemental Mastery. Gain mastery over Lightning, reducing the cast time of {*your*} Lightning Bolt {*spell*} by 0.5 sec, and removing the cooldown from {*your*} Chain Lightning {*spell*}. Lasts 15 sec. New icon.",
+      "Gain mastery over {~Fire and~} Lightning, reducing the cast time of Lightning Bolt {~and Lava Burst~} by 0.5 sec, and removing the cooldown from Chain Lightning. Lasts 15 sec."
+     ],
+     [
+      "buff",
+      "Mental Dexterity",
+      "spell_nature_mentalquickness",
+      "Enhancement talent",
+      "Increases your Attack Power by an amount equal to {+150%} (up from 100%) of your Intellect.",
+      "",
+      [
+       [
+        3,
+        "Increases your Attack Power by an amount equal to {+150%} (up from 100%) of your Intellect.",
+        ""
+       ],
+       [
+        2,
+        "Increases your Attack Power by an amount equal to {+100%} (up from 67%) of your Intellect.",
+        ""
+       ],
+       [
+        1,
+        "Increases your Attack Power by an amount equal to {+50%} (up from 33%) of your Intellect.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Flurry",
+      "ability_ghoulfrenzy",
+      "Enhancement talent",
+      "Increases your attack speed by {+30%} (up from 25%) for your next 3 swings after dealing a melee critical strike.",
+      "",
+      [
+       [
+        5,
+        "Increases your attack speed by {+30%} (up from 25%) for your next 3 swings after dealing a melee critical strike.",
+        ""
+       ],
+       [
+        4,
+        "Increases your attack speed by {+24%} (up from 20%) for your next 3 swings after dealing a melee critical strike.",
+        ""
+       ],
+       [
+        3,
+        "Increases your attack speed by {+18%} (up from 15%) for your next 3 swings after dealing a melee critical strike.",
+        ""
+       ],
+       [
+        2,
+        "Increases your attack speed by {+12%} (up from 10%) for your next 3 swings after dealing a melee critical strike.",
+        ""
+       ],
+       [
+        1,
+        "Increases your attack speed by {+6%} (up from 5%) for your next 3 swings after dealing a melee critical strike.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Stormstrike",
+      "ability_shaman_stormstrike",
+      "Enhancement talent · reworked",
+      "Instantly strike for {*150%*} weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec. Cooldown reduced from 8 sec cooldown to {+6 sec cooldown}.",
+      "Instantly strike for {~normal~} weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec."
+     ],
+     [
+      "other",
+      "Riptide",
+      "spell_nature_riptide",
+      "Restoration talent · reworked",
+      "Heals a friendly target for 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%. Cost reduced from 245 Mana to {+150 Mana}. Cooldown increased from 6 sec cooldown to {-12 sec cooldown}.",
+      "Heals a friendly target for {~486 to 534, an additional~} 445 over 15 sec, and increases the effectiveness of your Chain Heal casts directly on that target by 25%."
+     ],
+     [
+      "buff",
+      "Lightning Bolt",
+      "spell_nature_lightning",
+      "Spell",
+      "Casts a bolt of lightning at the target for {+344} (up from 191) to {+383} (up from 213) Nature damage.",
+      "",
+      [
+       [
+        10,
+        "Casts a bolt of lightning at the target for {+344} (up from 191) to {+383} (up from 213) Nature damage.",
+        ""
+       ],
+       [
+        9,
+        "Casts a bolt of lightning at the target for {+286} (up from 173) to {+320} (up from 193) Nature damage.",
+        ""
+       ],
+       [
+        8,
+        "Casts a bolt of lightning at the target for {+234} (up from 158) to {+261} (up from 176) Nature damage.",
+        ""
+       ],
+       [
+        7,
+        "Casts a bolt of lightning at the target for {+188} (up from 142) to {+210} (up from 160) Nature damage.",
+        ""
+       ],
+       [
+        6,
+        "Casts a bolt of lightning at the target for {+144} (up from 108) to {+162} (up from 122) Nature damage.",
+        ""
+       ],
+       [
+        5,
+        "Casts a bolt of lightning at the target for {+105} (up from 79) to {+120} (up from 90) Nature damage.",
+        ""
+       ],
+       [
+        4,
+        "Casts a bolt of lightning at the target for {+71} (up from 59) to {+80} (up from 67) Nature damage.",
+        ""
+       ],
+       [
+        3,
+        "Casts a bolt of lightning at the target for {+49} (up from 43) to {+58} (up from 50) Nature damage.",
+        ""
+       ],
+       [
+        2,
+        "Casts a bolt of lightning at the target for {+28} (up from 26) to {+33} (up from 29) Nature damage.",
+        ""
+       ],
+       [
+        1,
+        "Casts a bolt of lightning at the target for {+15} (up from 14) to {+18} (up from 17) Nature damage.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Earth Shock",
+      "spell_nature_earthshock",
+      "Spell",
+      "Instantly shocks the target with concussive force, causing {+534} (up from 303) to {+562} (up from 318) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+      "",
+      [
+       [
+        7,
+        "Instantly shocks the target with concussive force, causing {+534} (up from 303) to {+562} (up from 318) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ],
+       [
+        6,
+        "Instantly shocks the target with concussive force, causing {+380} (up from 207) to {+402} (up from 219) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ],
+       [
+        5,
+        "Instantly shocks the target with concussive force, causing {+241} (up from 135) to {+256} (up from 142) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ],
+       [
+        4,
+        "Instantly shocks the target with concussive force, causing {+131} (up from 84) to {+140} (up from 89) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ],
+       [
+        3,
+        "Instantly shocks the target with concussive force, causing {+69} (up from 52) to {+74} (up from 55) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ],
+       [
+        2,
+        "Instantly shocks the target with concussive force, causing {+38} (up from 36) to {+41} (up from 38) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ],
+       [
+        1,
+        "Instantly shocks the target with concussive force, causing {+21} (up from 20) to {+24} (up from 22) Nature damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 2 sec. Causes a high amount of threat.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Flame Shock",
+      "spell_fire_flameshock",
+      "Spell",
+      "Instantly sears the target with fire, causing {+319} (up from 181) Fire damage immediately and {+320} (up from 176) Fire damage over 12 sec.",
+      "",
+      [
+       [
+        6,
+        "Instantly sears the target with fire, causing {+319} (up from 181) Fire damage immediately and {+320} (up from 176) Fire damage over 12 sec.",
+        ""
+       ],
+       [
+        5,
+        "Instantly sears the target with fire, causing {+254} (up from 137) Fire damage immediately and {+256} (up from 136) Fire damage over 12 sec.",
+        ""
+       ],
+       [
+        4,
+        "Instantly sears the target with fire, causing {+171} (up from 89) Fire damage immediately and {+168} (up from 84) Fire damage over 12 sec.",
+        ""
+       ],
+       [
+        3,
+        "Instantly sears the target with fire, causing {+101} (up from 49) Fire damage immediately and {+96} (up from 56) Fire damage over 12 sec.",
+        ""
+       ],
+       [
+        2,
+        "Instantly sears the target with fire, causing {+56} (up from 38) Fire damage immediately and {+48} (up from 32) Fire damage over 12 sec.",
+        ""
+       ],
+       [
+        1,
+        "Instantly sears the target with fire, causing {+29} (up from 24) Fire damage immediately and 28 Fire damage over 12 sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Frost Shock",
+      "spell_frost_frostshock",
+      "Spell",
+      "Instantly shocks the target with frost, causing {+501} (up from 284) to {+529} (up from 300) Frost damage and slowing movement speed by 50%. Lasts 8 sec.",
+      "",
+      [
+       [
+        4,
+        "Instantly shocks the target with frost, causing {+501} (up from 284) to {+529} (up from 300) Frost damage and slowing movement speed by 50%. Lasts 8 sec.",
+        ""
+       ],
+       [
+        3,
+        "Instantly shocks the target with frost, causing {+352} (up from 190) to {+373} (up from 201) Frost damage and slowing movement speed by 50%. Lasts 8 sec.",
+        ""
+       ],
+       [
+        2,
+        "Instantly shocks the target with frost, causing {+221} (up from 126) to {+236} (up from 135) Frost damage and slowing movement speed by 50%. Lasts 8 sec.",
+        ""
+       ],
+       [
+        1,
+        "Instantly shocks the target with frost, causing {+99} (up from 68) to {+106} (up from 73) Frost damage and slowing movement speed by 50%. Lasts 8 sec.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Totemic Call",
+      "ability_shaman_totemrelocation",
+      "Spell · reworded",
+      "Renamed from Totemic Projection. Relocates your active totems to {*your*} location. Cooldown changed from 1 min cooldown to 30 sec cooldown.",
+      "Relocates your active totems to {~the specified~} location."
+     ],
+     [
+      "other",
+      "Chain Lightning",
+      "spell_nature_chainlightning",
+      "Spell",
+      "Hurls a lightning bolt at the enemy, dealing {+498} (up from 120) to {+555} (up from 134) Nature damage and then jumping to additional nearby enemies. Each jump reduces the damage by 30%. Affects 3 total targets. Cost increased from 315 Mana to {-495 Mana}.",
+      "",
+      [
+       [
+        4,
+        "Hurls a lightning bolt at the enemy, dealing {+498} (up from 120) to {+555} (up from 134) Nature damage and then jumping to additional nearby enemies. Each jump reduces the damage by 30%. Affects 3 total targets. Cost increased from 315 Mana to {-495 Mana}.",
+        ""
+       ],
+       [
+        3,
+        "Hurls a lightning bolt at the enemy, dealing {+417} (up from 109) to {+466} (up from 122) Nature damage and then jumping to additional nearby enemies. Each jump reduces the damage by 30%. Affects 3 total targets. Cost increased from 250 Mana to {-425 Mana}.",
+        ""
+       ],
+       [
+        2,
+        "Hurls a lightning bolt at the enemy, dealing {+339} (up from 97) to {+379} (up from 109) Nature damage and then jumping to additional nearby enemies. Each jump reduces the damage by 30%. Affects 3 total targets. Cost increased from 200 Mana to {-360 Mana}.",
+        ""
+       ],
+       [
+        1,
+        "Hurls a lightning bolt at the enemy, dealing {+208} (up from 85) to {+236} (up from 97) Nature damage and then jumping to additional nearby enemies. Each jump reduces the damage by 30%. Affects 3 total targets. Cost increased from 145 Mana to {-245 Mana}.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "warlock": [
+     [
+      "buff",
+      "Wrack",
+      "ability_deathknight_hemorrhagicfever",
+      "Affliction talent",
+      "Tears the target apart from within, inflicting {+86} (up from 36) Shadow damage every 1 sec and increasing the damage they take from your other Shadow damage over time effects by 10% for 6 sec."
+     ],
+     [
+      "buff",
+      "Shadow and Flame",
+      "spell_fire_playingwithfire",
+      "Destruction talent",
+      "Hitting an enemy with Conflagrate increases all Shadow damage you deal by {+20%} (up from 10%) for 20 sec, and hitting an enemy with Shadowburn increases all Fire damage you deal by {+20%} (up from 10%) for 20 sec. In addition, Conflagrate has a 100% chance not to consume Immolate, and Shadowburn has a 100% chance to instantly refund a Soul Shard.",
+      "",
+      [
+       [
+        5,
+        "Hitting an enemy with Conflagrate increases all Shadow damage you deal by {+20%} (up from 10%) for 20 sec, and hitting an enemy with Shadowburn increases all Fire damage you deal by {+20%} (up from 10%) for 20 sec. In addition, Conflagrate has a 100% chance not to consume Immolate, and Shadowburn has a 100% chance to instantly refund a Soul Shard.",
+        ""
+       ],
+       [
+        4,
+        "Hitting an enemy with Conflagrate increases all Shadow damage you deal by {+16%} (up from 8%) for 20 sec, and hitting an enemy with Shadowburn increases all Fire damage you deal by {+16%} (up from 8%) for 20 sec. In addition, Conflagrate has a 80% chance not to consume Immolate, and Shadowburn has a 80% chance to instantly refund a Soul Shard.",
+        ""
+       ],
+       [
+        3,
+        "Hitting an enemy with Conflagrate increases all Shadow damage you deal by {+12%} (up from 6%) for 20 sec, and hitting an enemy with Shadowburn increases all Fire damage you deal by {+12%} (up from 6%) for 20 sec. In addition, Conflagrate has a 60% chance not to consume Immolate, and Shadowburn has a 60% chance to instantly refund a Soul Shard.",
+        ""
+       ],
+       [
+        2,
+        "Hitting an enemy with Conflagrate increases all Shadow damage you deal by {+8%} (up from 4%) for 20 sec, and hitting an enemy with Shadowburn increases all Fire damage you deal by {+8%} (up from 4%) for 20 sec. In addition, Conflagrate has a 40% chance not to consume Immolate, and Shadowburn has a 40% chance to instantly refund a Soul Shard.",
+        ""
+       ],
+       [
+        1,
+        "Hitting an enemy with Conflagrate increases all Shadow damage you deal by {+4%} (up from 2%) for 20 sec, and hitting an enemy with Shadowburn increases all Fire damage you deal by {+4%} (up from 2%) for 20 sec. In addition, Conflagrate has a 20% chance not to consume Immolate, and Shadowburn has a 20% chance to instantly refund a Soul Shard.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "warrior": [
+     [
+      "other",
+      "Improved Tactical Mastery",
+      "spell_nature_enchantarmor",
+      "Arms talent",
+      "Now has 3 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Spearing Strike",
+      "inv_spear_01",
+      "Arms talent",
+      "A brutal attack that deals {+75%} (up from 40%) weapon damage. Deals an additional {-75%} (down from 80%) weapon damage against Giants, Dragonkin, and mounted targets. Mounted targets are dismounted."
+     ],
+     [
+      "buff",
+      "Two-Handed Weapon Specialization",
+      "inv_axe_09",
+      "Arms talent",
+      "Increases the damage you deal with two-handed melee weapons by {+6%} (up from 3%).",
+      "",
+      [
+       [
+        3,
+        "Increases the damage you deal with two-handed melee weapons by {+6%} (up from 3%).",
+        ""
+       ],
+       [
+        2,
+        "Increases the damage you deal with two-handed melee weapons by {+4%} (up from 2%).",
+        ""
+       ],
+       [
+        1,
+        "Increases the damage you deal with two-handed melee weapons by {+2%} (up from 1%).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Bloodthrill",
+      "inv_sword_01",
+      "Arms talent",
+      "Now has 2 ranks (was 5)."
+     ],
+     [
+      "other",
+      "Improved Slam",
+      "ability_warrior_decisivestrike",
+      "Arms talent · reworked",
+      "Reduces the cooldown of your Slam ability by {*5.0 sec, the cast time and global cooldown by*} 0.50 sec{*, and*} Slam no longer interrupts or delays your melee swing.",
+      "Reduces the {~global~} cooldown {~and cast time~} of your Slam ability by 0.50 sec{~. In addition,~} Slam no longer interrupts or delays your melee swing {~and Slam's cooldown is reduced by 3.0 sec~}.",
+      [
+       [
+        2,
+        "Reduces the cooldown of your Slam ability by {*5.0 sec, the cast time and global cooldown by*} 0.50 sec{*, and*} Slam no longer interrupts or delays your melee swing.",
+        "Reduces the {~global~} cooldown {~and cast time~} of your Slam ability by 0.50 sec{~. In addition,~} Slam no longer interrupts or delays your melee swing {~and Slam's cooldown is reduced by 3.0 sec~}."
+       ],
+       [
+        1,
+        "Reduces the cooldown of your Slam ability by {*2.5 sec, the cast time and global cooldown by*} 0.25 sec{*, and*} Slam no longer interrupts or delays your melee swing.",
+        "Reduces the {~global~} cooldown {~and cast time~} of your Slam ability by 0.25 sec{~. In addition,~} Slam no longer interrupts or delays your melee swing {~and Slam's cooldown is reduced by 3.0 sec~}."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Booming Voice",
+      "spell_nature_purge",
+      "Fury talent · reworded",
+      "Increases the area of effect of your Shouts by 50% and reduces {*the*} Rage cost by {*of your Shouts and Howls by*} 25%.",
+      "Increases the area of effect of your Shouts by 50% and reduces {~their~} Rage cost by 25%.",
+      [
+       [
+        5,
+        "Increases the area of effect of your Shouts by 50% and reduces {*the*} Rage cost by {*of your Shouts and Howls by*} 25%.",
+        "Increases the area of effect of your Shouts by 50% and reduces {~their~} Rage cost by 25%."
+       ],
+       [
+        4,
+        "Increases the area of effect of your Shouts by 40% and reduces {*the*} Rage cost by {*of your Shouts and Howls by*} 20%.",
+        "Increases the area of effect of your Shouts by 40% and reduces {~their~} Rage cost by 20%."
+       ],
+       [
+        3,
+        "Increases the area of effect of your Shouts by 30% and reduces {*the*} Rage cost by {*of your Shouts and Howls by*} 15%.",
+        "Increases the area of effect of your Shouts by 30% and reduces {~their~} Rage cost by 15%."
+       ],
+       [
+        2,
+        "Increases the area of effect of your Shouts by 20% and reduces {*the*} Rage cost by {*of your Shouts and Howls by*} 10%.",
+        "Increases the area of effect of your Shouts by 20% and reduces {~their~} Rage cost by 10%."
+       ],
+       [
+        1,
+        "Increases the area of effect of your Shouts by 10% and reduces {*the*} Rage cost by {*of your Shouts and Howls by*} 5%.",
+        "Increases the area of effect of your Shouts by 10% and reduces {~their~} Rage cost by 5%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Reckless Swings",
+      "ability_warrior_bloodfrenzy",
+      "Fury talent · new",
+      "New talent: Your next 4 melee attacks generate 5 additional Rage. Lasts 8 sec."
+     ],
+     [
+      "other",
+      "Improved Whirlwind",
+      "ability_whirlwind",
+      "Fury talent · reworked",
+      "Renamed from Raging Blows. Reduces the cooldown of your Whirlwind ability by 2 sec and increases the damage it deals to the closest enemy by 30%. Now has 2 ranks (was 1).",
+      "Reduces the Rage cost of your Cleave and Whirlwind abilities by 3."
+     ],
+     [
+      "other",
+      "Flurry",
+      "ability_ghoulfrenzy",
+      "Fury talent",
+      "Increases your melee attack speed by {+30%} (up from 25%) for your next 3 swings after dealing a melee critical strike. Now has 3 ranks (was 5)."
+     ],
+     [
+      "buff",
+      "Slam",
+      "ability_warrior_decisivestrike",
+      "Spell",
+      "Cooldown reduced from 18 sec cooldown to {+15 sec cooldown}.",
+      "",
+      [
+       [
+        5,
+        "Cooldown reduced from 18 sec cooldown to {+15 sec cooldown}.",
+        ""
+       ],
+       [
+        4,
+        "Cooldown reduced from 18 sec cooldown to {+15 sec cooldown}.",
+        ""
+       ],
+       [
+        3,
+        "Cooldown reduced from 18 sec cooldown to {+15 sec cooldown}.",
+        ""
+       ],
+       [
+        2,
+        "Cooldown reduced from 18 sec cooldown to {+15 sec cooldown}.",
+        ""
+       ],
+       [
+        1,
+        "Cooldown reduced from 18 sec cooldown to {+15 sec cooldown}.",
+        ""
+       ]
+      ]
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.70753",
+    "1.60.1.70755"
+   ]
+  },
+  {
+   "date": "2026-11-03",
+   "version": "1.60.1",
    "build": "70753",
    "classes": {
     "druid": [

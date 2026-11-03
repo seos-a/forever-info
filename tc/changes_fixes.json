@@ -569,6 +569,13 @@
    "kind": "buff",
    "text": "Deals 28 to 32 Frost damage to an enemy target. Deals {+300%} (up from 200%) increased damage to Frozen targets. Its cooldown is now shared with Fire Blast.†",
    "why": "The client-file sentence listed every spell in Ice Lance's cooldown category, other classes' and NPC spells included (client_changes.py now names only the class's own)"
+  },
+  {
+   "build": "70756",
+   "class": "rogue",
+   "name": "Rupture",
+   "drop": true,
+   "why": "Wowhead's text became an unrounded formula (158.92 damage, was 159); the numbers didn't change"
   }
  ]
 }

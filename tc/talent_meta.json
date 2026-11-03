@@ -458,6 +458,18 @@
     ]
    ]
   ],
+  "Death Mark": [
+   [
+    [
+     "25 Energy / 1 to 5 Combo Points",
+     "20 yd range"
+    ],
+    [
+     "Instant",
+     "10 sec cooldown"
+    ]
+   ]
+  ],
   "Ghostly Strike": [
    [
     [
@@ -513,34 +525,14 @@
      "6 sec cooldown"
     ]
    ]
-  ],
-  "Venom": [
-   [
-    [
-     "25 Energy / 1 to 5 Combo Points",
-     "100 yd range"
-    ]
-   ]
   ]
  },
  "shaman": {
-  "Elemental Mastery": [
+  "Lightning Mastery": [
    [
     [
      "Instant",
      "3 min cooldown"
-    ]
-   ]
-  ],
-  "Lava Burst": [
-   [
-    [
-     "135 Mana",
-     "30 yd range"
-    ],
-    [
-     "2.5 sec cast",
-     "10 sec cooldown"
     ]
    ]
   ],
@@ -733,6 +725,14 @@
     [
      "Instant",
      "6 sec cooldown"
+    ]
+   ]
+  ],
+  "Reckless Swings": [
+   [
+    [
+     "Instant",
+     "15 sec cooldown"
     ]
    ]
   ],

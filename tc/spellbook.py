@@ -3,8 +3,11 @@ SKILL={'warrior':[26,256,257],'paladin':[594,267,184],'hunter':[50,163,51,261],'
  'priest':[613,56,78],'shaman':[375,373,374],'mage':[237,8,6],'warlock':[355,354,593],'druid':[574,134,573]}
 def num(x):
     v=float(x); return str(int(round(v))) if abs(v-round(v))<.05 or v>20 else f'{v:.1f}'
+# a talent reference with no base value ("[Quick Getaway: 2]" is the value with the talent): the value without it
+TALENT_BASE={'Quick Getaway':'1'}
 def clean(d):
-    d=re.sub(r"\[<span class='q2'>[^<]*</span>: <span class='q9'>(.*?)</span>(?: / (.*?))?\]",lambda m:m.group(2) or '',d)
+    d=re.sub(r"\[<span class='q2'>([^<]*)</span>: <span class='q9'>(.*?)</span>(?: / (.*?))?\]",lambda m:m.group(3) or TALENT_BASE.get(m.group(1),''),d)
+    d=re.sub(r'\b1 targets\b','1 target',d)   # Sap: "Only 1 targets may be sapped"
     d=re.sub(r'<!--.*?-->','',d)
     d=re.sub(r'<dfn title="[^"]*">(.*?)</dfn>',r'\1',d)
     d=re.sub(r'<br ?/?>','\n',d)
@@ -19,6 +22,7 @@ def clean(d):
         d=re.sub(r'\[([0-9.\s+\-*/]+)\]',ev,d)
     d=re.sub(r'\(\s*([0-9.]+)\s*\)',r'\1',d)
     d=re.sub(r'\[\((.*?)\)\s*\*\s*1\]',r'(\1)',d)
+    d=re.sub(r'\[(\d+(?:\.\d+)?)\]',r'\1',d)   # "[(8 + 0)]" worked out to "[8]" (Rupture's duration)
     d=re.sub(r'[ \t]{2,}',' ',d).replace(' .','.').strip()
     return d
 def gen(cls):
