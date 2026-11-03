@@ -347,8 +347,8 @@ ol.order li span{color:#7a6a52;font-size:11px}
 .order-parch.is-empty{background:var(--cobweb) center/100% 100% no-repeat,#050505!important;border-color:#2b2b30!important;
   box-shadow:inset 0 0 0 1px #000,inset 0 0 28px #000,0 0 0 1px #000!important;display:grid;place-items:center;aspect-ratio:1100/332;height:auto!important;min-height:0!important}   /* same shape as the image, so none of it is cropped */
 .order-parch.is-empty::after{display:none}
-/* desktop: with points spent the Talent Order reserves the height of a full build (one 28px row per point / 3), so
-   it doesn't grow with each point; empty, it takes the cobweb picture's own shape (the base rule above), so the
+/* desktop: with points spent the Talent Order starts 3 lines tall and grows a line per point until a column is full
+   (a third of the build), then fills the next column; empty, it takes the cobweb picture's own shape (the base rule above), so the
    picture is shown whole and unstretched, with the message in the middle */
 @media (min-width:821px){
   #app .order2{grid-template-rows:repeat(var(--rows,17),28px)}
@@ -1032,8 +1032,8 @@ body.ally .tree-h .undo,body.ally .tree-h .undo:hover{background:url("data:image
    Racials / Spellbook pages, dark brown text and smaller numbers */
 .order-parch{background:linear-gradient(180deg,#6b4a2366,#4a2f1266),var(--parch-bg);box-shadow:inset 0 0 0 1px #f9eccb33,inset 0 0 14px #3a200aaa,inset 0 0 3px #3a2008,0 0 0 1px #000}
 .order2 li{padding:2px 6px 2px 2px;border-radius:2px}
-.order2 .onm{color:#3d1a06;text-shadow:none}
-.order2 .on,.order2 .ork{color:#4a3018;font-size:13.5px}
+.order2 .onm{color:#1c0a02;text-shadow:none}
+.order2 .on,.order2 .ork{color:#24150a;font-size:13.5px}
 /* hovering a Talent Order line: soft band on the row, thin gold outline on that talent in the trees */
 @media (hover:hover){.order2 li{transition:background-color .1s}.order2 li:hover{background:#3a200a2e}}
 .tal.ord-hl{outline:2px solid #ffd75a;outline-offset:2px}
@@ -1659,7 +1659,7 @@ function renderTalents(m){
 }
 // Talent order under the trees, laid out like Wowhead's: number, small icon, yellow name, rank
 function renderOrder(m=cur,ol=$("order"),empty=$("orderEmpty")){
-  ol.innerHTML=""; ol.style.setProperty("--rows",Math.ceil(cap(m)/3)||1); empty.hidden=m.order.length>0;
+  ol.innerHTML=""; ol.style.setProperty("--rows",Math.min(Math.max(m.order.length,3),Math.ceil(cap(m)/3)||1)); empty.hidden=m.order.length>0;
   ol.closest(".order-parch").classList.toggle("is-empty",!m.order.length);   // cobweb empty state
   if(m===cur) $("orderTitle").textContent=m.legacy?"Legacy Point Order":"Talent Order";
   const n=new Map();
@@ -2428,9 +2428,13 @@ try{ const ob=$("orderHead").closest(".orderbox");
   // opens by itself), or open straight away for a build link with points. Opening / folding it by hand stops that.
   window.ordAuto = !isPhone() && !(cur && cur.order.length);
   if(isPhone() || window.ordAuto) fold(true);
-  window.ordAutoOpen=()=>{ if(window.ordAuto && cur && cur.order.length){ window.ordAuto=false; fold(false); } };
+  // removing every point folds it again (the cobweb panel shows only if opened by hand while empty), and the next point reopens it
+  let ordN=cur?cur.order.length:0;
+  window.ordAutoOpen=()=>{ const n=cur?cur.order.length:0, was=ordN; ordN=n;
+    if(!n && was && !isPhone()){ window.ordAuto=true; fold(true); return; }
+    if(window.ordAuto && n){ window.ordAuto=false; fold(false); } };
   // switching class starts over: folded, opening by itself once that class has a point (straight away if it already has)
-  window.ordReset=()=>{ if(isPhone()) return; window.ordAuto=true; fold(true); };
+  window.ordReset=()=>{ ordN=0; if(isPhone()) return; window.ordAuto=true; fold(true); };
   $("orderHead").addEventListener("click",()=>{ window.ordAuto=false; setOrd(!ob.classList.contains("collapsed")); });
 }catch(e){}
 // Legacy Point Order folds the same way; it starts folded on phones
@@ -2525,11 +2529,6 @@ document.querySelectorAll(".cls").forEach((b,i)=>{ const x=(i*137)%360, y=(i*83+
       /* second pass to remove any sub-pixel leftover */
       const d2=oh.getBoundingClientRect().top-ch.getBoundingClientRect().top;
       if(Math.abs(d2)>0.3){ if(d2>0) cg.style.marginTop=(parseFloat(cg.style.marginTop||0)+d2/ratio)+"px"; else tr.style.minHeight=((tr.getBoundingClientRect().height-d2)/ratio)+"px"; }
-      /* make the Talent Order parchment end level with the Build Code parchment */
-      if(op && sh && op.offsetParent && sh.offsetHeight && !cg.classList.contains("collapsed") && !ob.classList.contains("collapsed")){
-        const need=(sh.getBoundingClientRect().bottom-op.getBoundingClientRect().top)/ratio;
-        if(need>op.offsetHeight) op.style.minHeight=need+"px";
-      }
     }
     requestAnimationFrame(()=>{ busy=false; if(again){ again=false; align(); } }); };
   if(window.ResizeObserver){ const ro=new ResizeObserver(align); [$("trees"),document.querySelector(".main>.status"),...document.querySelectorAll(".side>.sgrp")].forEach(e=>e&&ro.observe(e)); }
