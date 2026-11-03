@@ -523,7 +523,10 @@ def merge(classes, client):
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
-    known = builds()
+    # wago.tools down (it timed out on a patch night): say so and go on, so the rest of the sync still runs.
+    # changelog.py then skips the client files too and leaves version.json's client as it is, so the next run adds them
+    try: known = builds()
+    except Exception as e: print('could not read the client builds from wago.tools, skipped until the next run:', e); return
     if '--builds' in sys.argv: print('\n'.join(known)); return
     last = json.load(open('version.json', encoding='utf-8')).get('client')
     if len(args) == 2: old, new = version(args[0], known), version(args[1], known)
@@ -531,7 +534,8 @@ def main():
     else: old, new = last, known[-1]
     if old == new: print(f'client files: {new} is still the latest build, compared already'); return
     print(f'client files {old} -> {new}')
-    out = entries(old, new)
+    try: out = entries(old, new)
+    except Exception as e: print(f'could not compare the client builds {old} and {new}, skipped until the next run:', e); return
     for c, ch in out.items():
         for k, name, icon, where, text, _ in ch: print(f'{c:8} {k:5} {name} [{where}]: {text}')
     print(sum(len(v) for v in out.values()), 'changes')
