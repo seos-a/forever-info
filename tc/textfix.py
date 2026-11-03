@@ -25,8 +25,9 @@ def tidy_formula(desc):
                   lambda m: f'{m.group(1)} (plus {pct(m.group(2))} of your bonus healing)', desc)
     desc = re.sub(r'\[\(?(\d+(?:\.\d+)?) \+ \(((?:Ranged )?Attack Power|Spell Power|[A-Z][a-z]+ spell power) \* \(?([\d.]+)\)?\)\)?(?: \* \(1 \* 1\))?\]',
                   lambda m: f'{m.group(1)} (plus {pct(m.group(3))} of your {m.group(2)})', desc)
-    # a talent reference with no base value: "Only [Quick Getaway: 2] target" (Sap) -> "Only 1 target"
-    desc = re.sub(r'\[Quick Getaway: \d+\]', '1', desc)
+    # a talent reference with only the talented value: "Only [Quick Getaway: 2] target" (Sap) -> "Only 1 target (2 with
+    # Quick Getaway)"
+    desc = re.sub(r'\[Quick Getaway: (\d+)\] targets?', r'1 target (\1 with Quick Getaway)', desc)
     # Death Mark's damage cap: "(((63 + (204) + 2 * 0.04 * Attack Power) * ($mcrit / 100 + 1)) * 1)" -> "267 (plus 8% of
     # your Attack Power)"; the text already says the cap also grows with critical strike chance
     desc = re.sub(r'\(\(\((\d+) \+ \(?(\d+)\)? \+ (?:(\d+) \* )?([\d.]+) \* (Attack Power)\) \* \(\$mcrit / 100 \+ 1\)\) \* 1\)',
