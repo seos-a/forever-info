@@ -50,7 +50,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       the Grave its two proc chances; Touch of Weakness and Hex of Weakness fix
       Wowhead's typos) is never overwritten but listed under "Racials: needs a look" in the pull request. Racial changes are
       summarised in the pull request report only, not on the Class Changes page (the developers don't plan to change
-      racials after launch; what `client_changes.py` finds in the client files does show there). It also reads Wowhead's race pages and lists any racial added or removed there. Priest racial spells
+      racials after launch; what `client_changes.py` finds in a racial's client files isn't shown there either, only in its
+      own section of the pull request). It also reads Wowhead's race pages and lists any racial added or removed there. Priest racial spells
       follow the spellbook text (`spells_raw.json`)
     - `sync_legacy.py`: rewrites `legacy_raw.json` from Wowhead's Legacy Calculator data feed (nodes, ranks, rank texts,
       points needed, cast time / cooldown, the arrows between nodes; positions are Wowhead's grid of 750 units a slot,
@@ -78,8 +79,8 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
       internal cooldown, the spells a talent affects, a triggered effect's values. It leaves to Wowhead a number a tooltip
       quotes (`$s1`, `$d`... in the client's descriptions) and the cost / range / cast time / cooldown / level rows (the
       site shows Wowhead's, hotfixes included). Each sentence ends with a "†" (the page's footnote "found in the game's
-      client files") and joins Wowhead's entry for that talent or spell, or becomes its own entry; a racial's goes under
-      each class the race can be. `version.json`'s `client` is the last client build compared, each `changes.json` update
+      client files") and joins Wowhead's entry for that talent or spell, or becomes its own entry. Racial traits are compared too, but `entries()` leaves them out of the page
+      (`racials=True`, used by the script's own report, keeps them). `version.json`'s `client` is the last client build compared, each `changes.json` update
       lists the client builds it covers (`client`), and a client build Wowhead has no build for becomes an update of its
       own (`source: "client"`). `py changelog.py --dry --client=70658` checks the merge for builds 70658 → latest.
       Server hotfixes are in no client table (they come from the realm, cached in the game's DBCache.bin): Blood Fury's

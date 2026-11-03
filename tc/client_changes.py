@@ -481,14 +481,16 @@ def sentences(e, A, B, site):
         out.append((txt, v))
     return out
 
-def entries(old, new, quiet=False):
-    """{class: [[kind, name, icon, where, text, ""], ...]} for the Class Changes page"""
+def entries(old, new, quiet=False, racials=False):
+    """{class: [[kind, name, icon, where, text, ""], ...]} for the Class Changes page, which leaves out the racial traits
+    (racials=True keeps them, for this script's own report in the pull request)"""
     global RANK_TIPS, TALENT_META, SPELLS, RACIALS
     found, missing = changes(old, new)
     if missing and not quiet: print('client files: not found for', ', '.join(missing))
     out = {}
     for (c, name), e in found.items():
         info = e['info']
+        if info['kind'] == 'racial' and not racials: continue
         verdicts = {v for _, v in e['lines']}
         kind = 'buff' if verdicts == {'good'} else 'nerf' if verdicts == {'bad'} else 'other'
         text = ' '.join(t + MARK for t, _ in e['lines'])
@@ -534,7 +536,7 @@ def main():
     else: old, new = last, known[-1]
     if old == new: print(f'client files: {new} is still the latest build, compared already'); return
     print(f'client files {old} -> {new}')
-    try: out = entries(old, new)
+    try: out = entries(old, new, racials=True)
     except Exception as e: print(f'could not compare the client builds {old} and {new}, skipped until the next run:', e); return
     for c, ch in out.items():
         for k, name, icon, where, text, _ in ch: print(f'{c:8} {k:5} {name} [{where}]: {text}')

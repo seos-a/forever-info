@@ -106,14 +106,6 @@
       "Protection talent",
       "Its dispel type changed from none to Magic.†",
       ""
-     ],
-     [
-      "buff",
-      "Touch of the Grave",
-      "spell_shadow_fingerofdeath",
-      "Undead racial",
-      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
-      ""
      ]
     ],
     "rogue": [
@@ -123,22 +115,6 @@
       "ability_rogue_fleetfooted",
       "Spell · new",
       "New spell: While at maximum Energy, and out of combat, reduce the Energy cost of your next ability by 10."
-     ],
-     [
-      "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ],
-     [
-      "buff",
-      "Touch of the Grave",
-      "spell_shadow_fingerofdeath",
-      "Undead racial",
-      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
-      ""
      ]
     ],
     "warrior": [
@@ -181,22 +157,6 @@
         "Instantly counterattack an enemy for {~[~}20 {~+ (0.25 * $apm~}){~]~} to {~[~}24 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
        ]
       ]
-     ],
-     [
-      "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ],
-     [
-      "buff",
-      "Touch of the Grave",
-      "spell_shadow_fingerofdeath",
-      "Undead racial",
-      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
-      ""
      ]
     ],
     "mage": [
@@ -210,38 +170,14 @@
      ],
      [
       "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ],
-     [
-      "other",
       "Ice Lance",
       "spell_frost_frostblast",
       "Spell",
       "Its cooldown is now shared with Fire Blast.†",
       ""
-     ],
-     [
-      "buff",
-      "Touch of the Grave",
-      "spell_shadow_fingerofdeath",
-      "Undead racial",
-      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
-      ""
      ]
     ],
     "hunter": [
-     [
-      "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ],
      [
       "other",
       "Freezing Trap",
@@ -256,52 +192,6 @@
       "spell_frost_freezingbreath",
       "Spell",
       "Its cooldown is now shared with Explosive Trap, Freezing Trap, Immolation Trap.†",
-      ""
-     ]
-    ],
-    "priest": [
-     [
-      "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ],
-     [
-      "buff",
-      "Touch of the Grave",
-      "spell_shadow_fingerofdeath",
-      "Undead racial",
-      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
-      ""
-     ]
-    ],
-    "shaman": [
-     [
-      "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ]
-    ],
-    "warlock": [
-     [
-      "other",
-      "Berserking",
-      "racial_troll_berserk",
-      "Troll racial",
-      "Duration increased from 10 sec to 15 sec.†",
-      ""
-     ],
-     [
-      "buff",
-      "Touch of the Grave",
-      "spell_shadow_fingerofdeath",
-      "Undead racial",
-      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
       ""
      ]
     ]
