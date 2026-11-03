@@ -1,6 +1,317 @@
 {
  "updates": [
   {
+   "date": "2026-11-03",
+   "version": "1.60.1",
+   "build": "70753",
+   "classes": {
+    "druid": [
+     [
+      "other",
+      "Ferocious Bite",
+      "ability_druid_ferociousbite",
+      "Spell",
+      "Now has 6 ranks (was 5). Now learned at level {+24} (was 32).",
+      "",
+      [
+       [
+        6,
+        "Now has 6 ranks (was 5). Now learned at level {+24} (was 32).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Poised",
+      "ability_racial_darkflight",
+      "Spell · new",
+      "New spell: While at maximum Energy, and out of combat, reduce the Energy cost of your next ability by 10."
+     ],
+     [
+      "other",
+      "Lacerate",
+      "ability_druid_lacerate",
+      "Spell",
+      "Now has 4 ranks (was 3). Now learned at level {+34} (was 42).",
+      "",
+      [
+       [
+        5,
+        "Now has 4 ranks (was 3). Now learned at level {+34} (was 42).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Primal Bite",
+      "ability_racial_cannibalize",
+      "Spell",
+      "Now has 2 ranks (was 3).",
+      "",
+      [
+       [
+        3,
+        "Now has 2 ranks (was 3).",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Naturalist",
+      "spell_nature_healingtouch",
+      "Restoration talent",
+      "Now also affects Wild Growth.†",
+      ""
+     ]
+    ],
+    "paladin": [
+     [
+      "other",
+      "Holy Shield",
+      "spell_holy_blessingofprotection",
+      "Spell · reworked",
+      "Increases chance to block by 30% for {*10 sec*}, and deals 221 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges. Now has a cost: 240 Mana. Now has a cooldown: 10 sec cooldown. New icon.",
+      "Increases chance to block by 30% for {~until canceled~}, and deals 221 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges.",
+      [
+       [
+        4,
+        "Increases chance to block by 30% for {*10 sec*}, and deals 221 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges. Now has a cost: 240 Mana. Now has a cooldown: 10 sec cooldown. New icon.",
+        "Increases chance to block by 30% for {~until canceled~}, and deals 221 Holy damage for each attack blocked while active. Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Benediction",
+      "spell_frost_windwalkon",
+      "Retribution talent",
+      "No longer affects Blessing of Light, Blessing of Salvation, Greater Blessing of Light, Greater Blessing of Salvation.†",
+      ""
+     ],
+     [
+      "other",
+      "Swift Judgement",
+      "ability_paladin_judgementred",
+      "Protection talent",
+      "Its school changed from Physical to Holy.†",
+      ""
+     ],
+     [
+      "other",
+      "Templar's Bulwark",
+      "ability_paladin_shieldofthetemplar",
+      "Protection talent",
+      "Its dispel type changed from none to Magic.†",
+      ""
+     ],
+     [
+      "buff",
+      "Touch of the Grave",
+      "spell_shadow_fingerofdeath",
+      "Undead racial",
+      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
+      ""
+     ]
+    ],
+    "rogue": [
+     [
+      "other",
+      "Poised",
+      "ability_rogue_fleetfooted",
+      "Spell · new",
+      "New spell: While at maximum Energy, and out of combat, reduce the Energy cost of your next ability by 10."
+     ],
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ],
+     [
+      "buff",
+      "Touch of the Grave",
+      "spell_shadow_fingerofdeath",
+      "Undead racial",
+      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
+      ""
+     ]
+    ],
+    "warrior": [
+     [
+      "other",
+      "Revenge",
+      "ability_warrior_revenge",
+      "Spell · reworked",
+      "Instantly counterattack an enemy for 137.7 {*(plus 25% of your Attack Power*}) to 168.3 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+      "Instantly counterattack an enemy for {~[~}137.7 {~+ (0.25 * $apm~}){~]~} to {~[~}168.3 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+      [
+       [
+        6,
+        "Instantly counterattack an enemy for 137.7 {*(plus 25% of your Attack Power*}) to 168.3 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for {~[~}137.7 {~+ (0.25 * $apm~}){~]~} to {~[~}168.3 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        5,
+        "Instantly counterattack an enemy for 109.07 {*(plus 25% of your Attack Power*}) to 132.93 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for {~[~}109.07 {~+ (0.25 * $apm~}){~]~} to {~[~}132.93 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        4,
+        "Instantly counterattack an enemy for 73 {*(plus 25% of your Attack Power*}) to 91 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for {~[~}73 {~+ (0.25 * $apm~}){~]~} to {~[~}91 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        3,
+        "Instantly counterattack an enemy for 43 {*(plus 25% of your Attack Power*}) to 53 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for {~[~}43 {~+ (0.25 * $apm~}){~]~} to {~[~}53 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        2,
+        "Instantly counterattack an enemy for 30.6 {*(plus 25% of your Attack Power*}) to 37.4 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for {~[~}30.6 {~+ (0.25 * $apm~}){~]~} to {~[~}37.4 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ],
+       [
+        1,
+        "Instantly counterattack an enemy for 20 {*(plus 25% of your Attack Power*}) to 24 {*(plus 25% of your Attack Power*}) damage and a high amount of threat. Revenge must follow a block, dodge or parry.",
+        "Instantly counterattack an enemy for {~[~}20 {~+ (0.25 * $apm~}){~]~} to {~[~}24 {~+ (0.25 * $apm~}){~]~} damage and a high amount of threat. Revenge must follow a block, dodge or parry."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ],
+     [
+      "buff",
+      "Touch of the Grave",
+      "spell_shadow_fingerofdeath",
+      "Undead racial",
+      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
+      ""
+     ]
+    ],
+    "mage": [
+     [
+      "other",
+      "Arctic Reach",
+      "spell_shadow_darkritual",
+      "Frost talent",
+      "Now also affects Ice Lance.†",
+      ""
+     ],
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ],
+     [
+      "other",
+      "Ice Lance",
+      "spell_frost_frostblast",
+      "Spell",
+      "Its cooldown is now shared with Fire Blast.†",
+      ""
+     ],
+     [
+      "buff",
+      "Touch of the Grave",
+      "spell_shadow_fingerofdeath",
+      "Undead racial",
+      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
+      ""
+     ]
+    ],
+    "hunter": [
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ],
+     [
+      "other",
+      "Freezing Trap",
+      "spell_frost_chainsofice",
+      "Spell",
+      "Its cooldown is now shared with Explosive Trap, Frost Trap, Immolation Trap.†",
+      ""
+     ],
+     [
+      "other",
+      "Frost Trap",
+      "spell_frost_freezingbreath",
+      "Spell",
+      "Its cooldown is now shared with Explosive Trap, Freezing Trap, Immolation Trap.†",
+      ""
+     ]
+    ],
+    "priest": [
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ],
+     [
+      "buff",
+      "Touch of the Grave",
+      "spell_shadow_fingerofdeath",
+      "Undead racial",
+      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
+      ""
+     ]
+    ],
+    "shaman": [
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ]
+    ],
+    "warlock": [
+     [
+      "other",
+      "Berserking",
+      "racial_troll_berserk",
+      "Troll racial",
+      "Duration increased from 10 sec to 15 sec.†",
+      ""
+     ],
+     [
+      "buff",
+      "Touch of the Grave",
+      "spell_shadow_fingerofdeath",
+      "Undead racial",
+      "Internal cooldown reduced from 25 sec to {+15 sec}.†",
+      ""
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.70707",
+    "1.60.1.70753"
+   ]
+  },
+  {
    "date": "2026-10-31",
    "version": "1.60.1",
    "build": "70707",
