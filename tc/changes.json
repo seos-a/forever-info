@@ -1,6 +1,211 @@
 {
  "updates": [
   {
+   "date": "2026-11-07",
+   "version": "1.60.1",
+   "build": "70840",
+   "classes": {
+    "druid": [
+     [
+      "buff",
+      "Bear Form",
+      "ability_racial_bearform",
+      "Spell",
+      "Shapeshift into Bear Form, increasing Attack Power by 120, Armor contribution from items by 180%, and Health by {+560} (up from 180). Also protects the caster from Polymorph effects and allows the use of various bear abilities.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
+     ],
+     [
+      "nerf",
+      "Ravage",
+      "ability_druid_ravage",
+      "Spell",
+      "Ravage the target, causing 435% damage plus {-98} (down from 343) to the target. Must be prowling and behind the target. Awards 1 combo point.",
+      "",
+      [
+       [
+        4,
+        "Ravage the target, causing 435% damage plus {-98} (down from 343) to the target. Must be prowling and behind the target. Awards 1 combo point.",
+        ""
+       ],
+       [
+        3,
+        "Ravage the target, causing 435% damage plus {-78} (down from 273) to the target. Must be prowling and behind the target. Awards 1 combo point.",
+        ""
+       ],
+       [
+        2,
+        "Ravage the target, causing 435% damage plus {-62} (down from 217) to the target. Must be prowling and behind the target. Awards 1 combo point.",
+        ""
+       ],
+       [
+        1,
+        "Ravage the target, causing 435% damage plus {-42} (down from 147) to the target. Must be prowling and behind the target. Awards 1 combo point.",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Ferocious Bite",
+      "ability_druid_ferociousbite",
+      "Spell",
+      "Damage increased from 22 / 32 / 50 / 70 / 82 to 27 / 40 / 62 / 87 / 102 (by rank).†",
+      ""
+     ]
+    ],
+    "priest": [
+     [
+      "other",
+      "Binding Heal",
+      "spell_holy_blindingheal",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "Heal yourself and a friendly target for 778 to 914. This causes low threat."
+     ]
+    ],
+    "rogue": [
+     [
+      "other",
+      "Shank",
+      "ability_theblackarrow",
+      "Spell · new",
+      "New spell: Instantly strike with your off-hand weapon, dealing 50% weapon damage [Venom: increasing your Poison damage dealt by 30% and your chance to apply Poisons by 20% for 6 sec / ]and generating 25 Energy. [Boot Knife: 100% Chance to award 2 Combo Points] Shank cannot Miss."
+     ],
+     [
+      "other",
+      "Death Mark",
+      "ability_creature_cursed_02",
+      "Spell · new",
+      "New spell: Finishing move that marks the target, storing a portion of the damage dealt by your attacks per Combo Point. Garrote and Rupture damage is stored at twice the rate. After 6 sec, the stored damage is dealt, up to a maximum increased by Attack Power and Critical Strike chance:\n1 point: 12% stored, [(401 (plus 4% of your Attack Power) * ($mcrit / 100 + 1)) * 1] damage cap\n2 points: 24% stored, [(646 (plus 8% of your Attack Power) * ($mcrit / 100 + 1)) * 1] damage cap\n3 points: 36% stored, [(891 (plus 12% of your Attack Power) * ($mcrit / 100 + 1)) * 1] damage cap\n4 points: 48% stored, [(1136 (plus 16% of your Attack Power) * ($mcrit / 100 + 1)) * 1] damage cap\n5 points: 60% stored, [(1381 (plus 20% of your Attack Power) * ($mcrit / 100 + 1)) * 1] damage cap"
+     ],
+     [
+      "other",
+      "Aggression",
+      "ability_racial_avatar",
+      "Combat talent",
+      "No longer affects Backstab.†",
+      ""
+     ],
+     [
+      "other",
+      "Hemorrhage",
+      "spell_shadow_lifedrain",
+      "Subtlety talent",
+      "Now also affects Garrote.†",
+      ""
+     ],
+     [
+      "other",
+      "Venom",
+      "inv_sword_31",
+      "Assassination talent",
+      "Its triggered effect Venom: spell power coefficient reduced from 100% to {-0%}.† Its triggered effect Venom: no longer triggers the global cooldown (was 1 sec).†",
+      ""
+     ]
+    ],
+    "shaman": [
+     [
+      "other",
+      "Chain Lightning",
+      "spell_nature_chainlightning",
+      "Spell",
+      "Cast time increased from 2 sec cast to {-2.5 sec cast}. Spell power coefficient increased from 57.1% to {+71.4%} (ranks 2, 4).†",
+      "",
+      [
+       [
+        4,
+        "Cast time increased from 2 sec cast to {-2.5 sec cast}. Spell power coefficient increased from 57.1% to {+71.4%} (ranks 2, 4).†",
+        ""
+       ],
+       [
+        3,
+        "Cast time increased from 2 sec cast to {-2.5 sec cast}. Spell power coefficient increased from 57.1% to {+71.4%} (ranks 2, 4).†",
+        ""
+       ],
+       [
+        2,
+        "Cast time increased from 2 sec cast to {-2.5 sec cast}. Spell power coefficient increased from 57.1% to {+71.4%} (ranks 2, 4).†",
+        ""
+       ],
+       [
+        1,
+        "Cast time increased from 2 sec cast to {-2.5 sec cast}. Spell power coefficient increased from 57.1% to {+71.4%} (ranks 2, 4).†",
+        ""
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Lava Burst",
+      "spell_shaman_lavaburst",
+      "Spell · removed",
+      "Removed from the spellbook.",
+      "You hurl molten lava at the target, dealing 203 to 258 Fire damage. If your Flame Shock is on the target, Lava Burst deals 54% increased damage."
+     ]
+    ],
+    "warrior": [
+     [
+      "other",
+      "Gore Drinker",
+      "racial_troll_berserk",
+      "Fury talent · reworded",
+      "Your Enrage, Berserker Rage, Bloodrage, Death Wish{*, Reckless Swings*}, and Bloodthirst abilities cause your next 3 melee attacks to restore 1.0% of your maximum Health.",
+      "Your Enrage, Berserker Rage, Bloodrage, Death Wish, and Bloodthirst abilities cause your next 3 melee attacks to restore 1.0% of your maximum Health.",
+      [
+       [
+        2,
+        "Your Enrage, Berserker Rage, Bloodrage, Death Wish{*, Reckless Swings*}, and Bloodthirst abilities cause your next 3 melee attacks to restore 1.0% of your maximum Health.",
+        "Your Enrage, Berserker Rage, Bloodrage, Death Wish, and Bloodthirst abilities cause your next 3 melee attacks to restore 1.0% of your maximum Health."
+       ],
+       [
+        1,
+        "Your Enrage, Berserker Rage, Bloodrage, Death Wish{*, Reckless Swings*}, and Bloodthirst abilities cause your next 3 melee attacks to restore 0.5% of your maximum Health.",
+        "Your Enrage, Berserker Rage, Bloodrage, Death Wish, and Bloodthirst abilities cause your next 3 melee attacks to restore 0.5% of your maximum Health."
+       ]
+      ]
+     ],
+     [
+      "buff",
+      "Defiance",
+      "ability_warrior_innerrage",
+      "Protection talent",
+      "Increases all threat generated in Defensive stance by an additional {+20%} (up from 15%) while a shield is equipped.",
+      "",
+      [
+       [
+        3,
+        "Increases all threat generated in Defensive stance by an additional {+20%} (up from 15%) while a shield is equipped.",
+        ""
+       ],
+       [
+        2,
+        "Increases all threat generated in Defensive stance by an additional {+13%} (up from 10%) while a shield is equipped.",
+        ""
+       ],
+       [
+        1,
+        "Increases all threat generated in Defensive stance by an additional {+7%} (up from 5%) while a shield is equipped.",
+        ""
+       ]
+      ]
+     ]
+    ],
+    "warlock": [
+     [
+      "buff",
+      "Wrack",
+      "ability_deathknight_hemorrhagicfever",
+      "Affliction talent",
+      "Spell power coefficient increased from 14.3% to {+28.6%}.†",
+      ""
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.70755",
+    "1.60.1.70840"
+   ]
+  },
+  {
    "date": "2026-11-03",
    "version": "1.60.1",
    "build": "70756",

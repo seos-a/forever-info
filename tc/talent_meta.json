@@ -563,12 +563,12 @@
   "Riptide": [
    [
     [
-     "245 Mana",
+     "150 Mana",
      "40 yd range"
     ],
     [
      "Instant",
-     "6 sec cooldown"
+     "12 sec cooldown"
     ]
    ]
   ],
@@ -580,7 +580,7 @@
     ],
     [
      "Instant",
-     "8 sec cooldown"
+     "6 sec cooldown"
     ]
    ]
   ]
