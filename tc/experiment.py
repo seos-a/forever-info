@@ -86,7 +86,7 @@ body{position:relative;min-height:100vh}
 
 # The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown bottom left). WoWSims has no release
 # number for it: its version tags stop at v0.0.140 (September), on another line of history.
-SIMS_BUILD, SIMS_DATE = '376a6aa', 'Oct 30 2026'
+SIMS_BUILD, SIMS_DATE = 'e5a9cd2', 'Nov 7 2026'
 # The Healing tab's sim (ForeverHealing-TC): the game build its data is from and the day that data was updated, shown in
 # the same corner while the Healing tab is open.
 HEAL_BUILD, HEAL_DATE = '70707 + Oct 30 hotfix', 'Oct 31 2026'
