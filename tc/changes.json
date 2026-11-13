@@ -1,6 +1,82 @@
 {
  "updates": [
   {
+   "date": "2026-11-13",
+   "version": "1.60.1",
+   "build": "70938",
+   "source": "client",
+   "client": [
+    "1.60.1.70888",
+    "1.60.1.70938"
+   ],
+   "classes": {
+    "warlock": [
+     [
+      "nerf",
+      "Bane of Havoc",
+      "ability_warlock_baneofhavoc",
+      "Destruction talent",
+      "Global cooldown increased from none to {-1.5 sec}.†",
+      ""
+     ],
+     [
+      "nerf",
+      "Wrack",
+      "ability_deathknight_hemorrhagicfever",
+      "Affliction talent",
+      "Spell power coefficient reduced from 28.6% to {-20.02%}.†",
+      ""
+     ]
+    ],
+    "shaman": [
+     [
+      "buff",
+      "Chain Lightning",
+      "spell_nature_chainlightning",
+      "Spell",
+      "Spell power coefficient increased from 28.55% to {+35.7%} (rank 3).†",
+      ""
+     ]
+    ],
+    "druid": [
+     [
+      "other",
+      "Nature's Swiftness",
+      "spell_nature_ravenform",
+      "Restoration talent",
+      "Now also affects Wild Growth.†",
+      ""
+     ],
+     [
+      "buff",
+      "Wild Growth",
+      "ability_druid_flourish",
+      "Restoration talent",
+      "Spell power coefficient increased from 3.3% to {+6.6%}.†",
+      ""
+     ]
+    ],
+    "priest": [
+     [
+      "other",
+      "Spiritual Healing",
+      "spell_nature_moonglow",
+      "Holy talent",
+      "No longer affects Prayer of Spirit.†",
+      ""
+     ],
+     [
+      "other",
+      "Twin Disciplines",
+      "spell_holy_sealofvengeance",
+      "Discipline talent",
+      "No longer affects Prayer of Spirit.†",
+      ""
+     ]
+    ]
+   }
+  },
+  {
    "date": "2026-11-12",
    "version": "1.60.1",
    "build": "70888",
