@@ -746,8 +746,8 @@
   <section class="rr-card" id="notes" data-collapsed>
     <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
-      <div><b>Sim</b><p>WoWSims Forever e5a9cd2 (7 Nov) on build 70862 item data with hotfixes to 7 Nov, the 3 Nov patch's talent changes, and each Skyborne race's own stat offsets. 1, 2, 3 and 5 minute fights against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%).</p></div>
-      <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Elemental, Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Classic stats for items Forever lacks and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (Survival, the Marksmanship weave, Arms, Unsealed Wrath) trades the hit past the cap for what item budgets price the same, picking the stat that sims best: 14 Agility per 1% for Hunters, the same % crit for Arms, 14 Strength per 1% for Unsealed Wrath.</p></div>
+      <div><b>Sim</b><p>WoWSims Forever 0e7994a (13 Nov) on build 70938 item data with hotfixes to 13 Nov (Stormstrike, Windfury Totem, the 9 Nov Mage and 10 Nov Hunter hotfixes, Unsealed Wrath's proc cooldown), the 3 Nov patch's talent changes, and each Skyborne race's own stat offsets. 1, 2, 3 and 5 minute fights against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%).</p></div>
+      <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Elemental, Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Forever's stats for every item (Classic stats for Alcor's Sunrazor, which Forever lacks) and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (Survival, the Marksmanship weave, Arms, Unsealed Wrath) trades the hit past the cap for what item budgets price the same, picking the stat that sims best: 14 Agility per 1% for Hunters, 14 Strength per 1% for Arms and Unsealed Wrath.</p></div>
       <div><b>Racials</b><p>Racial Bonus compares each race with the same build with no racial abilities, passives or stat offsets. Active racials fire on cooldown, so timing them with other cooldowns may be worth a little more. Situational ones (Big Game Hunter, Beast Slaying, Elemental Insight) aren't counted.</p></div>
       <div><b>Targets</b><p>Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view. Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
     </div>
@@ -945,7 +945,7 @@
   <section class="rr-card" id="t-notes" data-collapsed>
     <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
-      <div><b>Sim</b><p>WoWSims Forever e5a9cd2 (7 Nov) on build 70862 item data with hotfixes to 7 Nov, the 3 Nov patch's talent changes and the 6 Nov threat changes. A level 63 boss hitting every 2 sec, with each spec's default incoming healing, so no tank died; 1, 2, 3 and 5 minutes, 10,000 iterations, every race on the same seed.</p></div>
+      <div><b>Sim</b><p>WoWSims Forever 0e7994a (13 Nov) on build 70938 item data with hotfixes to 13 Nov, the 3 Nov patch's talent changes, the 6 Nov threat changes and the 13 Nov rage from spell damage taken. A level 63 boss hitting every 2 sec, with each spec's default incoming healing, so no tank died; 1, 2, 3 and 5 minutes, 10,000 iterations, every race on the same seed.</p></div>
       <div><b>Setups</b><p>Each tank's WoWSims talents, rotation, consumables, buffs and gear presets (Protection Warrior has two: Defense Cap and Threat). Every race wears the same gear.</p></div>
       <div><b>Measures</b><p>DPS and threat: higher is better. Damage taken (after armor, avoidance and mitigation) and spikes (the worst bursts against the tank's health): lower is better.</p></div>
       <div><b>Targets</b><p>Only the first target attacks; extra targets add threat and damage, not damage taken. Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view.</p></div>
@@ -1564,9 +1564,9 @@ const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(-
 // Dwarf rows (every view, 1 to 5 targets) are a Dwarf geared for it, trading the hit past the cap for what Classic
 // item budgets price the same (1% hit = 1% crit = 14 Agility or Strength = 28 attack power), whichever simmed best on
 // that build (race-sims-harness README "Dwarf hit over the cap"); a line under the Racial Bonus chart says so.
-// Enhancement (also 0.9% past) lost DPS that way, since its hit rating is spell hit for its shocks too, so it keeps the
-// plain Dwarf; Unsealed Wrath (1% past, also spell hit) gains, Strength best (Nov 4). The Classic pre-raid Dwarf swaps real items instead (the Setup view's "As a Dwarf").
-const DWARF_TRADE = { 'Survival Hunter|SV': [1, 'agi'], 'Survival Hunter|SV Weave': [1, 'agi'], 'Marksmanship Hunter|MM Weave': [1, 'agi'], 'Arms Warrior|Arms (Pre-BiS)': [0.9, 'crit'], 'Retribution Paladin|Unsealed Wrath': [1, 'str'] };
+// Enhancement (0.9% past on Nov 4) lost DPS that way, since its hit rating is spell hit for its shocks too, so it keeps the
+// plain Dwarf; Unsealed Wrath (1% past, also spell hit) gains, Strength best (Nov 4). Arms sits at the cap since Nov 13 (1% past) and takes Strength too. The Classic pre-raid Dwarf swaps real items instead (the Setup view's "As a Dwarf").
+const DWARF_TRADE = { 'Survival Hunter|SV': [1, 'agi'], 'Survival Hunter|SV Weave': [1, 'agi'], 'Marksmanship Hunter|MM Weave': [1, 'agi'], 'Arms Warrior|Arms (Pre-BiS)': [1, 'str'], 'Retribution Paladin|Unsealed Wrath': [1, 'str'] };
 const TRADE_OTHERS = { agi: 'crit, Strength and attack power', crit: 'Strength, attack power and Agility', str: 'crit, attack power and Agility' };
 const dwarfTrade = (p, spec, build) => (p.gear === 'classic' ? null : DWARF_TRADE[`${spec}|${build}`] || null);
 const tradeGets = ([amt, stat]) => (stat === 'agi' || stat === 'str' ? `${fx(14 * amt, amt === 1 ? 0 : 1)} ${stat === 'agi' ? 'Agility' : 'Strength'}` : `${fx(amt, 1)}% crit`);
