@@ -27,7 +27,7 @@ def murloc(S):
     h.alpha_composite(g)
     return h, cx, (TOP - T) * k
 
-logo = Image.open('banner_title.png').convert('RGBA')
+logo = Image.open('banner_title_nobeta.png')   # the logo without the BETA! sticker.convert('RGBA')
 logo = logo.crop(logo.getbbox())
 img = Image.new('RGBA', (W, H), (0, 0, 0, 255))
 img.alpha_composite(logo, ((W - logo.width) // 2, LOGO_Y))

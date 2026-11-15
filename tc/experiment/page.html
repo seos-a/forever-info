@@ -1878,7 +1878,16 @@ function drawTimeline(p, item, minH) {
   if (!r) return;
   const wrap = el('div', 'tl');
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
-  const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
+  let names = suJson(r.names), tl = suJson(r.timeline), wins = suJson(r.windows);
+  const casts = suJson(r.casts), damage = suJson(r.damage);
+  // One ability order per build, the same at every fight length, race and target count, so rows keep their places from
+  // view to view: casts per minute averaged over all the build's logs (equal ones in the order they first appear).
+  const same = T.data.filter((x) => x.spec === item.key && x.build === item.build), perMin = new Map();
+  for (const x of same) for (const [n, c] of suJson(x.casts)) perMin.set(n, (perMin.get(n) || 0) + c / (+x.fight / 60) / same.length);
+  const rank = new Map([...perMin.keys()].sort((a, b) => perMin.get(b) - perMin.get(a)).map((n, k) => [n, k]));
+  const rk = (n) => (rank.has(n) ? rank.get(n) : 1e9);
+  const ordered = names.slice().sort((a, b) => rk(a) - rk(b)), rowOf = names.map((n) => ordered.indexOf(n));
+  tl = tl.map(([i, ...c]) => [rowOf[i], ...c]); wins = wins.map(([i, ...w]) => [rowOf[i], ...w]); names = ordered;
   const notes = [`${item.build} · ${RACE_NAME[r.race] || r.race} · ${fight / 60} minute fight${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
   else notes.push(`Casts per minute averaged over ${r.runs} runs of the sim. Timeline is an average run.`);
@@ -1931,7 +1940,7 @@ function drawTimeline(p, item, minH) {
   const tbody = el('tbody');
   const fillRows = () => {
     const by = COLS[tlSort.i][2];
-    const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir; });
+    const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir || rk(a[0]) - rk(b[0]); });
     tbody.replaceChildren(...list.map(([name, n, up]) => {
       const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
       ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src;
@@ -3401,7 +3410,16 @@ function drawTimeline(p, item, minH) {
   if (!r) return;
   const wrap = el('div', 'tl');
   wrap.style.minHeight = Math.max(0, minH - 8) + 'px';
-  const names = suJson(r.names), casts = suJson(r.casts), tl = suJson(r.timeline), wins = suJson(r.windows), damage = suJson(r.damage);
+  let names = suJson(r.names), tl = suJson(r.timeline), wins = suJson(r.windows);
+  const casts = suJson(r.casts), damage = suJson(r.damage);
+  // One ability order per build, the same at every fight length, race and target count, so rows keep their places from
+  // view to view: casts per minute averaged over all the build's logs (equal ones in the order they first appear).
+  const same = T.data.filter((x) => x.spec === item.key && x.build === item.build), perMin = new Map();
+  for (const x of same) for (const [n, c] of suJson(x.casts)) perMin.set(n, (perMin.get(n) || 0) + c / (+x.fight / 60) / same.length);
+  const rank = new Map([...perMin.keys()].sort((a, b) => perMin.get(b) - perMin.get(a)).map((n, k) => [n, k]));
+  const rk = (n) => (rank.has(n) ? rank.get(n) : 1e9);
+  const ordered = names.slice().sort((a, b) => rk(a) - rk(b)), rowOf = names.map((n) => ordered.indexOf(n));
+  tl = tl.map(([i, ...c]) => [rowOf[i], ...c]); wins = wins.map(([i, ...w]) => [rowOf[i], ...w]); names = ordered;
   const notes = [`${item.build} · ${RACE_NAME[r.race] || r.race} · ${fight / 60} minute fight${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
   else notes.push(`Casts per minute averaged over ${r.runs} runs of the sim. Timeline is an average run.`);
@@ -3454,7 +3472,7 @@ function drawTimeline(p, item, minH) {
   const tbody = el('tbody');
   const fillRows = () => {
     const by = COLS[tlSort.i][2];
-    const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir; });
+    const list = casts.slice().sort((a, b) => { const u = by(a), v = by(b); return (typeof u === 'string' ? u.localeCompare(v) : u - v) * tlSort.dir || rk(a[0]) - rk(b[0]); });
     tbody.replaceChildren(...list.map(([name, n, up]) => {
       const tr = el('tr'), nm = el('td'), d = el('div', 'tl-name'), ic = el('img'), amt = el('td'), a = el('div', 'tl-amt'), bar = el('i');
       ic.alt = ''; const src = tlIcon(name); if (src) ic.src = src;
