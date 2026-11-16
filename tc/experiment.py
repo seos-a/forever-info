@@ -9,6 +9,7 @@ datasets into experiment/ again and rebuild. Called by build.py, which adds the 
 import base64, json, os, re
 
 # the dashboard's params document (dash/params): every filter's starting value
+# (the DPS tab's gainSpec / lineSpec / detailSpec are replaced at build time by the top DPS spec: top_spec_params)
 PARAMS = {"bestFight": "all", "gear": "sims", "specTab": "abilities", "build": "all", "detailFight": "all", "detailMark": "all", "detailRace": "all", "detailSpec": "Beast Mastery Hunter",
           "faction": "All", "gainFight": "all", "gainTargets": "1", "gainSpec": "Beast Mastery Hunter", "hBestFight": "all", "hDetailCls": "priest", "hDetailFight": "all",
           "hDetailMark": "all", "hDetailRace": "all", "hFaction": "All", "hGainCls": "priest", "hGainFight": "all", "hLineCls": "priest",
@@ -16,6 +17,22 @@ PARAMS = {"bestFight": "all", "gear": "sims", "specTab": "abilities", "build": "
           "rankFight": "all", "tBestFight": "all", "tBuild": "all", "tDetailFight": "all", "tDetailMark": "all", "tDetailRace": "all",
           "tDetailSpec": "Protection Warrior", "tFaction": "All", "tGainFight": "all", "tGainTargets": "1", "tGainSpec": "Protection Warrior", "tLineSpec": "Protection Warrior",
           "tMatrixFight": "all", "tMeasure": "dps", "tMetric": "pct", "tRankFight": "all", "tab": "dps"}
+
+def top_spec(rows):
+    """The spec at the top of the DPS tab's ranking as the page first opens (sims gear, both factions, 1 target, all
+    fight lengths): each spec's best race on its best build, averaged over the four fight lengths (page.html's specItems)."""
+    runs = {}
+    for r in rows:
+        runs.setdefault((r['spec'], r['build'], r['race']), []).append(r['dps'])
+    return max(runs.items(), key=lambda kv: sum(kv[1]) / len(kv[1]))[0][0]
+
+
+def top_spec_params(data):
+    """The DPS tab's Racial Bonus, Race Standings over Time and Sim Results by Build start on the top DPS spec, worked
+    out from the data at each build, so the default follows the rankings when the sims are rerun."""
+    s = top_spec(data['sims'])
+    return {'gainSpec': s, 'lineSpec': s, 'detailSpec': s}
+
 
 RUNTIME = """
 (function(){
@@ -66,7 +83,7 @@ CSS = """
   --cds-shadow-popover:0 8px 24px #00000052,0 2px 6px #0003;--cds-surface-popover:#1f1e1c;--cds-text-secondary:#c3c2b7}
 html{background:var(--color-bg)}
 body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
-#dash-root{max-width:1400px;margin:0 auto;padding:16px 16px 52px;box-sizing:border-box}
+#dash-root{max-width:1600px;margin:0 auto;padding:16px 16px 52px;box-sizing:border-box}
 @media (max-width:600px){#dash-root{padding:10px 10px 52px}}
 /* back to the main site: the red WoW menu button its "Sims" link uses (template2.html's .xp-link), as the login screen's
    "Quit", in the page's bottom right corner */
@@ -136,7 +153,7 @@ def build(head_extra=''):
 <!-- Wowhead's tooltips on the Character setup's item, enchant and buff links (left as the page draws them) -->
 <script>const whTooltips = {{colorLinks: false, iconizeLinks: false, renameLinks: false}};</script>
 <script src="https://wow.zamimg.com/js/tooltips.js" async></script>
-<script>window.__PARAMS = {json.dumps(PARAMS)}; window.__DATA = {blob};</script>
+<script>window.__PARAMS = {json.dumps(dict(PARAMS, **top_spec_params(data)))}; window.__DATA = {blob};</script>
 <script>{RUNTIME}</script>
 {head_extra}</head>
 <body>

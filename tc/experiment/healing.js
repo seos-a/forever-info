@@ -261,8 +261,10 @@ const seg = (sel, name) => {
 seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); seg('.lx-sitmetric', 'sitMetric');
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
+// the buttons name the unit once, on the first length ("1 min", then 2, 3, 5), like the target switches; lists keep "2 min"
+const FIGHT_BTN = (v, label, i) => (i > 1 ? String(v / 60) : label);
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
-  g.replaceChildren(...FIGHTS.map(([v, label]) => { const b = el('button', null, label); b.type = 'button'; b.dataset.v = v; return b; }));
+  g.replaceChildren(...FIGHTS.map(([v, label], i) => { const b = el('button', null, FIGHT_BTN(v, label, i)); b.type = 'button'; b.dataset.v = v; return b; }));
   g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [g.dataset.p]: b.dataset.v }); });
 });
 const dfight = $('.lx-dfight');

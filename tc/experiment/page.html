@@ -26,13 +26,13 @@
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  /* The switches stay on the title's line however long the title (a spec's name): they keep one row while it leaves the
-     title 14rem, and the title wraps onto a second line beside them if it must; only switches wider than that (the Tank
-     tab's three groups) stack, right-aligned. Phones keep the switches under the title. */
+  /* The title (a spec's name and the card's name) keeps to one line: the switches sit on its line when both fit, and
+     otherwise move to a row of their own under it, right-aligned. The title wraps only if the card itself is narrower
+     than it. Phones keep the switches under the title. */
   @media (min-width: 761px) {
-    .rr-cardhead { flex-wrap: nowrap; align-items: flex-start; }
-    .rr-cardhead > .rr-title { flex: 1 1 auto; min-width: 0; }
-    .rr-cardhead > .rr-tools { flex: 0 0 auto; max-width: calc(100% - 14rem - var(--cds-gap-sm)); justify-content: flex-end; }
+    .rr-cardhead { align-items: flex-start; }
+    .rr-cardhead > .rr-title { flex: 1 0 auto; max-width: 100%; }
+    .rr-cardhead > .rr-tools { flex: 0 1 auto; margin-left: auto; justify-content: flex-end; }
   }
   /* a card's title is a little larger, its line as tall as the switches beside it (their text line, padding and border), centred on them;
      the card's top padding a little less, as the taller title line already adds room above the text */
@@ -273,13 +273,13 @@
   .hr button:focus-visible, .hr select:focus-visible, .hr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .hr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .hr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  /* The switches stay on the title's line however long the title (a spec's name): they keep one row while it leaves the
-     title 14rem, and the title wraps onto a second line beside them if it must; only switches wider than that (the Tank
-     tab's three groups) stack, right-aligned. Phones keep the switches under the title. */
+  /* The title (a spec's name and the card's name) keeps to one line: the switches sit on its line when both fit, and
+     otherwise move to a row of their own under it, right-aligned. The title wraps only if the card itself is narrower
+     than it. Phones keep the switches under the title. */
   @media (min-width: 761px) {
-    .hr-cardhead { flex-wrap: nowrap; align-items: flex-start; }
-    .hr-cardhead > .hr-title { flex: 1 1 auto; min-width: 0; }
-    .hr-cardhead > .hr-tools { flex: 0 0 auto; max-width: calc(100% - 14rem - var(--cds-gap-sm)); justify-content: flex-end; }
+    .hr-cardhead { align-items: flex-start; }
+    .hr-cardhead > .hr-title { flex: 1 0 auto; max-width: 100%; }
+    .hr-cardhead > .hr-tools { flex: 0 1 auto; margin-left: auto; justify-content: flex-end; }
   }
   /* a card's title is a little larger, its line as tall as the switches beside it (their text line, padding and border), centred on them;
      the card's top padding a little less, as the taller title line already adds room above the text */
@@ -423,13 +423,13 @@
   .rr button:focus-visible, .rr select:focus-visible, .rr input:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .rr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .rr-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  /* The switches stay on the title's line however long the title (a spec's name): they keep one row while it leaves the
-     title 14rem, and the title wraps onto a second line beside them if it must; only switches wider than that (the Tank
-     tab's three groups) stack, right-aligned. Phones keep the switches under the title. */
+  /* The title (a spec's name and the card's name) keeps to one line: the switches sit on its line when both fit, and
+     otherwise move to a row of their own under it, right-aligned. The title wraps only if the card itself is narrower
+     than it. Phones keep the switches under the title. */
   @media (min-width: 761px) {
-    .rr-cardhead { flex-wrap: nowrap; align-items: flex-start; }
-    .rr-cardhead > .rr-title { flex: 1 1 auto; min-width: 0; }
-    .rr-cardhead > .rr-tools { flex: 0 0 auto; max-width: calc(100% - 14rem - var(--cds-gap-sm)); justify-content: flex-end; }
+    .rr-cardhead { align-items: flex-start; }
+    .rr-cardhead > .rr-title { flex: 1 0 auto; max-width: 100%; }
+    .rr-cardhead > .rr-tools { flex: 0 1 auto; margin-left: auto; justify-content: flex-end; }
   }
   /* a card's title is a little larger, its line as tall as the switches beside it (their text line, padding and border), centred on them;
      the card's top padding a little less, as the taller title line already adds room above the text */
@@ -907,7 +907,7 @@
   <div class="rr-grid2" id="t-spec">
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-gainhead">Racial Bonus</h2>
-        <div class="rr-tools"><div class="rr-seg lx-measure" data-p="gainMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-gtargets" data-p="gainTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div></div>
+        <div class="rr-tools"><div class="rr-seg lx-gtargets" data-p="gainTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div><div class="rr-seg lx-fight" data-p="gainFight" role="group" aria-label="Fight length"></div><div class="rr-seg lx-measure" data-p="gainMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div></div>
       </div>
       <p class="rr-note">How much each race improves the chosen measure over the same builds with no race at all, stat differences included. For damage taken and spikes, a drop counts as a gain.</p>
       <div class="rr-chart lx-gains" data-source="tankBySpec"></div>
@@ -915,7 +915,7 @@
     </section>
     <section class="rr-card">
       <div class="rr-cardhead"><h2 class="lx-lenhead">Race Standings over Time</h2>
-        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-measure" data-p="lineMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div><div class="rr-seg lx-ltargets" data-p="lineTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div></div>
+        <div class="rr-tools"><button type="button" class="rr-reset lx-zoomreset" hidden>Reset zoom</button><div class="rr-seg lx-ltargets" data-p="lineTargets" role="group" aria-label="Targets"><button type="button" data-v="1">1 target</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button></div><div class="rr-seg lx-measure" data-p="lineMeasure" role="group" aria-label="Measure"><button type="button" data-v="dps">DPS</button><button type="button" data-v="tps">Threat</button><button type="button" data-v="dtps">Damage taken</button><button type="button" data-v="tmi">Spikes</button></div></div>
       </div>
       <p class="rr-note">How close each race comes to the top race (100%) at each fight length, averaged across this spec's builds.</p>
       <div class="rr-legend lx-legend"></div>
@@ -1218,8 +1218,10 @@ const seg = (sel, name) => {
 seg('.lx-faction', 'faction'); seg('.lx-gear', 'gear'); seg('.lx-metric', 'metric'); if ($('.lx-targets')) seg('.lx-targets', 'specTargets'); seg('.lx-gtargets', 'gainTargets'); seg('.lx-ltargets', 'lineTargets'); seg('.lx-mtargets', 'matrixTargets');
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
+// the buttons name the unit once, on the first length ("1 min", then 2, 3, 5), like the target switches; lists keep "2 min"
+const FIGHT_BTN = (v, label, i) => (i > 1 ? String(v / 60) : label);
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
-  g.replaceChildren(...FIGHTS.map(([v, label]) => { const b = el('button', null, label); b.type = 'button'; b.dataset.v = v; return b; }));
+  g.replaceChildren(...FIGHTS.map(([v, label], i) => { const b = el('button', null, FIGHT_BTN(v, label, i)); b.type = 'button'; b.dataset.v = v; return b; }));
   g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) dash.setParams({ [g.dataset.p]: b.dataset.v }); });
 });
 const dfight = $('.lx-dfight');
@@ -2747,8 +2749,10 @@ seg('.lx-faction', 'faction'); seg('.lx-metric', 'metric'); if ($('.lx-targets')
 ROOT.querySelectorAll('.lx-measure').forEach((g) => g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [g.dataset.p]: b.dataset.v }); }));
 // Each box has its own fight length buttons; data-p names the filter it sets.
 const FIGHTS = [['all', 'All'], ...Object.keys(FIGHT).filter((k) => k !== 'all').map((k) => [k, k / 60 + ' min'])];
+// the buttons name the unit once, on the first length ("1 min", then 2, 3, 5), like the target switches; lists keep "2 min"
+const FIGHT_BTN = (v, label, i) => (i > 1 ? String(v / 60) : label);
 ROOT.querySelectorAll('.lx-fight').forEach((g) => {
-  g.replaceChildren(...FIGHTS.map(([v, label]) => { const b = el('button', null, label); b.type = 'button'; b.dataset.v = v; return b; }));
+  g.replaceChildren(...FIGHTS.map(([v, label], i) => { const b = el('button', null, FIGHT_BTN(v, label, i)); b.type = 'button'; b.dataset.v = v; return b; }));
   g.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) setP({ [g.dataset.p]: b.dataset.v }); });
 });
 const dfight = $('.lx-dfight');
