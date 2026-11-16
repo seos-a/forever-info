@@ -212,7 +212,21 @@ for k,t,d in PAGES:
     open(f'../web/{k}.html','w',encoding='utf-8',newline='\n').write(pg)
 # ---- the Simulations page (foreverinfo.io/sims): the race sims dashboard, standalone (experiment.py) ----
 import experiment
-open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">',1))
+# its own link-preview tags (Discord shows nothing without them), the main pages' picture
+SIMS_OG=f"""
+<meta name="description" content="WoW Forever race and spec simulations: DPS, healing and tanking for every race, with each racial's bonus.">
+<meta property="og:site_name" content="Forever Info">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{SITE}sims">
+<meta property="og:title" content="Simulations – Forever Info">
+<meta property="og:description" content="WoW Forever race and spec simulations: DPS, healing and tanking for every race, with each racial's bonus.">
+<meta property="og:image" content="{SITE}images/og.png?v=4">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Forever Info logo, with the site's murloc in sunglasses peeking up from below">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1a0d04">"""
+assert 'images/og.png?v=4' in HEAD   # keep the picture's ?v= in step with the main pages'
+open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">'+SIMS_OG,1))
 # its old address, /experiment, sends visitors on to /sims (keeping ?... and #healing)
 open('../web/experiment.html','w',encoding='utf-8',newline='\n').write('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex">'
     '<title>Simulations – Forever Info</title><link rel="canonical" href="https://foreverinfo.io/sims">'

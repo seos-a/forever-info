@@ -146,7 +146,7 @@ def build(head_extra=''):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulations – Forever Info</title>
-<meta name="robots" content="noindex">
+<link rel="canonical" href="https://foreverinfo.io/sims">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <style>{CSS}{bg}</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
