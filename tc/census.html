@@ -22,6 +22,9 @@
   .cz-fac button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
   .cz-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
   @media (max-width: 600px) { .cz-fac button { width: 28px; height: 28px; } }
+  /* the region buttons: the same frame around each region's flag (images/flags, drawn by art/flags.py), 3:2 inside it */
+  .cz-flags button { width: 46px; }
+  @media (max-width: 600px) { .cz-flags button { width: 40px; } }
 
   .cz-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
   .cz-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg);
@@ -122,11 +125,16 @@
 
 <div class="cz">
   <div class="cz-top">
-    <div class="cz-fac" role="group" aria-label="Faction">
+    <div class="cz-fac" id="czFaction" role="group" aria-label="Faction">
       <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
       <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
     </div>
-    <div class="cz-seg" id="czRegion" role="group" aria-label="Region"></div>
+    <div class="cz-fac cz-flags" id="czRegion" role="group" aria-label="Region">
+      <button type="button" data-v="us" aria-pressed="false" title="Americas only" aria-label="Americas only"><img src="images/flags/us.svg" alt=""></button>
+      <button type="button" data-v="eu" aria-pressed="false" title="Europe only" aria-label="Europe only"><img src="images/flags/eu.svg" alt=""></button>
+      <button type="button" data-v="kr" aria-pressed="false" title="Korea only" aria-label="Korea only"><img src="images/flags/kr.svg" alt=""></button>
+      <button type="button" data-v="tw" aria-pressed="false" title="Taiwan only" aria-label="Taiwan only"><img src="images/flags/tw.svg" alt=""></button>
+    </div>
     <div class="cz-seg" id="czRules" role="group" aria-label="Ruleset"></div>
   </div>
 
@@ -152,7 +160,7 @@
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="true" aria-label="Collapse Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
       <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
-      <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. Region and ruleset pick which realms are counted.</p>
+      <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. The flags count one region's realms only (Americas, Europe, Korea, Taiwan), and the ruleset switch one kind of realm; pick a crest or flag again to go back to all.</p>
       <p><b>Snapshot</b><span id="czDate"></span> Blank cells in the table are race and class combinations WoW Forever doesn't allow.</p>
     </div>
   </section>
@@ -269,10 +277,10 @@ function draw() {
   if (S.race >= 0 && !raceOn(S.race)) { S.race = -1; const k = open.indexOf('race'); if (k >= 0) open.splice(k, 1); }
   if (S.colRace >= 0 && !raceOn(S.colRace)) S.colRace = -1;
   history.replaceState(history.state, '', link());
-  segs($('czRegion'), REGIONS, S.region, (v) => { S.region = v; draw(); });
+  document.querySelectorAll('#czRegion button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.region));
   segs($('czRules'), RULES, S.rules, (v) => { S.rules = v; draw(); }, (v) => !has(S.region, v));
   segs($('czMetric'), METRICS, S.metric, (v) => { S.metric = v; draw(); });
-  document.querySelectorAll('.cz-fac button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.faction));
+  document.querySelectorAll('#czFaction button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.faction));
 
   const g = grid();
   const raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0));
@@ -401,7 +409,9 @@ $('czNotesCard').querySelector('.cz-fold').onclick = (e) => {
   e.currentTarget.setAttribute('aria-label', (open ? 'Collapse' : 'Expand') + ' Methods and Caveats');
 };
 document.addEventListener('click', (e) => {
-  const f = e.target.closest('.cz-fac button'); if (f) { S.faction = S.faction === f.dataset.v ? '' : f.dataset.v; draw(); }
+  // the crests and the flags: pick one to show only it, pick it again for all
+  const f = e.target.closest('#czFaction button'); if (f) { S.faction = S.faction === f.dataset.v ? '' : f.dataset.v; draw(); return; }
+  const r = e.target.closest('#czRegion button'); if (r) { S.region = S.region === r.dataset.v ? 'all' : r.dataset.v; draw(); }
 });
 const [y, m, d] = C.date.split('-').map(Number);
 $('czDate').textContent = `Census taken ${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} ${d}, ${y}.`;
