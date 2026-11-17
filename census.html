@@ -107,14 +107,14 @@ document.head.appendChild(t);})();
   @media (max-width: 600px) { .cz-card { padding: 10px; } }
 
   /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
-  .cz-crumbs { font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); line-height: 1.9rem; }
+  .cz-crumbs { display: flex; align-items: center; font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); line-height: 1.9rem; }   /* every part on one centre line */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
-  .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; vertical-align: -.06em; }
-  .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; vertical-align: -.14em; margin-right: .4em; }   /* as tall as the text */
+  .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; position: relative; top: -.06em; }
+  .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; margin-right: .4em; flex: none; }   /* as tall as the text */
   /* the picked class or race: a button opening a menu of the others (the Sims page's .rr-pick and .rr-menu) */
-  .cz-pickwrap { position: relative; display: inline-block; }
-  .cz-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
+  .cz-pickwrap { position: relative; display: flex; }
+  .cz-pick { font: inherit; line-height: 1.6rem; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .cz-pick:hover, .cz-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
   .cz-menu { position: absolute; left: -.3em; top: calc(100% + 4px); z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px;
     background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); font-size: var(--cds-font-size-body); font-weight: 400; line-height: 1.45; }
@@ -376,7 +376,7 @@ const crumbs = (head, box, root, items, cur) => {
     e.stopPropagation();
     const was = wrap.querySelector('.cz-menu'); closeMenus(); if (was) return;
     const menu = document.createElement('div'); menu.className = 'cz-menu'; menu.setAttribute('role', 'menu');
-    menu.innerHTML = items.map((d) => `<button type="button" role="menuitemradio" aria-checked="${d.idx === cur}" data-i="${d.idx}">${d.img}<span style="color:${d.color}">${d.name}</span></button>`).join('');
+    menu.innerHTML = items.slice().sort((a, b) => a.name.localeCompare(b.name)).map((d) => `<button type="button" role="menuitemradio" aria-checked="${d.idx === cur}" data-i="${d.idx}">${d.img}<span style="color:${d.color}">${d.name}</span></button>`).join('');
     menu.onclick = (ev) => { const b = ev.target.closest('button'); if (!b) return; closeMenus(); S[box] = +b.dataset.i; draw(); };
     wrap.append(menu); pick.setAttribute('aria-expanded', 'true');
     (menu.querySelector('[aria-checked="true"]') || menu.firstChild).focus();
