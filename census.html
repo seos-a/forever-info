@@ -69,12 +69,12 @@ document.head.appendChild(t);})();
 <!-- The Population Census page (foreverinfo.io/census): who plays which race and class, from Life on Azeroth's census.
      census.py wraps this in the Sims page's frame (experiment.CSS: colours, fonts, background, the Quit button and the
      corner stamp) and fills window.__CENSUS from census.json. Laid out like the Sims page's DPS tab: a ranking box of the
-     classes, where clicking a class opens its race breakdown in the same box (a breadcrumb title leads back, as does the
-     browser's Back), then a ranking box of all races, then the race x class table. The bars, cards, switches and
-     tooltips copy the Sims page's look (experiment/page.html's .rr-card, .rr-seg, .rr-tip and its ranking chart). -->
+     classes (clicking a class shows its races in the same box), a ranking box of the races (clicking a race shows its
+     classes), each with a breadcrumb back and the browser's Back closing it, then the race x class table, drawn and
+     sorted like the Sims page's "DPS by Race and Spec". The boxes copy experiment/page.html's look (.rr-card, .rr-seg,
+     .rr-tip, its ranking chart and its .lx-matrix table). -->
 <style>
-  .cz { --al: #3f7fd9; --ho: #d2423b; --gold: #e2b23c; display: flex; flex-direction: column; gap: var(--cds-gap-lg); color: var(--color-fg); }
-  .cz h2 { font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); margin: 0; line-height: 1.9rem; }
+  .cz { --al: #3f7fd9; --ho: #d2423b; --gold: #e2b23c; --accent: #5b9bd5; display: flex; flex-direction: column; gap: var(--cds-gap-lg); color: var(--color-fg); }
   .cz p { margin: 0; }
   .cz a { color: #ffd100; text-underline-offset: 2px; }
   .cz-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
@@ -99,19 +99,22 @@ document.head.appendChild(t);})();
   .cz-seg button:disabled { color: var(--color-fg-muted); opacity: .45; cursor: default; }
   .cz button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -3px; }
 
-  .cz-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: calc(var(--cds-pad-lg) - 4px) var(--cds-pad-lg) var(--cds-pad-lg);
+  .cz-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg);
     display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .cz-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
+  .cz-cardhead:empty { display: none; }
   @media (max-width: 600px) { .cz-card { padding: 10px; } }
 
-  /* the breadcrumb title of a class's race breakdown: "Classes › Paladin", the first part going back to all classes */
+  /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
+  .cz-crumbs { font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); line-height: 1.9rem; }
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; vertical-align: -.06em; }
+  .cz-crumbs img { width: 22px; height: 22px; border-radius: 4px; vertical-align: -5px; margin-right: 7px; }
 
-  /* the ranking charts: the name column (icon and name in the class's colour), then the bar column with its gridlines and
-     axis; each bar is followed by its share in bold, the character count, and the most played race or class. The longest
-     bar leaves --lab of room for that label. */
+  /* the ranking charts: the name column (icon and name), then the bar column with its gridlines and axis; each bar is
+     followed by its share in bold, the character count, and the most played race or class. The longest bar leaves
+     --lab of room for that label. */
   .cz-rank { --name: 11rem; --lab: 17rem; position: relative; display: flex; flex-direction: column; gap: 4px; font-size: var(--cds-font-size-caption); }
   .cz-grid { position: absolute; top: 0; bottom: 0; left: var(--name); right: 0; pointer-events: none; }
   .cz-grid i { position: absolute; top: 0; bottom: 20px; width: 1px; background: var(--cds-chart-grid); }
@@ -134,32 +137,35 @@ document.head.appendChild(t);})();
   .cz-axis { height: 16px; }
   .cz-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 6px 0; }
   @media (max-width: 760px) { .cz-rank { --name: 8.5rem; --lab: 8.5rem; } .cz-row .c, .cz-row .top span { display: none; } }
-  @media (max-width: 420px) { .cz-rank { --name: 7rem; } .cz-row .top { display: none; } .cz-rank { --lab: 3.5rem; } }
+  @media (max-width: 420px) { .cz-rank { --name: 7rem; --lab: 3.5rem; } .cz-row .top { display: none; } }
 
   /* race portraits: a faction-coloured rim; the Alliance Skyborne mirrored to face right, as on the Racials page */
   .cz img.race { box-shadow: 0 0 0 1.5px var(--al); }
   .cz img.race.Horde { box-shadow: 0 0 0 1.5px var(--ho); }
   .cz img.mirror { transform: scaleX(-1); }
 
-  /* the race x class table */
+  /* the race x class table: the Sims page's .lx-matrix. Its text and cells grow to fill the box (--mz, up to 1.2 times,
+     as matrix_fit.js) */
   .cz-scroll { overflow: auto; max-width: 100%; }
-  .cz table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
-  .cz th { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
-  .cz th button, .cz th > span { font: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 100%; padding: 4px 4px 6px; border: 0; background: none; color: var(--color-fg-muted); }
-  .cz th button { cursor: pointer; }
-  .cz th button:hover { color: var(--color-fg); }
-  .cz th button[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--gold); }
-  .cz th img { width: 22px; height: 22px; border-radius: 4px; }
-  .cz td { text-align: center; padding: 5px 6px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
-  .cz td.r { width: 1%; text-align: left; position: sticky; left: 0; z-index: 1; background: var(--color-panel); padding: 4px 10px 4px 2px; }
-  .cz td.r > span { display: flex; align-items: center; gap: .5rem; }
-  .cz td.r img { width: 1.5em; height: 1.5em; margin-left: 2px; border-radius: 4px; }
-  .cz td.v { cursor: pointer; }
-  .cz td.x { color: var(--color-fg-muted); opacity: .5; }
-  .cz td.tot, .cz tr.tot td { color: var(--color-fg-muted); font-weight: 600; }
-  .cz tr.tot td { border-top: 1px solid var(--color-fg-muted); border-bottom: 0; }
-  .cz tbody tr:hover td.v { box-shadow: inset 0 0 0 9999px #ffffff08; }
-  @media (max-width: 760px) { .cz th .cn, .cz td.r .rn { display: none; } .cz td.r { padding-right: 4px; } }
+  .cz table { border-collapse: collapse; width: 100%; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); font-variant-numeric: tabular-nums; }
+  .cz th { position: sticky; top: 0; background: var(--color-panel); text-align: center; font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; z-index: 1; }
+  .cz th.t { text-align: left; }
+  .cz th button { font: inherit; color: var(--color-fg-muted); background: none; border: 0; padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); cursor: pointer; width: 100%; text-align: inherit; white-space: nowrap; }
+  .cz th button:hover, .cz th[aria-sort] button { filter: brightness(1.25); }
+  .cz th.t button:hover, .cz th.t[aria-sort] button { color: var(--color-fg); filter: none; }
+  .cz th[aria-sort="ascending"] button::after { content: " ▲"; font-size: .7em; }
+  .cz th[aria-sort="descending"] button::after { content: " ▼"; font-size: .7em; }
+  .cz td { text-align: center; padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .cz tbody tr:hover td { box-shadow: inset 0 0 0 9999px color-mix(in srgb, var(--color-fg) 5%, transparent); }
+  .cz td.top { font-weight: 600; }
+  .cz td.best { box-shadow: inset 3px 0 0 var(--gold); }
+  .cz tbody tr:hover td.best { box-shadow: inset 3px 0 0 var(--gold), inset 0 0 0 9999px color-mix(in srgb, var(--color-fg) 5%, transparent); }
+  .cz td.tot { color: var(--color-fg-muted); }
+  .cz td.r { text-align: left; position: sticky; left: 0; z-index: 1; background: var(--color-panel); cursor: pointer; width: 1%; }
+  .cz td.r:hover { text-decoration: underline; }
+  .cz td.r.picked { font-weight: 700; box-shadow: inset 2px 0 0 var(--color-fg); }
+  .cz td.r.picked::after { content: ' ▸'; color: var(--color-fg-muted); }
+  .cz td.r img { width: 1.5em; height: 1.5em; vertical-align: middle; margin: -.2em .5em -.2em 1px; border-radius: 4px; }
 
   /* tooltips: the Sims page's near-black card */
   .cz-tip { position: fixed; z-index: 50; pointer-events: none; background: #0c0c0bf5; border: 1px solid #ffffff26; border-radius: 6px; box-shadow: 0 10px 28px #000d, 0 0 0 1px #000;
@@ -170,6 +176,14 @@ document.head.appendChild(t);})();
   .cz-tip .row > span { color: #a7a49b; }
   .cz-tip .row b { margin-left: auto; padding-left: 1rem; font-weight: 600; color: #f4f2ea; }
 
+  /* the Methods and Caveats box: the Sims page's notes card, its arrow folding it down to its title */
+  .cz h2 { font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); margin: 0; line-height: 1.9rem; }
+  .cz-title { display: flex; align-items: center; gap: var(--cds-gap-xs); }
+  .cz-fold { flex: none; width: 1.5rem; height: 1.5rem; display: inline-grid; place-items: center; padding: 0; border: 0; border-radius: var(--cds-radius); background: none; color: var(--color-fg-muted); cursor: pointer; }
+  .cz-fold:hover { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 8%, transparent); }
+  .cz-fold::before { content: ""; width: .45rem; height: .45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
+  .cz-card.collapsed .cz-fold::before { transform: rotate(-45deg); }
+  .cz-card.collapsed > :not(.cz-cardhead) { display: none; }
   .cz-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
   .cz-notes b { display: block; color: var(--color-fg); font-weight: 600; }
 </style>
@@ -184,31 +198,32 @@ document.head.appendChild(t);})();
     <div class="cz-seg" id="czRules" role="group" aria-label="Ruleset"></div>
   </div>
 
-  <section class="cz-card">
-    <div class="cz-cardhead"><h2 id="czMainTitle">Classes</h2></div>
-    <p class="cz-note" id="czMainNote"></p>
-    <div class="cz-rank" id="czMain"></div>
+  <section class="cz-card" aria-label="Classes">
+    <div class="cz-cardhead" id="czClassHead"></div>
+    <p class="cz-note" id="czClassNote"></p>
+    <div class="cz-rank" id="czClass"></div>
   </section>
 
-  <section class="cz-card">
-    <div class="cz-cardhead"><h2>Races</h2></div>
-    <p class="cz-note" id="czRacesNote"></p>
-    <div class="cz-rank" id="czRaces"></div>
+  <section class="cz-card" aria-label="Races">
+    <div class="cz-cardhead" id="czRaceHead"></div>
+    <p class="cz-note" id="czRaceNote"></p>
+    <div class="cz-rank" id="czRace"></div>
   </section>
 
-  <section class="cz-card">
-    <div class="cz-cardhead"><h2>Race and Class</h2>
-      <div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div>
-    </div>
+  <section class="cz-card" aria-label="Race and class">
+    <div class="cz-cardhead" style="justify-content:flex-end"><div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div></div>
     <div class="cz-scroll"><table id="czTable"><thead></thead><tbody></tbody></table></div>
     <p class="cz-note" id="czMetricNote"></p>
   </section>
 
-  <div class="cz-notes">
-    <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
-    <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. Region and ruleset pick which realms are counted.</p>
-    <p><b>Snapshot</b><span id="czDate"></span> Some combinations can't be made in WoW Forever; the table shows them as a dash.</p>
-  </div>
+  <section class="cz-card" id="czNotesCard">
+    <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="true" aria-label="Collapse Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
+    <div class="cz-notes">
+      <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
+      <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. Region and ruleset pick which realms are counted.</p>
+      <p><b>Snapshot</b><span id="czDate"></span> Blank cells in the table are race and class combinations WoW Forever doesn't allow.</p>
+    </div>
+  </section>
 </div>
 <div class="cz-tip" id="czTip" hidden></div>
 
@@ -221,7 +236,7 @@ const RACE_ICON = ['race_human_male', 'race_dwarf_male', 'race_nightelf_female',
   'race_orc_male', 'race_scourge_male', 'race_tauren_male', 'race_troll_male', 'race_bloodelf_female_skyborne'];
 // the race's plural, for "Of Night Elves"
 const RACE_PL = ['Humans', 'Dwarves', 'Night Elves', 'Gnomes', 'High Order Skyborne', 'Orcs', 'Undead', 'Tauren', 'Trolls', 'Windshaper Skyborne'];
-// WoW class colours (as the Sims page); the bars soften them toward the text colour, as its specColor
+// WoW class colours (as the Sims page); bars and headers soften them toward the text colour, as its specColor
 const CLASS_COLOR = { Druid: '#FF7C0A', Hunter: '#AAD372', Mage: '#3FC7EB', Paladin: '#F48CBA', Priest: '#FFFFFF', Rogue: '#FFF468', Shaman: '#0070DD', Warlock: '#8788EE', Warrior: '#C69B6D' };
 const soft = (c) => `color-mix(in srgb, ${c} 85%, var(--color-fg))`;
 const FAC_COLOR = { Alliance: 'var(--al)', Horde: 'var(--ho)' }, FAC_TEXT = { Alliance: '#74a9ff', Horde: '#ff6d5f' };
@@ -235,37 +250,38 @@ const pct = (a, b) => b ? a / b * 100 : 0;
 const pctTxt = (v) => v >= 10 || v === 0 ? v.toFixed(0) + '%' : v.toFixed(1) + '%';
 const $ = (id) => document.getElementById(id);
 
-// state, read from and written to the address: /census?mage,eu,pvp,horde (a class opens its race breakdown)
-const S = { region: 'all', rules: '', faction: '', cls: -1, metric: 'col' };
+// The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
+// as on the Sims page, a reload starts on the full lists.
+const S = { region: 'all', rules: '', faction: '', cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1 };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
-  const ci = CLASSES.findIndex((c) => c.toLowerCase() === t); if (ci >= 0) { S.cls = ci; continue; }
   if (REGIONS.some(([k]) => k === t && k !== 'all')) { S.region = t; continue; }
   const ru = RULES.find((r) => r[2] === t && r[0]); if (ru) { S.rules = ru[0]; continue; }
   if (t === 'alliance' || t === 'horde') S.faction = t[0].toUpperCase() + t.slice(1);
 }
 const link = () => {
   const parts = [];
-  if (S.cls >= 0) parts.push(CLASSES[S.cls].toLowerCase());
   if (S.region !== 'all') parts.push(S.region);
   if (S.rules) parts.push(RULES.find((r) => r[0] === S.rules)[2]);
   if (S.faction) parts.push(S.faction.toLowerCase());
   return location.pathname + (parts.length ? '?' + parts.join(',') : '');
 };
-// Opening a class adds a history entry, so the browser's Back closes it (as the Sims page's breakdowns); closing it from
-// the page (the breadcrumb) uses that entry up again.
-let opened = false;
-const openClass = (j) => {
-  if (S.cls === j) return;
-  const was = S.cls >= 0; S.cls = j;
-  if (!was) { history.pushState({ cz: 1 }, '', link()); opened = true; } else history.replaceState(history.state, '', link());
+
+// Opening a breakdown (a class's races, a race's classes) adds a history entry, so the browser's Back closes it, as on
+// the Sims page; closing it from the page (its breadcrumb) uses that entry up again. open lists the boxes opened, last
+// one last; a reload (which keeps an entry's marker) starts clean.
+const open = [];
+if (history.state && history.state.cz) history.replaceState(null, '', location.href);
+const show = (box, idx) => {
+  const was = S[box] >= 0; S[box] = idx;
+  if (!was) { open.push(box); history.pushState({ cz: box }, '', location.href); }
   draw();
 };
-const closeClass = () => {
-  if (S.cls < 0) return;
-  if (opened && history.state && history.state.cz) { history.back(); return; }   // popstate draws
-  S.cls = -1; draw();
+const hide = (box) => {
+  if (S[box] < 0) return;
+  if (open[open.length - 1] === box && history.state && history.state.cz === box) { history.back(); return; }   // popstate closes it
+  S[box] = -1; open.splice(open.indexOf(box), 1); draw();
 };
-addEventListener('popstate', () => { opened = false; S.cls = -1; for (const t of location.search.slice(1).toLowerCase().split(',')) { const ci = CLASSES.findIndex((c) => c.toLowerCase() === t); if (ci >= 0) S.cls = ci; } draw(); });
+addEventListener('popstate', () => { const box = open.pop(); if (box) { S[box] = -1; draw(); } });
 
 const has = (region, rules) => !!C.counts[rules ? region + '|' + rules : region];
 const raceOn = (i) => !S.faction || FACTION(i) === S.faction;
@@ -292,10 +308,10 @@ document.addEventListener('mousemove', (e) => {
 });
 document.addEventListener('mouseleave', () => { tip.hidden = true; });
 
-// a ranking chart: items {key, name, color (bar), nameColor, img, n, top (the label's most played race or class), onClick}
+// a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
 function rank(el, items, sum) {
   const shown = items.filter((d) => d.ok !== false).sort((a, b) => b.n - a.n);
-  if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; return; }
+  if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
   const maxPct = Math.max(...shown.map((d) => pct(d.n, sum)));
   // the axis: a round step giving about four to six gridlines
   const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
@@ -303,17 +319,23 @@ function rank(el, items, sum) {
   const x = (v) => `calc((100% - var(--lab)) * ${(v / maxPct).toFixed(4)})`;
   el.innerHTML = '<div class="cz-grid">' + ticks.map((t) => `<i style="left:${x(t)}"></i><span style="left:${x(t)}">${t}%</span>`).join('') + '</div>'
     + shown.map((d) => {
-      const p = pct(d.n, sum), tag = d.onClick ? 'button type="button"' : 'div';
-      return `<${tag} class="cz-row${d.n ? '' : ' dim'}" data-k="${d.key}" data-tip="${d.key}"><span class="nm">${d.img}<b style="color:${d.nameColor || 'var(--color-fg)'}">${d.name}</b></span>`
+      const p = pct(d.n, sum), tag = d.onClick ? 'button' : 'div';
+      return `<${tag}${d.onClick ? ' type="button"' : ''} class="cz-row${d.n ? '' : ' dim'}" data-k="${d.key}" data-tip="${d.key}"><span class="nm">${d.img}<b style="color:${d.nameColor || 'var(--color-fg)'}">${d.name}</b></span>`
         + `<span class="bar"><i style="width:${x(p)};background:${soft(d.color)}"></i><span class="p">${pctTxt(p)}</span><span class="c">${fmt(d.n)}</span>`
-        + (d.top ? `<span class="top">${d.top.img}<span>${d.top.name}</span></span>` : '') + `</span></${d.onClick ? 'button' : 'div'}>`;
+        + (d.top ? `<span class="top">${d.top.img}<span>${d.top.name}</span></span>` : '') + `</span></${tag}>`;
     }).join('') + '<div class="cz-axis"></div>';
   const click = Object.fromEntries(shown.filter((d) => d.onClick).map((d) => [d.key, d.onClick]));
   el.onclick = (e) => { const r = e.target.closest('button.cz-row'); if (r && click[r.dataset.k]) click[r.dataset.k](); };
 }
+const crumbs = (head, box, root, img, name, color) => {
+  head.innerHTML = `<div class="cz-crumbs"><button type="button" class="cz-crumb">${root}</button><span class="cz-crumbsep" aria-hidden="true">›</span>${img}<span style="color:${color}">${name}</span></div>`;
+  head.querySelector('.cz-crumb').onclick = () => hide(box);
+};
 
 function draw() {
   if (!has(S.region, S.rules)) S.rules = '';
+  if (S.race >= 0 && !raceOn(S.race)) { S.race = -1; const k = open.indexOf('race'); if (k >= 0) open.splice(k, 1); }
+  if (S.colRace >= 0 && !raceOn(S.colRace)) S.colRace = -1;
   history.replaceState(history.state, '', link());
   segs($('czRegion'), REGIONS, S.region, (v) => { S.region = v; draw(); });
   segs($('czRules'), RULES, S.rules, (v) => { S.rules = v; draw(); }, (v) => !has(S.region, v));
@@ -326,80 +348,126 @@ function draw() {
   const total = raceTot.reduce((a, b) => a + b, 0);
   const who = S.faction ? S.faction + ' characters' : 'characters';
 
-  // the top box: every class, or one class's races
+  // the classes box: every class, or one class's races
   if (S.cls < 0) {
-    $('czMainTitle').textContent = 'Classes';
-    $('czMainNote').textContent = `Share of all ${fmt(total)} ${who}, with each class's most played race. Click a class for its race breakdown.`;
-    rank($('czMain'), CLASSES.map((name, j) => {
+    $('czClassHead').innerHTML = '';
+    $('czClassNote').textContent = `Classes as a share of all ${fmt(total)} ${who}, with each class's most played race. Click a class for its race breakdown.`;
+    rank($('czClass'), CLASSES.map((name, j) => {
       const tr = argmax(g[j]);
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
         ['Most played race', g[j][tr] ? `${RACES[tr]} (${pctTxt(pct(g[j][tr], classTot[j]))})` : '–']]);
       return { key: 'c' + j, name, color: CLASS_COLOR[name], nameColor: CLASS_COLOR[name], img: classImg(j), n: classTot[j],
-        top: g[j][tr] ? { img: raceImg(tr), name: RACES[tr] } : null, onClick: () => openClass(j) };
+        top: g[j][tr] ? { img: raceImg(tr), name: RACES[tr] } : null, onClick: () => show('cls', j) };
     }), total);
   } else {
     const j = S.cls, name = CLASSES[j];
-    $('czMainTitle').innerHTML = `<button type="button" class="cz-crumb" id="czCrumb">Classes</button><span class="cz-crumbsep" aria-hidden="true">›</span>`
-      + `<span style="color:${CLASS_COLOR[name]}">${name}</span>`;
-    $('czCrumb').onclick = closeClass;
-    $('czMainNote').textContent = `How the ${fmt(classTot[j])} ${S.faction ? S.faction + ' ' : ''}${name}s split by race.`;
-    rank($('czMain'), RACES.map((rname, i) => {
-      tips['r' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
+    crumbs($('czClassHead'), 'cls', 'Classes', classImg(j), name, CLASS_COLOR[name]);
+    $('czClassNote').textContent = `How the ${fmt(classTot[j])} ${S.faction ? S.faction + ' ' : ''}${name}s split by race.`;
+    rank($('czClass'), RACES.map((rname, i) => {
+      tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
-      return { key: 'r' + i, name: rname, ok: raceOn(i) && EXISTS[j][i], color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: g[j][i] };
+      return { key: 'cr' + i, name: rname, ok: raceOn(i) && EXISTS[j][i], color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: g[j][i] };
     }), classTot[j]);
   }
 
-  // the races box: every race, with each one's most played class
-  $('czRacesNote').textContent = `Share of all ${fmt(total)} ${who}, with each race's most played class.`;
-  rank($('czRaces'), RACES.map((name, i) => {
-    const col = g.map((row) => row[i]), tc = argmax(col);
-    tips['a' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
-      ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
-    return { key: 'a' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i],
-      top: col[tc] ? { img: classImg(tc), name: `<span style="color:${CLASS_COLOR[CLASSES[tc]]}">${CLASSES[tc]}</span>` } : null };
-  }), total);
+  // the races box: every race, or one race's classes
+  if (S.race < 0) {
+    $('czRaceHead').innerHTML = '';
+    $('czRaceNote').textContent = `Races as a share of all ${fmt(total)} ${who}, with each race's most played class. Click a race for its class breakdown.`;
+    rank($('czRace'), RACES.map((name, i) => {
+      const col = g.map((row) => row[i]), tc = argmax(col);
+      tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
+        ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
+      return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i],
+        top: col[tc] ? { img: classImg(tc), name: `<span style="color:${CLASS_COLOR[CLASSES[tc]]}">${CLASSES[tc]}</span>` } : null, onClick: () => show('race', i) };
+    }), total);
+  } else {
+    const i = S.race, name = RACES[i];
+    crumbs($('czRaceHead'), 'race', 'Races', raceImg(i), name, FAC_TEXT[FACTION(i)]);
+    $('czRaceNote').textContent = `Which classes the ${fmt(raceTot[i])} ${RACE_PL[i]} play.`;
+    rank($('czRace'), CLASSES.map((cname, j) => {
+      tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
+        + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
+      return { key: 'rc' + j, name: cname, nameColor: CLASS_COLOR[cname], ok: EXISTS[j][i], color: CLASS_COLOR[cname], img: classImg(j), n: g[j][i] };
+    }), raceTot[i]);
+  }
 
   table(g, raceTot, classTot, total);
 }
 
+// The race x class table, as the Sims page's "DPS by Race and Spec": each cell shaded by where it sits in its column
+// (palest to darkest blue), the column's biggest in bold with a gold mark. A class's header sorts the races by it
+// (again to flip, a third time for the usual order); a race orders the classes by its own numbers, biggest first.
 function table(g, raceTot, classTot, total) {
-  const rows = RACES.map((_, i) => i).filter(raceOn);
   const val = (j, i) => {
     const n = g[j][i];
     return S.metric === 'col' ? pct(n, classTot[j]) : S.metric === 'row' ? pct(n, raceTot[i]) : S.metric === 'all' ? pct(n, total) : n;
   };
-  let max = 0;
-  rows.forEach((i) => CLASSES.forEach((_, j) => { if (EXISTS[j][i]) max = Math.max(max, val(j, i)); }));
+  const allv = (i) => S.metric === 'row' ? 100 : S.metric === 'n' ? raceTot[i] : pct(raceTot[i], total);
   const cell = (v) => S.metric === 'n' ? fmt(v) : pctTxt(v);
-  const shade = (v) => `background:color-mix(in srgb, var(--gold) ${Math.round(Math.pow(v / (max || 1), .75) * 55)}%, transparent)`;
-  $('czTable').tHead.innerHTML = '<tr><th></th>' + CLASSES.map((c, j) => `<th><button type="button" data-cls="${j}" aria-pressed="${S.cls === j}" title="${c}: its race breakdown">${classImg(j)}<span class="cn" style="color:${CLASS_COLOR[c]}">${c}</span></button></th>`).join('')
-    + '<th class="tot"><span>Σ<span class="cn">All</span></span></th></tr>';
-  $('czTable').tBodies[0].innerHTML = rows.map((i) => `<tr><td class="r"><span title="${RACES[i]}">${raceImg(i)}<span class="rn">${RACES[i]}</span></span></td>`
-    + CLASSES.map((_, j) => {
-      if (!EXISTS[j][i]) return '<td class="x">–</td>';
-      const n = g[j][i];
+  let rows = RACES.map((_, i) => i).filter(raceOn).sort((a, b) => raceTot[b] - raceTot[a]);
+  if (S.sort === 'race') rows.sort((a, b) => RACES[a].localeCompare(RACES[b]) * (S.sortDir === 'asc' ? 1 : -1));
+  else if (S.sort === 'all') rows.sort((a, b) => (allv(b) - allv(a)) * (S.sortDir === 'asc' ? -1 : 1));
+  else if (S.sort != null) { const j = S.sort; rows.sort((a, b) => (EXISTS[j][b] - EXISTS[j][a]) || (val(j, b) - val(j, a)) * (S.sortDir === 'asc' ? -1 : 1)); }
+  let cols = CLASSES.map((_, j) => j);
+  if (S.colRace >= 0) { const i = S.colRace; cols.sort((a, b) => (EXISTS[b][i] - EXISTS[a][i]) || val(b, i) - val(a, i)); }
+  const best = {}, ext = {};
+  for (const j of cols) {
+    const v = rows.filter((i) => EXISTS[j][i] && g[j][i]).map((i) => val(j, i));
+    if (v.length) { best[j] = Math.max(...v); ext[j] = [Math.min(...v), Math.max(...v)]; }
+  }
+  const sortAttr = (k) => S.sort === k ? ` aria-sort="${S.sortDir === 'asc' ? 'ascending' : 'descending'}"` : '';
+  $('czTable').tHead.innerHTML = `<tr><th class="t"${sortAttr('race')}><button type="button" data-sort="race">Race</button></th>`
+    + cols.map((j) => `<th${sortAttr(j)}><button type="button" data-sort="${j}" style="color:${soft(CLASS_COLOR[CLASSES[j]])}">${CLASSES[j]}</button></th>`).join('')
+    + `<th${sortAttr('all')}><button type="button" data-sort="all">All</button></th></tr>`;
+  $('czTable').tBodies[0].innerHTML = rows.map((i) => `<tr><td class="r${S.colRace === i ? ' picked' : ''}" data-race="${i}" tabindex="0" role="button">${raceImg(i)}${RACES[i]}</td>`
+    + cols.map((j) => {
+      if (!EXISTS[j][i]) return '<td></td>';
+      const v = val(j, i), n = g[j][i], [lo, hi] = ext[j] || [0, 0], t = hi > lo ? (v - lo) / (hi - lo) : 1;
       tips[`t${j}_${i}`] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${RACES[i]}</span> <span style="color:${CLASS_COLOR[CLASSES[j]]}">${CLASSES[j]}</span></div>`
         + tipRows([['Characters', fmt(n)], [`Of ${CLASSES[j]}s`, pctTxt(pct(n, classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(n, raceTot[i]))], ['Of everyone', pctTxt(pct(n, total))]]);
-      return `<td class="v" data-c="${j}" data-tip="t${j}_${i}" style="${shade(val(j, i))}">${cell(val(j, i))}</td>`;
+      return `<td class="${n && v === best[j] ? 'top best' : ''}" data-tip="t${j}_${i}" style="background:color-mix(in srgb, var(--accent) ${Math.round(6 + t * 34)}%, transparent)">${cell(v)}</td>`;
     }).join('')
-    + `<td class="tot">${S.metric === 'row' ? '100%' : S.metric === 'n' ? fmt(raceTot[i]) : pctTxt(pct(raceTot[i], total))}</td></tr>`).join('')
-    + '<tr class="tot"><td class="r"><span><span style="width:1.5em;text-align:center">Σ</span><span class="rn">All races</span></span></td>'
-    + CLASSES.map((_, j) => `<td>${S.metric === 'col' ? '100%' : S.metric === 'n' ? fmt(classTot[j]) : pctTxt(pct(classTot[j], total))}</td>`).join('')
-    + `<td>${S.metric === 'n' ? fmt(total) : '100%'}</td></tr>`;
+    + `<td class="tot">${cell(allv(i))}</td></tr>`).join('');
   $('czMetricNote').textContent = {
-    col: 'Each class column adds up to 100%: how that class splits by race. Darker cells are bigger shares. Click a class for its race breakdown.',
-    row: 'Each race row adds up to 100%: which classes that race plays. Darker cells are bigger shares.',
-    all: 'Every cell is a share of all characters shown. Darker cells are bigger shares.',
-    n: 'Characters found for each race and class. Darker cells are bigger counts.' }[S.metric];
-  // a class (its header or any of its cells) opens its race breakdown in the top box, scrolled into view
-  $('czTable').onclick = (e) => {
-    const c = e.target.closest('[data-cls]') || e.target.closest('td.v'); if (!c) return;
-    openClass(+(c.dataset.cls ?? c.dataset.c));
-    $('czMain').closest('.cz-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    col: 'Each class column adds up to 100%: how that class splits by race.',
+    row: 'Each race row adds up to 100%: which classes that race plays.',
+    all: 'Every cell is a share of all characters shown.',
+    n: 'Characters found for each race and class.' }[S.metric] + ' Bold is the biggest in each column. Click a class to sort by it, or a race to order the classes by it.';
+  $('czTable').tHead.onclick = (e) => {
+    const b = e.target.closest('[data-sort]'); if (!b) return;
+    const k = b.dataset.sort === 'race' || b.dataset.sort === 'all' ? b.dataset.sort : +b.dataset.sort;
+    if (S.sort !== k) { S.sort = k; S.sortDir = k === 'race' ? 'asc' : 'desc'; }
+    else if (S.sortDir === (k === 'race' ? 'asc' : 'desc')) S.sortDir = k === 'race' ? 'desc' : 'asc';
+    else S.sort = null;   // a third click: back to the usual order (most played race first)
+    draw();
   };
+  const pick = (td) => { const i = +td.dataset.race; S.colRace = S.colRace === i ? -1 : i; draw(); };
+  $('czTable').tBodies[0].onclick = (e) => { const td = e.target.closest('td.r'); if (td) pick(td); };
+  $('czTable').tBodies[0].onkeydown = (e) => { const td = e.target.closest('td.r'); if (td && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(td); } };
+  fit();
 }
 
+// The table's size: its text and cells as big as the box's width allows without a sideways scrollbar, 1.2 times at
+// most (the Sims page's matrix_fit.js).
+const tbl = $('czTable'), wrap = tbl.parentElement, card = tbl.closest('section');
+function fit() {
+  if (!wrap.clientWidth) return;
+  const scale = parseFloat(card.style.getPropertyValue('--mz')) || 1, prev = tbl.style.width;
+  tbl.style.width = 'max-content';
+  const w = tbl.offsetWidth / scale;
+  tbl.style.width = prev;
+  if (!w) return;
+  const v = Math.max(1, Math.min(1.2, Math.floor(((wrap.clientWidth - 2) / w) * 100) / 100));
+  if (Math.abs(v - scale) > 0.005) card.style.setProperty('--mz', String(v));
+}
+new ResizeObserver(fit).observe(wrap);
+
+$('czNotesCard').querySelector('.cz-fold').onclick = (e) => {
+  const open = !$('czNotesCard').classList.toggle('collapsed');
+  e.currentTarget.setAttribute('aria-expanded', String(open));
+  e.currentTarget.setAttribute('aria-label', (open ? 'Collapse' : 'Expand') + ' Methods and Caveats');
+};
 document.addEventListener('click', (e) => {
   const f = e.target.closest('.cz-fac button'); if (f) { S.faction = S.faction === f.dataset.v ? '' : f.dataset.v; draw(); }
 });
