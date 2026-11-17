@@ -926,9 +926,8 @@ function drawHealBreakdown(p, view, data, fitH) {
   const pid = 'hr-hot-' + Math.random().toString(36).slice(2), pat = svg.append('defs').append('pattern').attr('id', pid).attr('patternUnits', 'userSpaceOnUse').attr('width', 8).attr('height', 8).attr('patternTransform', 'rotate(45)');
   pat.append('rect').attr('width', 8).attr('height', 8).style('fill', c).attr('fill-opacity', 0.35);
   pat.append('rect').attr('width', 4).attr('height', 8).style('fill', c);
-  const chPat = svg.select('defs').append('pattern').attr('id', pid + '-ch').attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 8);
-  chPat.append('rect').attr('width', 6).attr('height', 8).style('fill', c).attr('fill-opacity', 0.35);
-  chPat.append('rect').attr('width', 3).attr('height', 8).style('fill', c);
+  const chPat = svg.select('defs').append('pattern').attr('id', pid + '-ch').attr('patternUnits', 'userSpaceOnUse').attr('width', 24).attr('height', 8);
+  chPat.append('rect').attr('width', 22).attr('height', 8).style('fill', c);
   const g = svg.append('g').selectAll('g').data(list).join('g').attr('transform', (a, i) => `translate(0,${i * (bh + gap) + 2})`);
   // The icon from the ability icons, else the spell's own icon file (the healing sim names one for every spell).
   g.append('image').attr('href', (a) => (window.ABILITY_ICONS || {})[a.name] || (a.icon ? `images/icons/${a.icon}.jpg` : null)).attr('x', 0).attr('y', (bh - iz) / 2).attr('width', iz).attr('height', iz);

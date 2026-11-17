@@ -161,7 +161,7 @@
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
   .rr-bdsw { width: 18px; height: 10px; border-radius: 2px; background: var(--c); }
   .rr-bdsw[data-kind="dot"] { background: repeating-linear-gradient(45deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 35%, transparent) 3px 6px); }
-  .rr-bdsw[data-kind="channel"] { background: repeating-linear-gradient(90deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 35%, transparent) 3px 6px); }
+  .rr-bdsw[data-kind="channel"] { background: repeating-linear-gradient(90deg, var(--c) 0 6px, transparent 6px 8px); }
   .rr-bdsw[data-kind="auto"] { background: color-mix(in srgb, var(--c) 18%, #ffffff); }
   .rr-bdsw[data-kind="proc"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
@@ -303,7 +303,7 @@
   .hr-bdkey { display: inline-flex; align-items: center; gap: 6px; }
   .hr-bdsw { width: 18px; height: 10px; border-radius: 2px; background: var(--c); }
   .hr-bdsw[data-kind="hot"] { background: repeating-linear-gradient(45deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 35%, transparent) 3px 6px); }
-  .hr-bdsw[data-kind="channel"] { background: repeating-linear-gradient(90deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 35%, transparent) 3px 6px); }
+  .hr-bdsw[data-kind="channel"] { background: repeating-linear-gradient(90deg, var(--c) 0 6px, transparent 6px 8px); }
   .hr-bdsw[data-kind="absorb"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .hr-bdsw[data-kind="over"] { background: color-mix(in srgb, var(--c) 22%, transparent); }
   @media (max-width: 760px) {
@@ -558,7 +558,7 @@
   .rr-bdsep { width: 1px; align-self: stretch; background: var(--color-border-line); }
   .rr-bdsw { width: 18px; height: 10px; border-radius: 2px; background: var(--c); }
   .rr-bdsw[data-kind="dot"] { background: repeating-linear-gradient(45deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 35%, transparent) 3px 6px); }
-  .rr-bdsw[data-kind="channel"] { background: repeating-linear-gradient(90deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 35%, transparent) 3px 6px); }
+  .rr-bdsw[data-kind="channel"] { background: repeating-linear-gradient(90deg, var(--c) 0 6px, transparent 6px 8px); }
   .rr-bdsw[data-kind="auto"] { background: color-mix(in srgb, var(--c) 18%, #ffffff); }
   .rr-bdsw[data-kind="proc"] { background: color-mix(in srgb, var(--c) 25%, transparent); box-shadow: inset 0 0 0 1.5px var(--c); }
   .rr-bdsw[data-kind="resource"] { background: var(--color-fg-muted); opacity: .5; }
@@ -1819,10 +1819,9 @@ function drawBreakdown(p, item, data, fitH) {
     const pat = defs.append('pattern').attr('id', stripe(sc)).attr('patternUnits', 'userSpaceOnUse').attr('width', 8).attr('height', 8).attr('patternTransform', 'rotate(45)');
     pat.append('rect').attr('width', 8).attr('height', 8).style('fill', SCHOOL_COLOR[sc]).attr('fill-opacity', 0.35);
     pat.append('rect').attr('width', 4).attr('height', 8).style('fill', SCHOOL_COLOR[sc]);
-    // Channels: upright stripes.
-    const ch = defs.append('pattern').attr('id', stripe(sc) + '-ch').attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 8);
-    ch.append('rect').attr('width', 6).attr('height', 8).style('fill', SCHOOL_COLOR[sc]).attr('fill-opacity', 0.35);
-    ch.append('rect').attr('width', 3).attr('height', 8).style('fill', SCHOOL_COLOR[sc]);
+    // Channels: solid segments with thin gaps, like a channel's pulses.
+    const ch = defs.append('pattern').attr('id', stripe(sc) + '-ch').attr('patternUnits', 'userSpaceOnUse').attr('width', 24).attr('height', 8);
+    ch.append('rect').attr('width', 22).attr('height', 8).style('fill', SCHOOL_COLOR[sc]);
   }
   const col = (a) => SCHOOL_COLOR[a.school] || SCHOOL_COLOR.Physical;
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));
@@ -3353,10 +3352,9 @@ function drawBreakdown(p, item, data, fitH) {
     const pat = defs.append('pattern').attr('id', stripe(sc)).attr('patternUnits', 'userSpaceOnUse').attr('width', 8).attr('height', 8).attr('patternTransform', 'rotate(45)');
     pat.append('rect').attr('width', 8).attr('height', 8).style('fill', SCHOOL_COLOR[sc]).attr('fill-opacity', 0.35);
     pat.append('rect').attr('width', 4).attr('height', 8).style('fill', SCHOOL_COLOR[sc]);
-    // Channels: upright stripes.
-    const ch = defs.append('pattern').attr('id', stripe(sc) + '-ch').attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 8);
-    ch.append('rect').attr('width', 6).attr('height', 8).style('fill', SCHOOL_COLOR[sc]).attr('fill-opacity', 0.35);
-    ch.append('rect').attr('width', 3).attr('height', 8).style('fill', SCHOOL_COLOR[sc]);
+    // Channels: solid segments with thin gaps, like a channel's pulses.
+    const ch = defs.append('pattern').attr('id', stripe(sc) + '-ch').attr('patternUnits', 'userSpaceOnUse').attr('width', 24).attr('height', 8);
+    ch.append('rect').attr('width', 22).attr('height', 8).style('fill', SCHOOL_COLOR[sc]);
   }
   const col = (a) => SCHOOL_COLOR[a.school] || SCHOOL_COLOR.Physical;
   const fill = (a) => (a.kind === 'resource' ? 'var(--color-fg-muted)' : a.kind === 'dot' ? `url(#${stripe(a.school)})` : a.kind === 'channel' ? `url(#${stripe(a.school)}-ch)` : a.kind === 'auto' ? `color-mix(in srgb, ${col(a)} 18%, #ffffff)` : col(a));

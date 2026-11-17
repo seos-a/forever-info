@@ -295,16 +295,15 @@ function drawBreakdown(b, box, note, item, fight, specs, q) {
   const x = d3.scaleLinear([0, rows[0].v], [ml, W - mr]);
   svg.append('g').selectAll('line').data(x.ticks(5)).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).attr('stroke', 'var(--cds-chart-grid)');
   svg.append('g').selectAll('text').data(x.ticks(5)).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text((t) => t);
-  // Stripes for damage and heals over time (diagonal) and channels (upright), one pattern per colour shown.
+  // Stripes for damage and heals over time (diagonal), segments for channels, one pattern per colour shown.
   const defs = svg.append('defs'), uid = Math.random().toString(36).slice(2), colors = [...new Set(rows.map(col))];
   const pid = (c, kind) => `apm-${uid}-${colors.indexOf(c)}-${kind}`;
   for (const c of colors) {
     const d = defs.append('pattern').attr('id', pid(c, 'dot')).attr('patternUnits', 'userSpaceOnUse').attr('width', 8).attr('height', 8).attr('patternTransform', 'rotate(45)');
     d.append('rect').attr('width', 8).attr('height', 8).style('fill', c).attr('fill-opacity', 0.35);
     d.append('rect').attr('width', 4).attr('height', 8).style('fill', c);
-    const ch = defs.append('pattern').attr('id', pid(c, 'ch')).attr('patternUnits', 'userSpaceOnUse').attr('width', 6).attr('height', 8);
-    ch.append('rect').attr('width', 6).attr('height', 8).style('fill', c).attr('fill-opacity', 0.35);
-    ch.append('rect').attr('width', 3).attr('height', 8).style('fill', c);
+    const ch = defs.append('pattern').attr('id', pid(c, 'ch')).attr('patternUnits', 'userSpaceOnUse').attr('width', 24).attr('height', 8);
+    ch.append('rect').attr('width', 22).attr('height', 8).style('fill', c);
   }
   const fill = (a) => (a.kind === 'utility' ? 'var(--color-fg-muted)' : a.kind === 'dot' || a.kind === 'hot' ? `url(#${pid(col(a), 'dot')})` : a.kind === 'channel' ? `url(#${pid(col(a), 'ch')})` : col(a));
   const g = svg.append('g').selectAll('g').data(rows).join('g').attr('transform', (a, i) => `translate(0,${i * slot + 2})`);
