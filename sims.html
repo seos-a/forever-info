@@ -57,10 +57,12 @@ const raw = window.__DATA, cache = {}, calcs = {}, subs = [], TABS = ['dps', 'he
 const params = Object.assign({}, window.__PARAMS);
 const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /sims#healing opens the Healing tab
 const VIEWS = ['specView', 'tSpecView', 'hCmpView'], viewOpen = () => VIEWS.some((k) => params[k]);
-let skipPop = false;
+// Each opened breakdown's history entry carries its own id; a reload (which keeps the entry's marker) starts clean.
+let skipPop = false, viewId = 0;
+if (history.state && history.state.view) history.replaceState(null, '', location.href);
 addEventListener('popstate', (e) => {
   if (skipPop) { skipPop = false; return; }
-  if (e.state && e.state.view) return;
+  if (viewId && e.state && e.state.view === viewId) return;
   if (viewOpen()) { Object.assign(params, { specView: '', specBuild: '', specRace: '', tSpecView: '', tSpecBuild: '', tSpecRace: '', hCmpView: '' }); redraw(); }
 });
 const run = (fn) => { try { fn(); } catch (e) { console.error(e); } };
@@ -92,8 +94,8 @@ window.dash = {
   setParams(p) {
     const was = viewOpen(); Object.assign(params, p); const now = viewOpen();
     if (p.tab) history.replaceState(history.state, '', p.tab === 'dps' ? location.pathname + location.search : '#' + p.tab);
-    if (!was && now) history.pushState({ view: 1 }, '', location.href);
-    else if (was && !now && history.state && history.state.view) { skipPop = true; history.back(); }
+    if (!was && now) history.pushState({ view: viewId = Date.now() }, '', location.href);
+    else if (was && !now && history.state && history.state.view === viewId) { skipPop = true; history.back(); }
     redraw();
   },
   resetParams() { Object.keys(params).forEach((k) => delete params[k]); Object.assign(params, window.__PARAMS); redraw(); },
@@ -503,8 +505,6 @@ document.head.appendChild(t);})();
   .hr-chart.lx-lines svg { touch-action: pan-y; cursor: grab; }
   .hr-chart.lx-lines svg:active { cursor: grabbing; }
   .hr-reset { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
-  .hr-reset.hr-back { border: 0; background: none; padding: 0; color: var(--color-fg-muted); font-size: .8125rem; }
-  .hr-reset.hr-back:hover { color: var(--color-fg); }
   .hr-chart text { font-size: var(--cds-font-size-caption); fill: var(--color-fg-muted); }
   .hr-chart .lab { fill: var(--color-fg); }
   .hr-chart path.ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity .15s; }
@@ -3704,14 +3704,18 @@ let healUserH = 0;
 function drawHealBreakdown(p, view, data, fitH) {
   const box = $('.lx-speccmp'), [school, c] = HEAL_SCHOOL[view.cls] || ['Holy', '#ffe680'];
   box.replaceChildren();
-  const bar = el('div', 'hr-bdbar'), back = el('button', 'hr-reset hr-back', '← All healers'), open = el('button', 'hr-reset', 'Open in the boxes below');
-  back.type = open.type = 'button';
-  back.addEventListener('click', () => setP({ cmpView: '' }));
+  const bar = el('div', 'hr-bdbar'), open = el('button', 'hr-reset', 'Open in the boxes below');
+  open.type = 'button'; open.style.marginLeft = 'auto';
   open.addEventListener('click', () => pickHealer(view.cls));
-  // The healer's name opens the healer menu, to switch to another healer's breakdown.
-  const title = el('span', 'hr-bdtitle');
-  title.append(healerPicker(view.cls, 'cmpView'));
-  bar.append(back, title, open);
+  // The card's title becomes a breadcrumb, as on the DPS and Tanks tabs: "Healing Per Second" goes back to all healers,
+  // the healer's name opens the healer menu (to switch to another healer's breakdown), then the race it was simmed with.
+  const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb hr-back', h2.dataset.base ||= h2.textContent);
+  back.type = 'button'; back.title = 'Back to all healers';
+  back.addEventListener('click', () => setP({ cmpView: '' }));
+  const sep = () => el('span', 'rr-crumbsep', '›'), race = el('span', null, view.race);
+  race.style.color = view.faction === 'Alliance' ? 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--hr-horde) 80%, #fff)';
+  h2.replaceChildren(back, sep(), healerPicker(view.cls, 'cmpView'), sep(), race);
+  bar.append(open);
   const legend = el('div', 'hr-bdlegend');
   box.append(bar, legend);
   const rows = data.filter((r) => r.cls === view.cls && r.race === view.race && (p.specFight === 'all' || String(r.fight) === String(p.specFight)));
@@ -3815,6 +3819,9 @@ function draw() {
     for (const r of runs) if (!bestOf.has(r.cls) || r.mean > bestOf.get(r.cls).mean) bestOf.set(r.cls, r);
     const rows = [...bestOf.values()].sort((a, b) => b.median - a.median).map((r) => ({ ...r, label: HEALER_NAME[r.cls] || r.cls, color: healerColor(HEALER_NAME[r.cls]), icon: (window.SPEC_ICONS || {})[HEALER_NAME[r.cls]] }));
     box.replaceChildren();
+    // The card's title: a breadcrumb while a healer's breakdown is open (drawHealBreakdown), plain again when none is.
+    const h2 = $('.lx-cmptitle');
+    if (h2.querySelector('.rr-crumb')) h2.textContent = h2.dataset.base;
     $('.lx-specnote').textContent = rows.length ? 'Hover for spec info, click for ability breakdown.' : '';
     // As tall as the longest spell breakdown needs, or as tall as the box was dragged, so opening one doesn't move the page.
     const SP = rrData(dash.data('healSpells')), spellRows = SP.status === 'ok' ? SP.data : [];

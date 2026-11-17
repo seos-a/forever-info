@@ -883,14 +883,18 @@ let healUserH = 0;
 function drawHealBreakdown(p, view, data, fitH) {
   const box = $('.lx-speccmp'), [school, c] = HEAL_SCHOOL[view.cls] || ['Holy', '#ffe680'];
   box.replaceChildren();
-  const bar = el('div', 'hr-bdbar'), back = el('button', 'hr-reset hr-back', '← All healers'), open = el('button', 'hr-reset', 'Open in the boxes below');
-  back.type = open.type = 'button';
-  back.addEventListener('click', () => setP({ cmpView: '' }));
+  const bar = el('div', 'hr-bdbar'), open = el('button', 'hr-reset', 'Open in the boxes below');
+  open.type = 'button'; open.style.marginLeft = 'auto';
   open.addEventListener('click', () => pickHealer(view.cls));
-  // The healer's name opens the healer menu, to switch to another healer's breakdown.
-  const title = el('span', 'hr-bdtitle');
-  title.append(healerPicker(view.cls, 'cmpView'));
-  bar.append(back, title, open);
+  // The card's title becomes a breadcrumb, as on the DPS and Tanks tabs: "Healing Per Second" goes back to all healers,
+  // the healer's name opens the healer menu (to switch to another healer's breakdown), then the race it was simmed with.
+  const h2 = $('.lx-cmptitle'), back = el('button', 'rr-crumb hr-back', h2.dataset.base ||= h2.textContent);
+  back.type = 'button'; back.title = 'Back to all healers';
+  back.addEventListener('click', () => setP({ cmpView: '' }));
+  const sep = () => el('span', 'rr-crumbsep', '›'), race = el('span', null, view.race);
+  race.style.color = view.faction === 'Alliance' ? 'color-mix(in srgb, var(--hr-alliance) 70%, #fff)' : 'color-mix(in srgb, var(--hr-horde) 80%, #fff)';
+  h2.replaceChildren(back, sep(), healerPicker(view.cls, 'cmpView'), sep(), race);
+  bar.append(open);
   const legend = el('div', 'hr-bdlegend');
   box.append(bar, legend);
   const rows = data.filter((r) => r.cls === view.cls && r.race === view.race && (p.specFight === 'all' || String(r.fight) === String(p.specFight)));
@@ -994,6 +998,9 @@ function draw() {
     for (const r of runs) if (!bestOf.has(r.cls) || r.mean > bestOf.get(r.cls).mean) bestOf.set(r.cls, r);
     const rows = [...bestOf.values()].sort((a, b) => b.median - a.median).map((r) => ({ ...r, label: HEALER_NAME[r.cls] || r.cls, color: healerColor(HEALER_NAME[r.cls]), icon: (window.SPEC_ICONS || {})[HEALER_NAME[r.cls]] }));
     box.replaceChildren();
+    // The card's title: a breadcrumb while a healer's breakdown is open (drawHealBreakdown), plain again when none is.
+    const h2 = $('.lx-cmptitle');
+    if (h2.querySelector('.rr-crumb')) h2.textContent = h2.dataset.base;
     $('.lx-specnote').textContent = rows.length ? 'Hover for spec info, click for ability breakdown.' : '';
     // As tall as the longest spell breakdown needs, or as tall as the box was dragged, so opening one doesn't move the page.
     const SP = rrData(dash.data('healSpells')), spellRows = SP.status === 'ok' ? SP.data : [];

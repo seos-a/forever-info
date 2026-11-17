@@ -40,10 +40,12 @@ const raw = window.__DATA, cache = {}, calcs = {}, subs = [], TABS = ['dps', 'he
 const params = Object.assign({}, window.__PARAMS);
 const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /sims#healing opens the Healing tab
 const VIEWS = ['specView', 'tSpecView', 'hCmpView'], viewOpen = () => VIEWS.some((k) => params[k]);
-let skipPop = false;
+// Each opened breakdown's history entry carries its own id; a reload (which keeps the entry's marker) starts clean.
+let skipPop = false, viewId = 0;
+if (history.state && history.state.view) history.replaceState(null, '', location.href);
 addEventListener('popstate', (e) => {
   if (skipPop) { skipPop = false; return; }
-  if (e.state && e.state.view) return;
+  if (viewId && e.state && e.state.view === viewId) return;
   if (viewOpen()) { Object.assign(params, { specView: '', specBuild: '', specRace: '', tSpecView: '', tSpecBuild: '', tSpecRace: '', hCmpView: '' }); redraw(); }
 });
 const run = (fn) => { try { fn(); } catch (e) { console.error(e); } };
@@ -75,8 +77,8 @@ window.dash = {
   setParams(p) {
     const was = viewOpen(); Object.assign(params, p); const now = viewOpen();
     if (p.tab) history.replaceState(history.state, '', p.tab === 'dps' ? location.pathname + location.search : '#' + p.tab);
-    if (!was && now) history.pushState({ view: 1 }, '', location.href);
-    else if (was && !now && history.state && history.state.view) { skipPop = true; history.back(); }
+    if (!was && now) history.pushState({ view: viewId = Date.now() }, '', location.href);
+    else if (was && !now && history.state && history.state.view === viewId) { skipPop = true; history.back(); }
     redraw();
   },
   resetParams() { Object.keys(params).forEach((k) => delete params[k]); Object.assign(params, window.__PARAMS); redraw(); },
