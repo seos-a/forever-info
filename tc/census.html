@@ -4,13 +4,9 @@
      (experiment/page.html's .rr-card, .rr-seg, .rr-tip). -->
 <style>
   .cz { --al: #3f7fd9; --ho: #d2423b; --gold: #e2b23c; display: flex; flex-direction: column; gap: var(--cds-gap-lg); color: var(--color-fg); }
-  .cz h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
   .cz h2 { font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); margin: 0; }
   .cz p { margin: 0; }
   .cz a { color: #ffd100; text-underline-offset: 2px; }
-  .cz-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
-  .cz-take { font-size: var(--cds-font-size-body); max-width: 72ch; line-height: 1.5; }
-  .cz-take b { font-weight: 600; }
   .cz-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
 
   /* along the top, on the background picture: the faction crests (pick one to show only its races, again for all), as the Sims page */
@@ -46,21 +42,21 @@
   .cz-chip img { width: 16px; height: 16px; border-radius: 3px; }
   .cz-chip::after { content: "×"; color: var(--color-fg-muted); font-size: 1.1em; line-height: 1; padding: 0 2px; }
 
-  /* bar lists: icon, name, bar, characters, share */
-  .cz-bars { display: flex; flex-direction: column; gap: 2px; }
-  .cz-row { font: inherit; display: grid; grid-template-columns: 1.6rem minmax(6.5rem, 9.5rem) minmax(0, 1fr) 4.4rem 3.4rem; align-items: center; gap: .6rem;
-    padding: 4px 6px; border: 0; border-radius: var(--cds-radius); background: none; color: var(--color-fg); text-align: left; cursor: pointer; font-size: var(--cds-font-size-body); }
-  .cz-row:hover { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
-  .cz-row[aria-pressed="true"] { background: color-mix(in srgb, var(--color-fg) 9%, transparent); box-shadow: inset 2px 0 0 var(--gold); }
+  /* bar lists, drawn like the Sims page's rankings: a thick bar in the class's (or faction's) colour, then the share in
+     bold, the icon and the name; the longest bar leaves --lab of room for its label */
+  .cz-total { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .cz-bars { --lab: 15.5rem; display: flex; flex-direction: column; gap: 4px; }
+  .cz-row { font: inherit; display: flex; align-items: center; gap: 7px; width: 100%; height: 26px; padding: 0 4px 0 0; border: 0; border-radius: 4px;
+    background: none; color: var(--color-fg); text-align: left; cursor: pointer; font-size: var(--cds-font-size-caption); white-space: nowrap; }
+  .cz-row:hover { background: color-mix(in srgb, var(--color-fg) 5%, transparent); }
+  .cz-row[aria-pressed="true"] { background: color-mix(in srgb, var(--color-fg) 8%, transparent); box-shadow: inset 0 0 0 1px var(--gold); }
   .cz-row.dim { opacity: .45; }
-  .cz-row img { width: 1.6rem; height: 1.6rem; border-radius: 4px; display: block; }
-  .cz-row .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cz-row .b { height: .7rem; border-radius: 3px; background: color-mix(in srgb, var(--color-fg) 6%, transparent); overflow: hidden; }
-  .cz-row .b i { display: block; height: 100%; border-radius: 3px; transition: width .25s; }
-  .cz-row .c { text-align: right; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
-  .cz-row .p { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .cz-row .na { grid-column: 3 / -1; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
-  @media (max-width: 600px) { .cz-row { grid-template-columns: 1.5rem minmax(5.5rem, 7.5rem) minmax(0, 1fr) 3.4rem; gap: .45rem; } .cz-row .c { display: none; } }
+  .cz-row > i { flex: none; align-self: stretch; margin: 2px 0; border-radius: 3px; min-width: 2px; transition: width .25s; }
+  .cz-row .p { font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+  .cz-row img { width: 20px; height: 20px; border-radius: 4px; display: block; flex: none; }
+  .cz-row .n { color: var(--color-fg-muted); overflow: hidden; text-overflow: ellipsis; }
+  .cz-row .c { color: var(--color-fg-muted); opacity: .7; font-variant-numeric: tabular-nums; }
+  @media (max-width: 600px) { .cz-bars { --lab: 12rem; } .cz-row .c { display: none; } }
   .cz-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 6px; }
 
   /* race portraits: a faction-coloured rim; the Alliance Skyborne mirrored to face right, as on the Racials page */
@@ -111,11 +107,6 @@
     </div>
   </div>
 
-  <header class="cz-head">
-    <h1>Population Census</h1>
-    <p class="cz-take" id="czTake"></p>
-  </header>
-
   <div class="cz-filters">
     <div class="cz-seg" id="czRegion" role="group" aria-label="Region"></div>
     <div class="cz-seg" id="czRules" role="group" aria-label="Ruleset"></div>
@@ -123,12 +114,12 @@
 
   <div class="cz-grid2">
     <section class="cz-card">
-      <div class="cz-cardhead"><h2 id="czRacesTitle">Races</h2></div>
-      <div class="cz-bars" id="czRaces"></div>
+      <div class="cz-cardhead"><h2 id="czClassesTitle">Classes</h2><span class="cz-total" id="czClassesTotal"></span></div>
+      <div class="cz-bars" id="czClasses"></div>
     </section>
     <section class="cz-card">
-      <div class="cz-cardhead"><h2 id="czClassesTitle">Classes</h2></div>
-      <div class="cz-bars" id="czClasses"></div>
+      <div class="cz-cardhead"><h2 id="czRacesTitle">Races</h2><span class="cz-total" id="czRacesTotal"></span></div>
+      <div class="cz-bars" id="czRaces"></div>
     </section>
   </div>
 
@@ -217,8 +208,6 @@ function draw() {
   const raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0));
   const classTot = CLASSES.map((_, j) => g[j].reduce((a, b) => a + b, 0));
   const total = raceTot.reduce((a, b) => a + b, 0);
-  const where = [S.region !== 'all' ? REGIONS.find((r) => r[0] === S.region)[1] : '', S.rules ? RULES.find((r) => r[0] === S.rules)[1] + ' realms' : '', S.faction].filter(Boolean).join(', ');
-  $('czTake').innerHTML = `<b>${fmt(total)}</b> characters${where ? ` (${where})` : ''} found on guild rosters by <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth's census</a>, by race and class.`;
 
   // Races: of everyone, or of the picked class
   const rv = RACES.map((_, i) => S.cls >= 0 ? g[S.cls][i] : raceTot[i]);
@@ -234,14 +223,18 @@ function draw() {
   bars($('czClasses'), CLASSES.map((name, j) => ({ i: j, name, n: cv[j], ok: S.race < 0 || EXISTS[j][S.race],
     img: classImg(j), color: CLASS_COLOR[name], on: S.cls === j, nameColor: CLASS_COLOR[name] })), cSum, (j) => { S.cls = S.cls === j ? -1 : j; draw(); });
 
+  $('czRacesTotal').textContent = fmt(rSum) + ' characters';
+  $('czClassesTotal').textContent = fmt(cSum) + ' characters';
   table(g, raceTot, classTot, total);
 }
 
 function bars(el, items, sum, pick) {
   const shown = items.filter((d) => d.ok).sort((a, b) => b.n - a.n);
   const max = Math.max(1, ...shown.map((d) => d.n));
-  el.innerHTML = shown.length ? shown.map((d) => `<button type="button" class="cz-row${d.n ? '' : ' dim'}" data-i="${d.i}" aria-pressed="${d.on}">${d.img}<span class="n"${d.nameColor ? ` style="color:${d.nameColor}"` : ''}>${d.name}</span>`
-    + `<span class="b"><i style="width:${d.n / max * 100}%;background:${d.color}"></i></span><span class="c">${fmt(d.n)}</span><span class="p">${pctTxt(pct(d.n, sum))}</span></button>`).join('')
+  // the bar colour softened toward the text colour, as the Sims page's specColor
+  el.innerHTML = shown.length ? shown.map((d) => `<button type="button" class="cz-row${d.n ? '' : ' dim'}" data-i="${d.i}" aria-pressed="${d.on}" title="${d.name}: ${fmt(d.n)} characters">`
+    + `<i style="width:calc((100% - var(--lab)) * ${(d.n / max).toFixed(4)});background:color-mix(in srgb, ${d.color} 85%, var(--color-fg))"></i>`
+    + `<span class="p">${pctTxt(pct(d.n, sum))}</span>${d.img}<span class="n">${d.name}</span><span class="c">${fmt(d.n)}</span></button>`).join('')
     : '<p class="cz-empty">No characters for this pick.</p>';
   el.onclick = (e) => { const b = e.target.closest('.cz-row'); if (b) pick(+b.dataset.i); };
 }
