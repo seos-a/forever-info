@@ -127,7 +127,7 @@ document.head.appendChild(t);})();
   .cz-menu button[aria-checked="true"] { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
 
   /* the ranking charts: the name column (icon and name), then the bar column with its gridlines and axis; each bar is
-     followed by its share in bold, the character count, and the most played race or class. The longest bar leaves
+     followed by its share in bold, the character count, and (the classes) the most played race. The longest bar leaves
      --lab of room for that label. */
   .cz-rank { --name: 11rem; --lab: 17rem; position: relative; display: flex; flex-direction: column; gap: 4px; font-size: var(--cds-font-size-caption); }
   .cz-grid { position: absolute; top: 0; bottom: 0; left: var(--name); right: 0; pointer-events: none; }
@@ -291,7 +291,7 @@ const raceImg = (i) => `<img class="race ${FACTION(i)}${i === 4 ? ' mirror' : ''
 const classImg = (j) => `<img src="images/icons/classicon_${CLASSES[j].toLowerCase()}.jpg" alt="">`;
 const fmt = (n) => n.toLocaleString('en-US');
 const pct = (a, b) => b ? a / b * 100 : 0;
-const pctTxt = (v) => v >= 10 || v === 0 ? v.toFixed(0) + '%' : v.toFixed(1) + '%';
+const pctTxt = (v) => v === 0 ? '0%' : v.toFixed(1) + '%';
 const $ = (id) => document.getElementById(id);
 
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
@@ -361,6 +361,7 @@ function rank(el, items, sum) {
   const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
   const ticks = []; for (let t = 0; t <= maxPct + 1e-9; t += step) ticks.push(t);
   const x = (v) => `calc((100% - var(--lab)) * ${(v / maxPct).toFixed(4)})`;
+  el.style.setProperty('--lab', shown.some((d) => d.top) ? '17rem' : '8rem');   // room for the bar's label: share and count, then the top pick if any
   el.innerHTML = '<div class="cz-grid">' + ticks.map((t) => `<i style="left:${x(t)}"></i><span style="left:${x(t)}">${t}%</span>`).join('') + '</div>'
     + shown.map((d) => {
       const p = pct(d.n, sum), tag = d.onClick ? 'button' : 'div';
@@ -447,8 +448,7 @@ function draw() {
       const col = g.map((row) => row[i]), tc = argmax(col);
       tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
         ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
-      return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i],
-        top: col[tc] ? { img: classImg(tc), name: `<span style="color:${CLASS_COLOR[CLASSES[tc]]}">${CLASSES[tc]}</span>` } : null, onClick: () => show('race', i) };
+      return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i], onClick: () => show('race', i) };
     }), total);
   } else {
     const i = S.race, name = RACES[i];
