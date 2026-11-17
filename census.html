@@ -80,7 +80,7 @@ document.head.appendChild(t);})();
   .cz-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
 
   /* along the top, on the background picture: the faction crests (pick one to show only its races, again for all), as
-     the Sims page, then the region flags and the ruleset icons */
+     the Sims page, then the region flags and the ruleset icons, each group in a small panel */
   .cz-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm) var(--cds-gap-md); padding: var(--cds-pad-xs) 2px; margin-bottom: calc(var(--cds-gap-md) - var(--cds-gap-lg)); }
   .cz-fac { display: flex; gap: var(--cds-gap-sm); }
   .cz-fac button { width: 32px; height: 32px; padding: 0; margin: 0; cursor: pointer; border: 2px solid #000; border-radius: 4px; overflow: hidden; background: #111;
@@ -89,15 +89,9 @@ document.head.appendChild(t);})();
   .cz-fac button:hover { filter: brightness(1.15); }
   .cz-fac button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
   .cz-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
-  .cz-fac button:disabled { filter: grayscale(1) brightness(.45); cursor: default; }
-  /* the three groups (regions, factions, rulesets) parted by a thin line, and the ruleset icons round with a gold ring,
-     as the realm list's own */
-  .cz-top > .cz-fac + .cz-fac { position: relative; margin-left: calc(var(--cds-gap-sm) + 1px); }
-  .cz-top > .cz-fac + .cz-fac::before { content: ''; position: absolute; left: calc(-1 * var(--cds-gap-md) / 2 - var(--cds-gap-sm) / 2 - 1px); top: 4px; bottom: 4px; width: 1px;
-    background: linear-gradient(transparent, #c9a24a99 25%, #c9a24a99 75%, transparent); }
-  #czRules button { border-radius: 50%; border-width: 1px; box-shadow: 0 0 0 2px #b8862e, 0 0 0 3px #000, 0 3px 8px #000c; }
-  #czRules button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 0 3px #000, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
-  @media (max-width: 600px) { .cz-top > #czRules { flex-basis: 100%; margin-left: 2px; } .cz-top > #czRules::before { display: none; } }   /* phones: the rulesets on a row of their own */   /* a ruleset the region has no realms of (Korea, Taiwan: no RP) */
+  .cz-fac button:disabled { filter: grayscale(1) brightness(.45); cursor: default; }   /* a ruleset the region has no realms of (Korea, Taiwan: no RP) */
+  /* each group (regions, factions, rulesets) in a small panel, styled as the page's cards */
+  .cz-top > .cz-fac { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 6px; }
   @media (max-width: 600px) { .cz-fac button { width: 28px; height: 28px; } }
   /* the region buttons (first in the row) are the crests' buttons around each region's square flag (images/flags, drawn by art/flags.py) */
 
