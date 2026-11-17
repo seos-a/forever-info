@@ -22,9 +22,7 @@
   .cz-fac button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
   .cz-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
   @media (max-width: 600px) { .cz-fac button { width: 28px; height: 28px; } }
-  /* the region buttons: the same frame around each region's flag (images/flags, drawn by art/flags.py), 3:2 inside it */
-  .cz-flags button { width: 46px; }
-  @media (max-width: 600px) { .cz-flags button { width: 40px; } }
+  /* the region buttons (first in the row) are the crests' buttons around each region's square flag (images/flags, drawn by art/flags.py) */
 
   .cz-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
   .cz-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg);
@@ -45,7 +43,7 @@
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; vertical-align: -.06em; }
-  .cz-crumbs img { width: 22px; height: 22px; border-radius: 4px; vertical-align: -5px; margin-right: 7px; }
+  .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; vertical-align: -.14em; margin-right: .4em; }   /* as tall as the text */
 
   /* the ranking charts: the name column (icon and name), then the bar column with its gridlines and axis; each bar is
      followed by its share in bold, the character count, and the most played race or class. The longest bar leaves
@@ -73,6 +71,17 @@
   .cz-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 6px 0; }
   @media (max-width: 760px) { .cz-rank { --name: 8.5rem; --lab: 8.5rem; } .cz-row .c, .cz-row .top span { display: none; } }
   @media (max-width: 420px) { .cz-rank { --name: 7rem; --lab: 3.5rem; } .cz-row .top { display: none; } }
+
+  /* the faction balance: one bar, Alliance from the left and Horde from the right, a tick at the middle, the crests at its
+     ends and each side's share and count under it */
+  .cz-bal { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+  .cz-bal > img { width: 26px; height: 26px; border: 2px solid #000; border-radius: 4px; box-shadow: 0 0 0 1px #8a6a2a; }
+  .cz-balbar { position: relative; display: flex; height: 18px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #0006; }
+  .cz-balbar i { height: 100%; transition: width .25s; }
+  .cz-balbar::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: #000a; }
+  .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: var(--cds-font-size-caption); margin-top: -4px; font-variant-numeric: tabular-nums; }
+  .cz-ballab b { font-weight: 600; }
+  .cz-ballab span { color: var(--color-fg-muted); margin: 0 .35em; }
 
   /* race portraits: a faction-coloured rim; the Alliance Skyborne mirrored to face right, as on the Racials page */
   .cz img.race { box-shadow: 0 0 0 1.5px var(--al); }
@@ -125,15 +134,15 @@
 
 <div class="cz">
   <div class="cz-top">
-    <div class="cz-fac" id="czFaction" role="group" aria-label="Faction">
-      <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
-      <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
-    </div>
-    <div class="cz-fac cz-flags" id="czRegion" role="group" aria-label="Region">
+    <div class="cz-fac" id="czRegion" role="group" aria-label="Region">
       <button type="button" data-v="us" aria-pressed="false" title="Americas only" aria-label="Americas only"><img src="images/flags/us.svg" alt=""></button>
       <button type="button" data-v="eu" aria-pressed="false" title="Europe only" aria-label="Europe only"><img src="images/flags/eu.svg" alt=""></button>
       <button type="button" data-v="kr" aria-pressed="false" title="Korea only" aria-label="Korea only"><img src="images/flags/kr.svg" alt=""></button>
       <button type="button" data-v="tw" aria-pressed="false" title="Taiwan only" aria-label="Taiwan only"><img src="images/flags/tw.svg" alt=""></button>
+    </div>
+    <div class="cz-fac" id="czFaction" role="group" aria-label="Faction">
+      <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
+      <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
     </div>
     <div class="cz-seg" id="czRules" role="group" aria-label="Ruleset"></div>
   </div>
@@ -150,14 +159,18 @@
     <div class="cz-rank" id="czRace"></div>
   </section>
 
+  <section class="cz-card" aria-label="Faction balance">
+    <div class="cz-bal" id="czBal"></div>
+  </section>
+
   <section class="cz-card" aria-label="Race and class">
     <div class="cz-cardhead" style="justify-content:flex-end"><div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div></div>
     <div class="cz-scroll"><table id="czTable"><thead></thead><tbody></tbody></table></div>
     <p class="cz-note" id="czMetricNote"></p>
   </section>
 
-  <section class="cz-card" id="czNotesCard">
-    <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="true" aria-label="Collapse Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
+  <section class="cz-card collapsed" id="czNotesCard">
+    <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
       <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
       <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. The flags count one region's realms only (Americas, Europe, Korea, Taiwan), and the ruleset switch one kind of realm; pick a crest or flag again to go back to all.</p>
@@ -291,7 +304,7 @@ function draw() {
   // the classes box: every class, or one class's races
   if (S.cls < 0) {
     $('czClassHead').innerHTML = '';
-    $('czClassNote').textContent = `Classes as a share of all ${fmt(total)} ${who}, with each class's most played race. Click a class for its race breakdown.`;
+    $('czClassNote').textContent = `${fmt(total)} ${who}`;
     rank($('czClass'), CLASSES.map((name, j) => {
       const tr = argmax(g[j]);
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
@@ -302,7 +315,7 @@ function draw() {
   } else {
     const j = S.cls, name = CLASSES[j];
     crumbs($('czClassHead'), 'cls', 'Classes', classImg(j), name, CLASS_COLOR[name]);
-    $('czClassNote').textContent = `How the ${fmt(classTot[j])} ${S.faction ? S.faction + ' ' : ''}${name}s split by race.`;
+    $('czClassNote').textContent = `${fmt(classTot[j])} ${S.faction ? S.faction + ' ' : ''}${name}s`;
     rank($('czClass'), RACES.map((rname, i) => {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
@@ -313,7 +326,7 @@ function draw() {
   // the races box: every race, or one race's classes
   if (S.race < 0) {
     $('czRaceHead').innerHTML = '';
-    $('czRaceNote').textContent = `Races as a share of all ${fmt(total)} ${who}, with each race's most played class. Click a race for its class breakdown.`;
+    $('czRaceNote').textContent = `${fmt(total)} ${who}`;
     rank($('czRace'), RACES.map((name, i) => {
       const col = g.map((row) => row[i]), tc = argmax(col);
       tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
@@ -324,13 +337,21 @@ function draw() {
   } else {
     const i = S.race, name = RACES[i];
     crumbs($('czRaceHead'), 'race', 'Races', raceImg(i), name, FAC_TEXT[FACTION(i)]);
-    $('czRaceNote').textContent = `Which classes the ${fmt(raceTot[i])} ${RACE_PL[i]} play.`;
+    $('czRaceNote').textContent = `${fmt(raceTot[i])} ${RACE_PL[i]}`;
     rank($('czRace'), CLASSES.map((cname, j) => {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
       return { key: 'rc' + j, name: cname, nameColor: CLASS_COLOR[cname], ok: EXISTS[j][i], color: CLASS_COLOR[cname], img: classImg(j), n: g[j][i] };
     }), raceTot[i]);
   }
+
+  // the faction balance: both factions, whatever the crests pick (the region and ruleset still apply)
+  const all = C.counts[S.rules ? S.region + '|' + S.rules : S.region], fa = [0, 0];
+  all.forEach((row) => row.forEach((n, i) => { fa[i < 5 ? 0 : 1] += n; }));
+  const ft = fa[0] + fa[1], fp = fa.map((n) => pct(n, ft));
+  $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i></div>`
+    + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span style="margin:0"><b style="color:${FAC_TEXT.Alliance}">Alliance ${fp[0].toFixed(1)}%</b><span>${fmt(fa[0])}</span></span>`
+    + `<span style="margin:0"><span>${fmt(fa[1])}</span><b style="color:${FAC_TEXT.Horde}">${fp[1].toFixed(1)}% Horde</b></span></div>`;
 
   table(g, raceTot, classTot, total);
 }
