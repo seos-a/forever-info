@@ -982,7 +982,12 @@ fac.addEventListener('click', (e) => {
 });
 nav.addEventListener('click', (e) => {
   const b = e.target.closest('button[data-tab]');
-  if (b) { dash.setParams({ tab: b.dataset.tab }); dash.setLink(b.dataset.tab); }
+  if (!b) return;
+  // The open tab's own icon works as its home button: it goes back to all specs, as the breakdown's breadcrumb
+  // ("Damage Per Second") or the Healing tab's "All healers" button does.
+  const cur = TABS.includes(dash.params().tab) ? dash.params().tab : 'dps';
+  if (b.dataset.tab === cur) { const home = document.querySelector(`[data-tab-panel="${cur}"]`).querySelector('.rr-crumb, .hr-back'); if (home) home.click(); return; }
+  dash.setParams({ tab: b.dataset.tab }); dash.setLink(b.dataset.tab);
 });
 nav.addEventListener('keydown', (e) => {
   if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
