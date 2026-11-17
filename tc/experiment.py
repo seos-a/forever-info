@@ -39,6 +39,13 @@ RUNTIME = """
 const raw = window.__DATA, cache = {}, calcs = {}, subs = [], TABS = ['dps', 'healing', 'tanks'];
 const params = Object.assign({}, window.__PARAMS);
 const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /sims#healing opens the Healing tab
+const VIEWS = ['specView', 'tSpecView', 'hCmpView'], viewOpen = () => VIEWS.some((k) => params[k]);
+let skipPop = false;
+addEventListener('popstate', (e) => {
+  if (skipPop) { skipPop = false; return; }
+  if (e.state && e.state.view) return;
+  if (viewOpen()) { Object.assign(params, { specView: '', specBuild: '', specRace: '', tSpecView: '', tSpecBuild: '', tSpecRace: '', hCmpView: '' }); redraw(); }
+});
 const run = (fn) => { try { fn(); } catch (e) { console.error(e); } };
 // the corner stamp names the Healing tab's own sim while that tab is open
 let stampDps = null;
@@ -63,7 +70,15 @@ window.dash = {
   loader() {},
   onData(fn) { subs.push(fn); run(fn); },
   params() { return params; },
-  setParams(p) { Object.assign(params, p); if (p.tab) history.replaceState(null, '', p.tab === 'dps' ? location.pathname + location.search : '#' + p.tab); redraw(); },
+  // Opening a breakdown (a DPS or tank spec, a healer) adds a history entry, so the browser's Back closes it rather than
+  // leaving the page; closing it from the page (breadcrumb, role icon) uses that entry up again.
+  setParams(p) {
+    const was = viewOpen(); Object.assign(params, p); const now = viewOpen();
+    if (p.tab) history.replaceState(history.state, '', p.tab === 'dps' ? location.pathname + location.search : '#' + p.tab);
+    if (!was && now) history.pushState({ view: 1 }, '', location.href);
+    else if (was && !now && history.state && history.state.view) { skipPop = true; history.back(); }
+    redraw();
+  },
   resetParams() { Object.keys(params).forEach((k) => delete params[k]); Object.assign(params, window.__PARAMS); redraw(); },
   setLink() {}, refresh() {},
 };
@@ -103,7 +118,7 @@ body{position:relative;min-height:100vh}
 
 # The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown bottom left). WoWSims has no release
 # number for it: its version tags stop at v0.0.140 (September), on another line of history.
-SIMS_BUILD, SIMS_DATE = '0e7994a', 'Nov 13 2026'
+SIMS_BUILD, SIMS_DATE = '540ad8f', 'Nov 17 2026'
 # The Healing tab's sim (ForeverHealing-TC): the game build its data is from and the day that data was updated, shown in
 # the same corner while the Healing tab is open.
 HEAL_BUILD, HEAL_DATE = '70707 + Oct 30 hotfix', 'Oct 31 2026'

@@ -56,6 +56,13 @@ body{background:url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMC
 const raw = window.__DATA, cache = {}, calcs = {}, subs = [], TABS = ['dps', 'healing', 'tanks'];
 const params = Object.assign({}, window.__PARAMS);
 const h = location.hash.slice(1); if (TABS.includes(h)) params.tab = h;   // /sims#healing opens the Healing tab
+const VIEWS = ['specView', 'tSpecView', 'hCmpView'], viewOpen = () => VIEWS.some((k) => params[k]);
+let skipPop = false;
+addEventListener('popstate', (e) => {
+  if (skipPop) { skipPop = false; return; }
+  if (e.state && e.state.view) return;
+  if (viewOpen()) { Object.assign(params, { specView: '', specBuild: '', specRace: '', tSpecView: '', tSpecBuild: '', tSpecRace: '', hCmpView: '' }); redraw(); }
+});
 const run = (fn) => { try { fn(); } catch (e) { console.error(e); } };
 // the corner stamp names the Healing tab's own sim while that tab is open
 let stampDps = null;
@@ -80,7 +87,15 @@ window.dash = {
   loader() {},
   onData(fn) { subs.push(fn); run(fn); },
   params() { return params; },
-  setParams(p) { Object.assign(params, p); if (p.tab) history.replaceState(null, '', p.tab === 'dps' ? location.pathname + location.search : '#' + p.tab); redraw(); },
+  // Opening a breakdown (a DPS or tank spec, a healer) adds a history entry, so the browser's Back closes it rather than
+  // leaving the page; closing it from the page (breadcrumb, role icon) uses that entry up again.
+  setParams(p) {
+    const was = viewOpen(); Object.assign(params, p); const now = viewOpen();
+    if (p.tab) history.replaceState(history.state, '', p.tab === 'dps' ? location.pathname + location.search : '#' + p.tab);
+    if (!was && now) history.pushState({ view: 1 }, '', location.href);
+    else if (was && !now && history.state && history.state.view) { skipPop = true; history.back(); }
+    redraw();
+  },
   resetParams() { Object.keys(params).forEach((k) => delete params[k]); Object.assign(params, window.__PARAMS); redraw(); },
   setLink() {}, refresh() {},
 };
@@ -1078,7 +1093,7 @@ document.head.appendChild(t);})();
 
 
 </div>
-<div class="xp-stamp" data-heal="ForeverHealing-TC Build 70707 + Oct 30 hotfix (Beta)<br>Oct 31 2026">WoWSims Version 0e7994a (Beta)<br>Nov 13 2026</div>
+<div class="xp-stamp" data-heal="ForeverHealing-TC Build 70707 + Oct 30 hotfix (Beta)<br>Oct 31 2026">WoWSims Version 540ad8f (Beta)<br>Nov 17 2026</div>
 <a class="xp-quit" href="/">Quit</a>
 <script>
 (() => {
