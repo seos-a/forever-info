@@ -1,7 +1,7 @@
 """Draws the region flags for the Population Census page's region buttons (images/flags/<region>.svg): the United States
 for the Americas region, the European Union, South Korea and Taiwan. Each is square (viewBox 40 x 40), to sit in the
-same frame as the faction crests beside them, and simplified to read at button size (the US flag's stars are a grid of
-dots). Run from tc/: py art/flags.py"""
+same frame as the faction crests beside them, and simplified to read at button size (the US flag has 14 larger stars on a
+shorter canton). Run from tc/: py art/flags.py"""
 import math, os
 
 OUT = '../images/flags'
@@ -25,10 +25,13 @@ def svg(body):
 def us():
     h = S / 13
     stripes = ''.join(f'<rect y="{i * h:.3f}" width="{S}" height="{h:.3f}" fill="#b22234"/>' for i in range(0, 13, 2))
-    cw, ch = 20, h * 7
-    dots = ''.join(f'<circle cx="{2.2 + x * 3.1:.2f}" cy="{2.1 + y * 4.3 + (2.15 if x % 2 else 0):.2f}" r=".8" fill="#fff"/>'
-                   for x in range(6) for y in range(5 if x % 2 == 0 else 4))
-    return svg(f'<rect width="{S}" height="{S}" fill="#fff"/>{stripes}<rect width="{cw}" height="{ch:.3f}" fill="#3c3b6e"/>{dots}')
+    # The canton is 5 stripes deep (the real flag's 7 look too tall on a square flag), ending on a red stripe as the real
+    # one does, with 14 stars in staggered rows of 4 and 3, big enough to read at button size.
+    cw, ch = 18, h * 5
+    rows = [(4, 2.25), (3, 4.5), (4, 2.25), (3, 4.5)]
+    stars = ''.join(f'<polygon points="{star(x0 + k * 4.5, 2.35 + r * 3.55, 1.45)}" fill="#fff"/>'
+                    for r, (n, x0) in enumerate(rows) for k in range(n))
+    return svg(f'<rect width="{S}" height="{S}" fill="#fff"/>{stripes}<rect width="{cw}" height="{ch:.3f}" fill="#3c3b6e"/>{stars}')
 
 
 def eu():
@@ -60,12 +63,12 @@ def kr():
 
 
 def tw():
-    cw, ch = 24, 22   # a bigger canton on the square flag, as square versions draw it
+    cw = ch = S / 2   # the real flag's canton: half its width and half its height, the sun in its middle
     cx, cy = cw / 2, ch / 2
-    rays = ' '.join(f'{cx + (8.5 if k % 2 == 0 else 4.9) * math.cos(math.radians(k * 15 - 90)):.2f},{cy + (8.5 if k % 2 == 0 else 4.9) * math.sin(math.radians(k * 15 - 90)):.2f}'
+    rays = ' '.join(f'{cx + (7.2 if k % 2 == 0 else 4.15) * math.cos(math.radians(k * 15 - 90)):.2f},{cy + (7.2 if k % 2 == 0 else 4.15) * math.sin(math.radians(k * 15 - 90)):.2f}'
                     for k in range(24))
     return svg(f'<rect width="{S}" height="{S}" fill="#fe0000"/><rect width="{cw}" height="{ch}" fill="#000095"/>'
-               f'<polygon points="{rays}" fill="#fff"/><circle cx="{cx}" cy="{cy}" r="4.85" fill="#000095"/><circle cx="{cx}" cy="{cy}" r="4.3" fill="#fff"/>')
+               f'<polygon points="{rays}" fill="#fff"/><circle cx="{cx}" cy="{cy}" r="4.1" fill="#000095"/><circle cx="{cx}" cy="{cy}" r="3.6" fill="#fff"/>')
 
 
 os.makedirs(OUT, exist_ok=True)
