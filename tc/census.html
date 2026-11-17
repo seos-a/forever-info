@@ -1,0 +1,304 @@
+<!-- The Population Census page (foreverinfo.io/census): who plays which race and class, from Life on Azeroth's census.
+     census.py wraps this in the Sims page's frame (experiment.CSS: colours, fonts, background, the Quit button and the
+     corner stamp) and fills window.__CENSUS from census.json. The cards, switches and tooltips copy the Sims page's look
+     (experiment/page.html's .rr-card, .rr-seg, .rr-tip). -->
+<style>
+  .cz { --al: #3f7fd9; --ho: #d2423b; --gold: #e2b23c; display: flex; flex-direction: column; gap: var(--cds-gap-lg); color: var(--color-fg); }
+  .cz h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .cz h2 { font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); margin: 0; }
+  .cz p { margin: 0; }
+  .cz a { color: #ffd100; text-underline-offset: 2px; }
+  .cz-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+  .cz-take { font-size: var(--cds-font-size-body); max-width: 72ch; line-height: 1.5; }
+  .cz-take b { font-weight: 600; }
+  .cz-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
+
+  /* along the top, on the background picture: the faction crests (pick one to show only its races, again for all), as the Sims page */
+  .cz-top { display: flex; align-items: center; gap: var(--cds-gap-sm); width: fit-content; padding: var(--cds-pad-xs) 2px; }
+  .cz-fac { display: flex; gap: var(--cds-gap-sm); }
+  .cz-fac button { width: 32px; height: 32px; padding: 0; margin: 0; cursor: pointer; border: 2px solid #000; border-radius: 4px; overflow: hidden; background: #111;
+    box-shadow: 0 0 0 1px #8a6a2a, 0 3px 8px #000c; transition: box-shadow .15s, filter .15s; }
+  .cz-fac button img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cz-fac button:hover { filter: brightness(1.15); }
+  .cz-fac button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
+  .cz-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
+
+  .cz-filters { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); align-items: center; }
+  .cz-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+  .cz-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg);
+    border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
+  .cz-seg button:last-child { border-right: 0; }
+  .cz-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+  .cz-seg button:disabled { color: var(--color-fg-muted); opacity: .45; cursor: default; }
+  .cz button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -3px; }
+
+  .cz-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: calc(var(--cds-pad-lg) - 4px) var(--cds-pad-lg) var(--cds-pad-lg);
+    display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
+  .cz-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); min-height: 1.9rem; }
+  .cz-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-gap-md); align-items: start; }
+  @media (max-width: 760px) { .cz-grid2 { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 600px) { .cz-card { padding: 10px; } }
+
+  /* the picked race or class, in a card's title: a chip that clears it */
+  .cz-chip { font: inherit; font-size: var(--cds-font-size-caption); display: inline-flex; align-items: center; gap: .35rem; padding: 2px 4px 2px 6px; margin-left: .5rem; vertical-align: 2px;
+    border: 1px solid var(--color-border-line); border-radius: 999px; background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+  .cz-chip:hover { border-color: var(--color-fg-muted); }
+  .cz-chip img { width: 16px; height: 16px; border-radius: 3px; }
+  .cz-chip::after { content: "×"; color: var(--color-fg-muted); font-size: 1.1em; line-height: 1; padding: 0 2px; }
+
+  /* bar lists: icon, name, bar, characters, share */
+  .cz-bars { display: flex; flex-direction: column; gap: 2px; }
+  .cz-row { font: inherit; display: grid; grid-template-columns: 1.6rem minmax(6.5rem, 9.5rem) minmax(0, 1fr) 4.4rem 3.4rem; align-items: center; gap: .6rem;
+    padding: 4px 6px; border: 0; border-radius: var(--cds-radius); background: none; color: var(--color-fg); text-align: left; cursor: pointer; font-size: var(--cds-font-size-body); }
+  .cz-row:hover { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
+  .cz-row[aria-pressed="true"] { background: color-mix(in srgb, var(--color-fg) 9%, transparent); box-shadow: inset 2px 0 0 var(--gold); }
+  .cz-row.dim { opacity: .45; }
+  .cz-row img { width: 1.6rem; height: 1.6rem; border-radius: 4px; display: block; }
+  .cz-row .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cz-row .b { height: .7rem; border-radius: 3px; background: color-mix(in srgb, var(--color-fg) 6%, transparent); overflow: hidden; }
+  .cz-row .b i { display: block; height: 100%; border-radius: 3px; transition: width .25s; }
+  .cz-row .c { text-align: right; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .cz-row .p { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cz-row .na { grid-column: 3 / -1; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  @media (max-width: 600px) { .cz-row { grid-template-columns: 1.5rem minmax(5.5rem, 7.5rem) minmax(0, 1fr) 3.4rem; gap: .45rem; } .cz-row .c { display: none; } }
+  .cz-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 6px; }
+
+  /* race portraits: a faction-coloured rim; the Alliance Skyborne mirrored to face right, as on the Racials page */
+  .cz img.race { box-shadow: 0 0 0 1.5px var(--al); }
+  .cz img.race.Horde { box-shadow: 0 0 0 1.5px var(--ho); }
+  .cz img.mirror { transform: scaleX(-1); }
+
+  /* the race x class table */
+  .cz-scroll { overflow: auto; max-width: 100%; }
+  .cz table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .cz th { background: var(--color-panel); font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .cz th button { font: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 100%; padding: 4px 4px 6px; border: 0; background: none; color: var(--color-fg-muted); cursor: pointer; }
+  .cz th button:hover, .cz th button[aria-pressed="true"] { color: var(--color-fg); }
+  .cz th button[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--gold); }
+  .cz th img { width: 22px; height: 22px; border-radius: 4px; }
+  .cz td { text-align: center; padding: 5px 6px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .cz td.r { width: 1%; text-align: left; position: sticky; left: 0; z-index: 1; background: var(--color-panel); padding: 0; }
+  .cz td.r button { font: inherit; display: flex; align-items: center; gap: .5rem; width: 100%; padding: 4px 10px 4px 2px; border: 0; background: none; color: var(--color-fg); cursor: pointer; text-align: left; }
+  .cz td.r button:hover { text-decoration: underline; text-underline-offset: 2px; }
+  .cz td.r button[aria-pressed="true"] { font-weight: 700; box-shadow: inset 2px 0 0 var(--gold); }
+  .cz td.r img { width: 1.5em; height: 1.5em; margin-left: 2px; border-radius: 4px; }
+  .cz td.v { cursor: default; }
+  .cz td.x { color: var(--color-fg-muted); opacity: .5; }
+  .cz td.tot, .cz tr.tot td { color: var(--color-fg-muted); font-weight: 600; }
+  .cz tr.tot td { border-top: 1px solid var(--color-fg-muted); border-bottom: 0; }
+  .cz tbody tr:hover td.v { box-shadow: inset 0 0 0 9999px #ffffff08; }
+  .cz td.v.on, .cz td.v.pick { outline: 1px solid var(--gold); outline-offset: -1px; }
+  @media (max-width: 760px) { .cz th .cn, .cz td.r .rn { display: none; } .cz td.r button { padding-right: 4px; } }
+
+  /* tooltips: the Sims page's near-black card */
+  .cz-tip { position: fixed; z-index: 50; pointer-events: none; background: #0c0c0bf5; border: 1px solid #ffffff26; border-radius: 6px; box-shadow: 0 10px 28px #000d, 0 0 0 1px #000;
+    padding: 8px 11px 9px; font-size: 12px; line-height: 1.5; color: var(--color-fg); min-width: 170px; }
+  .cz-tip[hidden] { display: none; }
+  .cz-tip .h { font-weight: 700; font-size: 13px; line-height: 1.35; margin: 0 0 6px; padding-bottom: 6px; border-bottom: 1px solid #ffffff1f; }
+  .cz-tip .row { display: flex; gap: .5rem; padding: 1px 0; }
+  .cz-tip .row > span { color: #a7a49b; }
+  .cz-tip .row b { margin-left: auto; padding-left: 1rem; font-weight: 600; color: #f4f2ea; }
+
+  .cz-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
+  .cz-notes b { display: block; color: var(--color-fg); font-weight: 600; }
+</style>
+
+<div class="cz">
+  <div class="cz-top">
+    <div class="cz-fac" role="group" aria-label="Faction">
+      <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
+      <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
+    </div>
+  </div>
+
+  <header class="cz-head">
+    <h1>Population Census</h1>
+    <p class="cz-take" id="czTake"></p>
+  </header>
+
+  <div class="cz-filters">
+    <div class="cz-seg" id="czRegion" role="group" aria-label="Region"></div>
+    <div class="cz-seg" id="czRules" role="group" aria-label="Ruleset"></div>
+  </div>
+
+  <div class="cz-grid2">
+    <section class="cz-card">
+      <div class="cz-cardhead"><h2 id="czRacesTitle">Races</h2></div>
+      <div class="cz-bars" id="czRaces"></div>
+    </section>
+    <section class="cz-card">
+      <div class="cz-cardhead"><h2 id="czClassesTitle">Classes</h2></div>
+      <div class="cz-bars" id="czClasses"></div>
+    </section>
+  </div>
+
+  <section class="cz-card">
+    <div class="cz-cardhead"><h2>Race and Class</h2>
+      <div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div>
+    </div>
+    <div class="cz-scroll"><table id="czTable"><thead></thead><tbody></tbody></table></div>
+    <p class="cz-note" id="czMetricNote"></p>
+  </section>
+
+  <div class="cz-notes">
+    <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
+    <p><b>Picking</b>Click a race to see its classes, or a class to see its races; click it again to go back to everyone. The crests at the top show one faction's races only, and every share is then of that faction.</p>
+    <p><b>Snapshot</b><span id="czDate"></span> Some combinations can't be made in WoW Forever; the table shows them as a dash.</p>
+  </div>
+</div>
+<div class="cz-tip" id="czTip" hidden></div>
+
+<script>
+(() => {
+const C = window.__CENSUS;
+const RACES = C.races, CLASSES = C.classes, NR = RACES.length, NC = CLASSES.length;
+const FACTION = (i) => i < 5 ? 'Alliance' : 'Horde';
+const RACE_ICON = ['race_human_male', 'race_dwarf_male', 'race_nightelf_female', 'race_gnome_female', 'race_bloodelf_male_tbc',
+  'race_orc_male', 'race_scourge_male', 'race_tauren_male', 'race_troll_male', 'race_bloodelf_female_skyborne'];
+const RACE_SLUG = ['human', 'dwarf', 'nightelf', 'gnome', 'highorder', 'orc', 'undead', 'tauren', 'troll', 'windshaper'];
+// the race's plural for "of Night Elves"
+const RACE_PL = ['Humans', 'Dwarves', 'Night Elves', 'Gnomes', 'High Order Skyborne', 'Orcs', 'Undead', 'Tauren', 'Trolls', 'Windshaper Skyborne'];
+// WoW class colours (as the Sims page)
+const CLASS_COLOR = { Druid: '#FF7C0A', Hunter: '#AAD372', Mage: '#3FC7EB', Paladin: '#F48CBA', Priest: '#FFFFFF', Rogue: '#FFF468', Shaman: '#0070DD', Warlock: '#8788EE', Warrior: '#C69B6D' };
+const REGIONS = [['all', 'All regions'], ['us', 'Americas'], ['eu', 'Europe'], ['kr', 'Korea'], ['tw', 'Taiwan']];
+const RULES = [['', 'All rulesets', 'all'], ['Normal', 'Normal', 'normal'], ['PvP', 'PvP', 'pvp'], ['Roleplay', 'RP', 'rp'], ['Roleplay PvP', 'RP-PvP', 'rppvp']];
+const METRICS = [['col', '% of class'], ['row', '% of race'], ['all', '% of all'], ['n', 'Characters']];
+const raceImg = (i, cls = '') => `<img class="race ${FACTION(i)}${i === 4 ? ' mirror' : ''}${cls}" src="images/icons/${RACE_ICON[i]}.jpg" alt="">`;
+const classImg = (j) => `<img src="images/icons/classicon_${CLASSES[j].toLowerCase()}.jpg" alt="">`;
+const fmt = (n) => n.toLocaleString('en-US');
+const pct = (a, b) => b ? a / b * 100 : 0;
+const pctTxt = (v) => v >= 10 || v === 0 ? v.toFixed(0) + '%' : v.toFixed(1) + '%';
+const $ = (id) => document.getElementById(id);
+
+// state, read from and written to the address: /census?mage,eu,pvp,horde
+const S = { region: 'all', rules: '', faction: '', cls: -1, race: -1, metric: 'col' };
+for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
+  const ci = CLASSES.findIndex((c) => c.toLowerCase() === t); if (ci >= 0) { S.cls = ci; continue; }
+  const ri = RACE_SLUG.indexOf(t); if (ri >= 0) { S.race = ri; continue; }
+  if (REGIONS.some(([k]) => k === t && k !== 'all')) { S.region = t; continue; }
+  const ru = RULES.find((r) => r[2] === t && r[0]); if (ru) { S.rules = ru[0]; continue; }
+  if (t === 'alliance' || t === 'horde') S.faction = t[0].toUpperCase() + t.slice(1);
+}
+const setLink = () => {
+  const parts = [];
+  if (S.cls >= 0) parts.push(CLASSES[S.cls].toLowerCase());
+  if (S.race >= 0) parts.push(RACE_SLUG[S.race]);
+  if (S.region !== 'all') parts.push(S.region);
+  if (S.rules) parts.push(RULES.find((r) => r[0] === S.rules)[2]);
+  if (S.faction) parts.push(S.faction.toLowerCase());
+  history.replaceState(null, '', location.pathname + (parts.length ? '?' + parts.join(',') : '') + location.hash);
+};
+
+const has = (region, rules) => !!C.counts[rules ? region + '|' + rules : region];
+// the counts in view, [class][race], with the other faction's races zeroed
+const grid = () => {
+  const g = C.counts[S.rules ? S.region + '|' + S.rules : S.region];
+  return g.map((row) => row.map((n, i) => !S.faction || FACTION(i) === S.faction ? n : 0));
+};
+const raceOn = (i) => !S.faction || FACTION(i) === S.faction;
+// which race / class combinations exist at all (any count anywhere)
+const EXISTS = CLASSES.map((_, j) => RACES.map((_, i) => C.counts.all[j][i] > 0));
+
+function segs(el, items, cur, onPick, disabled = () => false) {
+  el.innerHTML = items.map(([v, label]) => `<button type="button" data-v="${v}" aria-pressed="${v === cur}"${disabled(v) ? ' disabled' : ''}>${label}</button>`).join('');
+  el.onclick = (e) => { const b = e.target.closest('button'); if (b && !b.disabled) onPick(b.dataset.v); };
+}
+
+function draw() {
+  if (!has(S.region, S.rules)) S.rules = '';
+  if (S.race >= 0 && !raceOn(S.race)) S.race = -1;
+  setLink();
+  segs($('czRegion'), REGIONS, S.region, (v) => { S.region = v; draw(); });
+  segs($('czRules'), RULES, S.rules, (v) => { S.rules = v; draw(); }, (v) => !has(S.region, v));
+  segs($('czMetric'), METRICS, S.metric, (v) => { S.metric = v; draw(); });
+  document.querySelectorAll('.cz-fac button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.faction));
+
+  const g = grid();
+  const raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0));
+  const classTot = CLASSES.map((_, j) => g[j].reduce((a, b) => a + b, 0));
+  const total = raceTot.reduce((a, b) => a + b, 0);
+  const where = [S.region !== 'all' ? REGIONS.find((r) => r[0] === S.region)[1] : '', S.rules ? RULES.find((r) => r[0] === S.rules)[1] + ' realms' : '', S.faction].filter(Boolean).join(', ');
+  $('czTake').innerHTML = `<b>${fmt(total)}</b> characters${where ? ` (${where})` : ''} found on guild rosters by <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth's census</a>, by race and class.`;
+
+  // Races: of everyone, or of the picked class
+  const rv = RACES.map((_, i) => S.cls >= 0 ? g[S.cls][i] : raceTot[i]);
+  const rSum = rv.reduce((a, b) => a + b, 0);
+  $('czRacesTitle').innerHTML = 'Races' + (S.cls >= 0 ? `<button type="button" class="cz-chip" data-clear="cls" title="Show all classes" style="color:${CLASS_COLOR[CLASSES[S.cls]]}">${classImg(S.cls)}${CLASSES[S.cls]}s</button>` : '');
+  bars($('czRaces'), RACES.map((name, i) => ({ i, name, n: rv[i], ok: raceOn(i) && (S.cls < 0 || EXISTS[S.cls][i]),
+    img: raceImg(i), color: FACTION(i) === 'Alliance' ? 'var(--al)' : 'var(--ho)', on: S.race === i })), rSum, (i) => { S.race = S.race === i ? -1 : i; draw(); });
+
+  // Classes: of everyone, or of the picked race
+  const cv = CLASSES.map((_, j) => S.race >= 0 ? g[j][S.race] : classTot[j]);
+  const cSum = cv.reduce((a, b) => a + b, 0);
+  $('czClassesTitle').innerHTML = 'Classes' + (S.race >= 0 ? `<button type="button" class="cz-chip" data-clear="race" title="Show all races">${raceImg(S.race)}${RACE_PL[S.race]}</button>` : '');
+  bars($('czClasses'), CLASSES.map((name, j) => ({ i: j, name, n: cv[j], ok: S.race < 0 || EXISTS[j][S.race],
+    img: classImg(j), color: CLASS_COLOR[name], on: S.cls === j, nameColor: CLASS_COLOR[name] })), cSum, (j) => { S.cls = S.cls === j ? -1 : j; draw(); });
+
+  table(g, raceTot, classTot, total);
+}
+
+function bars(el, items, sum, pick) {
+  const shown = items.filter((d) => d.ok).sort((a, b) => b.n - a.n);
+  const max = Math.max(1, ...shown.map((d) => d.n));
+  el.innerHTML = shown.length ? shown.map((d) => `<button type="button" class="cz-row${d.n ? '' : ' dim'}" data-i="${d.i}" aria-pressed="${d.on}">${d.img}<span class="n"${d.nameColor ? ` style="color:${d.nameColor}"` : ''}>${d.name}</span>`
+    + `<span class="b"><i style="width:${d.n / max * 100}%;background:${d.color}"></i></span><span class="c">${fmt(d.n)}</span><span class="p">${pctTxt(pct(d.n, sum))}</span></button>`).join('')
+    : '<p class="cz-empty">No characters for this pick.</p>';
+  el.onclick = (e) => { const b = e.target.closest('.cz-row'); if (b) pick(+b.dataset.i); };
+}
+
+function table(g, raceTot, classTot, total) {
+  const rows = RACES.map((_, i) => i).filter(raceOn);
+  const val = (j, i) => {
+    const n = g[j][i];
+    return S.metric === 'col' ? pct(n, classTot[j]) : S.metric === 'row' ? pct(n, raceTot[i]) : S.metric === 'all' ? pct(n, total) : n;
+  };
+  let max = 0;
+  rows.forEach((i) => CLASSES.forEach((_, j) => { if (EXISTS[j][i]) max = Math.max(max, val(j, i)); }));
+  const cell = (v) => S.metric === 'n' ? fmt(v) : pctTxt(v);
+  const shade = (v) => `background:color-mix(in srgb, var(--gold) ${Math.round(Math.pow(v / (max || 1), .75) * 55)}%, transparent)`;
+  $('czTable').tHead.innerHTML = '<tr><th></th>' + CLASSES.map((c, j) => `<th><button type="button" data-cls="${j}" aria-pressed="${S.cls === j}" title="${c}">${classImg(j)}<span class="cn" style="color:${CLASS_COLOR[c]}">${c}</span></button></th>`).join('')
+    + '<th class="tot"><button type="button" disabled style="cursor:default">Σ<span class="cn">All</span></button></th></tr>';
+  $('czTable').tBodies[0].innerHTML = rows.map((i) => `<tr><td class="r"><button type="button" data-race="${i}" aria-pressed="${S.race === i}" title="${RACES[i]}">${raceImg(i)}<span class="rn">${RACES[i]}</span></button></td>`
+    + CLASSES.map((_, j) => EXISTS[j][i] ? `<td class="v${S.cls === j && S.race === i ? ' pick' : ''}" data-r="${i}" data-c="${j}" style="${shade(val(j, i))}">${cell(val(j, i))}</td>` : '<td class="x">–</td>').join('')
+    + `<td class="tot">${S.metric === 'row' ? '100%' : S.metric === 'n' ? fmt(raceTot[i]) : pctTxt(pct(raceTot[i], total))}</td></tr>`).join('')
+    + '<tr class="tot"><td class="r"><button type="button" disabled style="cursor:default"><span style="width:1.5em;text-align:center">Σ</span><span class="rn">All races</span></button></td>'
+    + CLASSES.map((_, j) => `<td>${S.metric === 'col' ? '100%' : S.metric === 'n' ? fmt(classTot[j]) : pctTxt(pct(classTot[j], total))}</td>`).join('')
+    + `<td>${S.metric === 'n' ? fmt(total) : '100%'}</td></tr>`;
+  $('czMetricNote').textContent = {
+    col: 'Each class column adds up to 100%: how that class splits by race. Darker cells are bigger shares.',
+    row: 'Each race row adds up to 100%: which classes that race plays. Darker cells are bigger shares.',
+    all: 'Every cell is a share of all characters shown. Darker cells are bigger shares.',
+    n: 'Characters found for each race and class. Darker cells are bigger counts.' }[S.metric];
+  $('czTable').onclick = (e) => {
+    const c = e.target.closest('[data-cls]'), r = e.target.closest('[data-race]'), v = e.target.closest('td.v');
+    if (c) S.cls = S.cls === +c.dataset.cls ? -1 : +c.dataset.cls;
+    else if (r) S.race = S.race === +r.dataset.race ? -1 : +r.dataset.race;
+    else if (v) { const same = S.cls === +v.dataset.c && S.race === +v.dataset.r; S.cls = same ? -1 : +v.dataset.c; S.race = same ? -1 : +v.dataset.r; }
+    else return;
+    draw();
+  };
+  // a cell's tooltip: its count and all three shares
+  const tip = $('czTip');
+  $('czTable').onmousemove = (e) => {
+    const td = e.target.closest('td.v'); if (!td) { tip.hidden = true; return; }
+    const i = +td.dataset.r, j = +td.dataset.c, n = g[j][i];
+    tip.innerHTML = `<div class="h"><span style="color:${FACTION(i) === 'Alliance' ? '#74a9ff' : '#ff6d5f'}">${RACES[i]}</span> <span style="color:${CLASS_COLOR[CLASSES[j]]}">${CLASSES[j]}</span></div>`
+      + `<div class="row"><span>Characters</span><b>${fmt(n)}</b></div><div class="row"><span>Of ${CLASSES[j]}s</span><b>${pctTxt(pct(n, classTot[j]))}</b></div>`
+      + `<div class="row"><span>Of ${RACE_PL[i]}</span><b>${pctTxt(pct(n, raceTot[i]))}</b></div><div class="row"><span>Of everyone</span><b>${pctTxt(pct(n, total))}</b></div>`;
+    tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + 'px';
+    tip.style.top = (e.clientY + 16 + h > innerHeight ? e.clientY - h - 12 : e.clientY + 16) + 'px';
+  };
+  $('czTable').onmouseleave = () => { tip.hidden = true; };
+}
+
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.cz-chip'); if (chip) { if (chip.dataset.clear === 'cls') S.cls = -1; else S.race = -1; draw(); return; }
+  const f = e.target.closest('.cz-fac button'); if (f) { S.faction = S.faction === f.dataset.v ? '' : f.dataset.v; draw(); }
+});
+const [y, m, d] = C.date.split('-').map(Number);
+$('czDate').textContent = `Census taken ${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} ${d}, ${y}.`;
+draw();
+})();
+</script>

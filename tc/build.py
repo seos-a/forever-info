@@ -227,6 +227,13 @@ SIMS_OG=f"""
 <meta name="theme-color" content="#1a0d04">"""
 assert 'images/og.png?v=4' in HEAD   # keep the picture's ?v= in step with the main pages'
 open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">'+SIMS_OG,1))
+# ---- the Population Census page (foreverinfo.io/census): race and class counts from Life on Azeroth (census.py) ----
+import census
+CENSUS_DESC='Who plays what in WoW Forever: characters by race and class, per region and ruleset, from Life on Azeroth\'s census.'
+CENSUS_OG=SIMS_OG.replace(f'{SITE}sims',f'{SITE}census').replace('Simulations – Forever Info','Population Census – Forever Info')\
+    .replace('WoW Forever race and spec simulations: DPS, healing and tanking for every race, with each racial\'s bonus.',CENSUS_DESC)
+assert CENSUS_OG.count(CENSUS_DESC)==2 and f'{SITE}census' in CENSUS_OG
+open('../web/census.html','w',encoding='utf-8',newline='\n').write(census.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">'+CENSUS_OG,1))
 # its old address, /experiment, sends visitors on to /sims (keeping ?... and #healing)
 open('../web/experiment.html','w',encoding='utf-8',newline='\n').write('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex">'
     '<title>Simulations – Forever Info</title><link rel="canonical" href="https://foreverinfo.io/sims">'
