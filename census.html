@@ -144,10 +144,16 @@ document.head.appendChild(t);})();
      ends and each side's share and count under it */
   .cz-bal { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; }
   .cz-bal > img { width: 26px; height: 26px; border: 2px solid #000; border-radius: 4px; box-shadow: 0 0 0 1px #8a6a2a; }
-  .cz-balbar { position: relative; display: flex; height: 18px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #0006; }
+  /* the bar sits on the ranking charts' gridlines (every 25%, standing out above and below it), the 50% one also
+     drawn faintly across it; the black line marks where Alliance meets Horde */
+  .cz-balwrap { position: relative; padding: 8px 0; }
+  .cz-balgrid i { position: absolute; top: 0; bottom: 0; width: 1px; margin-left: -.5px; background: var(--cds-chart-grid); }
+  .cz-balgrid i.mid { background: color-mix(in srgb, var(--color-fg) 30%, transparent); }
+  .cz-balmid { position: absolute; top: 8px; bottom: 8px; left: 50%; width: 1px; margin-left: -.5px; background: #fff5; z-index: 2; pointer-events: none; }
+  .cz-balbar { position: relative; z-index: 1; display: flex; height: 18px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #0006; }
   .cz-balbar i { height: 100%; transition: width .25s; }
-  .cz-balbar::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: #000a; }
-  .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: var(--cds-font-size-caption); margin-top: -4px; font-variant-numeric: tabular-nums; }
+  .cz-balbar b { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #000c; transition: left .25s; }
+  .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: var(--cds-font-size-caption); margin-top: -10px; font-variant-numeric: tabular-nums; }
   .cz-ballab b { font-weight: 600; }
   .cz-ballab span { color: var(--color-fg-muted); margin: 0 .35em; }
 
@@ -417,7 +423,7 @@ function draw() {
   const all = C.counts[S.rules ? S.region + '|' + S.rules : S.region], fa = [0, 0];
   all.forEach((row) => row.forEach((n, i) => { fa[i < 5 ? 0 : 1] += n; }));
   const ft = fa[0] + fa[1], fp = fa.map((n) => pct(n, ft));
-  $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i></div>`
+  $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balwrap"><div class="cz-balgrid">${[0, 25, 50, 75, 100].map((t) => `<i class="${t === 50 ? 'mid' : ''}" style="left:${t}%"></i>`).join('')}</div><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i><b style="left:${fp[0]}%"></b></div><div class="cz-balmid"></div></div>`
     + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span style="margin:0"><b style="color:${FAC_TEXT.Alliance}">Alliance ${fp[0].toFixed(1)}%</b><span>${fmt(fa[0])}</span></span>`
     + `<span style="margin:0"><span>${fmt(fa[1])}</span><b style="color:${FAC_TEXT.Horde}">${fp[1].toFixed(1)}% Horde</b></span></div>`;
 
