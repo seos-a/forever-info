@@ -750,6 +750,8 @@
       <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Forever's stats for every item (Classic stats for Alcor's Sunrazor, which Forever lacks) and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (every Hunter build, Arms, Unsealed Wrath) trades the hit past the cap for what item budgets price the same, picking the stat that sims best: 14 Agility per 1% for Hunters, 14 Strength per 1% for Arms and Unsealed Wrath.</p></div>
       <div><b>Racials</b><p>Racial Bonus compares each race with the same build with no racial abilities, passives or stat offsets. Active racials fire on cooldown, so timing them with other cooldowns may be worth a little more. Situational ones (Big Game Hunter, Beast Slaying, Elemental Insight) aren't counted.</p></div>
       <div><b>Targets</b><p>Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view. Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
+      <div><b>Pack play</b><p>Some WoWSims presets play every fight as if it had one target, so for these builds the race study adds pack play that only switches on with more targets (one-target play is the preset's): MM, BM and SV use Multi-Shot instead of Aimed Shot at 2+ targets (they share a cooldown); Arcane, Arcane Fire and Fire walk in and cycle Flamestrike and Arcane Explosion at 3+, and FFB Flamestrike and Blizzard; SM/Ruin adds Destruction's Hellfire at 2+; Shadow keeps Shadow Word: Pain on every target at 2+; Unsealed Wrath puts Consecration first at 2+. Each was the best of several options simmed at 1 to 5 targets. Aff (Wrack) does less at 5 targets than at 4 because its preset stops casting Bane of Agony at 5 targets.</p></div>
+      <div><b>Casts</b><p>Casts and actions per minute count from the pull. The opener's last 5 seconds before it (a precast, Battle Shout) show on the timeline but aren't counted; earlier setup (an aspect, an aura) is listed under the timeline. Stance changes count as presses.</p></div>
     </div>
   </section>
 </div>
@@ -949,6 +951,7 @@
       <div><b>Setups</b><p>Each tank's WoWSims talents, rotation, consumables, buffs and gear presets (Protection Warrior has two: Defense Cap and Threat). Every race wears the same gear.</p></div>
       <div><b>Measures</b><p>DPS and threat: higher is better. Damage taken (after armor, avoidance and mitigation) and spikes (the worst bursts against the tank's health): lower is better.</p></div>
       <div><b>Targets</b><p>Only the first target attacks; extra targets add threat and damage, not damage taken. Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view.</p></div>
+      <div><b>Casts</b><p>Casts and actions per minute count from the pull. The opener's last 5 seconds before it show on the timeline but aren't counted; earlier setup (an aura, a form) is listed under the timeline. Stance changes count as presses.</p></div>
       <div><b>Racials</b><p>Active racials fire on cooldown rather than timed for big hits, and Dwarves press Stoneform whenever it's ready (WoWSims would save it for low health, which the steady healing never reaches). Situational racials aren't counted.</p></div>
     </div>
   </section>
@@ -1893,7 +1896,12 @@ function drawTimeline(p, item, minH) {
   tl = tl.map(([i, ...c]) => [rowOf[i], ...c]); wins = wins.map(([i, ...w]) => [rowOf[i], ...w]); names = ordered;
   const notes = [`${item.build} · ${RACE_NAME[r.race] || r.race} · ${fight / 60} minute fight${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
-  else notes.push(`Casts per minute averaged over ${r.runs} runs of the sim. Timeline is an average run.`);
+  else {
+    notes.push(`Casts counted from the pull, averaged over ${r.runs} runs of the sim. Timeline is an average run, with the opener's last 5 seconds before the pull.`);
+    // Pressed only well before the pull (an aspect, an aura): simply on when the fight starts, so named here, not shown.
+    const setup = suJson(r.setup || '[]');
+    if (setup.length) notes.push(`Before the pull: ${setup.join(', ')}.`);
+  }
   if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
   box.append(wrap);
@@ -3428,7 +3436,12 @@ function drawTimeline(p, item, minH) {
   tl = tl.map(([i, ...c]) => [rowOf[i], ...c]); wins = wins.map(([i, ...w]) => [rowOf[i], ...w]); names = ordered;
   const notes = [`${item.build} · ${RACE_NAME[r.race] || r.race} · ${fight / 60} minute fight${+p.targets > 1 ? ' · one target' : ''}.`];
   if (p.specTab === 'dot') notes.push(`Average of ${r.runs} runs of the sim (${fx(r.dps, 1)} DPS), smoothed over 6 seconds. Hover for each ability's damage at that moment.`);
-  else notes.push(`Casts per minute averaged over ${r.runs} runs of the sim. Timeline is an average run.`);
+  else {
+    notes.push(`Casts counted from the pull, averaged over ${r.runs} runs of the sim. Timeline is an average run, with the opener's last 5 seconds before the pull.`);
+    // Pressed only well before the pull (an aspect, an aura): simply on when the fight starts, so named here, not shown.
+    const setup = suJson(r.setup || '[]');
+    if (setup.length) notes.push(`Before the pull: ${setup.join(', ')}.`);
+  }
   if (item.pinned && r.race !== item.best) notes.push(`The combat logs were run only with each build's best race in each faction, so this is ${r.race}, not ${item.best}.`);
   wrap.append(el('div', 'tl-note', notes.join(' ')));
   box.append(wrap);
