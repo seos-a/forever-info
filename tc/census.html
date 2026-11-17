@@ -44,6 +44,16 @@
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; vertical-align: -.06em; }
   .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; vertical-align: -.14em; margin-right: .4em; }   /* as tall as the text */
+  /* the picked class or race: a button opening a menu of the others (the Sims page's .rr-pick and .rr-menu) */
+  .cz-pickwrap { position: relative; display: inline-block; }
+  .cz-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
+  .cz-pick:hover, .cz-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
+  .cz-menu { position: absolute; left: -.3em; top: calc(100% + 4px); z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px;
+    background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); font-size: var(--cds-font-size-body); font-weight: 400; line-height: 1.45; }
+  .cz-menu button { font: inherit; display: flex; align-items: center; gap: .5rem; text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; white-space: nowrap; }
+  .cz-menu button img { width: 18px; height: 18px; border-radius: 3px; margin: 0; vertical-align: 0; }
+  .cz-menu button:hover, .cz-menu button:focus-visible { background: color-mix(in srgb, var(--color-fg) 10%, transparent); outline: none; }
+  .cz-menu button[aria-checked="true"] { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
 
   /* the ranking charts: the name column (icon and name), then the bar column with its gridlines and axis; each bar is
      followed by its share in bold, the character count, and the most played race or class. The longest bar leaves
@@ -286,10 +296,34 @@ function rank(el, items, sum) {
   const click = Object.fromEntries(shown.filter((d) => d.onClick).map((d) => [d.key, d.onClick]));
   el.onclick = (e) => { const r = e.target.closest('button.cz-row'); if (r && click[r.dataset.k]) click[r.dataset.k](); };
 }
-const crumbs = (head, box, root, img, name, color) => {
-  head.innerHTML = `<div class="cz-crumbs"><button type="button" class="cz-crumb">${root}</button><span class="cz-crumbsep" aria-hidden="true">›</span>${img}<span style="color:${color}">${name}</span></div>`;
+// An open breakdown's title: the list's name (back to it), then the picked class or race, which opens a menu of all of
+// them in their colours to switch to another (as the Sims page's spec picker). items: [{idx, img, name, color}]
+const crumbs = (head, box, root, items, cur) => {
+  const it = items.find((d) => d.idx === cur);
+  head.innerHTML = `<div class="cz-crumbs"><button type="button" class="cz-crumb">${root}</button><span class="cz-crumbsep" aria-hidden="true">›</span>`
+    + `<span class="cz-pickwrap"><button type="button" class="cz-pick" aria-haspopup="menu" aria-expanded="false">${it.img}<span style="color:${it.color}">${it.name}</span></button></span></div>`;
   head.querySelector('.cz-crumb').onclick = () => hide(box);
+  const pick = head.querySelector('.cz-pick'), wrap = pick.parentElement;
+  pick.onclick = (e) => {
+    e.stopPropagation();
+    const was = wrap.querySelector('.cz-menu'); closeMenus(); if (was) return;
+    const menu = document.createElement('div'); menu.className = 'cz-menu'; menu.setAttribute('role', 'menu');
+    menu.innerHTML = items.map((d) => `<button type="button" role="menuitemradio" aria-checked="${d.idx === cur}" data-i="${d.idx}">${d.img}<span style="color:${d.color}">${d.name}</span></button>`).join('');
+    menu.onclick = (ev) => { const b = ev.target.closest('button'); if (!b) return; closeMenus(); S[box] = +b.dataset.i; draw(); };
+    wrap.append(menu); pick.setAttribute('aria-expanded', 'true');
+    (menu.querySelector('[aria-checked="true"]') || menu.firstChild).focus();
+  };
 };
+const closeMenus = () => document.querySelectorAll('.cz-menu').forEach((m) => { m.previousElementSibling.setAttribute('aria-expanded', 'false'); m.remove(); });
+document.addEventListener('click', (e) => { if (!e.target.closest('.cz-menu')) closeMenus(); });
+document.addEventListener('keydown', (e) => {
+  const menu = e.target.closest && e.target.closest('.cz-menu');
+  if (e.key === 'Escape' && document.querySelector('.cz-menu')) { const p = document.querySelector('.cz-menu').previousElementSibling; closeMenus(); p.focus(); }
+  else if (menu && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+    e.preventDefault(); const bs = [...menu.querySelectorAll('button')], k = bs.indexOf(e.target);
+    bs[(k + (e.key === 'ArrowDown' ? 1 : bs.length - 1)) % bs.length].focus();
+  }
+});
 
 function draw() {
   if (!has(S.region, S.rules)) S.rules = '';
@@ -320,7 +354,7 @@ function draw() {
     }), total);
   } else {
     const j = S.cls, name = CLASSES[j];
-    crumbs($('czClassHead'), 'cls', 'Classes', classImg(j), name, CLASS_COLOR[name]);
+    crumbs($('czClassHead'), 'cls', 'Classes', CLASSES.map((c, k) => ({ idx: k, img: classImg(k), name: c, color: CLASS_COLOR[c] })), j);
     $('czClassNote').textContent = `${fmt(classTot[j])} ${S.faction ? S.faction + ' ' : ''}${name}s`;
     rank($('czClass'), RACES.map((rname, i) => {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
@@ -342,7 +376,7 @@ function draw() {
     }), total);
   } else {
     const i = S.race, name = RACES[i];
-    crumbs($('czRaceHead'), 'race', 'Races', raceImg(i), name, FAC_TEXT[FACTION(i)]);
+    crumbs($('czRaceHead'), 'race', 'Races', RACES.map((r, k) => ({ idx: k, img: raceImg(k), name: r, color: FAC_TEXT[FACTION(k)] })).filter((d) => raceOn(d.idx)), i);
     $('czRaceNote').textContent = `${fmt(raceTot[i])} ${RACE_PL[i]}`;
     rank($('czRace'), CLASSES.map((cname, j) => {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
