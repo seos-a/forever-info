@@ -1,6 +1,37 @@
 {
  "updates": [
   {
+   "date": "2026-11-17",
+   "version": "1.60.1",
+   "build": "70959",
+   "classes": {
+    "priest": [
+     [
+      "other",
+      "Vampiric Embrace",
+      "spell_shadow_unsummonbuilding",
+      "Shadow talent · reworked",
+      "Afflicts your target with Shadow energy that causes all party members to be healed for {*10*}% of any Shadow spell damage you deal for 30 sec. {*You receive 100% increased healing on yourself from this effect.*}",
+      "Afflicts your target with Shadow energy that causes all party members to be healed for {~20~}% of any Shadow spell damage you deal for 30 sec."
+     ]
+    ],
+    "paladin": [
+     [
+      "nerf",
+      "Unsealed Wrath",
+      "spell_holy_blessedresillience",
+      "Retribution talent",
+      "Internal cooldown increased from none to {-0.1 sec}.†",
+      ""
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.70938",
+    "1.60.1.70959"
+   ]
+  },
+  {
    "date": "2026-11-13",
    "version": "1.60.1",
    "build": "70938",
