@@ -102,8 +102,9 @@ html{background:var(--color-bg)}
 body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-anthropic-sans);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
 #dash-root{max-width:1600px;margin:0 auto;padding:16px 16px 52px;box-sizing:border-box}
 @media (max-width:600px){#dash-root{padding:10px 10px 52px}}
-/* back to the main site: the red WoW menu button its "Sims" link uses (template2.html's .xp-link), as the login screen's
-   "Quit", in the page's bottom right corner */
+/* the red WoW menu buttons of the main site's "Sims" / "Census" links (template2.html's .xp-link), in the page's bottom right
+   corner: "Home" back to the main site, and above it the other page (Census on the Sims page, Sims on the Census page),
+   stacked as the main site stacks them */
 .xp-quit{position:absolute;right:10px;bottom:8px;z-index:30;width:104px;height:18px;padding:0 0 2px;box-sizing:border-box;   /* the word 1px above the middle, as .xp-link */
   display:flex;align-items:center;justify-content:center;font:700 11px/1 Verdana,Tahoma,"DejaVu Sans",Geneva,sans-serif;
   color:#ffd100;text-decoration:none;text-shadow:1px 1px 0 #000,0 0 3px #000;border-radius:3px;
@@ -111,11 +112,13 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
   box-shadow:inset 0 1px 0 #ff6a4a66,inset 0 0 6px #000a,0 0 0 1px #8d8d8d,0 0 0 2px #3a3a3a,0 0 0 3px #000,0 2px 5px #000}
 .xp-quit:hover{color:#fff;background:linear-gradient(180deg,#e0281a 0%,#a8140a 45%,#7e0c05 55%,#580703 100%)}
 .xp-quit:active{background:linear-gradient(180deg,#4a0402 0%,#6a0703 45%,#8e0c06 100%);padding:2px 0 0}
-@media (max-width:600px){#dash-root{padding-bottom:84px}.xp-quit{right:auto;left:50%;margin-left:-52px;bottom:46px}}   /* phones: centered above the stamp */
+.xp-quit.xp-up{bottom:34px}
+#dash-root{padding-bottom:78px}
+@media (max-width:600px){#dash-root{padding-bottom:110px}.xp-quit{right:auto;left:50%;margin-left:-52px;bottom:46px}.xp-quit.xp-up{bottom:72px}}   /* phones: centered above the stamp */
 /* the WoWSims build the sims ran on, in the page's bottom left corner like the main site's beta version (the WoW login screen) */
 body{position:relative;min-height:100vh}
 .xp-stamp{position:absolute;left:0;right:0;bottom:8px;z-index:30;font:11px/1.35 Verdana,Tahoma,sans-serif;color:#ffd100;text-shadow:1px 1px 0 #000,-1px 0 0 #000,0 -1px 0 #000,0 0 3px #000;pointer-events:none;white-space:nowrap;text-align:left;padding-left:10px}
-@media (max-width:600px){.xp-stamp{text-align:center;padding-left:0}}   /* phones: centered, under the Quit button */
+@media (max-width:600px){.xp-stamp{text-align:center;padding-left:0}}   /* phones: centered, under the Home button */
 """
 
 # The WoWSims Forever commit the DPS and tank sims ran on, and its date (shown bottom left). WoWSims has no release
@@ -178,7 +181,8 @@ def build(head_extra=''):
 {markup}
 </div>
 <div class="xp-stamp" data-heal="ForeverHealing-TC Build {HEAL_BUILD} (Beta)<br>{HEAL_DATE}">WoWSims Version {SIMS_BUILD} (Beta)<br>{SIMS_DATE}</div>
-<a class="xp-quit" href="/">Quit</a>
+<a class="xp-quit xp-up" href="census">Census</a>
+<a class="xp-quit" href="/">Home</a>
 {js}</body>
 </html>
 """

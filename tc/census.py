@@ -2,7 +2,7 @@
 Azeroth's census (https://lifeonazeroth.com/#population, counted from guild rosters).
 
 census.html is the page (markup, style, script); census.json the numbers, by region and ruleset. It is framed like the
-Sims page: experiment.CSS (colours, fonts, the background along the top, the Quit button and the corner stamp). Called by
+Sims page: experiment.CSS (colours, fonts, the background along the top, the Home and Sims buttons and the corner stamp). Called by
 build.py, which adds the analytics snippet and the link-preview tags. To update the numbers, replace census.json's
 counts and date and rebuild."""
 import base64, json, os
@@ -36,7 +36,8 @@ def build(head_extra=''):
 {page}
 </div>
 <div class="xp-stamp">Life on Azeroth Census<br>{MONTHS[m - 1]} {d} {y}</div>
-<a class="xp-quit" href="/">Quit</a>
+<a class="xp-quit xp-up" href="sims">Sims</a>
+<a class="xp-quit" href="/">Home</a>
 </body>
 </html>
 """
