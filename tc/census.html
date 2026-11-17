@@ -12,7 +12,7 @@
   .cz-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
 
   /* along the top, on the background picture: the faction crests (pick one to show only its races, again for all), as
-     the Sims page, then the region and ruleset switches */
+     the Sims page, then the region flags and the ruleset icons */
   .cz-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm) var(--cds-gap-md); padding: var(--cds-pad-xs) 2px; margin-bottom: calc(var(--cds-gap-md) - var(--cds-gap-lg)); }
   .cz-fac { display: flex; gap: var(--cds-gap-sm); }
   .cz-fac button { width: 32px; height: 32px; padding: 0; margin: 0; cursor: pointer; border: 2px solid #000; border-radius: 4px; overflow: hidden; background: #111;
@@ -21,6 +21,7 @@
   .cz-fac button:hover { filter: brightness(1.15); }
   .cz-fac button[aria-pressed="true"] { box-shadow: 0 0 0 2px #ffd75a, 0 0 10px #ffd75a99, 0 3px 8px #000c; }
   .cz-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
+  .cz-fac button:disabled { filter: grayscale(1) brightness(.45); cursor: default; }   /* a ruleset the region has no realms of (Korea, Taiwan: no RP) */
   @media (max-width: 600px) { .cz-fac button { width: 28px; height: 28px; } }
   /* the region buttons (first in the row) are the crests' buttons around each region's square flag (images/flags, drawn by art/flags.py) */
 
@@ -160,7 +161,12 @@
       <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
       <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
     </div>
-    <div class="cz-seg" id="czRules" role="group" aria-label="Ruleset"></div>
+    <div class="cz-fac" id="czRules" role="group" aria-label="Ruleset">
+      <button type="button" data-v="Normal" aria-pressed="false" title="Normal realms only" aria-label="Normal realms only"><img src="images/icons/inv_camelot_camping_campfirenearby.jpg" alt=""></button>
+      <button type="button" data-v="PvP" aria-pressed="false" title="PvP realms only" aria-label="PvP realms only"><img src="images/icons/achievement_bg_winwsg.jpg" alt=""></button>
+      <button type="button" data-v="Roleplay" aria-pressed="false" title="Roleplay realms only" aria-label="Roleplay realms only"><img src="images/icons/ability_rogue_disguise.jpg" alt=""></button>
+      <button type="button" data-v="Roleplay PvP" aria-pressed="false" title="Roleplay PvP realms only" aria-label="Roleplay PvP realms only"><img src="images/icons/achievement_pvp_legion03.jpg" alt=""></button>
+    </div>
   </div>
 
   <section class="cz-card" aria-label="Classes">
@@ -189,7 +195,7 @@
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
       <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
-      <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. The flags count one region's realms only (Americas, Europe, Korea, Taiwan), and the ruleset switch one kind of realm; pick a crest or flag again to go back to all.</p>
+      <p><b>Filters</b>The crests at the top show one faction's races only, and every share is then of that faction. The flags count one region's realms only (Americas, Europe, Korea, Taiwan), and the ruleset icons one kind of realm (Normal, PvP, Roleplay, Roleplay PvP); pick a crest, flag or ruleset again to go back to all.</p>
       <p><b>Snapshot</b><span id="czDate"></span> Blank cells in the table are race and class combinations WoW Forever doesn't allow.</p>
     </div>
   </section>
@@ -331,7 +337,8 @@ function draw() {
   if (S.colRace >= 0 && !raceOn(S.colRace)) S.colRace = -1;
   history.replaceState(history.state, '', link());
   document.querySelectorAll('#czRegion button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.region));
-  segs($('czRules'), RULES, S.rules, (v) => { S.rules = v; draw(); }, (v) => !has(S.region, v));
+  // the ruleset icons (the realm list's own: Normal, PvP, Roleplay, Roleplay PvP), as the flags; greyed where the region has none
+  document.querySelectorAll('#czRules button').forEach((b) => { b.setAttribute('aria-pressed', b.dataset.v === S.rules); b.disabled = !has(S.region, b.dataset.v); });
   segs($('czMetric'), METRICS, S.metric, (v) => { S.metric = v; draw(); });
   document.querySelectorAll('#czFaction button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.faction));
 
@@ -470,9 +477,10 @@ $('czNotesCard').querySelector('.cz-fold').onclick = (e) => {
   e.currentTarget.setAttribute('aria-label', (open ? 'Collapse' : 'Expand') + ' Methods and Caveats');
 };
 document.addEventListener('click', (e) => {
-  // the crests and the flags: pick one to show only it, pick it again for all
+  // the crests, the flags and the ruleset icons: pick one to show only it, pick it again for all
   const f = e.target.closest('#czFaction button'); if (f) { S.faction = S.faction === f.dataset.v ? '' : f.dataset.v; draw(); return; }
-  const r = e.target.closest('#czRegion button'); if (r) { S.region = S.region === r.dataset.v ? 'all' : r.dataset.v; draw(); }
+  const r = e.target.closest('#czRegion button'); if (r) { S.region = S.region === r.dataset.v ? 'all' : r.dataset.v; draw(); return; }
+  const u = e.target.closest('#czRules button'); if (u && !u.disabled) { S.rules = S.rules === u.dataset.v ? '' : u.dataset.v; draw(); }
 });
 const [y, m, d] = C.date.split('-').map(Number);
 $('czDate').textContent = `Census taken ${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} ${d}, ${y}.`;
