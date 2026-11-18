@@ -132,7 +132,8 @@ document.head.appendChild(t);})();
   /* the ranking charts: the name column (icon and name), then the bar column with its gridlines and axis; each bar is
      followed by its share in bold, the character count, and (the classes) the most played race. The longest bar leaves
      --lab of room for that label. */
-  .cz-rank { --name: 11rem; --lab: 17rem; position: relative; display: flex; flex-direction: column; gap: 4px; font-size: var(--cds-font-size-caption); }
+  .cz-rank { --name: 11rem; --lab: 8rem; position: relative; display: flex; flex-direction: column; gap: 4px; font-size: var(--cds-font-size-caption); }
+  .cz-rank.cz-hastop { --lab: 17rem; }   /* the classes' bars also carry the most played race */
   .cz-grid { position: absolute; top: 0; bottom: 0; left: var(--name); right: 0; pointer-events: none; }
   .cz-grid i { position: absolute; top: 0; bottom: 20px; width: 1px; background: var(--cds-chart-grid); }
   .cz-grid span { position: absolute; bottom: 0; transform: translateX(-50%); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; line-height: 14px; }
@@ -153,8 +154,8 @@ document.head.appendChild(t);})();
   .cz-row.dim { opacity: .45; }
   .cz-axis { height: 16px; }
   .cz-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 6px 0; }
-  @media (max-width: 760px) { .cz-rank { --name: 8.5rem; --lab: 8.5rem; } .cz-row .c, .cz-row .top span { display: none; } }
-  @media (max-width: 420px) { .cz-rank { --name: 7rem; --lab: 3.5rem; } .cz-row .top { display: none; } }
+  @media (max-width: 760px) { .cz-rank, .cz-rank.cz-hastop { --name: 8.5rem; --lab: 8.5rem; } .cz-row .c, .cz-row .top span { display: none; } }
+  @media (max-width: 420px) { .cz-rank, .cz-rank.cz-hastop { --name: 7rem; --lab: 3.5rem; } .cz-row .top { display: none; } }
 
   /* the faction balance: one bar, Alliance from the left and Horde from the right, a tick at the middle, the crests at its
      ends and each side's share and count under it */
@@ -263,7 +264,6 @@ document.head.appendChild(t);})();
   <section class="cz-card" aria-label="Race and class">
     <div class="cz-cardhead" style="justify-content:flex-end"><div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div></div>
     <div class="cz-scroll"><table id="czTable"><thead></thead><tbody></tbody></table></div>
-    <p class="cz-note" id="czMetricNote"></p>
   </section>
 
   <section class="cz-card collapsed" id="czNotesCard">
@@ -348,8 +348,14 @@ function segs(el, items, cur, onPick, disabled = () => false) {
 // tooltips: each row and cell keeps its tooltip's HTML in tips[key]
 const tips = {}, tip = $('czTip');
 const tipRows = (rows) => rows.map(([k, v]) => `<div class="row"><span>${k}</span><b>${v}</b></div>`).join('');
+// On a phone a tap fires one mousemove: a tapped bar or cell shows its tooltip until the next touch or scroll, and the
+// filter icons show none (the icon's own look already says it's picked)
+let touched = 0;
+document.addEventListener('touchstart', () => { touched = Date.now(); tip.hidden = true; }, { passive: true });
+addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
 document.addEventListener('mousemove', (e) => {
-  const el = e.target.closest('[data-tip]'); if (!el || !tips[el.dataset.tip]) { tip.hidden = true; return; }
+  const el = e.target.closest('[data-tip]');
+  if (!el || !tips[el.dataset.tip] || (Date.now() - touched < 1500 && el.closest('.cz-top'))) { tip.hidden = true; return; }
   tip.innerHTML = tips[el.dataset.tip]; tip.hidden = false;
   const w = tip.offsetWidth, h = tip.offsetHeight;
   tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + 'px';
@@ -372,7 +378,8 @@ function rank(el, items, sum) {
   const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
   const ticks = []; for (let t = 0; t <= maxPct + 1e-9; t += step) ticks.push(t);
   const x = (v) => `calc((100% - var(--lab)) * ${(v / maxPct).toFixed(4)})`;
-  el.style.setProperty('--lab', shown.some((d) => d.top) ? '17rem' : '8rem');   // room for the bar's label: share and count, then the top pick if any
+  el.classList.toggle('cz-hastop', shown.some((d) => d.top));   // more room for the bar's label when it names the top pick (a class, not an inline
+  // style, so the phone widths' smaller room still applies)
   el.innerHTML = '<div class="cz-grid">' + ticks.map((t) => `<i style="left:${x(t)}"></i><span style="left:${x(t)}">${t}%</span>`).join('') + '</div>'
     + shown.map((d) => {
       const p = pct(d.n, sum), tag = d.onClick ? 'button' : 'div';
@@ -517,11 +524,6 @@ function table(g, raceTot, classTot, total) {
       return `<td class="${n && v === best[j] ? 'top best' : ''}" data-tip="t${j}_${i}" style="background:color-mix(in srgb, var(--accent) ${Math.round(6 + t * 34)}%, transparent)">${cell(v)}</td>`;
     }).join('')
     + `<td class="tot">${cell(allv(i))}</td></tr>`).join('');
-  $('czMetricNote').textContent = {
-    col: 'Each class column adds up to 100%: how that class splits by race.',
-    row: 'Each race row adds up to 100%: which classes that race plays.',
-    all: 'Every cell is a share of all characters shown.',
-    n: 'Characters found for each race and class.' }[S.metric] + ' Bold is the biggest in each column. Click a class to sort by it, or a race to order the classes by it.';
   $('czTable').tHead.onclick = (e) => {
     const b = e.target.closest('[data-sort]'); if (!b) return;
     const k = b.dataset.sort === 'race' || b.dataset.sort === 'all' ? b.dataset.sort : +b.dataset.sort;
