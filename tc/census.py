@@ -4,7 +4,9 @@ Azeroth's census (https://lifeonazeroth.com/#population, counted from guild rost
 census.html is the page (markup, style, script); census.json the numbers, by region and ruleset. It is framed like the
 Sims page: experiment.CSS (colours, fonts, the background along the top, the Home and Sims buttons and the corner stamp). Called by
 build.py, which adds the analytics snippet and the link-preview tags. To update the numbers, replace census.json's
-counts and date and rebuild."""
+counts and date and rebuild. Their page first shows an older saved copy and swaps in the live numbers a few seconds
+later: copy the live ones, each region|ruleset's race x class counts (`API_DATA.census.regions[key].combo` in the
+loaded page), whose totals run a little above the page's headline count."""
 import base64, json, os
 import experiment
 
