@@ -198,7 +198,8 @@
   <section class="cz-card collapsed" id="czNotesCard">
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
-      <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters. Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
+      <p><b>Where the numbers come from</b>The census on <a href="https://lifeonazeroth.com/#population" target="_blank" rel="noopener">Life on Azeroth</a>, which finds characters on guild rosters (<span id="czGuild"></span> of them; the rest it found another way). Players who aren't in a guild aren't counted, so this shows who plays in guilds, not the whole server population.</p>
+      <p><b>Levels</b>Every character counts the same, whatever its level. <span id="czLevels"></span> So this shows what people have rolled, low-level alts and bank characters included, more than what they play at level 60.</p>
       <p><b>Snapshot</b><span id="czDate"></span> Blank cells in the table are race and class combinations WoW Forever doesn't allow.</p>
     </div>
   </section>
@@ -353,6 +354,10 @@ function draw() {
   if (S.race >= 0 && !raceOn(S.race)) { S.race = -1; const k = open.indexOf('race'); if (k >= 0) open.splice(k, 1); }
   if (S.colRace >= 0 && !raceOn(S.colRace)) S.colRace = -1;
   history.replaceState(history.state, '', link());
+  // the Methods and Caveats notes on levels and guilds, for the region and ruleset picked (their levels aren't split by faction)
+  const [lt, l9, l60, lmed, lg] = C.levels[S.rules ? S.region + '|' + S.rules : S.region], pc = (n) => (n / lt * 100).toFixed(1) + '%';
+  $('czGuild').textContent = pc(lg);
+  $('czLevels').textContent = `Here, ${pc(l9)} are level 1 to 9 and ${pc(l60)} are level 60; half are level ${lmed} or below${S.faction ? " (both factions: the levels aren't split by faction)" : ''}.`;
   document.querySelectorAll('#czRegion button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.region));
   // the ruleset icons (the realm list's own: Normal, PvP, Roleplay, Roleplay PvP), as the flags; greyed where the region has none
   document.querySelectorAll('#czRules button').forEach((b) => { b.setAttribute('aria-pressed', b.dataset.v === S.rules); b.disabled = !has(S.region, b.dataset.v); });

@@ -6,7 +6,8 @@ Sims page: experiment.CSS (colours, fonts, the background along the top, the Hom
 build.py, which adds the analytics snippet and the link-preview tags. To update the numbers, replace census.json's
 counts and date and rebuild. Their page first shows an older saved copy and swaps in the live numbers a few seconds
 later: copy the live ones, each region|ruleset's race x class counts (`API_DATA.census.regions[key].combo` in the
-loaded page), whose totals run a little above the page's headline count."""
+loaded page), whose totals run a little above the page's headline count, and `levels` from the same object: per key
+[sum of `levels`, levels 1-9, level 60, median level, `guilded`], for the Methods and Caveats notes."""
 import base64, json, os
 import experiment
 
@@ -21,7 +22,7 @@ def build(head_extra=''):
         bg = ('body{background:url("data:image/jpeg;base64,' + base64.b64encode(open('bg.jpg', 'rb').read()).decode()
               + '") top center/auto 540px repeat-x,var(--color-bg)}')
     y, m, d = (int(x) for x in data['date'].split('-'))
-    blob = json.dumps({k: data[k] for k in ('date', 'source', 'races', 'classes', 'counts')}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    blob = json.dumps({k: data[k] for k in ('date', 'source', 'races', 'classes', 'counts', 'levels')}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     return f"""<!doctype html>
 <html lang="en">
 <head>

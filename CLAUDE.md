@@ -104,7 +104,7 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
   - `census.py` + `census.html` + `census.json`: the Population Census page (`/census`, a red "Census" button stacked
     above "Sims" on every page): characters by race and class per region and ruleset, from Life on Azeroth's census
     (https://lifeonazeroth.com/#population, counted from guild rosters). `census.json` is a hand-saved snapshot (`date`,
-    and `counts[region or region|ruleset][class][race]`); nothing refreshes it automatically (their live feed is their
+    `counts[region or region|ruleset][class][race]`, and `levels`: characters, levels 1-9, level 60, median level and guilded per key); nothing refreshes it automatically (their live feed is their
     own endpoint, not used without their OK). Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde` (a class, a race slug such as `nightelf`, a region,
     a ruleset, a faction)
