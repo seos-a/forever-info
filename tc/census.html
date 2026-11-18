@@ -135,6 +135,7 @@
     padding: 8px 11px 9px; font-size: 12px; line-height: 1.5; color: var(--color-fg); min-width: 170px; }
   .cz-tip[hidden] { display: none; }
   .cz-tip .h { font-weight: 700; font-size: 13px; line-height: 1.35; margin: 0 0 6px; padding-bottom: 6px; border-bottom: 1px solid #ffffff1f; }
+  .cz-tip .h:only-child { margin: 0; padding: 0; border: 0; }   /* a name alone (the filter icons) */
   .cz-tip .row { display: flex; gap: .5rem; padding: 1px 0; }
   .cz-tip .row > span { color: #a7a49b; }
   .cz-tip .row b { margin-left: auto; padding-left: 1rem; font-weight: 600; color: #f4f2ea; }
@@ -154,20 +155,20 @@
 <div class="cz">
   <div class="cz-top">
     <div class="cz-fac" id="czRegion" role="group" aria-label="Region">
-      <button type="button" data-v="us" aria-pressed="false" title="Americas only" aria-label="Americas only"><img src="images/flags/us.svg?v=2" alt=""></button>
-      <button type="button" data-v="eu" aria-pressed="false" title="Europe only" aria-label="Europe only"><img src="images/flags/eu.svg?v=2" alt=""></button>
-      <button type="button" data-v="kr" aria-pressed="false" title="Korea only" aria-label="Korea only"><img src="images/flags/kr.svg?v=2" alt=""></button>
-      <button type="button" data-v="tw" aria-pressed="false" title="Taiwan only" aria-label="Taiwan only"><img src="images/flags/tw.svg?v=3" alt=""></button>
+      <button type="button" data-v="us" aria-pressed="false" aria-label="NA" data-tip="f-us"><img src="images/flags/us.svg?v=2" alt=""></button>
+      <button type="button" data-v="eu" aria-pressed="false" aria-label="EU" data-tip="f-eu"><img src="images/flags/eu.svg?v=2" alt=""></button>
+      <button type="button" data-v="kr" aria-pressed="false" aria-label="Korea" data-tip="f-kr"><img src="images/flags/kr.svg?v=2" alt=""></button>
+      <button type="button" data-v="tw" aria-pressed="false" aria-label="Taiwan" data-tip="f-tw"><img src="images/flags/tw.svg?v=3" alt=""></button>
     </div>
     <div class="cz-fac" id="czFaction" role="group" aria-label="Faction">
-      <button type="button" data-v="Alliance" aria-pressed="false" title="Alliance races only" aria-label="Alliance races only"><img src="images/icons/faction_alliance.jpg" alt=""></button>
-      <button type="button" data-v="Horde" aria-pressed="false" title="Horde races only" aria-label="Horde races only"><img src="images/icons/faction_horde.jpg" alt=""></button>
+      <button type="button" data-v="Alliance" aria-pressed="false" aria-label="Alliance" data-tip="f-Alliance"><img src="images/icons/faction_alliance.jpg" alt=""></button>
+      <button type="button" data-v="Horde" aria-pressed="false" aria-label="Horde" data-tip="f-Horde"><img src="images/icons/faction_horde.jpg" alt=""></button>
     </div>
     <div class="cz-fac" id="czRules" role="group" aria-label="Ruleset">
-      <button type="button" data-v="Normal" aria-pressed="false" title="Normal realms only" aria-label="Normal realms only"><img src="images/icons/inv_camelot_camping_campfirenearby.jpg" alt=""></button>
-      <button type="button" data-v="PvP" aria-pressed="false" title="PvP realms only" aria-label="PvP realms only"><img src="images/icons/achievement_bg_winwsg.jpg" alt=""></button>
-      <button type="button" data-v="Roleplay" aria-pressed="false" title="Roleplay realms only" aria-label="Roleplay realms only"><img src="images/icons/ability_rogue_disguise.jpg" alt=""></button>
-      <button type="button" data-v="Roleplay PvP" aria-pressed="false" title="Roleplay PvP realms only" aria-label="Roleplay PvP realms only"><img src="images/icons/achievement_pvp_legion03.jpg" alt=""></button>
+      <button type="button" data-v="Normal" aria-pressed="false" aria-label="Normal Ruleset" data-tip="f-Normal"><img src="images/icons/inv_camelot_camping_campfirenearby.jpg" alt=""></button>
+      <button type="button" data-v="PvP" aria-pressed="false" aria-label="PvP Ruleset" data-tip="f-PvP"><img src="images/icons/achievement_bg_winwsg.jpg" alt=""></button>
+      <button type="button" data-v="Roleplay" aria-pressed="false" aria-label="Roleplay Ruleset" data-tip="f-Roleplay"><img src="images/icons/ability_rogue_disguise.jpg" alt=""></button>
+      <button type="button" data-v="Roleplay PvP" aria-pressed="false" aria-label="Roleplay PvP Ruleset" data-tip="f-Roleplay PvP"><img src="images/icons/achievement_pvp_legion03.jpg" alt=""></button>
     </div>
   </div>
 
@@ -283,6 +284,12 @@ document.addEventListener('mousemove', (e) => {
   tip.style.top = (e.clientY + 16 + h > innerHeight ? e.clientY - h - 12 : e.clientY + 16) + 'px';
 });
 document.addEventListener('mouseleave', () => { tip.hidden = true; });
+// the filter icons along the top: an instant tooltip with the icon's name (the factions in their colours), in place of the
+// browser's slow title text
+document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
+  const v = b.dataset.v, c = { Alliance: FAC_TEXT.Alliance, Horde: FAC_TEXT.Horde }[v];
+  tips[b.dataset.tip] = `<div class="h"${c ? ` style="color:${c}"` : ''}>${b.getAttribute('aria-label')}</div>`;
+});
 
 // a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
 function rank(el, items, sum) {
