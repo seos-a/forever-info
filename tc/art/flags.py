@@ -63,12 +63,15 @@ def kr():
 
 
 def tw():
-    cw = ch = S / 2   # the real flag's canton: half its width and half its height, the sun in its middle
+    # The canton a little wider than half (as the mockup), and the sun filling it: at button size (a 28px flag, a 14px
+    # canton) the real flag's proportions blur the sun into a dot, so its 12 rays reach nearly to the canton's edges,
+    # with a clear blue ring between them and the white disc.
+    cw, ch = 22, 20
     cx, cy = cw / 2, ch / 2
-    rays = ' '.join(f'{cx + (7.2 if k % 2 == 0 else 4.15) * math.cos(math.radians(k * 15 - 90)):.2f},{cy + (7.2 if k % 2 == 0 else 4.15) * math.sin(math.radians(k * 15 - 90)):.2f}'
+    rays = ' '.join(f'{cx + (8.9 if k % 2 == 0 else 5.4) * math.cos(math.radians(k * 15 - 90)):.2f},{cy + (8.9 if k % 2 == 0 else 5.4) * math.sin(math.radians(k * 15 - 90)):.2f}'
                     for k in range(24))
     return svg(f'<rect width="{S}" height="{S}" fill="#fe0000"/><rect width="{cw}" height="{ch}" fill="#000095"/>'
-               f'<polygon points="{rays}" fill="#fff"/><circle cx="{cx}" cy="{cy}" r="4.1" fill="#000095"/><circle cx="{cx}" cy="{cy}" r="3.6" fill="#fff"/>')
+               f'<polygon points="{rays}" fill="#fff"/><circle cx="{cx}" cy="{cy}" r="5.1" fill="#000095"/><circle cx="{cx}" cy="{cy}" r="4.2" fill="#fff"/>')
 
 
 os.makedirs(OUT, exist_ok=True)
