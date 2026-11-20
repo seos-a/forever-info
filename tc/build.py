@@ -227,9 +227,9 @@ SIMS_OG=f"""
 <meta name="theme-color" content="#1a0d04">"""
 assert 'images/og.png?v=4' in HEAD   # keep the picture's ?v= in step with the main pages'
 open('../web/sims.html','w',encoding='utf-8',newline='\n').write(experiment.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">'+SIMS_OG,1))
-# ---- the Population Census page (foreverinfo.io/census): race and class counts from Life on Azeroth (census.py) ----
+# ---- the Population Census page (foreverinfo.io/census): race and class counts from Raider.IO (census.py) ----
 import census
-CENSUS_DESC='Who plays what in WoW Forever: characters by race and class, per region and ruleset, from Life on Azeroth\'s census.'
+CENSUS_DESC='Who plays what in WoW Forever: characters by race and class, per region and ruleset, from Raider.IO\'s census.'
 CENSUS_OG=SIMS_OG.replace(f'{SITE}sims',f'{SITE}census').replace('Simulations – Forever Info','Population Census – Forever Info')\
     .replace('WoW Forever race and spec simulations: DPS, healing and tanking for every race, with each racial\'s bonus.',CENSUS_DESC)
 assert CENSUS_OG.count(CENSUS_DESC)==2 and f'{SITE}census' in CENSUS_OG

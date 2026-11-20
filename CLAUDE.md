@@ -102,10 +102,13 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     `tankRunsTargets.json`: every race and the no-racials baseline at 2 to 5 targets, from the harness's
     `scripts/shape_race_targets.py` (README "Every race at 2 to 5 targets")
   - `census.py` + `census.html` + `census.json`: the Population Census page (`/census`, a red "Census" button stacked
-    above "Sims" on every page): characters by race and class per region and ruleset, from Life on Azeroth's census
-    (https://lifeonazeroth.com/#population, counted from guild rosters). `census.json` is a hand-saved snapshot (`date`,
-    `counts[region or region|ruleset][class][race]`, and `levels`: characters, levels 1-9, level 60, median level and guilded per key); nothing refreshes it automatically (their live feed is their
-    own endpoint, not used without their OK). Framed like the Sims page (`experiment.CSS`); `build.py` writes
+    above "Sims" on every page): characters by race and class per region and ruleset, from Raider.IO's census
+    (https://forever.raider.io/population: the characters Raider.IO tracks, levels 10-60). `census.json` is a hand-saved snapshot (`date`,
+    `counts[region or region|ruleset][class][race]`, and `levels`: characters, level 60 and median level per key), refreshed by
+    hand in two steps: paste `census_snippet.js` into the browser console on forever.raider.io/population (it downloads
+    `census-raiderio.json` with the data their page loads), then `py sync_census.py` (reads it from Downloads, `--dry` to
+    preview) and rebuild. Their site refuses scripts (HTTP 403), so the fetching stays in the browser; nothing refreshes it
+    automatically. Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde` (a class, a race slug such as `nightelf`, a region,
     a ruleset, a faction)
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)

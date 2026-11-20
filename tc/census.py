@@ -1,13 +1,10 @@
-"""Builds the Population Census page (foreverinfo.io/census): who plays which race and class in WoW Forever, from Life on
-Azeroth's census (https://lifeonazeroth.com/#population, counted from guild rosters).
+"""Builds the Population Census page (foreverinfo.io/census): who plays which race and class in WoW Forever, from
+Raider.IO's census (https://forever.raider.io/population: the characters Raider.IO tracks, levels 10 to 60).
 
 census.html is the page (markup, style, script); census.json the numbers, by region and ruleset. It is framed like the
 Sims page: experiment.CSS (colours, fonts, the background along the top, the Home and Sims buttons and the corner stamp). Called by
-build.py, which adds the analytics snippet and the link-preview tags. To update the numbers, replace census.json's
-counts and date and rebuild. Their page first shows an older saved copy and swaps in the live numbers a few seconds
-later: copy the live ones, each region|ruleset's race x class counts (`API_DATA.census.regions[key].combo` in the
-loaded page), whose totals run a little above the page's headline count, and `levels` from the same object: per key
-[sum of `levels`, levels 1-9, level 60, median level, `guilded`], for the Methods and Caveats notes."""
+build.py, which adds the analytics snippet and the link-preview tags. To update the numbers, run census_snippet.js in the browser on forever.raider.io/population, then
+sync_census.py (it says how at its top), and rebuild."""
 import base64, json, os
 import experiment
 
@@ -38,7 +35,7 @@ def build(head_extra=''):
 <div id="dash-root">
 {page}
 </div>
-<div class="xp-stamp">Life on Azeroth Census<br>{MONTHS[m - 1]} {d} {y}</div>
+<div class="xp-stamp">Raider.IO Census<br>{MONTHS[m - 1]} {d} {y}</div>
 <a class="xp-quit xp-up" href="sims">Sims</a>
 <a class="xp-quit" href="/">Home</a>
 </body>
