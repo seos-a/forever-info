@@ -104,9 +104,9 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
   - `census.py` + `census.html` + `census.json`: the Population Census page (`/census`, a red "Census" button stacked
     above "Sims" on every page): characters by race and class per region and ruleset, from Raider.IO's census
     (https://forever.raider.io/population: the characters Raider.IO tracks, levels 10-60). `census.json` is a hand-saved snapshot (`date`,
-    `counts[region or region|ruleset][class][race]`, `counts60` the same at level 60 only (the page's All / 60 Only switch, one switch shown in each box), and `levels`: characters, level 60 and median level per key), refreshed by
-    hand in two steps: paste `census_snippet.js` into the browser console on forever.raider.io/population (it downloads
-    `census-raiderio.json` with the data their page loads), then `py sync_census.py` (reads it from Downloads, `--dry` to
+    `counts[region or region|ruleset][class][race]`, `counts60` the same at level 60 only (the page's All / 60 Only switch, one switch shown in each box), `prev` last week's class and race counts from Raider.IO's weekly history (the green / red arrows on the class and race bars: change in share since last week, shown from 0.2 points, never under 1,000 characters), and `levels`: characters, level 60 and median level per key), refreshed by
+    hand in two steps: paste `census_snippet.js` into the browser console on forever.raider.io/population (150 requests, about
+    2.5 minutes; it downloads `census-raiderio.json` with the data their page loads), then `py sync_census.py` (reads it from Downloads, `--dry` to
     preview) and rebuild. Their site refuses scripts (HTTP 403), so the fetching stays in the browser; nothing refreshes it
     automatically. Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, a region,

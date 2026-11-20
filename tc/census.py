@@ -19,7 +19,7 @@ def build(head_extra=''):
         bg = ('body{background:url("data:image/jpeg;base64,' + base64.b64encode(open('bg.jpg', 'rb').read()).decode()
               + '") top center/auto 540px repeat-x,var(--color-bg)}')
     y, m, d = (int(x) for x in data['date'].split('-'))
-    blob = json.dumps({k: data[k] for k in ('date', 'source', 'races', 'classes', 'counts', 'counts60', 'levels')}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    blob = json.dumps({k: data[k] for k in ('date', 'source', 'races', 'classes', 'counts', 'counts60', 'prev', 'levels')}, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     return f"""<!doctype html>
 <html lang="en">
 <head>

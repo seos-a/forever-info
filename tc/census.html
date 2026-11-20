@@ -84,6 +84,11 @@
   .cz-row .top { display: inline-flex; align-items: center; gap: 6px; color: var(--color-fg-muted); }
   .cz-row .top img { width: 20px; height: 20px; border-radius: 4px; }
   .cz-row.dim { opacity: .45; }
+  /* rising / falling since last week: a green or red triangle and the change in points, after the share */
+  .cz-rank.cz-hasmv { --mvw: 3.2rem; }   /* room for it, only when some bar has one */
+  .cz-row .mv { font-weight: 600; font-size: .92em; font-variant-numeric: tabular-nums; margin-left: -3px; white-space: nowrap; }
+  .cz-row .mv.up { color: #4ec46a; }
+  .cz-row .mv.down { color: #f0605a; }
   .cz-axis { height: 16px; }
   .cz-empty { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 6px 0; }
   @media (max-width: 760px) { .cz-rank, .cz-rank.cz-hastop { --name: 8.5rem; --lab: 8.5rem; } .cz-row .c, .cz-row .top span { display: none; } }
@@ -319,18 +324,34 @@ function rank(el, items, sum) {
   // the axis: a round step giving about four to six gridlines
   const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
   const ticks = []; for (let t = 0; t <= maxPct + 1e-9; t += step) ticks.push(t);
-  const x = (v) => `calc((100% - var(--lab)) * ${(v / maxPct).toFixed(4)})`;
-  el.classList.toggle('cz-hastop', shown.some((d) => d.top));   // more room for the bar's label when it names the top pick (a class, not an inline
+  const x = (v) => `calc((100% - var(--lab) - var(--mvw, 0rem)) * ${(v / maxPct).toFixed(4)})`;
+  el.classList.toggle('cz-hastop', shown.some((d) => d.top));
+  el.classList.toggle('cz-hasmv', shown.some((d) => d.mv));   // more room for the bar's label when it names the top pick (a class, not an inline
   // style, so the phone widths' smaller room still applies)
   el.innerHTML = '<div class="cz-grid">' + ticks.map((t) => `<i style="left:${x(t)}"></i><span style="left:${x(t)}">${t}%</span>`).join('') + '</div>'
     + shown.map((d) => {
       const p = pct(d.n, sum), tag = d.onClick ? 'button' : 'div';
       return `<${tag}${d.onClick ? ' type="button"' : ''} class="cz-row${d.n ? '' : ' dim'}" data-k="${d.key}" data-tip="${d.key}"><span class="nm">${d.img}<b style="color:${d.nameColor || 'var(--color-fg)'}">${d.name}</b></span>`
-        + `<span class="bar"><i style="width:${x(p)};background:${soft(d.color)}"></i><span class="p">${pctTxt(p)}</span><span class="c">${fmt(d.n)}</span>`
+        + `<span class="bar"><i style="width:${x(p)};background:${soft(d.color)}"></i><span class="p">${pctTxt(p)}</span>${d.mv || ''}<span class="c">${fmt(d.n)}</span>`
         + (d.top ? `<span class="top">${d.top.img}<span>${d.top.name}</span></span>` : '') + `</span></${tag}>`;
     }).join('') + '<div class="cz-axis"></div>';
   const click = Object.fromEntries(shown.filter((d) => d.onClick).map((d) => [d.key, d.onClick]));
   el.onclick = (e) => { const r = e.target.closest('button.cz-row'); if (r && click[r.dataset.k]) click[r.dataset.k](); };
+}
+// Rising / falling since last week (Raider.IO's weekly history, census.json's prev): the share now against the share
+// in the week before this one, for the region, ruleset, levels and faction picked. Shown only for a move of 0.2 points
+// or more, and never when either week has under 1,000 characters (a small sample's shares jump around).
+const MV_MIN = 0.2, MV_N = 1000;
+const lastWeek = () => (C.prev[S.level] || {})[S.rules ? S.region + '|' + S.rules : S.region];
+const weekTxt = (w) => { const [y, m, d] = w.split('-').map(Number); return `Last week (${MONTHS[m - 1]} ${d})`; };
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+// {html, row}: the arrow after the bar's share, and a tooltip row with last week's share ('' and null when none)
+function move(now, nowTot, was, wasTot, week) {
+  if (!week || nowTot < MV_N || wasTot < MV_N) return { html: '', row: null };
+  const a = pct(now, nowTot), b = pct(was, wasTot), dv = Math.round((a - b) * 10) / 10;
+  const row = [weekTxt(week), pctTxt(b)];
+  if (Math.abs(dv) < MV_MIN) return { html: '', row };
+  return { html: `<span class="mv ${dv > 0 ? 'up' : 'down'}" aria-label="${dv > 0 ? 'up' : 'down'} ${Math.abs(dv).toFixed(1)} points since last week">${dv > 0 ? '▲' : '▼'}${Math.abs(dv).toFixed(1)}</span>`, row };
 }
 // An open breakdown's title: the list's name (back to it), then the picked class or race, which opens a menu of all of
 // them in their colours to switch to another (as the Sims page's spec picker). items: [{idx, img, name, color}]
@@ -391,11 +412,12 @@ function draw() {
   if (S.cls < 0) {
     $('czClassHead').innerHTML = '';
     note($('czClassNote'), total, who);
+    const P = lastWeek(), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
     rank($('czClass'), CLASSES.map((name, j) => {
-      const tr = argmax(g[j]);
+      const tr = argmax(g[j]), mv = move(classTot[j], total, pc ? pc[j] : 0, pcTot, pc && P.week);
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
-        ['Most played race', g[j][tr] ? `${RACES[tr]} (${pctTxt(pct(g[j][tr], classTot[j]))})` : '–']]);
-      return { key: 'c' + j, name, color: CLASS_COLOR[name], nameColor: CLASS_COLOR[name], img: classImg(j), n: classTot[j],
+        ...(mv.row ? [mv.row] : []), ['Most played race', g[j][tr] ? `${RACES[tr]} (${pctTxt(pct(g[j][tr], classTot[j]))})` : '–']]);
+      return { key: 'c' + j, name, color: CLASS_COLOR[name], nameColor: CLASS_COLOR[name], img: classImg(j), n: classTot[j], mv: mv.html,
         top: g[j][tr] ? { img: raceImg(tr), name: RACES[tr] } : null, onClick: () => show('cls', j) };
     }), total);
   } else {
@@ -413,11 +435,12 @@ function draw() {
   if (S.race < 0) {
     $('czRaceHead').innerHTML = '';
     note($('czRaceNote'), total, who);
+    const P = lastWeek(), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
     rank($('czRace'), RACES.map((name, i) => {
-      const col = g.map((row) => row[i]), tc = argmax(col);
+      const col = g.map((row) => row[i]), tc = argmax(col), mv = move(raceTot[i], total, pr ? pr[i] : 0, prTot, pr && P.week);
       tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
-        ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
-      return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i], onClick: () => show('race', i) };
+        ...(mv.row ? [mv.row] : []), ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
+      return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i], mv: mv.html, onClick: () => show('race', i) };
     }), total);
   } else {
     const i = S.race, name = RACES[i];
