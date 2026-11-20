@@ -489,7 +489,7 @@ function draw() {
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
         ...(mv.row ? [mv.row] : []), ['Most played race', g[j][tr] ? `${RACES[tr]} (${pctTxt(pct(g[j][tr], classTot[j]))})` : '–']]);
       return { key: 'c' + j, name, color: CLASS_COLOR[name], nameColor: CLASS_COLOR[name], img: classImg(j), n: classTot[j], mv: mv.html,
-        top: g[j][tr] ? { img: raceImg(tr), name: RACES[tr] } : null, onClick: () => show('cls', j) };
+        onClick: () => show('cls', j) };
     }), total);
   } else {
     const j = S.cls, name = CLASSES[j];
