@@ -104,13 +104,13 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
   - `census.py` + `census.html` + `census.json`: the Population Census page (`/census`, a red "Census" button stacked
     above "Sims" on every page): characters by race and class per region and ruleset, from Raider.IO's census
     (https://forever.raider.io/population: the characters Raider.IO tracks, levels 10-60). `census.json` is a hand-saved snapshot (`date`,
-    `counts[region or region|ruleset][class][race]`, and `levels`: characters, level 60 and median level per key), refreshed by
+    `counts[region or region|ruleset][class][race]`, `counts60` the same at level 60 only (the page's All / 60 Only switch, one switch shown in each box), and `levels`: characters, level 60 and median level per key), refreshed by
     hand in two steps: paste `census_snippet.js` into the browser console on forever.raider.io/population (it downloads
     `census-raiderio.json` with the data their page loads), then `py sync_census.py` (reads it from Downloads, `--dry` to
     preview) and rebuild. Their site refuses scripts (HTTP 403), so the fetching stays in the browser; nothing refreshes it
     automatically. Framed like the Sims page (`experiment.CSS`); `build.py` writes
-    `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde` (a class, a race slug such as `nightelf`, a region,
-    a ruleset, a faction)
+    `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, a region,
+    a ruleset, a faction, `60` for level 60 only)
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.
