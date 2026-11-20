@@ -191,13 +191,13 @@
 
   <section class="cz-card" aria-label="Classes">
     <div class="cz-cardhead" id="czClassHead"></div>
-    <div class="cz-noterow"><p class="cz-note" id="czClassNote"></p><div class="cz-seg cz-lvl" role="group" aria-label="Levels"></div></div>
+    <div class="cz-noterow"><p class="cz-note" id="czClassNote"></p><div class="cz-seg cz-lvl" data-box="cls" role="group" aria-label="Levels"></div></div>
     <div class="cz-rank" id="czClass"></div>
   </section>
 
   <section class="cz-card" aria-label="Races">
     <div class="cz-cardhead" id="czRaceHead"></div>
-    <div class="cz-noterow"><p class="cz-note" id="czRaceNote"></p><div class="cz-seg cz-lvl" role="group" aria-label="Levels"></div></div>
+    <div class="cz-noterow"><p class="cz-note" id="czRaceNote"></p><div class="cz-seg cz-lvl" data-box="race" role="group" aria-label="Levels"></div></div>
     <div class="cz-rank" id="czRace"></div>
   </section>
 
@@ -206,7 +206,7 @@
   </section>
 
   <section class="cz-card" aria-label="Race and class">
-    <div class="cz-cardhead"><div class="cz-seg cz-lvl" role="group" aria-label="Levels"></div><div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div></div>
+    <div class="cz-cardhead"><div class="cz-seg cz-lvl" data-box="table" role="group" aria-label="Levels"></div><div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div></div>
     <div class="cz-scroll"><table id="czTable"><thead></thead><tbody></tbody></table></div>
   </section>
 
@@ -245,9 +245,12 @@ const $ = (id) => document.getElementById(id);
 
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
 // as on the Sims page, a reload starts on the full lists.
-const S = { region: 'all', rules: '', faction: '', level: 'all', cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1 };
+const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['table', 'table60']];
+const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', table: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1 };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
-  if (t === '60') { S.level = '60'; continue; }
+  // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
+  if (t === '60') { for (const b in S.level) S.level[b] = '60'; continue; }
+  const lb = LV_TOKENS.find(([, tok]) => tok === t); if (lb) { S.level[lb[0]] = '60'; continue; }
   if (REGIONS.some(([k]) => k === t && k !== 'all')) { S.region = t; continue; }
   const ru = RULES.find((r) => r[2] === t && r[0]); if (ru) { S.rules = ru[0]; continue; }
   if (t === 'alliance' || t === 'horde') S.faction = t[0].toUpperCase() + t.slice(1);
@@ -257,7 +260,8 @@ const link = () => {
   if (S.region !== 'all') parts.push(S.region);
   if (S.rules) parts.push(RULES.find((r) => r[0] === S.rules)[2]);
   if (S.faction) parts.push(S.faction.toLowerCase());
-  if (S.level === '60') parts.push('60');
+  if (Object.values(S.level).every((v) => v === '60')) parts.push('60');
+  else for (const [b, tok] of LV_TOKENS) if (S.level[b] === '60') parts.push(tok);
   return location.pathname + (parts.length ? '?' + parts.join(',') : '');
 };
 
@@ -281,8 +285,8 @@ addEventListener('popstate', () => { const box = open.pop(); if (box) { S[box] =
 const has = (region, rules) => !!C.counts[rules ? region + '|' + rules : region];
 const raceOn = (i) => !S.faction || FACTION(i) === S.faction;
 // the counts in view, [class][race], with the other faction's races zeroed
-const counts = () => (S.level === '60' ? C.counts60 : C.counts)[S.rules ? S.region + '|' + S.rules : S.region];   // all levels (10-60) or level 60 only
-const grid = () => counts().map((row) => row.map((n, i) => raceOn(i) ? n : 0));
+const counts = (lv) => (lv === '60' ? C.counts60 : C.counts)[S.rules ? S.region + '|' + S.rules : S.region];   // all levels (10-60) or level 60 only
+const grid = (lv) => counts(lv).map((row) => row.map((n, i) => raceOn(i) ? n : 0));
 // which race / class combinations exist at all (any count anywhere)
 const EXISTS = CLASSES.map((_, j) => RACES.map((_, i) => C.counts.all[j][i] > 0));
 const argmax = (a) => a.reduce((b, v, i) => v > a[b] ? i : b, 0);
@@ -342,7 +346,7 @@ function rank(el, items, sum) {
 // in the week before this one, for the region, ruleset, levels and faction picked. Shown only for a move of 0.2 points
 // or more, and never when either week has under 1,000 characters (a small sample's shares jump around).
 const MV_MIN = 0.2, MV_N = 1000;
-const lastWeek = () => (C.prev[S.level] || {})[S.rules ? S.region + '|' + S.rules : S.region];
+const lastWeek = (lv) => (C.prev[lv] || {})[S.rules ? S.region + '|' + S.rules : S.region];
 const weekTxt = (w) => { const [y, m, d] = w.split('-').map(Number); return `Last week (${MONTHS[m - 1]} ${d})`; };
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // {html, row}: the arrow after the bar's share, and a tooltip row with last week's share ('' and null when none)
@@ -394,25 +398,27 @@ function draw() {
   // the ruleset icons (the realm list's own: Normal, PvP, Roleplay, Roleplay PvP), as the flags; greyed where the region has none
   document.querySelectorAll('#czRules button').forEach((b) => { b.setAttribute('aria-pressed', b.dataset.v === S.rules); b.disabled = !has(S.region, b.dataset.v); });
   segs($('czMetric'), METRICS, S.metric, (v) => { S.metric = v; draw(); });
-  document.querySelectorAll('.cz-lvl').forEach((el) => segs(el, [['all', 'All'], ['60', '60 Only']], S.level, (v) => { S.level = v; draw(); }));
+  document.querySelectorAll('.cz-lvl').forEach((el) => segs(el, [['all', 'All'], ['60', '60 Only']], S.level[el.dataset.box], (v) => { S.level[el.dataset.box] = v; draw(); }));
   document.querySelectorAll('#czFaction button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.faction));
 
-  const g = grid();
-  const raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0));
-  const classTot = CLASSES.map((_, j) => g[j].reduce((a, b) => a + b, 0));
-  const total = raceTot.reduce((a, b) => a + b, 0);
+  // the counts and totals at one box's levels
+  const view = (lv) => {
+    const g = grid(lv), raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0)), classTot = CLASSES.map((_, j) => g[j].reduce((a, b) => a + b, 0));
+    return { g, raceTot, classTot, total: raceTot.reduce((a, b) => a + b, 0) };
+  };
   const who = S.faction ? S.faction + ' characters' : 'characters';
   // the region and ruleset picked, after each count: "(NA · PvP)"
-  const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1], S.level === '60' && 'Level 60'].filter(Boolean);
-  const where = sel.length ? ` (${sel.join(' · ')})` : '';
+  const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1]].filter(Boolean);
+  const where = (lv) => { const w = [...sel, lv === '60' && 'Level 60'].filter(Boolean); return w.length ? ` (${w.join(' · ')})` : ''; };
   // a count line: "473,148 Alliance characters (NA · PvP)", and "small sample" when under 1,000, where shares jump around
-  const note = (el, n, text) => { el.innerHTML = `${fmt(n)} ${text}${where}` + (n && n < 1000 ? ' <span class="cz-small">· small sample</span>' : ''); };
+  const note = (el, n, text, lv) => { el.innerHTML = `${fmt(n)} ${text}${where(lv)}` + (n && n < 1000 ? ' <span class="cz-small">· small sample</span>' : ''); };
 
   // the classes box: every class, or one class's races
+  let { g, raceTot, classTot, total } = view(S.level.cls);
   if (S.cls < 0) {
     $('czClassHead').innerHTML = '';
-    note($('czClassNote'), total, who);
-    const P = lastWeek(), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
+    note($('czClassNote'), total, who, S.level.cls);
+    const P = lastWeek(S.level.cls), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
     rank($('czClass'), CLASSES.map((name, j) => {
       const tr = argmax(g[j]), mv = move(classTot[j], total, pc ? pc[j] : 0, pcTot, pc && P.week);
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
@@ -423,7 +429,7 @@ function draw() {
   } else {
     const j = S.cls, name = CLASSES[j];
     crumbs($('czClassHead'), 'cls', 'Classes', CLASSES.map((c, k) => ({ idx: k, img: classImg(k), name: c, color: CLASS_COLOR[c] })), j);
-    note($('czClassNote'), classTot[j], `${S.faction ? S.faction + ' ' : ''}${name}s`);
+    note($('czClassNote'), classTot[j], `${S.faction ? S.faction + ' ' : ''}${name}s`, S.level.cls);
     rank($('czClass'), RACES.map((rname, i) => {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
@@ -432,10 +438,11 @@ function draw() {
   }
 
   // the races box: every race, or one race's classes
+  ({ g, raceTot, classTot, total } = view(S.level.race));
   if (S.race < 0) {
     $('czRaceHead').innerHTML = '';
-    note($('czRaceNote'), total, who);
-    const P = lastWeek(), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
+    note($('czRaceNote'), total, who, S.level.race);
+    const P = lastWeek(S.level.race), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
     rank($('czRace'), RACES.map((name, i) => {
       const col = g.map((row) => row[i]), tc = argmax(col), mv = move(raceTot[i], total, pr ? pr[i] : 0, prTot, pr && P.week);
       tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
@@ -445,7 +452,7 @@ function draw() {
   } else {
     const i = S.race, name = RACES[i];
     crumbs($('czRaceHead'), 'race', 'Races', RACES.map((r, k) => ({ idx: k, img: raceImg(k), name: r, color: FAC_TEXT[FACTION(k)] })).filter((d) => raceOn(d.idx)), i);
-    note($('czRaceNote'), raceTot[i], RACE_PL[i]);
+    note($('czRaceNote'), raceTot[i], RACE_PL[i], S.level.race);
     rank($('czRace'), CLASSES.map((cname, j) => {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
@@ -453,14 +460,15 @@ function draw() {
     }), raceTot[i]);
   }
 
-  // the faction balance: both factions, whatever the crests pick (the region, ruleset and levels still apply)
-  const all = counts(), fa = [0, 0];
+  // the faction balance: both factions, whatever the crests pick (the region and ruleset still apply), at all levels
+  const all = counts('all'), fa = [0, 0];
   all.forEach((row) => row.forEach((n, i) => { fa[i < 5 ? 0 : 1] += n; }));
   const ft = fa[0] + fa[1], fp = fa.map((n) => pct(n, ft));
   $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balwrap"><div class="cz-balgrid">${[0, 25, 50, 75, 100].map((t) => `<i class="${t === 50 ? 'mid' : ''}" style="left:${t}%"></i>`).join('')}</div><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i><b style="left:${fp[0]}%"></b></div><div class="cz-balmid"></div></div>`
     + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span><b style="color:${FAC_TEXT.Alliance}">Alliance</b><b>${fp[0].toFixed(1)}%</b><em>(${fmt(fa[0])})</em></span>`
     + `<span><em>(${fmt(fa[1])})</em><b>${fp[1].toFixed(1)}%</b><b style="color:${FAC_TEXT.Horde}">Horde</b></span></div>`;
 
+  ({ g, raceTot, classTot, total } = view(S.level.table));
   table(g, raceTot, classTot, total);
 }
 
