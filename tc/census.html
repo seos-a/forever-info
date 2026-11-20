@@ -302,7 +302,7 @@ document.addEventListener('mouseleave', () => { tip.hidden = true; });
 // browser's slow title text
 document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
   const v = b.dataset.v, c = { Alliance: FAC_TEXT.Alliance, Horde: FAC_TEXT.Horde }[v];
-  tips[b.dataset.tip] = `<div class="h"${c ? ` style="color:${c}"` : ''}>${b.getAttribute('aria-label')}</div>`;
+  tips[b.dataset.tip] = `<div class="h"${c ? ` style="color:${c}"` : ''}>${b.getAttribute('aria-label').replace(/ Ruleset$/, '')}</div>`;   // the server type alone: "Roleplay PvP"
 });
 
 // a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
@@ -426,8 +426,8 @@ function draw() {
   all.forEach((row) => row.forEach((n, i) => { fa[i < 5 ? 0 : 1] += n; }));
   const ft = fa[0] + fa[1], fp = fa.map((n) => pct(n, ft));
   $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balwrap"><div class="cz-balgrid">${[0, 25, 50, 75, 100].map((t) => `<i class="${t === 50 ? 'mid' : ''}" style="left:${t}%"></i>`).join('')}</div><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i><b style="left:${fp[0]}%"></b></div><div class="cz-balmid"></div></div>`
-    + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span><b style="color:${FAC_TEXT.Alliance}">Alliance</b><b>${fp[0].toFixed(1)}%</b><em>${fmt(fa[0])}</em></span>`
-    + `<span><em>${fmt(fa[1])}</em><b>${fp[1].toFixed(1)}%</b><b style="color:${FAC_TEXT.Horde}">Horde</b></span></div>`;
+    + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span><b style="color:${FAC_TEXT.Alliance}">Alliance</b><b>${fp[0].toFixed(1)}%</b><em>(${fmt(fa[0])})</em></span>`
+    + `<span><em>(${fmt(fa[1])})</em><b>${fp[1].toFixed(1)}%</b><b style="color:${FAC_TEXT.Horde}">Horde</b></span></div>`;
 
   table(g, raceTot, classTot, total);
 }
