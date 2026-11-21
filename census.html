@@ -554,7 +554,7 @@ function draw() {
       + order.map((j) => `<i class="seg" data-tip="b${j}" style="width:${pct(cn[j], tot)}%;background:${soft(CLASS_COLOR[CLASSES[j]])}"></i>`).join('')
       + `</div></div><span></span><div class="cz-segl">`
       + order.map((j) => { const p = pct(cn[j], tot); return `<span data-tip="b${j}" style="width:${p}%">${pctTxt(p)}</span>`; }).join('')
-      + `</div><div class="cz-ballab"><span><b style="color:${FAC_TEXT[f]}">${f}</b><b>${fp[f === 'Alliance' ? 0 : 1].toFixed(1)}%</b><em>(${fmt(tot)})</em></span></div>`;
+      + `</div>`;   // no faction line under it: the title already names the faction and its count
     fitSegs();
   } else $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balwrap"><div class="cz-balgrid">${[0, 25, 50, 75, 100].map((t) => `<i class="${t === 50 ? 'mid' : ''}" style="left:${t}%"></i>`).join('')}</div><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i><b style="left:${fp[0]}%"></b></div><div class="cz-balmid"></div></div>`
     + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span><b style="color:${FAC_TEXT.Alliance}">Alliance</b><b>${fp[0].toFixed(1)}%</b><em>(${fmt(fa[0])})</em></span>`
