@@ -43,7 +43,7 @@
   @media (max-width: 600px) { .cz-card { padding: 10px; } }
 
   /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
-  .cz-crumbs { display: flex; align-items: center; font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); line-height: 1.9rem; }   /* every part on one centre line */
+  .cz-crumbs { display: flex; align-items: center; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); line-height: 24px; }   /* every part on one centre line, the All / 60 Only switch's */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-title { color: var(--color-fg); }
   .cz-count { color: var(--color-fg-muted); font-weight: 400; margin-left: .35em; }   /* "(924,356)" after the title */
@@ -53,7 +53,7 @@
   .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; margin-right: .4em; flex: none; }   /* as tall as the text */
   /* the picked class or race: a button opening a menu of the others (the Sims page's .rr-pick and .rr-menu) */
   .cz-pickwrap { position: relative; display: flex; }
-  .cz-pick { font: inherit; line-height: 1.6rem; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
+  .cz-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .cz-pick:hover, .cz-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
   .cz-menu { position: absolute; left: -.3em; top: calc(100% + 4px); z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px;
     background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); font-size: var(--cds-font-size-body); font-weight: 400; line-height: 1.45; }
@@ -320,7 +320,9 @@ document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
 });
 
 // a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
-function rank(el, items, sum) {
+// rows: the full list's row count, so a box opened on one class or race stays at least as tall as the list it came from
+function rank(el, items, sum, rows) {
+  el.style.minHeight = rows ? rows * 26 + 16 + 'px' : '';   // a 22px row and 4px gap each, then the 16px axis
   const shown = items.filter((d) => d.ok !== false).sort((a, b) => b.n - a.n);
   if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
   const maxPct = Math.max(...shown.map((d) => pct(d.n, sum)));
@@ -435,7 +437,7 @@ function draw() {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
       return { key: 'cr' + i, name: rname, ok: raceOn(i) && EXISTS[j][i], color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: g[j][i] };
-    }), classTot[j]);
+    }), classTot[j], CLASSES.length);
   }
 
   // the races box: every race, or one race's classes
@@ -456,7 +458,7 @@ function draw() {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
       return { key: 'rc' + j, name: cname, nameColor: CLASS_COLOR[cname], ok: EXISTS[j][i], color: CLASS_COLOR[cname], img: classImg(j), n: g[j][i] };
-    }), raceTot[i]);
+    }), raceTot[i], RACES.filter((_, k) => raceOn(k)).length);
   }
 
   // the faction balance: both factions, whatever the crests pick (the region and ruleset still apply), at all levels
