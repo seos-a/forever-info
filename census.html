@@ -109,9 +109,7 @@ document.head.appendChild(t);})();
   .cz-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg);
     display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .cz-cardhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  .cz-cardhead:empty { display: none; }
   /* a box's count line, with the levels switch (All / 60) at its right; every box's switch is the same one */
-  .cz-noterow { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
   .cz-small { color: #e2b23c; }   /* "small sample" after a thin pick's count */
   @media (max-width: 600px) { .cz-card { padding: 10px; } }
 
@@ -119,6 +117,8 @@ document.head.appendChild(t);})();
   .cz-crumbs { display: flex; align-items: center; font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); line-height: 1.9rem; }   /* every part on one centre line */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-title { color: var(--color-fg); }
+  .cz-count { color: var(--color-fg-muted); font-weight: 400; margin-left: .35em; }   /* "(924,356)" after the title */
+  .cz-where { color: var(--color-fg-muted); font-weight: 400; font-size: var(--cds-font-size-caption); margin-left: .6em; }   /* "NA · PvP · Level 60" */
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; position: relative; top: -.06em; }
   .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; margin-right: .4em; flex: none; }   /* as tall as the text */
@@ -262,14 +262,12 @@ document.head.appendChild(t);})();
   </div>
 
   <section class="cz-card" aria-label="Classes">
-    <div class="cz-cardhead" id="czClassHead"></div>
-    <div class="cz-noterow"><p class="cz-note" id="czClassNote"></p><div class="cz-seg cz-lvl" data-box="cls" role="group" aria-label="Levels"></div></div>
+    <div class="cz-cardhead"><div id="czClassHead"></div><div class="cz-seg cz-lvl" data-box="cls" role="group" aria-label="Levels"></div></div>
     <div class="cz-rank" id="czClass"></div>
   </section>
 
   <section class="cz-card" aria-label="Races">
-    <div class="cz-cardhead" id="czRaceHead"></div>
-    <div class="cz-noterow"><p class="cz-note" id="czRaceNote"></p><div class="cz-seg cz-lvl" data-box="race" role="group" aria-label="Levels"></div></div>
+    <div class="cz-cardhead"><div id="czRaceHead"></div><div class="cz-seg cz-lvl" data-box="race" role="group" aria-label="Levels"></div></div>
     <div class="cz-rank" id="czRace"></div>
   </section>
 
@@ -431,10 +429,10 @@ function move(now, nowTot, was, wasTot, week) {
 }
 // An open breakdown's title: the list's name (back to it), then the picked class or race, which opens a menu of all of
 // them in their colours to switch to another (as the Sims page's spec picker). items: [{idx, img, name, color}]
-const crumbs = (head, box, root, items, cur) => {
+const crumbs = (head, box, root, items, cur, count) => {
   const it = items.find((d) => d.idx === cur);
   head.innerHTML = `<div class="cz-crumbs"><button type="button" class="cz-crumb">${root}</button><span class="cz-crumbsep" aria-hidden="true">›</span>`
-    + `<span class="cz-pickwrap"><button type="button" class="cz-pick" aria-haspopup="menu" aria-expanded="false">${it.img}<span style="color:${it.color}">${it.name}</span></button></span></div>`;
+    + `<span class="cz-pickwrap"><button type="button" class="cz-pick" aria-haspopup="menu" aria-expanded="false">${it.img}<span style="color:${it.color}">${it.name}</span></button></span>${count}</div>`;
   head.querySelector('.cz-crumb').onclick = () => hide(box);
   const pick = head.querySelector('.cz-pick'), wrap = pick.parentElement;
   pick.onclick = (e) => {
@@ -448,7 +446,7 @@ const crumbs = (head, box, root, items, cur) => {
   };
 };
 // the whole list's title, on the same line the breadcrumb takes when a class or race is open, so opening one moves nothing
-const title = (head, root) => { head.innerHTML = `<div class="cz-crumbs"><span class="cz-title">${root}</span></div>`; };
+const title = (head, root, count) => { head.innerHTML = `<div class="cz-crumbs"><span class="cz-title">${root}</span>${count}</div>`; };
 const closeMenus = () => document.querySelectorAll('.cz-menu').forEach((m) => { m.previousElementSibling.setAttribute('aria-expanded', 'false'); m.remove(); });
 document.addEventListener('click', (e) => { if (!e.target.closest('.cz-menu')) closeMenus(); });
 document.addEventListener('keydown', (e) => {
@@ -480,18 +478,19 @@ function draw() {
     const g = grid(lv), raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0)), classTot = CLASSES.map((_, j) => g[j].reduce((a, b) => a + b, 0));
     return { g, raceTot, classTot, total: raceTot.reduce((a, b) => a + b, 0) };
   };
-  const who = S.faction ? S.faction + ' characters' : 'characters';
   // the region and ruleset picked, after each count: "(NA · PvP)"
   const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1]].filter(Boolean);
-  const where = (lv) => { const w = [...sel, lv === '60' && 'Level 60'].filter(Boolean); return w.length ? ` (${w.join(' · ')})` : ''; };
-  // a count line: "473,148 Alliance characters (NA · PvP)", and "small sample" when under 1,000, where shares jump around
-  const note = (el, n, text, lv) => { el.innerHTML = `${fmt(n)} ${text}${where(lv)}` + (n && n < 1000 ? ' <span class="cz-small">· small sample</span>' : ''); };
+  // the count after a box's title: "(924,356)", then the region, ruleset and level picked ("NA · PvP · Level 60"), and
+  // "small sample" when under 1,000, where shares jump around
+  const count = (n, lv) => {
+    const w = [...sel, lv === '60' && 'Level 60'].filter(Boolean).join(' · '), small = n && n < 1000 ? `${w ? ' · ' : ''}<span class="cz-small">small sample</span>` : '';
+    return `<span class="cz-count">(${fmt(n)})</span>` + (w || small ? `<span class="cz-where">${w}${small}</span>` : '');
+  };
 
   // the classes box: every class, or one class's races
   let { g, raceTot, classTot, total } = view(S.level.cls);
   if (S.cls < 0) {
-    title($('czClassHead'), 'Classes');
-    note($('czClassNote'), total, who, S.level.cls);
+    title($('czClassHead'), 'Classes', count(total, S.level.cls));
     const P = lastWeek(S.level.cls), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
     rank($('czClass'), CLASSES.map((name, j) => {
       const tr = argmax(g[j]), mv = move(classTot[j], total, pc ? pc[j] : 0, pcTot, pc && P.week);
@@ -502,8 +501,7 @@ function draw() {
     }), total);
   } else {
     const j = S.cls, name = CLASSES[j];
-    crumbs($('czClassHead'), 'cls', 'Classes', CLASSES.map((c, k) => ({ idx: k, img: classImg(k), name: c, color: CLASS_COLOR[c] })), j);
-    note($('czClassNote'), classTot[j], `${S.faction ? S.faction + ' ' : ''}${name}s`, S.level.cls);
+    crumbs($('czClassHead'), 'cls', 'Classes', CLASSES.map((c, k) => ({ idx: k, img: classImg(k), name: c, color: CLASS_COLOR[c] })), j, count(classTot[j], S.level.cls));
     rank($('czClass'), RACES.map((rname, i) => {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
@@ -514,8 +512,7 @@ function draw() {
   // the races box: every race, or one race's classes
   ({ g, raceTot, classTot, total } = view(S.level.race));
   if (S.race < 0) {
-    title($('czRaceHead'), 'Races');
-    note($('czRaceNote'), total, who, S.level.race);
+    title($('czRaceHead'), 'Races', count(total, S.level.race));
     const P = lastWeek(S.level.race), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
     rank($('czRace'), RACES.map((name, i) => {
       const col = g.map((row) => row[i]), tc = argmax(col), mv = move(raceTot[i], total, pr ? pr[i] : 0, prTot, pr && P.week);
@@ -525,8 +522,7 @@ function draw() {
     }), total);
   } else {
     const i = S.race, name = RACES[i];
-    crumbs($('czRaceHead'), 'race', 'Races', RACES.map((r, k) => ({ idx: k, img: raceImg(k), name: r, color: FAC_TEXT[FACTION(k)] })).filter((d) => raceOn(d.idx)), i);
-    note($('czRaceNote'), raceTot[i], RACE_PL[i], S.level.race);
+    crumbs($('czRaceHead'), 'race', 'Races', RACES.map((r, k) => ({ idx: k, img: raceImg(k), name: r, color: FAC_TEXT[FACTION(k)] })).filter((d) => raceOn(d.idx)), i, count(raceTot[i], S.level.race));
     rank($('czRace'), CLASSES.map((cname, j) => {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
