@@ -118,6 +118,7 @@ document.head.appendChild(t);})();
   /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
   .cz-crumbs { display: flex; align-items: center; font-size: calc(var(--cds-font-size-heading) + 2px); font-weight: var(--cds-font-weight-medium); line-height: 1.9rem; }   /* every part on one centre line */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
+  .cz-title { color: var(--color-fg); }
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; position: relative; top: -.06em; }
   .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; margin-right: .4em; flex: none; }   /* as tall as the text */
@@ -446,6 +447,8 @@ const crumbs = (head, box, root, items, cur) => {
     (menu.querySelector('[aria-checked="true"]') || menu.firstChild).focus();
   };
 };
+// the whole list's title, on the same line the breadcrumb takes when a class or race is open, so opening one moves nothing
+const title = (head, root) => { head.innerHTML = `<div class="cz-crumbs"><span class="cz-title">${root}</span></div>`; };
 const closeMenus = () => document.querySelectorAll('.cz-menu').forEach((m) => { m.previousElementSibling.setAttribute('aria-expanded', 'false'); m.remove(); });
 document.addEventListener('click', (e) => { if (!e.target.closest('.cz-menu')) closeMenus(); });
 document.addEventListener('keydown', (e) => {
@@ -487,7 +490,7 @@ function draw() {
   // the classes box: every class, or one class's races
   let { g, raceTot, classTot, total } = view(S.level.cls);
   if (S.cls < 0) {
-    $('czClassHead').innerHTML = '';
+    title($('czClassHead'), 'Classes');
     note($('czClassNote'), total, who, S.level.cls);
     const P = lastWeek(S.level.cls), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
     rank($('czClass'), CLASSES.map((name, j) => {
@@ -511,7 +514,7 @@ function draw() {
   // the races box: every race, or one race's classes
   ({ g, raceTot, classTot, total } = view(S.level.race));
   if (S.race < 0) {
-    $('czRaceHead').innerHTML = '';
+    title($('czRaceHead'), 'Races');
     note($('czRaceNote'), total, who, S.level.race);
     const P = lastWeek(S.level.race), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
     rank($('czRace'), RACES.map((name, i) => {
