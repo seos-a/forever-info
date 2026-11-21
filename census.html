@@ -181,7 +181,7 @@ document.head.appendChild(t);})();
   .cz-balbar i { height: 100%; transition: width .25s; }
   .cz-balbar i.seg { box-shadow: inset -1px 0 #0009; }   /* one class's share of the picked faction */
   /* each class's share under its slice, white as the bars' own shares; hidden (fitSegs) where the slice is too narrow for it */
-  .cz-segl { grid-column: 2; display: flex; margin-top: -12px; color: #fff; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cz-segl { grid-column: 2; display: flex; margin-top: -12px; color: #fff; font-size: var(--cds-font-size-caption); font-weight: 600; font-variant-numeric: tabular-nums; }   /* as the class bars' own shares (.cz-row .p) */
   .cz-segl span { flex: none; text-align: center; overflow: hidden; white-space: nowrap; padding: 0 2px; box-sizing: border-box; }
   .cz-segl span.cut { visibility: hidden; }
   .cz-balbar b { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #000c; transition: left .25s; }
