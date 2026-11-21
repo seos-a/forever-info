@@ -568,7 +568,7 @@
   .lx-apmgrip { display: none; }
   .rr-chart.lx-apm, .hr-chart.lx-apm { min-height: 0; }   /* as tall as its bars, not the ranking's minimum */
   .apm-on .lx-apmgrip { display: block; }
-  .rr .lx-matrix, .hr .lx-matrix { font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); }
+  .rr .lx-matrix, .hr .lx-matrix { font-size: var(--cds-font-size-caption); }   /* the text stays this size; only the cells' spacing grows to fill the box */
   .rr .lx-matrix td, .hr .lx-matrix td { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
   .rr .lx-matrix th button, .hr .lx-matrix th button { padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); }
   /* the race/spec tables keep their Race column in view when scrolled sideways */

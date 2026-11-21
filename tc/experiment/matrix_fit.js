@@ -1,4 +1,4 @@
-// The race-by-spec tables' size: each table's text and cells are as big as its box's width allows without a sideways
+// The race-by-spec tables' size: each table's cell spacing (not its text, which page.html keeps at one size) is as big as its box's width allows without a sideways
 // scrollbar (1.2 times at most, so the narrow Tanks and Healing tables don't get huge), and follow the window as it
 // changes. The size is a CSS variable (--mz) on the table's box, so it stays through the table's redraws.
 document.querySelectorAll('.lx-matrix').forEach((table) => {
