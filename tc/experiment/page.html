@@ -744,8 +744,8 @@
   <section class="rr-card" id="notes" data-collapsed>
     <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
-      <div><b>Sim</b><p>WoWSims Forever 540ad8f (17 Nov) on build 70938 item data with hotfixes to 17 Nov, the 3 Nov patch's talent changes, and each Skyborne race's own stat offsets. Since 13 Nov WoWSims has new Hunter, Mage, Rogue, Warlock and Arms gear presets, new Feral and Rogue talents, new weapon proc rates, and has dropped the Beast Mastery and Marksmanship weaves. 1, 2, 3 and 5 minute fights against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%).</p></div>
-      <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili (Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Forever's stats for every item (Classic stats for Alcor's Sunrazor, which Forever lacks) and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (every Hunter build, Arms, Unsealed Wrath) trades the hit past the cap for what item budgets price the same, picking the stat that sims best: 14 Agility per 1% for Hunters, 14 Strength per 1% for Arms and Unsealed Wrath.</p></div>
+      <div><b>Sim</b><p>WoWSims Forever ed42da6 (20 Nov) on build 71037 item data with hotfixes to 20 Nov, the 3 Nov patch's talent changes, and each Skyborne race's own stat offsets. Since 17 Nov WoWSims has new Mage, Warrior, Elemental and Enhancement gear presets, new Rogue, Fury and Enhancement talents, and new proc rates for many weapons, trinkets and dungeon sets. 1, 2, 3 and 5 minute fights against a level 63 boss, 10,000 iterations, every race on the same seed (good to about 0.1%).</p></div>
+      <div><b>Builds and gear</b><p>Every WoWSims preset build minus Dragonbreath Chili, in its pre-raid gear where WoWSims also has a raid set (Enhancement and Shadow are its developer test presets), or each spec's Classic Phase 1 pre-raid list, with Forever's stats for every item (Classic stats for Alcor's Sunrazor, which Forever lacks) and no Hand of Justice. Every race wears the same gear, except that a pre-raid Dwarf may swap one hit piece where the sim found that better, and in the preset gear a Dwarf whose +1% hit would go past the 8% hit cap (every Hunter build, Arms, Unsealed Wrath) trades the hit past the cap for what item budgets price the same, picking the stat that sims best: 14 Agility per 1% for Hunters, 1% crit for Arms, 14 Strength per 1% for Unsealed Wrath.</p></div>
       <div><b>Racials</b><p>Racial Bonus compares each race with the same build with no racial abilities, passives or stat offsets. Active racials fire on cooldown, so timing them with other cooldowns may be worth a little more. Situational ones (Big Game Hunter, Beast Slaying, Elemental Insight) aren't counted.</p></div>
       <div><b>Targets</b><p>Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view. Gaps between the top races are often under 1%, and WoWSims' Forever model changes daily.</p></div>
       <div><b>Pack play</b><p>Some WoWSims presets play every fight as if it had one target, so for these builds the race study adds pack play that only switches on with more targets (one-target play is the preset's): MM, BM and SV use Multi-Shot instead of Aimed Shot at 2+ targets (they share a cooldown); Arcane, Arcane Fire and Fire walk in and cycle Flamestrike and Arcane Explosion at 3+, and FFB Flamestrike and Blizzard; SM/Ruin adds Destruction's Hellfire at 2+; Shadow keeps Shadow Word: Pain on every target at 2+; Unsealed Wrath puts Consecration first at 2+. Each was the best of several options simmed at 1 to 5 targets. Aff (Wrack) does less at 5 targets than at 4 because its preset stops casting Bane of Agony at 5 targets.</p></div>
@@ -945,8 +945,8 @@
   <section class="rr-card" id="t-notes" data-collapsed>
     <div class="rr-cardhead"><h2>Methods and Caveats</h2></div>
     <div class="rr-notes">
-      <div><b>Sim</b><p>WoWSims Forever 540ad8f (17 Nov) on build 70938 item data with hotfixes to 17 Nov, the 3 Nov patch's talent changes, the 6 Nov threat changes, the 13 Nov rage from spell damage taken, and the 14 to 16 Nov bear, Paladin and Protection Warrior gear changes. A level 63 boss hitting every 2 sec, with each spec's default incoming healing, so no tank died; 1, 2, 3 and 5 minutes, 10,000 iterations, every race on the same seed.</p></div>
-      <div><b>Setups</b><p>Each tank's WoWSims talents, rotation, consumables, buffs and gear presets (Protection Warrior has two: Defense Cap and Threat). Every race wears the same gear.</p></div>
+      <div><b>Sim</b><p>WoWSims Forever ed42da6 (20 Nov) on build 71037 item data with hotfixes to 20 Nov, the 3 Nov patch's talent changes, the 6 Nov threat changes, the 13 Nov rage from spell damage taken, and WoWSims' new Protection Warrior pre-raid builds (20 Nov). A level 63 boss hitting every 2 sec, with each spec's default incoming healing, so no tank died; 1, 2, 3 and 5 minutes, 10,000 iterations, every race on the same seed.</p></div>
+      <div><b>Setups</b><p>Each tank's WoWSims talents, rotation, consumables, buffs and gear presets (Protection Warrior has two pre-raid builds, each with its own talents: Balanced and Offensive). Every race wears the same gear.</p></div>
       <div><b>Measures</b><p>DPS and threat: higher is better. Damage taken (after armor, avoidance and mitigation) and spikes (the worst bursts against the tank's health): lower is better.</p></div>
       <div><b>Targets</b><p>Only the first target attacks; extra targets add threat and damage, not damage taken. Every race is run at 1 to 5 targets, and each build's ability breakdowns are those of its best races in each view.</p></div>
       <div><b>Casts</b><p>Casts and actions per minute count from the pull. The opener's last 5 seconds before it show on the timeline but aren't counted; earlier setup (an aura, a form) is listed under the timeline. Stance changes count as presses.</p></div>
@@ -1575,8 +1575,8 @@ const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(-
 // item budgets price the same (1% hit = 1% crit = 14 Agility or Strength = 28 attack power), whichever simmed best on
 // that build (race-sims-harness README "Dwarf hit over the cap"); a line under the Racial Bonus chart says so.
 // Enhancement (0.9% past on Nov 4) lost DPS that way, since its hit rating is spell hit for its shocks too, so it keeps the
-// plain Dwarf; Unsealed Wrath (1% past, also spell hit) gains, Strength best (Nov 4). Arms sits at the cap since Nov 13 (1% past) and takes Strength too. The Classic pre-raid Dwarf swaps real items instead (the Setup view's "As a Dwarf").
-const DWARF_TRADE = { 'Survival Hunter|SV': [1, 'agi'], 'Survival Hunter|SV Weave': [1, 'agi'], 'Survival Hunter|SV Melee': [1, 'agi'], 'Marksmanship Hunter|MM': [1, 'agi'], 'Beast Mastery Hunter|BM': [1, 'agi'], 'Arms Warrior|Arms (Pre-BiS)': [1, 'str'], 'Retribution Paladin|Unsealed Wrath': [1, 'str'] };
+// plain Dwarf; Unsealed Wrath (1% past, also spell hit) gains, Strength best (Nov 4). Arms sits at the cap since Nov 13 (1% past) and takes crit (Strength Nov 13 to 17). The Classic pre-raid Dwarf swaps real items instead (the Setup view's "As a Dwarf").
+const DWARF_TRADE = { 'Survival Hunter|SV': [1, 'agi'], 'Survival Hunter|SV Weave': [1, 'agi'], 'Survival Hunter|SV Melee': [1, 'agi'], 'Marksmanship Hunter|MM': [1, 'agi'], 'Beast Mastery Hunter|BM': [1, 'agi'], 'Arms Warrior|Arms (Pre-BiS)': [1, 'crit'], 'Retribution Paladin|Unsealed Wrath': [1, 'str'] };
 const TRADE_OTHERS = { agi: 'crit, Strength and attack power', crit: 'Strength, attack power and Agility', str: 'crit, attack power and Agility' };
 const dwarfTrade = (p, spec, build) => (p.gear === 'classic' ? null : DWARF_TRADE[`${spec}|${build}`] || null);
 const tradeGets = ([amt, stat]) => (stat === 'agi' || stat === 'str' ? `${fx(14 * amt, amt === 1 ? 0 : 1)} ${stat === 'agi' ? 'Agility' : 'Strength'}` : `${fx(amt, 1)}% crit`);
@@ -2377,7 +2377,7 @@ function draw() {
   const open = $('.lx-speccmp').closest('section').classList.contains('apm-on') ? p.apmView : p.specView;
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
     ? (!open || CASTERS.has(open) ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear." : '')
-    : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
+    : "* WoWSims' preset gear is very uneven across specs (the Warlocks' sets have no epics, Feral's have nine), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
   if (!ok) {
@@ -3108,11 +3108,11 @@ function drawLines(p, rows) {
 
 // Racial Bonus bars: the top race gold, other gains blue, losses red, no change grey.
 const GAIN_COLOR = (v, top) => (top && v > 0 ? 'var(--rr-gold)' : v > 0 ? 'var(--rr-up)' : v < 0 ? 'var(--rr-down)' : 'var(--color-fg-muted)');
-// Prot Warrior's Threat build is already at the 8% melee hit cap, so Dwarf's 1% hit gains nothing there. Hovering the
-// sentence about a Dwarf geared for it shows that run in the chart (a click keeps it), from the "tankRegear" dataset: the
-// Threat build with 1% hit traded for 1% crit, and the Defense Cap build (under the cap) as it is.
-const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit on that build, as a Dwarf would gear, its bonus here is about 1 percentage point higher.';
-const REGEAR_LEAD = 'the Threat build is already at the 8% hit cap, so Dwarf’s 1% hit (Artisan’s Precision) gains nothing there. ';
+// Both Prot Warrior builds are already at the 8% melee hit cap (Balanced 8.3%, Offensive 8.0%; Nov 20), so Dwarf's 1% hit
+// gains nothing there. Hovering the sentence about a Dwarf geared for it shows that run in the chart (a click keeps it),
+// from the "tankRegear" dataset: both builds with 1% hit traded for 1% crit.
+const REGEAR_TEXT = 'Geared with 1% less hit and 1% more crit, as a Dwarf would gear, its bonus here is about 1 percentage point higher.';
+const REGEAR_LEAD = 'both builds are already at the 8% hit cap, so Dwarf’s 1% hit (Artisan’s Precision) gains nothing there. ';
 // (at 1 target: the re-geared runs are one-target runs)
 const hasRegear = (p) => p.spec === 'Protection Warrior' && (p.measure === 'tps' || p.measure === 'dps') && p.targets === 1;
 let regearOn = false, regearLock = false, gainArgs = null;
@@ -3917,7 +3917,7 @@ function draw() {
   // What to keep in mind about the gear shown (the DPS tab's Gear switch).
   if ($('.lx-gear') && $('.lx-gearnote')) $('.lx-gearnote').textContent = p.gear === 'classic'
     ? "* Classic caster weapons have far less spell power than Forever's, so casters come out lower with this gear."
-    : "* WoWSims' preset gear is very uneven across specs (the Hunters' sets have no epics, Moonkin's are nearly all epic), so gaps between specs partly reflect gear.";
+    : "* WoWSims' preset gear is very uneven across specs (the Warlocks' sets have no epics, Feral's have nine), so gaps between specs partly reflect gear.";
   const ok = Object.values(d).every((x) => x.status === 'ok');
   ROOT.querySelectorAll('.lx-cards, .lx-lines, .lx-gains, .lx-speccmp').forEach((e) => e.classList.toggle('dash-skeleton', !ok));
   if (!ok) {
