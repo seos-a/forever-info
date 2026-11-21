@@ -45,9 +45,8 @@
   /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
   .cz-crumbs { display: flex; align-items: center; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); line-height: 24px; }   /* every part on one centre line, the All / 60 Only switch's */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
-  .cz-title { color: var(--color-fg); }
-  .cz-count { color: var(--color-fg-muted); font-weight: 400; margin-left: .35em; }   /* "(924,356)" after the title */
-  .cz-where { color: var(--color-fg-muted); font-weight: 400; font-size: var(--cds-font-size-caption); margin-left: .6em; }   /* "NA · PvP · Level 60" */
+  .cz-root { color: var(--color-fg); }
+  .cz-count { color: var(--color-fg-muted); font-weight: 400; margin-left: .35em; white-space: pre; }   /* "(NA-PvP-Alliance) 473,962" after the title */
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; position: relative; top: -.06em; }
   .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; margin-right: .4em; flex: none; }   /* as tall as the text */
@@ -178,15 +177,15 @@
       <button type="button" data-v="kr" aria-pressed="false" aria-label="Korea" data-tip="f-kr"><img src="images/flags/kr.svg?v=2" alt=""></button>
       <button type="button" data-v="tw" aria-pressed="false" aria-label="Taiwan" data-tip="f-tw"><img src="images/flags/tw.svg?v=3" alt=""></button>
     </div>
-    <div class="cz-fac" id="czFaction" role="group" aria-label="Faction">
-      <button type="button" data-v="Alliance" aria-pressed="false" aria-label="Alliance" data-tip="f-Alliance"><img src="images/icons/faction_alliance.jpg" alt=""></button>
-      <button type="button" data-v="Horde" aria-pressed="false" aria-label="Horde" data-tip="f-Horde"><img src="images/icons/faction_horde.jpg" alt=""></button>
-    </div>
     <div class="cz-fac" id="czRules" role="group" aria-label="Ruleset">
       <button type="button" data-v="Normal" aria-pressed="false" aria-label="Normal Ruleset" data-tip="f-Normal"><img src="images/icons/inv_camelot_camping_campfirenearby.jpg" alt=""></button>
       <button type="button" data-v="PvP" aria-pressed="false" aria-label="PvP Ruleset" data-tip="f-PvP"><img src="images/icons/achievement_bg_winwsg.jpg" alt=""></button>
       <button type="button" data-v="Roleplay" aria-pressed="false" aria-label="Roleplay Ruleset" data-tip="f-Roleplay"><img src="images/icons/ability_rogue_disguise.jpg" alt=""></button>
       <button type="button" data-v="Roleplay PvP" aria-pressed="false" aria-label="Roleplay PvP Ruleset" data-tip="f-Roleplay PvP"><img src="images/icons/achievement_pvp_legion03.jpg" alt=""></button>
+    </div>
+    <div class="cz-fac" id="czFaction" role="group" aria-label="Faction">
+      <button type="button" data-v="Alliance" aria-pressed="false" aria-label="Alliance" data-tip="f-Alliance"><img src="images/icons/faction_alliance.jpg" alt=""></button>
+      <button type="button" data-v="Horde" aria-pressed="false" aria-label="Horde" data-tip="f-Horde"><img src="images/icons/faction_horde.jpg" alt=""></button>
     </div>
   </div>
 
@@ -377,7 +376,7 @@ const crumbs = (head, box, root, items, cur, count) => {
   };
 };
 // the whole list's title, on the same line the breadcrumb takes when a class or race is open, so opening one moves nothing
-const title = (head, root, count) => { head.innerHTML = `<div class="cz-crumbs"><span class="cz-title">${root}</span>${count}</div>`; };
+const title = (head, root, count) => { head.innerHTML = `<div class="cz-crumbs"><span class="cz-root">${root}</span>${count}</div>`; };
 const closeMenus = () => document.querySelectorAll('.cz-menu').forEach((m) => { m.previousElementSibling.setAttribute('aria-expanded', 'false'); m.remove(); });
 document.addEventListener('click', (e) => { if (!e.target.closest('.cz-menu')) closeMenus(); });
 document.addEventListener('keydown', (e) => {
@@ -409,13 +408,13 @@ function draw() {
     const g = grid(lv), raceTot = RACES.map((_, i) => g.reduce((a, row) => a + row[i], 0)), classTot = CLASSES.map((_, j) => g[j].reduce((a, b) => a + b, 0));
     return { g, raceTot, classTot, total: raceTot.reduce((a, b) => a + b, 0) };
   };
-  // the region and ruleset picked, after each count: "(NA · PvP)"
-  const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1]].filter(Boolean);
-  // the count after a box's title: "(924,356)", then the region, ruleset and level picked ("NA · PvP · Level 60"), and
+  // the region, ruleset and faction picked, in the order they're picked in game
+  const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1], S.faction].filter(Boolean);
+  // what follows a box's title: the picks and the box's level, then the count: "(NA-PvP-Alliance-Level 60) 473,962", and
   // "small sample" when under 1,000, where shares jump around
   const count = (n, lv) => {
-    const w = [...sel, lv === '60' && 'Level 60'].filter(Boolean).join(' · '), small = n && n < 1000 ? `${w ? ' · ' : ''}<span class="cz-small">small sample</span>` : '';
-    return `<span class="cz-count">(${fmt(n)})</span>` + (w || small ? `<span class="cz-where">${w}${small}</span>` : '');
+    const w = [...sel, lv === '60' && 'Level 60'].filter(Boolean).join('-');
+    return `<span class="cz-count">${w ? `(${w}) ` : ''}${fmt(n)}${n && n < 1000 ? ' · <span class="cz-small">small sample</span>' : ''}</span>`;
   };
 
   // the classes box: every class, or one class's races
