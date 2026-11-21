@@ -107,9 +107,11 @@
   .cz-balmid { position: absolute; top: 8px; bottom: 8px; left: 50%; width: 1px; margin-left: -.5px; background: #fff5; z-index: 2; pointer-events: none; }
   .cz-balbar { position: relative; z-index: 1; display: flex; height: 22px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #0006; }
   .cz-balbar i { height: 100%; transition: width .25s; }
-  .cz-balbar i.seg { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; box-shadow: inset -1px 0 #0009; }   /* one class's share of the picked faction */
-  .cz-balbar i.seg { font-style: normal; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap;
-    text-shadow: 1px 0 #000, -1px 0 #000, 0 1px #000, 0 -1px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000; }   /* its share: white with a hard black outline, as the game's unit frames */
+  .cz-balbar i.seg { box-shadow: inset -1px 0 #0009; }   /* one class's share of the picked faction */
+  /* each class's share under its slice, in the class's colour; hidden (fitSegs) where the slice is too narrow for it */
+  .cz-segl { grid-column: 2; display: flex; margin-top: -12px; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cz-segl span { flex: none; text-align: center; overflow: hidden; white-space: nowrap; padding: 0 2px; box-sizing: border-box; }
+  .cz-segl span.cut { visibility: hidden; }
   .cz-balbar b { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #000c; transition: left .25s; }
   .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); margin-top: -8px; font-variant-numeric: tabular-nums; }
   .cz-ballab b { font-weight: var(--cds-font-weight-medium); }   /* as the table's class names, which they match in size */
@@ -391,6 +393,9 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// hide a class's share under the one-faction bar where its slice is narrower than the text (phones, small classes)
+const fitSegs = () => document.querySelectorAll('.cz-segl span').forEach((el) => { el.classList.remove('cut'); el.classList.toggle('cut', el.scrollWidth > el.clientWidth); });
+addEventListener('resize', fitSegs);
 function draw() {
   if (!has(S.region, S.rules)) S.rules = '';
   if (S.race >= 0 && !raceOn(S.race)) { S.race = -1; const k = open.indexOf('race'); if (k >= 0) open.splice(k, 1); }
@@ -474,8 +479,11 @@ function draw() {
     const order = CLASSES.map((_, j) => j).filter((j) => cn[j]).sort((a, b) => cn[b] - cn[a]);
     order.forEach((j) => { tips['b' + j] = `<div class="h"><span style="color:${FAC_TEXT[f]}">${f}</span> <span style="color:${CLASS_COLOR[CLASSES[j]]}">${CLASSES[j]}</span></div>` + tipRows([['Characters', fmt(cn[j])], [`Of ${f}`, pctTxt(pct(cn[j], tot))]]); });
     $('czBal').innerHTML = `<img src="images/icons/faction_${f.toLowerCase()}.jpg" alt="${f}"><div class="cz-balwrap"><div class="cz-balbar">`
-      + order.map((j) => `<i class="seg" data-tip="b${j}" style="width:${pct(cn[j], tot)}%;background:${soft(CLASS_COLOR[CLASSES[j]])}">${pct(cn[j], tot) >= 4 ? pctTxt(pct(cn[j], tot)) : ''}</i>`).join('')
-      + `</div></div><span></span><div class="cz-ballab"><span><b style="color:${FAC_TEXT[f]}">${f}</b><b>${fp[f === 'Alliance' ? 0 : 1].toFixed(1)}%</b><em>(${fmt(tot)})</em></span></div>`;
+      + order.map((j) => `<i class="seg" data-tip="b${j}" style="width:${pct(cn[j], tot)}%;background:${soft(CLASS_COLOR[CLASSES[j]])}"></i>`).join('')
+      + `</div></div><span></span><div class="cz-segl">`
+      + order.map((j) => { const p = pct(cn[j], tot); return `<span data-tip="b${j}" style="width:${p}%;color:${CLASS_COLOR[CLASSES[j]]}">${pctTxt(p)}</span>`; }).join('')
+      + `</div><div class="cz-ballab"><span><b style="color:${FAC_TEXT[f]}">${f}</b><b>${fp[f === 'Alliance' ? 0 : 1].toFixed(1)}%</b><em>(${fmt(tot)})</em></span></div>`;
+    fitSegs();
   } else $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balwrap"><div class="cz-balgrid">${[0, 25, 50, 75, 100].map((t) => `<i class="${t === 50 ? 'mid' : ''}" style="left:${t}%"></i>`).join('')}</div><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i><b style="left:${fp[0]}%"></b></div><div class="cz-balmid"></div></div>`
     + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span><b style="color:${FAC_TEXT.Alliance}">Alliance</b><b>${fp[0].toFixed(1)}%</b><em>(${fmt(fa[0])})</em></span>`
     + `<span><em>(${fmt(fa[1])})</em><b>${fp[1].toFixed(1)}%</b><b style="color:${FAC_TEXT.Horde}">Horde</b></span></div>`;
