@@ -110,7 +110,7 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     preview) and rebuild. Their site refuses scripts (HTTP 403), so the fetching stays in the browser; nothing refreshes it
     automatically. Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, a region,
-    a ruleset, a faction, `60` for level 60 only in every box, or `classes60` / `races60` / `table60` for one box: each box has its own All / 60 Only switch; the faction bar is always all levels)
+    a ruleset, a faction, `60` for level 60 only in every box, or `classes60` / `races60` / `factions60` / `table60` for one box: each box has its own All / 60 Only switch)
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.

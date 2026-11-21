@@ -273,6 +273,7 @@ document.head.appendChild(t);})();
   </section>
 
   <section class="cz-card" aria-label="Faction balance">
+    <div class="cz-cardhead"><div id="czBalHead"></div><div class="cz-seg cz-lvl" data-box="bal" role="group" aria-label="Levels"></div></div>
     <div class="cz-bal" id="czBal"></div>
   </section>
 
@@ -316,8 +317,8 @@ const $ = (id) => document.getElementById(id);
 
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
 // as on the Sims page, a reload starts on the full lists.
-const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['table', 'table60']];
-const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', table: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1 };
+const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60']];
+const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1 };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
   // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
   if (t === '60') { for (const b in S.level) S.level[b] = '60'; continue; }
@@ -531,11 +532,12 @@ function draw() {
     }), raceTot[i]);
   }
 
-  // the faction balance at all levels (the region and ruleset apply): both factions, or once a faction is picked (the
-  // split already seen), that faction's bar split by class, largest first
-  const all = counts('all'), fa = [0, 0];
+  // the faction balance at the box's levels (the region and ruleset apply): both factions, or once a faction is picked
+  // (the split already seen), that faction's bar split by class, largest first
+  const all = counts(S.level.bal), fa = [0, 0];
   all.forEach((row) => row.forEach((n, i) => { fa[i < 5 ? 0 : 1] += n; }));
   const ft = fa[0] + fa[1], fp = fa.map((n) => pct(n, ft));
+  title($('czBalHead'), 'Factions', count(S.faction ? fa[S.faction === 'Alliance' ? 0 : 1] : ft, S.level.bal));
   if (S.faction) {
     const f = S.faction, cn = CLASSES.map((_, j) => all[j].reduce((a, n, i) => a + (FACTION(i) === f ? n : 0), 0)), tot = cn.reduce((a, b) => a + b, 0);
     const order = CLASSES.map((_, j) => j).filter((j) => cn[j]).sort((a, b) => cn[b] - cn[a]);
