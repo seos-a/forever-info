@@ -107,7 +107,7 @@
   .cz-balbar { position: relative; z-index: 1; display: flex; height: 18px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 1px #0006; }
   .cz-balbar i { height: 100%; transition: width .25s; }
   .cz-balbar i.seg { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; box-shadow: inset -1px 0 #0009; }   /* one class's share of the picked faction */
-  .cz-balbar i.seg img { width: 14px; height: 14px; border-radius: 2px; flex: none; }
+  .cz-balbar i.seg { font-style: normal; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); font-weight: 600; color: #111; font-variant-numeric: tabular-nums; white-space: nowrap; }   /* its share */
   .cz-balbar b { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #000c; transition: left .25s; }
   .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: calc(var(--cds-font-size-caption) * var(--mz, 1)); margin-top: -8px; font-variant-numeric: tabular-nums; }
   .cz-ballab b { font-weight: var(--cds-font-weight-medium); }   /* as the table's class names, which they match in size */
@@ -321,9 +321,7 @@ document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
 });
 
 // a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
-// rows: the full list's row count, so a box opened on one class or race stays at least as tall as the list it came from
-function rank(el, items, sum, rows) {
-  el.style.minHeight = rows ? rows * 26 + 16 + 'px' : '';   // a 22px row and 4px gap each, then the 16px axis
+function rank(el, items, sum) {
   const shown = items.filter((d) => d.ok !== false).sort((a, b) => b.n - a.n);
   if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
   const maxPct = Math.max(...shown.map((d) => pct(d.n, sum)));
@@ -438,7 +436,7 @@ function draw() {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
       return { key: 'cr' + i, name: rname, ok: raceOn(i) && EXISTS[j][i], color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: g[j][i] };
-    }), classTot[j], CLASSES.length);
+    }), classTot[j]);
   }
 
   // the races box: every race, or one race's classes
@@ -459,7 +457,7 @@ function draw() {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
       return { key: 'rc' + j, name: cname, nameColor: CLASS_COLOR[cname], ok: EXISTS[j][i], color: CLASS_COLOR[cname], img: classImg(j), n: g[j][i] };
-    }), raceTot[i], RACES.filter((_, k) => raceOn(k)).length);
+    }), raceTot[i]);
   }
 
   // the faction balance at all levels (the region and ruleset apply): both factions, or once a faction is picked (the
@@ -472,7 +470,7 @@ function draw() {
     const order = CLASSES.map((_, j) => j).filter((j) => cn[j]).sort((a, b) => cn[b] - cn[a]);
     order.forEach((j) => { tips['b' + j] = `<div class="h"><span style="color:${FAC_TEXT[f]}">${f}</span> <span style="color:${CLASS_COLOR[CLASSES[j]]}">${CLASSES[j]}</span></div>` + tipRows([['Characters', fmt(cn[j])], [`Of ${f}`, pctTxt(pct(cn[j], tot))]]); });
     $('czBal').innerHTML = `<img src="images/icons/faction_${f.toLowerCase()}.jpg" alt="${f}"><div class="cz-balwrap"><div class="cz-balbar">`
-      + order.map((j) => `<i class="seg" data-tip="b${j}" style="width:${pct(cn[j], tot)}%;background:${soft(CLASS_COLOR[CLASSES[j]])}">${pct(cn[j], tot) >= 2.5 ? classImg(j) : ''}</i>`).join('')
+      + order.map((j) => `<i class="seg" data-tip="b${j}" style="width:${pct(cn[j], tot)}%;background:${soft(CLASS_COLOR[CLASSES[j]])}">${pct(cn[j], tot) >= 4 ? pctTxt(pct(cn[j], tot)) : ''}</i>`).join('')
       + `</div></div><span></span><div class="cz-ballab"><span><b style="color:${FAC_TEXT[f]}">${f}</b><b>${fp[f === 'Alliance' ? 0 : 1].toFixed(1)}%</b><em>(${fmt(tot)})</em></span></div>`;
   } else $('czBal').innerHTML = `<img src="images/icons/faction_alliance.jpg" alt="Alliance"><div class="cz-balwrap"><div class="cz-balgrid">${[0, 25, 50, 75, 100].map((t) => `<i class="${t === 50 ? 'mid' : ''}" style="left:${t}%"></i>`).join('')}</div><div class="cz-balbar"><i style="width:${fp[0]}%;background:${soft('var(--al)')}"></i><i style="width:${fp[1]}%;background:${soft('var(--ho)')}"></i><b style="left:${fp[0]}%"></b></div><div class="cz-balmid"></div></div>`
     + `<img src="images/icons/faction_horde.jpg" alt="Horde"><div class="cz-ballab"><span><b style="color:${FAC_TEXT.Alliance}">Alliance</b><b>${fp[0].toFixed(1)}%</b><em>(${fmt(fa[0])})</em></span>`
