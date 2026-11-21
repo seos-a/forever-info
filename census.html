@@ -98,8 +98,9 @@ document.head.appendChild(t);})();
   @media (max-width: 600px) { .cz-fac button { width: 28px; height: 28px; } }
   /* the region buttons (first in the row) are the crests' buttons around each region's square flag (images/flags, drawn by art/flags.py) */
 
-  .cz-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
-  .cz-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: var(--color-bg); color: var(--color-fg);
+  .cz-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: 6px; overflow: hidden; }
+  /* small, about as tall as the box titles beside them */
+  .cz-seg button { font: inherit; font-size: 11px; line-height: 16px; padding: 1px 7px; background: var(--color-bg); color: var(--color-fg);
     border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
   .cz-seg button:last-child { border-right: 0; }
   .cz-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
