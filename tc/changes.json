@@ -1,6 +1,34 @@
 {
  "updates": [
   {
+   "date": "2026-11-21",
+   "version": "1.60.1",
+   "build": "71037",
+   "classes": {
+    "druid": [
+     [
+      "buff",
+      "Hurricane",
+      "spell_nature_cyclone",
+      "Spell",
+      "Creates a violent storm in the target area causing {+69} (up from 68) Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 20%. Lasts 10 sec. Druid must channel to maintain the spell.",
+      "",
+      [
+       [
+        1,
+        "Creates a violent storm in the target area causing {+69} (up from 68) Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 20%. Lasts 10 sec. Druid must channel to maintain the spell.",
+        ""
+       ]
+      ]
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.70959",
+    "1.60.1.71037"
+   ]
+  },
+  {
    "date": "2026-11-17",
    "version": "1.60.1",
    "build": "70959",
