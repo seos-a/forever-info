@@ -127,6 +127,13 @@ document.head.appendChild(t);})();
   .cz-pickwrap { position: relative; display: flex; }
   .cz-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
   .cz-pick:hover, .cz-pick[aria-expanded="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); }
+  .cz-gpick { color: var(--gold); }   /* the graph title's Class / Race / Faction picker */
+  .cz-pickwrap + .cz-root { margin-left: .3em; }
+  #czGHead .cz-crumbs { display: block; }   /* one line of text, wrapping as one on a phone */
+  #czGHead .cz-pickwrap { display: inline-flex; }
+  #czGHead { flex: 1 1 auto; }
+  #czGHead .cz-gname { white-space: nowrap; }   /* "Class Population Over Time" kept together: a phone breaks before the count */
+  #czGHead .cz-count { margin-left: 0; }
   .cz-menu { position: absolute; left: -.3em; top: calc(100% + 4px); z-index: 20; display: grid; min-width: 12rem; max-height: 24rem; overflow: auto; overscroll-behavior: contain; padding: 4px;
     background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); font-size: var(--cds-font-size-body); font-weight: 400; line-height: 1.45; }
   .cz-menu button { font: inherit; display: flex; align-items: center; gap: .5rem; text-align: left; padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; white-space: nowrap; }
@@ -321,7 +328,7 @@ document.head.appendChild(t);})();
   </section>
 
   <section class="cz-card" aria-label="Over time">
-    <div class="cz-cardhead"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div><div class="cz-gsegs"><div class="cz-seg" id="czGView" role="group" aria-label="Lines"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
+    <div class="cz-cardhead"><div id="czGHead"></div><div class="cz-gsegs"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
     <div class="cz-graph" id="czGraph"></div>
     <div class="cz-gbar" id="czGBar" hidden><i></i></div>
     <div class="cz-legend" id="czLegend"></div>
@@ -371,6 +378,7 @@ const $ = (id) => document.getElementById(id);
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
 // as on the Sims page, a reload starts on the full lists.
 const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60'], ['graph', 'graph60']];
+const GVIEWS = [['cls', 'Class'], ['race', 'Race'], ['fac', 'Faction']];   // the graph's lines, picked in its title
 const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'cls', gmeasure: 'n', grange: 'all' };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
   // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
@@ -595,6 +603,21 @@ function draw() {
   all.forEach((row) => row.forEach((n, i) => { fa[i < 5 ? 0 : 1] += n; }));
   const ft = fa[0] + fa[1], fp = fa.map((n) => pct(n, ft));
   title($('czBalHead'), 'Factions', count(S.faction ? fa[S.faction === 'Alliance' ? 0 : 1] : ft, S.level.bal));
+  // the graph's title: its count is today's, at the graph's own levels (the latest point)
+  const ga = [0, 0]; counts(S.level.graph).forEach((row) => row.forEach((n, i) => { ga[i < 5 ? 0 : 1] += n; }));
+  // its first word picks the lines (as the Sims page's spec picker): "Class / Race / Faction Population Over Time"
+  const gn = count(S.faction ? ga[S.faction === 'Alliance' ? 0 : 1] : ga[0] + ga[1], S.level.graph);
+  $('czGHead').innerHTML = `<div class="cz-crumbs"><span class="cz-gname"><span class="cz-pickwrap"><button type="button" class="cz-pick cz-gpick" aria-haspopup="menu" aria-expanded="false">${GVIEWS.find((v) => v[0] === S.gview)[1]}</button></span><span class="cz-root">Population Over Time</span></span> ${gn}</div>`;
+  const gpick = $('czGHead').querySelector('.cz-pick'), gwrap = gpick.parentElement;
+  gpick.onclick = (e) => {
+    e.stopPropagation();
+    const was = gwrap.querySelector('.cz-menu'); closeMenus(); if (was) return;
+    const menu = document.createElement('div'); menu.className = 'cz-menu'; menu.setAttribute('role', 'menu');
+    menu.innerHTML = GVIEWS.map(([v, n]) => `<button type="button" role="menuitemradio" aria-checked="${v === S.gview}" data-v="${v}">${n}</button>`).join('');
+    menu.onclick = (ev) => { const b = ev.target.closest('button'); if (!b) return; closeMenus(); S.gview = b.dataset.v; draw(); };
+    gwrap.append(menu); gpick.setAttribute('aria-expanded', 'true');
+    (menu.querySelector('[aria-checked="true"]') || menu.firstChild).focus();
+  };
   if (S.faction) {
     const f = S.faction, cn = CLASSES.map((_, j) => all[j].reduce((a, n, i) => a + (FACTION(i) === f ? n : 0), 0)), tot = cn.reduce((a, b) => a + b, 0);
     const order = CLASSES.map((_, j) => j).filter((j) => cn[j]).sort((a, b) => cn[b] - cn[a]);
@@ -612,7 +635,6 @@ function draw() {
   ({ g, raceTot, classTot, total } = view(S.level.table));
   table(g, raceTot, classTot, total);
 
-  segs($('czGView'), [['cls', 'Classes'], ['race', 'Races'], ['fac', 'Factions']], S.gview, (v) => { S.gview = v; draw(); });
   segs($('czGMeasure'), [['n', 'Characters'], ['pct', 'Share']], S.gmeasure, (v) => { S.gmeasure = v; draw(); });
   graph();
 }
