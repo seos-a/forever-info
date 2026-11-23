@@ -401,11 +401,9 @@ document.addEventListener('mousemove', (e) => {
   tip.style.top = (e.clientY + 16 + h > innerHeight ? e.clientY - h - 12 : e.clientY + 16) + 'px';
 });
 document.addEventListener('mouseleave', () => { tip.hidden = true; });
-// the filter icons along the top: an instant tooltip with the icon's name (the factions in their colours), in place of the
-// browser's slow title text
+// the filter icons along the top: an instant tooltip with the icon's name in white, in place of the browser's slow title text
 document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
-  const v = b.dataset.v, c = { Alliance: FAC_TEXT.Alliance, Horde: FAC_TEXT.Horde }[v];
-  tips[b.dataset.tip] = `<div class="h"${c ? ` style="color:${c}"` : ''}>${b.getAttribute('aria-label').replace(/ Ruleset$/, '')}</div>`;   // the server type alone: "Roleplay PvP"
+  tips[b.dataset.tip] = `<div class="h">${b.getAttribute('aria-label').replace(/ Ruleset$/, '')}</div>`;   // the server type alone: "Roleplay PvP"
 });
 
 // a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
