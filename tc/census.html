@@ -86,7 +86,7 @@
   .cz-row .top { display: inline-flex; align-items: center; gap: 6px; color: var(--color-fg-muted); }
   .cz-row .top img { width: 20px; height: 20px; border-radius: 4px; }
   .cz-row.dim { opacity: .45; }
-  /* rising / falling since last week: a green or red triangle and the change in points, after the share */
+  /* rising / falling over the past week (or a little more): a green or red triangle and the change in points, after the share */
   .cz-rank.cz-hasmv { --mvw: 3.2rem; }   /* room for it, only when some bar has one */
   .cz-row .mv { font-weight: 600; font-size: .92em; font-variant-numeric: tabular-nums; margin-left: -3px; white-space: nowrap; }
   .cz-row .mv.up { color: #4ec46a; }
@@ -232,7 +232,7 @@
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
       <p><b>Where the numbers come from</b>The <a href="https://forever.raider.io/population" target="_blank" rel="noopener">Raider.IO</a> WoW Forever census. Characters below level 10 aren't included. Raider.IO only knows the characters it has come across, mostly through guild rosters: characters outside a guild, or ones it hasn't looked up, can be missing.</p>
-      <p><b>Weekly change</b>Green and red arrows show how much a class's or race's share has moved since last week. Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
+      <p><b>Weekly change</b>Green and red arrows show how much a class's or race's share has moved over the past week, against Raider.IO's weekly history (the end of its week before last, 7 to 13 days ago). Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
       <p><b>Updates</b>By hand every few days, not live. The date in the bottom-left corner is when this copy was taken.</p>
       <p><b>Notes</b>Counts in-game characters, not real-life players. <span id="czLevels"></span></p>
     </div>
@@ -366,12 +366,13 @@ function rank(el, items, sum) {
   const click = Object.fromEntries(shown.filter((d) => d.onClick).map((d) => [d.key, d.onClick]));
   el.onclick = (e) => { const r = e.target.closest('button.cz-row'); if (r && click[r.dataset.k]) click[r.dataset.k](); };
 }
-// Rising / falling since last week (Raider.IO's weekly history, census.json's prev): the share now against the share
-// in the week before this one, for the region, ruleset, levels and faction picked. Shown only for a move of 0.2 points
+// Rising / falling over the past week (Raider.IO's weekly history, census.json's prev): the share now against the share
+// at the end of the week before last (7 to 13 days ago; see sync_census.last_week), for the region, ruleset, levels
+// and faction picked. Shown only for a move of 0.2 points
 // or more, and never when either week has under 1,000 characters (a small sample's shares jump around).
 const MV_MIN = 0.2, MV_N = 1000;
 const lastWeek = (lv) => (C.prev[lv] || {})[S.rules ? S.region + '|' + S.rules : S.region];
-const weekTxt = (w) => { const [y, m, d] = w.split('-').map(Number); return `Last week (${MONTHS[m - 1]} ${d})`; };
+const weekTxt = (w) => { const t = new Date(Date.UTC(...w.split('-').map(Number).map((v, i) => i === 1 ? v - 1 : v)) + 6 * 864e5); return `Week ending ${MONTHS[t.getUTCMonth()]} ${t.getUTCDate()}`; };
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // {html, row}: the arrow after the bar's share, and a tooltip row with last week's share ('' and null when none)
 function move(now, nowTot, was, wasTot, week) {
@@ -379,7 +380,7 @@ function move(now, nowTot, was, wasTot, week) {
   const a = pct(now, nowTot), b = pct(was, wasTot), dv = Math.round((a - b) * 10) / 10;
   const row = [weekTxt(week), pctTxt(b)];
   if (Math.abs(dv) < MV_MIN) return { html: '', row };
-  return { html: `<span class="mv ${dv > 0 ? 'up' : 'down'}" aria-label="${dv > 0 ? 'up' : 'down'} ${Math.abs(dv).toFixed(1)} points since last week">${dv > 0 ? '▲' : '▼'}${Math.abs(dv).toFixed(1)}</span>`, row };
+  return { html: `<span class="mv ${dv > 0 ? 'up' : 'down'}" aria-label="${dv > 0 ? 'up' : 'down'} ${Math.abs(dv).toFixed(1)} points over the past week">${dv > 0 ? '▲' : '▼'}${Math.abs(dv).toFixed(1)}</span>`, row };
 }
 // An open breakdown's title: the list's name (back to it), then the picked class or race, which opens a menu of all of
 // them in their colours to switch to another (as the Sims page's spec picker). items: [{idx, img, name, color}]

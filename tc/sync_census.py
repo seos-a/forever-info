@@ -11,7 +11,7 @@ then rebuild (py build.py, cp ../web/*.html ..).
 Nothing here goes on the internet: Raider.IO's site refuses scripts (HTTP 403), so the fetching is done by you, in the
 browser, as their own page does it. Nothing runs on a schedule.
 
-census.json gets each region|ruleset's race x class counts (`factionBalance`), `counts60` the same at level 60, `prev` last week's class and race counts (Raider.IO's weekly history, for the page's
+census.json gets each region|ruleset's race x class counts (`factionBalance`), `counts60` the same at level 60, `prev` the class and race counts at the end of the week before last (Raider.IO's weekly history, at least 7 days old, for the page's
 rising / falling arrows: per level (all, 60) and key, {week, classes, races, alliance, horde}; the last two are the
 classes within each faction), `levels` from `classLevels` (per key
 [characters, at level 60, median level: the level by which half are counted]) and the snapshot's date (Raider.IO's
@@ -54,10 +54,14 @@ def shape(stats, races, classes, check=True):
 
 
 def last_week(weeks, key, ids):
-    """the counts, in census.json's order, from the week before the current one in a classWeeks / raceWeeks list"""
+    """the counts, in census.json's order, from the week before last in a classWeeks / raceWeeks list.
+    Each entry is dated by the day its week starts but holds the running total at the end of that week, and the last
+    entry is the live total: weeks[-2] closed as recently as yesterday (on the first day of a week the arrows would
+    compare against a day ago), weeks[-3] 7 to 13 days ago, so the arrows always cover at least a full week. With only
+    two weeks of history, weeks[-2]."""
     if len(weeks or []) < 2:
         return None
-    w = weeks[-2]
+    w = weeks[-3] if len(weeks) >= 3 else weeks[-2]
     n = {x[key]: x['characters'] for x in w['classes' if key == 'classId' else 'races']}
     return w['week'], [n.get(i, 0) for i in ids]
 
