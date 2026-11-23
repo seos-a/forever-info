@@ -329,8 +329,8 @@ const FAC_COLOR = { Alliance: 'var(--al)', Horde: 'var(--ho)' }, FAC_TEXT = { Al
 const REGIONS = [['all', 'All regions'], ['us', 'Americas'], ['eu', 'Europe'], ['kr', 'Korea'], ['tw', 'Taiwan']];
 const RULES = [['', 'All rulesets', 'all'], ['Normal', 'Normal', 'normal'], ['PvP', 'PvP', 'pvp'], ['Roleplay', 'RP', 'rp'], ['Roleplay PvP', 'RP-PvP', 'rppvp']];
 // the table's measures, each with the line under the table explaining it (as the Sims page's tables)
-const METRICS = [['col', '% of class', 'Each class adds up to 100%: of all Mages, how many are each race.'],
-  ['row', '% of race', 'Each race adds up to 100%: of all Gnomes, how many play each class.'],
+const METRICS = [['col', '% of class', 'Each class adds up to 100%: how each class splits across the races.'],
+  ['row', '% of race', 'Each race adds up to 100%: how each race splits across the classes.'],
   ['all', '% of all', "Each race and class's share of every character counted."],
   ['n', 'Characters', 'How many characters of each race and class.']];
 const raceImg = (i) => `<img class="race ${FACTION(i)}${i === 4 ? ' mirror' : ''}" src="images/icons/${RACE_ICON[i]}.jpg" alt="">`;
