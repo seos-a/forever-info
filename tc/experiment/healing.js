@@ -1047,7 +1047,7 @@ dash.onData(redraw);
   });
 }
 
-// Collapsible cards: the arrow before each title folds the card down to its header.
+// Collapsible cards: the arrow before the title of the builds table and the notes folds the card down to its header.
 let drawQueued = false;
 const queueDraw = () => { if (!drawQueued) { drawQueued = true; requestAnimationFrame(() => { drawQueued = false; redraw(); }); } };
 for (const card of ROOT.querySelectorAll('.hr-card')) {
@@ -1061,10 +1061,10 @@ for (const card of ROOT.querySelectorAll('.hr-card')) {
     fold.setAttribute('aria-label', (open ? 'Collapse ' : 'Expand ') + label);
     if (open) queueDraw();
   });
-  // A card with no title (the race grid) still gets the arrow, first in its header.
-  if (h2) { h2.replaceWith(title); title.append(fold, h2); } else { title.append(fold); card.querySelector('.hr-cardhead').prepend(title); }
-  // The ranking box (data-fixed) always stays open: no arrow.
-  if (card.hasAttribute('data-fixed')) fold.remove();
+  // Only the cards that start folded (data-collapsed) can fold; the others always stay open, with no arrow.
+  const foldable = card.hasAttribute('data-collapsed');
+  if (h2) { h2.replaceWith(title); title.append(fold, h2); } else if (foldable) { title.append(fold); card.querySelector('.hr-cardhead').prepend(title); }
+  if (!foldable) fold.remove();
   // Cards marked data-collapsed start folded (the fights table and the notes).
   if (card.hasAttribute('data-collapsed')) { card.classList.add('collapsed'); fold.setAttribute('aria-expanded', 'false'); fold.setAttribute('aria-label', 'Expand ' + label); }
 }
