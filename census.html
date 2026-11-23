@@ -200,6 +200,11 @@ document.head.appendChild(t);})();
   .cz img.race { box-shadow: 0 0 0 1.5px var(--al); }
   .cz img.race.Horde { box-shadow: 0 0 0 1.5px var(--ho); }
   .cz img.mirror { transform: scaleX(-1); }
+  /* an icon at a box's left edge whose rim is drawn outside it starts in by the rim (and the title's first letter's
+     side bearing), so its outer edge lines up with the box title's first letter instead of poking out left of it */
+  .cz-row .nm img { margin-left: 1px; }
+  .cz-row .nm img.race { margin-left: 2.5px; }
+  .cz-bal > img:first-child { margin-left: 2px; }
 
   /* the race x class table: the Sims page's .lx-matrix. Its text and cells grow to fill the box (--mz, up to 1.2 times,
      as matrix_fit.js) */
