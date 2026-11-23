@@ -252,8 +252,9 @@ document.head.appendChild(t);})();
   .cz-fold::before { content: ""; width: .45rem; height: .45rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s; }
   .cz-card.collapsed .cz-fold::before { transform: rotate(-45deg); }
   .cz-card.collapsed > :not(.cz-cardhead) { display: none; }
-  .cz-notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
+  .cz-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
   .cz-notes b { display: block; color: var(--color-fg); font-weight: 600; }
+  @media (max-width: 600px) { .cz-notes { grid-template-columns: 1fr; } }   /* two notes a row, one on a phone */
 </style>
 
 <div class="cz">
@@ -299,12 +300,10 @@ document.head.appendChild(t);})();
   <section class="cz-card collapsed" id="czNotesCard">
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
-      <p><b>Where the numbers come from</b>The <a href="https://forever.raider.io/population" target="_blank" rel="noopener">Raider.IO</a> census of every WoW Forever character it tracks. It counts characters, not players: one player can have several, and characters nobody plays any more still count.</p>
-      <p><b>Levels</b><span id="czLevels"></span></p>
-      <p><b>Who gets counted</b>Raider.IO only knows the characters it has come across, mostly through guild rosters. Characters outside a guild, or ones it hasn't looked up, can be missing, so solo and brand-new players are likely undercounted.</p>
-      <p><b>Weekly change</b>The green and red arrows show how much a class's or race's share has moved since last week, from Raider.IO's weekly history. Moves under 0.2 points aren't shown, nor any in a box of fewer than 1,000 characters.</p>
-      <p><b>Small samples</b>Shares based on fewer than 1,000 characters are marked "small sample" and can swing a lot from week to week.</p>
-      <p><b>Updates</b>Updated by hand every few days, not live. The date in the bottom-left corner is when this copy was taken.</p>
+      <p><b>Where the numbers come from</b>The <a href="https://forever.raider.io/population" target="_blank" rel="noopener">Raider.IO</a> WoW Forever census. Characters below level 10 aren't included. Raider.IO only knows the characters it has come across, mostly through guild rosters: characters outside a guild, or ones it hasn't looked up, can be missing.</p>
+      <p><b>Weekly change</b>The green and red arrows show how much a class's or race's share has moved since last week. Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
+      <p><b>Updates</b>By hand every few days, not live. The date in the bottom-left corner is when this copy was taken.</p>
+      <p><b>Notes</b>The data counts in-game characters, not real-life players. <span id="czLevels"></span></p>
     </div>
   </section>
 </div>
@@ -488,7 +487,7 @@ function draw() {
   history.replaceState(history.state, '', link());
   // the Methods and Caveats note on levels, for the region and ruleset picked (both factions)
   const [lt, l60, lmed] = C.levels[S.rules ? S.region + '|' + S.rules : S.region];
-  $('czLevels').textContent = `Characters below level 10 aren't counted. ${(l60 / lt * 100).toFixed(1)}% of characters are level 60, and half are level ${lmed} or lower.`;
+  $('czLevels').textContent = `${(l60 / lt * 100).toFixed(1)}% of all characters are currently level 60, and the median level is ${lmed}.`;
   document.querySelectorAll('#czRegion button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.region));
   // the ruleset icons (the realm list's own: Normal, PvP, Roleplay, Roleplay PvP), as the flags; greyed where the region has none
   document.querySelectorAll('#czRules button').forEach((b) => { b.setAttribute('aria-pressed', b.dataset.v === S.rules); b.disabled = !has(S.region, b.dataset.v); });
