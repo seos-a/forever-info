@@ -109,9 +109,11 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     2.5 minutes; it downloads `census-raiderio.json` with the data their page loads), then `py sync_census.py` (reads it from Downloads, `--dry` to
     preview) and rebuild. Their site refuses scripts (HTTP 403), so the fetching stays in the browser; nothing refreshes it
     automatically. Refreshed daily (from Nov 23, 2026). `census_history.json` (written by `sync_census.py`, embedded in the page) keeps
-    the counts over time: `days`, one entry per refresh date (the last 35 days), and `weeks`, Raider.IO's weekly history (dated by the
+    the counts over time: `days`, one entry per refresh date (all kept), and `weeks`, Raider.IO's weekly history (dated by the
     Sunday each week ends; Raider.IO labels a week by its Monday but stores the total at its end), each
-    `{date: {level: {key: [Alliance's classes, Horde's classes, races]}}}`; it feeds the arrows and the "Over Time" graph (Factions /
+    `{date: {level: {key: [Alliance's classes, Horde's classes, races]}}}`; it feeds the arrows and the "Over Time" graph. The graph's
+    points aren't in the page: `build.py` writes `web/census-history.json` (`census.history()`: every point of the last 90 days, one a
+    week before that), published next to `census.html` and loaded once the page shows (Factions /
     Classes / Races, Characters / Share, its own All / 60 Only switch, `graph60` in a link; time ranges 7D / 1M / 3M / 1Y / All, each
     greyed out until the history is longer; zoom by scrolling over the graph (which never scrolls the page) or a pinch, then drag or use the scrollbar under it). Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, a region,
@@ -164,7 +166,7 @@ Elsewhere use `python3`.
 ```bash
 cd tc
 py build.py
-cp ../web/*.html ..
+cp ../web/*.html ../web/*.json ..
 ```
 
 Check with `git diff --stat`: normally only the published pages (`index.html` and the section pages) and the source files you

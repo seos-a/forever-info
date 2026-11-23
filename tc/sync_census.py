@@ -20,8 +20,7 @@ least 7 days old; `levels` from `classLevels` (per key
 `generatedAt`, US Eastern). A key with no characters (Korea and Taiwan have no Roleplay realms) is left out.
 
 census_history.json keeps the counts over time, for those arrows and the page's "Over Time" graph: `days`, one entry per
-refresh date (a second refresh the same day replaces it; entries over DAYS_KEPT days old are dropped, as `weeks` covers
-them), and `weeks`, Raider.IO's own weekly history (one count per week, taken as its week closes: Raider.IO dates a week
+refresh date (a second refresh the same day replaces it; all kept: census.py thins what goes into the page), and `weeks`, Raider.IO's own weekly history (one count per week, taken as its week closes: Raider.IO dates a week
 by its Monday, stored here by its Sunday, the day it ends; the live current week is left out). Each is
 {date: {level: {key: [Alliance's classes (9), Horde's classes (9), races (10)]}}}, classes and races in census.json's
 order.
@@ -63,7 +62,6 @@ def shape(stats, races, classes, check=True):
 
 
 HISTORY = 'census_history.json'
-DAYS_KEPT = 35
 
 
 def weekly(weeks, key, ids, today):
@@ -185,11 +183,10 @@ def main():
         if k not in d['counts']:
             print(f'  {k}: new')
     # the history: this refresh as today's entry, Raider.IO's weekly counts (kept from earlier runs too, in case
-    # Raider.IO ever shortens its list), daily entries over DAYS_KEPT days old dropped
+    # Raider.IO ever shortens its list); every daily entry is kept
     hist = json.load(open(HISTORY, encoding='utf-8')) if os.path.exists(HISTORY) else {'_about': '', 'weeks': {}, 'days': {}}
     hist['weeks'].update(weeks)
     hist['days'][today.isoformat()] = {'all': {k: summary(v) for k, v in counts.items()}, '60': {k: summary(v) for k, v in counts60.items()}}
-    hist['days'] = {k: v for k, v in hist['days'].items() if (today - datetime.strptime(k, '%Y-%m-%d').date()).days <= DAYS_KEPT}
     # the arrows' comparison: the refresh 7 days back, else 8, else 6, else Raider.IO's latest week ended 7+ days back
     prev, used = {'all': {}, '60': {}}, {}
     for lvl in prev:
@@ -210,8 +207,8 @@ def main():
     if dry:
         print('--dry: census.json and census_history.json not written')
         return
-    hist['_about'] = ("The Population Census page's counts over time, for its weekly arrows and its Over Time graph. days: one entry per refresh date (sync_census.py; the last "
-                      f"{DAYS_KEPT} days); weeks: Raider.IO's weekly history, dated by the Sunday each week ends. Each: {{date: {{level (all, 60): {{key: [Alliance's classes, "
+    hist['_about'] = ("The Population Census page's counts over time, for its weekly arrows and its Over Time graph. days: one entry per refresh date (sync_census.py; all kept, census.py thins the page's copy); "
+                      "weeks: Raider.IO's weekly history, dated by the Sunday each week ends. Each: {{date: {{level (all, 60): {{key: [Alliance's classes, "
                       "Horde's classes, races]}}}, in census.json's class and race order.")
     write_history(hist)
     d.update(date=today.isoformat(), counts=counts, counts60=counts60, prev=prev, levels=levels)

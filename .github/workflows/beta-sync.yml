@@ -90,7 +90,7 @@ jobs:
             python build.py
             echo '```'
           } | tee ../sync-report.md
-          cp ../web/*.html ..   # index.html and the section pages (rogue.html, spellbook.html...)
+          cp ../web/*.html ../web/*.json ..   # index.html, the section pages (rogue.html, spellbook.html...) and census-history.json
           { echo '### Icons'; echo '```'; python fetch_images.py; echo '```'; } | tee -a ../sync-report.md
           # the "Needs a look" lists (changelog.py: changes that look like data errors; sync_racials.py: hand-worded racials Wowhead changed) go at the very top
           if [ -s ../needs-a-look.md ]; then cat ../needs-a-look.md ../sync-report.md > ../report.tmp && mv ../report.tmp ../sync-report.md; fi

@@ -546,20 +546,22 @@ function draw() {
   graph();
 }
 
-// The Over Time graph. Its points: Raider.IO's weekly counts (census_history.json's weeks, dated by the Sunday each
-// week ends) and the site's own daily copies (days; a day in both is the copy's), each [Alliance's classes (9),
+// The Over Time graph. Its points come from census-history.json, loaded once the rest of the page shows (census.py's
+// history(): the site's daily copies, every day for the last 90 days and one a week before that, and Raider.IO's
+// weekly counts from before the daily copies began), each [Alliance's classes (9),
 // Horde's classes (9), races (10)] per level and key. Lines: the factions (all, Alliance, Horde), the classes or the
 // races, for the region, ruleset and faction picked; as characters or as each line's share of the pick.
-const H = window.__CENSUS_HIST || { weeks: {}, days: {} };
-const POINTS = [...new Set([...Object.keys(H.weeks), ...Object.keys(H.days)])].sort()
-  .map((d) => ({ date: d, daily: !!H.days[d], data: H.days[d] || H.weeks[d] }));
+let POINTS = null;   // null while loading
+fetch('census-history.json?v=' + C.date).then((r) => r.json())
+  .then((h) => { POINTS = Object.keys(h).sort().map((d) => ({ date: d, data: h[d] })); })
+  .catch(() => { POINTS = []; }).then(() => graph());
 const sum = (a) => a.reduce((x, y) => x + y, 0);
 // each race's line colour, in RACES' order (Human, Dwarf, Night Elf, Gnome, Alliance Skyborne, Orc, Undead, Tauren,
 // Troll, Horde Skyborne): ten hues far enough apart to tell the lines apart on the dark box
 const RACE_COLOR = ['#4f8ff7', '#ff8c1a', '#b07cf0', '#f07cc0', '#4fd8e8', '#62cc4e', '#aab4c0', '#b5835a', '#e8dc4a', '#f0504a'];
 function series() {
   const key = S.rules ? S.region + '|' + S.rules : S.region, f = S.faction, share = S.gmeasure === 'pct';
-  const pts = POINTS.map((p) => ({ ...p, v: (p.data[S.level.graph] || {})[key] })).filter((p) => p.v);
+  const pts = (POINTS || []).map((p) => ({ ...p, v: (p.data[S.level.graph] || {})[key] })).filter((p) => p.v);
   const line = (name, color, val) => ({ name, color, vals: pts.map((p) => val(p.v)) });
   let out;
   if (S.gview === 'fac') {
@@ -605,7 +607,7 @@ function graph() {
   const el = $('czGraph'), W = el.clientWidth, Ht = el.clientHeight, legend = $('czLegend'), bar = $('czGBar');
   if (!W) return;
   const { pts, lines, share } = series();
-  if (!pts.length) { el.innerHTML = '<p class="cz-empty">No history for this pick yet.</p>'; legend.innerHTML = ''; bar.hidden = true; G = null; return; }
+  if (!pts.length) { el.innerHTML = `<p class="cz-empty">${POINTS ? 'No history for this pick yet.' : 'Loading…'}</p>`; legend.innerHTML = ''; bar.hidden = true; G = null; return; }
   const dom = [day(pts[0].date), day(pts[pts.length - 1].date)], full = dom[1] - dom[0];
   // a range button picked: the last that many days, or everything
   if (S.grange === 'all') GW = null;

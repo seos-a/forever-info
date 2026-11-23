@@ -234,6 +234,8 @@ CENSUS_OG=SIMS_OG.replace(f'{SITE}sims',f'{SITE}census').replace('Simulations â€
     .replace('WoW Forever race and spec simulations: DPS, healing and tanking for every race, with each racial\'s bonus.',CENSUS_DESC)
 assert CENSUS_OG.count(CENSUS_DESC)==2 and f'{SITE}census' in CENSUS_OG
 open('../web/census.html','w',encoding='utf-8',newline='\n').write(census.build(GC).replace('favicon.png">',f'favicon.png?v={ICONV}">'+CENSUS_OG,1))
+# the Over Time graph's points, loaded by the page once it shows (census.history())
+open('../web/census-history.json','w',encoding='utf-8',newline='\n').write(json.dumps(census.history(),separators=(',',':')))
 # its old address, /experiment, sends visitors on to /sims (keeping ?... and #healing)
 open('../web/experiment.html','w',encoding='utf-8',newline='\n').write('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex">'
     '<title>Simulations â€“ Forever Info</title><link rel="canonical" href="https://foreverinfo.io/sims">'
