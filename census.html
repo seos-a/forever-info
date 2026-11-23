@@ -253,6 +253,7 @@ document.head.appendChild(t);})();
   .cz-card.collapsed .cz-fold::before { transform: rotate(-45deg); }
   .cz-card.collapsed > :not(.cz-cardhead) { display: none; }
   .cz-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-gap-md) var(--cds-gap-lg); font-size: var(--cds-font-size-caption); line-height: 1.5; color: var(--color-fg-muted); }
+  .cz-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }   /* the line under the table: what the picked measure shows */
   .cz-notes b { display: block; color: var(--color-fg); font-weight: 600; }
   @media (max-width: 600px) { .cz-notes { grid-template-columns: 1fr; } }   /* two notes a row, one on a phone */
 </style>
@@ -295,6 +296,7 @@ document.head.appendChild(t);})();
   <section class="cz-card" aria-label="Race and class">
     <div class="cz-cardhead"><div class="cz-seg" id="czMetric" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="table" role="group" aria-label="Levels"></div></div>
     <div class="cz-scroll"><table id="czTable"><thead></thead><tbody></tbody></table></div>
+    <p class="cz-note" id="czMetricNote"></p>
   </section>
 
   <section class="cz-card collapsed" id="czNotesCard">
@@ -326,7 +328,11 @@ const soft = (c) => `color-mix(in srgb, ${c} 85%, var(--color-fg))`;
 const FAC_COLOR = { Alliance: 'var(--al)', Horde: 'var(--ho)' }, FAC_TEXT = { Alliance: '#74a9ff', Horde: '#ff6d5f' };
 const REGIONS = [['all', 'All regions'], ['us', 'Americas'], ['eu', 'Europe'], ['kr', 'Korea'], ['tw', 'Taiwan']];
 const RULES = [['', 'All rulesets', 'all'], ['Normal', 'Normal', 'normal'], ['PvP', 'PvP', 'pvp'], ['Roleplay', 'RP', 'rp'], ['Roleplay PvP', 'RP-PvP', 'rppvp']];
-const METRICS = [['col', '% of class'], ['row', '% of race'], ['all', '% of all'], ['n', 'Characters']];
+// the table's measures, each with the line under the table explaining it (as the Sims page's tables)
+const METRICS = [['col', '% of class', 'Each class adds up to 100%: of all Mages, how many are each race.'],
+  ['row', '% of race', 'Each race adds up to 100%: of all Gnomes, how many play each class.'],
+  ['all', '% of all', "Each race and class's share of every character counted."],
+  ['n', 'Characters', 'How many characters of each race and class.']];
 const raceImg = (i) => `<img class="race ${FACTION(i)}${i === 4 ? ' mirror' : ''}" src="images/icons/${RACE_ICON[i]}.jpg" alt="">`;
 const classImg = (j) => `<img src="images/icons/classicon_${CLASSES[j].toLowerCase()}.jpg" alt="">`;
 const fmt = (n) => n.toLocaleString('en-US');
@@ -598,6 +604,7 @@ function table(g, raceTot, classTot, total) {
     if (v.length) { best[j] = Math.max(...v); ext[j] = [Math.min(...v), Math.max(...v)]; }
   }
   const sortAttr = (k) => S.sort === k ? ` aria-sort="${S.sortDir === 'asc' ? 'ascending' : 'descending'}"` : '';
+  $('czMetricNote').textContent = METRICS.find((m) => m[0] === S.metric)[2] + " A gold edge marks each class's highest. Click a class to sort by it, or a race to order the classes by it.";
   $('czTable').tHead.innerHTML = `<tr><th class="t"${sortAttr('race')}><button type="button" data-sort="race">Race</button></th>`
     + cols.map((j) => `<th${sortAttr(j)}><button type="button" data-sort="${j}" style="color:${soft(CLASS_COLOR[CLASSES[j]])}">${CLASSES[j]}</button></th>`).join('')
     + `<th${sortAttr('all')}><button type="button" data-sort="all">All</button></th></tr>`;
