@@ -101,16 +101,20 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     `scripts/shape_timeline.py` (README "Casts and damage over time"). The Racial Bonus boxes' target switch (1 to 5 targets) reads `data/simsTargets.json` / `pb_simsTargets.json` and
     `tankRunsTargets.json`: every race and the no-racials baseline at 2 to 5 targets, from the harness's
     `scripts/shape_race_targets.py` (README "Every race at 2 to 5 targets")
-  - `census.py` + `census.html` + `census.json`: the Population Census page (`/census`, a red "Census" button stacked
+  - `census.py` + `census.html` + `census.json` + `census_history.json`: the Population Census page (`/census`, a red "Census" button stacked
     above "Sims" on every page): characters by race and class per region and ruleset, from Raider.IO's census
     (https://forever.raider.io/population: the characters Raider.IO tracks, levels 10-60). `census.json` is a hand-saved snapshot (`date`,
-    `counts[region or region|ruleset][class][race]`, `counts60` the same at level 60 only (the All / 60 Only switch in each box, each box on its own), `prev` the class and race counts at the end of Raider.IO's week before last, from its weekly history (the green / red arrows on the class and race bars: change in share over the past 7 to 13 days (its last week can end as recently as yesterday), shown from 0.2 points, never under 1,000 characters), and `levels`: characters, level 60 and median level per key), refreshed by
+    `counts[region or region|ruleset][class][race]`, `counts60` the same at level 60 only (the All / 60 Only switch in each box, each box on its own), `prev` the class and race counts of the copy taken 7 days earlier, from `census_history.json` (the green / red arrows on the class and race bars: change in share over those 7 days; the nearest copy 6 to 8 days back if that day was skipped, else Raider.IO's latest weekly count at least 7 days old; shown from 0.2 points, never under 1,000 characters), and `levels`: characters, level 60 and median level per key), refreshed by
     hand in two steps: paste `census_snippet.js` into the browser console on forever.raider.io/population (150 requests, about
     2.5 minutes; it downloads `census-raiderio.json` with the data their page loads), then `py sync_census.py` (reads it from Downloads, `--dry` to
     preview) and rebuild. Their site refuses scripts (HTTP 403), so the fetching stays in the browser; nothing refreshes it
-    automatically. Framed like the Sims page (`experiment.CSS`); `build.py` writes
+    automatically. Refreshed daily (from Nov 23, 2026). `census_history.json` (written by `sync_census.py`, embedded in the page) keeps
+    the counts over time: `days`, one entry per refresh date (the last 35 days), and `weeks`, Raider.IO's weekly history (dated by the
+    Sunday each week ends; Raider.IO labels a week by its Monday but stores the total at its end), each
+    `{date: {level: {key: [Alliance's classes, Horde's classes, races]}}}`; it feeds the arrows and the "Over Time" graph (Factions /
+    Classes / Races, Characters / Share, its own All / 60 Only switch, `graph60` in a link). Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, a region,
-    a ruleset, a faction, `60` for level 60 only in every box, or `classes60` / `races60` / `factions60` / `table60` for one box: each box has its own All / 60 Only switch)
+    a ruleset, a faction, `60` for level 60 only in every box, or `classes60` / `races60` / `factions60` / `table60` / `graph60` for one box: each box has its own All / 60 Only switch)
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
   - `art/`: logo/banner, fonts, cursors and favicon source files. `build.py` does
     not read these; they are already inlined in `template2.html` as data URIs.

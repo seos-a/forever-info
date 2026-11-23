@@ -11,11 +11,20 @@ then rebuild (py build.py, cp ../web/*.html ..).
 Nothing here goes on the internet: Raider.IO's site refuses scripts (HTTP 403), so the fetching is done by you, in the
 browser, as their own page does it. Nothing runs on a schedule.
 
-census.json gets each region|ruleset's race x class counts (`factionBalance`), `counts60` the same at level 60, `prev` the class and race counts at the end of the week before last (Raider.IO's weekly history, at least 7 days old, for the page's
-rising / falling arrows: per level (all, 60) and key, {week, classes, races, alliance, horde}; the last two are the
-classes within each faction), `levels` from `classLevels` (per key
+census.json gets each region|ruleset's race x class counts (`factionBalance`), `counts60` the same at level 60, `prev` the
+class and race counts 7 days before this refresh, for the page's rising / falling arrows (per level (all, 60) and key,
+{date, classes, races, alliance, horde}; the last two are the classes within each faction): from census_history.json's
+refresh of exactly 7 days earlier, else the nearest one 6 to 8 days earlier, else Raider.IO's latest weekly count at
+least 7 days old; `levels` from `classLevels` (per key
 [characters, at level 60, median level: the level by which half are counted]) and the snapshot's date (Raider.IO's
 `generatedAt`, US Eastern). A key with no characters (Korea and Taiwan have no Roleplay realms) is left out.
+
+census_history.json keeps the counts over time, for those arrows and the page's "Over Time" graph: `days`, one entry per
+refresh date (a second refresh the same day replaces it; entries over DAYS_KEPT days old are dropped, as `weeks` covers
+them), and `weeks`, Raider.IO's own weekly history (one count per week, taken as its week closes: Raider.IO dates a week
+by its Monday, stored here by its Sunday, the day it ends; the live current week is left out). Each is
+{date: {level: {key: [Alliance's classes (9), Horde's classes (9), races (10)]}}}, classes and races in census.json's
+order.
 """
 import json, os, sys
 from datetime import datetime, timedelta, timezone
@@ -53,17 +62,54 @@ def shape(stats, races, classes, check=True):
     return counts, [total, per_level[59], median]
 
 
-def last_week(weeks, key, ids):
-    """the counts, in census.json's order, from the week before last in a classWeeks / raceWeeks list.
-    Each entry is dated by the day its week starts but holds the running total at the end of that week, and the last
-    entry is the live total: weeks[-2] closed as recently as yesterday (on the first day of a week the arrows would
-    compare against a day ago), weeks[-3] 7 to 13 days ago, so the arrows always cover at least a full week. With only
-    two weeks of history, weeks[-2]."""
-    if len(weeks or []) < 2:
-        return None
-    w = weeks[-3] if len(weeks) >= 3 else weeks[-2]
-    n = {x[key]: x['characters'] for x in w['classes' if key == 'classId' else 'races']}
-    return w['week'], [n.get(i, 0) for i in ids]
+HISTORY = 'census_history.json'
+DAYS_KEPT = 35
+
+
+def weekly(weeks, key, ids, today):
+    """{week's end date: counts in census.json's order} from a classWeeks / raceWeeks list. Each entry is dated by the
+    Monday its week starts but holds the running total at the end of that week (its Sunday); the last one, the week
+    still running, is the live total and is left out."""
+    out = {}
+    for w in weeks or []:
+        start = datetime.strptime(w['week'], '%Y-%m-%d').date()
+        if start + timedelta(days=7) > today:
+            continue
+        n = {x[key]: x['characters'] for x in w['classes' if key == 'classId' else 'races']}
+        out[(start + timedelta(days=6)).isoformat()] = [n.get(i, 0) for i in ids]
+    return out
+
+
+def summary(grid):
+    """[Alliance's classes, Horde's classes, races] from a [class][race] grid (races 0-4 Alliance, 5-9 Horde)"""
+    return [sum(r[:5]) for r in grid] + [sum(r[5:]) for r in grid] + [sum(r[i] for r in grid) for i in range(len(grid[0]))]
+
+
+def prev_entry(date, s):
+    """census.json's prev entry from a history summary"""
+    a, h = s[:9], s[9:18]
+    return {'date': date, 'classes': [x + y for x, y in zip(a, h)], 'races': s[18:], 'alliance': a, 'horde': h}
+
+
+def write_history(hist, path=HISTORY):
+    """census_history.json: one line per date, level and key, so a refresh's diff is short"""
+    J = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
+    lines = ['{', f' "_about": {J(hist["_about"])},']
+    for part in ('weeks', 'days'):
+        lines.append(f' {J(part)}: {{')
+        dates = sorted(hist[part])
+        for di, date in enumerate(dates):
+            lines.append(f'  {J(date)}: {{')
+            lvls = list(hist[part][date].items())
+            for li, (lvl, block) in enumerate(lvls):
+                lines.append(f'   {J(lvl)}: {{')
+                items = list(block.items())
+                lines += [f'    {J(k)}: {J(v)}' + (',' if ki < len(items) - 1 else '') for ki, (k, v) in enumerate(items)]
+                lines.append('   }' + (',' if li < len(lvls) - 1 else ''))
+            lines.append('  }' + (',' if di < len(dates) - 1 else ''))
+        lines.append(' }' + (',' if part == 'weeks' else ''))
+    lines.append('}')
+    open(path, 'w', encoding='utf-8', newline='\n').write('\n'.join(lines) + '\n')
 
 
 def write(d, path='census.json'):
@@ -103,15 +149,17 @@ def main():
     if t[-1] - t[0] > timedelta(hours=2):
         sys.exit(f'Raider.IO snapshots more than 2 hours apart ({when_all[0]} .. {when_all[-1]}): run the snippet again.')
     d = json.load(open('census.json', encoding='utf-8'))
-    counts, counts60, levels, stamps = {}, {}, {}, set()
-    prev = {'all': {}, '60': {}}
+    counts, counts60, levels = {}, {}, {}
+    stamp = max(when_all)   # the newest snapshot in the run
+    # their snapshot time, as a US Eastern date (the site's other dates are; -5 h, close enough either side of DST)
+    when = datetime.fromisoformat(stamp.replace('Z', '+00:00')).astimezone(timezone(timedelta(hours=-5)))
+    today, weeks = when.date(), {}
     cls_ids, race_ids = [CLASS_IDS[c] for c in d['classes']], [RACE_IDS[r] for r in d['races']]
     for region in REGIONS:
         for slug, name in RULESETS.items():
             stats, s60 = raw.get(f'{region}|{slug}|all'), raw.get(f'{region}|{slug}|60')
             if not stats or not s60:
                 sys.exit(f'{path} has no {region} {slug} (all levels and level 60): run the latest census_snippet.js again.')
-            stamps.update((stats.get('generatedAt'), s60.get('generatedAt')))
             c, lv = shape(stats, d['races'], d['classes'])
             if lv[0]:
                 key = region if name is None else f'{region}|{name}'
@@ -121,16 +169,13 @@ def main():
                 counts60[key], lv60 = shape(s60, d['races'], d['classes'], check=False)
                 if sum(map(sum, counts60[key])) != lv60[1]:
                     sys.exit(f'{key}: level 60 counts ({sum(map(sum, counts60[key]))}) and level 60 total ({lv60[1]}) disagree: has the data changed shape?')
-                # last week, for the rising / falling arrows
+                # Raider.IO's weekly history (each faction's classes, and the races), for the arrows' fallback and the graph
                 for lvl, st in (('all', stats), ('60', s60)):
-                    c_ = last_week(st.get('classWeeks'), 'classId', cls_ids)
-                    r_ = last_week(st.get('raceWeeks'), 'raceId', race_ids)
-                    fa = [last_week((raw.get(f'{region}|{slug}|{lvl}|{f}') or {}).get('classWeeks'), 'classId', cls_ids) for f in ('alliance', 'horde')]
-                    if c_ and r_ and all(fa):
-                        prev[lvl][key] = {'week': c_[0], 'classes': c_[1], 'races': r_[1], 'alliance': fa[0][1], 'horde': fa[1][1]}
-    stamp = max(stamps)   # the newest snapshot in the run
-    # their snapshot time, as a US Eastern date (the site's other dates are; -5 h, close enough either side of DST)
-    when = datetime.fromisoformat(stamp.replace('Z', '+00:00')).astimezone(timezone(timedelta(hours=-5)))
+                    fa = [weekly((raw.get(f'{region}|{slug}|{lvl}|{f}') or {}).get('classWeeks'), 'classId', cls_ids, today) for f in ('alliance', 'horde')]
+                    rw = weekly(st.get('raceWeeks'), 'raceId', race_ids, today)
+                    for date in rw:
+                        if date in fa[0] and date in fa[1]:
+                            weeks.setdefault(date, {'all': {}, '60': {}})[lvl][key] = fa[0][date] + fa[1][date] + rw[date]
     old_total = d['levels'].get('all', [0])[0]
     print(f"Raider.IO snapshot {stamp}: {levels['all'][0]:,} characters, {sum(map(sum, counts60['all'])):,} at level 60 (was {old_total:,} on {d['date']}), {len(counts)} region/ruleset keys")
     for k in d['counts']:
@@ -139,12 +184,39 @@ def main():
     for k in counts:
         if k not in d['counts']:
             print(f'  {k}: new')
+    # the history: this refresh as today's entry, Raider.IO's weekly counts (kept from earlier runs too, in case
+    # Raider.IO ever shortens its list), daily entries over DAYS_KEPT days old dropped
+    hist = json.load(open(HISTORY, encoding='utf-8')) if os.path.exists(HISTORY) else {'_about': '', 'weeks': {}, 'days': {}}
+    hist['weeks'].update(weeks)
+    hist['days'][today.isoformat()] = {'all': {k: summary(v) for k, v in counts.items()}, '60': {k: summary(v) for k, v in counts60.items()}}
+    hist['days'] = {k: v for k, v in hist['days'].items() if (today - datetime.strptime(k, '%Y-%m-%d').date()).days <= DAYS_KEPT}
+    # the arrows' comparison: the refresh 7 days back, else 8, else 6, else Raider.IO's latest week ended 7+ days back
+    prev, used = {'all': {}, '60': {}}, {}
+    for lvl in prev:
+        for key in counts:
+            for back in (7, 8, 6):
+                date = (today - timedelta(days=back)).isoformat()
+                s = hist['days'].get(date, {}).get(lvl, {}).get(key)
+                if s:
+                    prev[lvl][key] = prev_entry(date, s)
+                    break
+            else:
+                ok = [w for w in sorted(hist['weeks']) if (today - datetime.strptime(w, '%Y-%m-%d').date()).days >= 7 and key in hist['weeks'][w][lvl]]
+                if ok:
+                    prev[lvl][key] = prev_entry(ok[-1], hist['weeks'][ok[-1]][lvl][key])
+            if key in prev[lvl]:
+                used[prev[lvl][key]['date']] = used.get(prev[lvl][key]['date'], 0) + 1
+    print('arrows compare against: ' + ', '.join(f'{k} ({(today - datetime.strptime(k, "%Y-%m-%d").date()).days} days back, {n} key/levels)' for k, n in sorted(used.items())))
     if dry:
-        print('--dry: census.json not written')
+        print('--dry: census.json and census_history.json not written')
         return
-    d.update(date=when.strftime('%Y-%m-%d'), counts=counts, counts60=counts60, prev=prev, levels=levels)
+    hist['_about'] = ("The Population Census page's counts over time, for its weekly arrows and its Over Time graph. days: one entry per refresh date (sync_census.py; the last "
+                      f"{DAYS_KEPT} days); weeks: Raider.IO's weekly history, dated by the Sunday each week ends. Each: {{date: {{level (all, 60): {{key: [Alliance's classes, "
+                      "Horde's classes, races]}}}, in census.json's class and race order.")
+    write_history(hist)
+    d.update(date=today.isoformat(), counts=counts, counts60=counts60, prev=prev, levels=levels)
     write(d)
-    print('census.json written. Rebuild: py build.py, then copy /Y ..\\web\\*.html ..  (Git Bash: cp ../web/*.html ..)')
+    print('census.json and census_history.json written. Rebuild: py build.py, then copy /Y ..\\web\\*.html ..  (Git Bash: cp ../web/*.html ..)')
 
 
 if __name__ == '__main__':

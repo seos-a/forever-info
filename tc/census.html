@@ -172,6 +172,19 @@
   .cz-tip .row > span { color: #fff; }
   .cz-tip .row b { margin-left: auto; padding-left: 1rem; font-weight: 400; color: #ffd100; }
 
+  /* the Over Time graph: lines drawn in an SVG as wide as the box, a legend under it */
+  .cz-gsegs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+  .cz-graph { position: relative; height: 260px; }
+  .cz-graph svg { display: block; width: 100%; height: 100%; overflow: visible; font-size: 11px; }
+  .cz-graph .gl { stroke: var(--cds-chart-grid); stroke-width: 1; }
+  .cz-graph text { fill: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .cz-graph .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .cz-graph .guide { stroke: color-mix(in srgb, var(--color-fg) 45%, transparent); stroke-width: 1; }
+  .cz-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--cds-font-size-caption); }
+  .cz-legend span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .cz-legend i { width: 14px; height: 3px; border-radius: 2px; }
+  @media (max-width: 600px) { .cz-graph { height: 220px; } }
+
   /* the Methods and Caveats box: the Sims page's notes card, its arrow folding it down to its title */
   .cz h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; line-height: 24px; }   /* the size of the other boxes' titles */
   .cz-card.collapsed { padding-top: 10px; padding-bottom: 10px; }   /* folded down to its title: a shorter box */
@@ -228,12 +241,19 @@
     <p class="cz-note" id="czMetricNote"></p>
   </section>
 
+  <section class="cz-card" aria-label="Over time">
+    <div class="cz-cardhead"><div id="czGraphHead"></div><div class="cz-gsegs"><div class="cz-seg" id="czGView" role="group" aria-label="Lines"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
+    <div class="cz-graph" id="czGraph"></div>
+    <div class="cz-legend" id="czLegend"></div>
+  </section>
+
   <section class="cz-card collapsed" id="czNotesCard">
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Methods and Caveats"></button><h2>Methods and Caveats</h2></div></div>
     <div class="cz-notes">
       <p><b>Where the numbers come from</b>The <a href="https://forever.raider.io/population" target="_blank" rel="noopener">Raider.IO</a> WoW Forever census. Characters below level 10 aren't included. Raider.IO only knows the characters it has come across, mostly through guild rosters: characters outside a guild, or ones it hasn't looked up, can be missing.</p>
-      <p><b>Weekly change</b>Green and red arrows show how much a class's or race's share has changed over at least the past week. Raider.IO updates its census every hour, but its history keeps only one count per week, so each arrow compares today's share with the most recent of those weekly counts that's at least 7 days old; hover a bar to see that count's date. Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
-      <p><b>Updates</b>By hand every few days, not live. The date in the bottom-left corner is when this copy was taken.</p>
+      <p><b>Weekly change</b>Green and red arrows show how much a class's or race's share has changed in the past 7 days: this copy of the census against the one taken 7 days earlier (hover a bar to see its date). If no copy was taken that day, the nearest one 6 to 8 days earlier is used, or failing that Raider.IO's own weekly count, which it takes each Sunday. Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
+      <p><b>Updates</b>By hand about once a day, not live (Raider.IO updates its census every hour). The date in the bottom-left corner is when this copy was taken.</p>
+      <p><b>Over time</b>The graph's points are Raider.IO's weekly counts (one each Sunday, as its week ends) and, from Nov 19, this site's daily copies. Share shows each line's part of all characters in the pick, which compares classes or races as the game grows.</p>
       <p><b>Notes</b>Counts in-game characters, not real-life players. <span id="czLevels"></span></p>
     </div>
   </section>
@@ -271,8 +291,8 @@ const $ = (id) => document.getElementById(id);
 
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
 // as on the Sims page, a reload starts on the full lists.
-const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60']];
-const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1 };
+const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60'], ['graph', 'graph60']];
+const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'fac', gmeasure: 'n' };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
   // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
   if (t === '60') { for (const b in S.level) S.level[b] = '60'; continue; }
@@ -366,21 +386,23 @@ function rank(el, items, sum) {
   const click = Object.fromEntries(shown.filter((d) => d.onClick).map((d) => [d.key, d.onClick]));
   el.onclick = (e) => { const r = e.target.closest('button.cz-row'); if (r && click[r.dataset.k]) click[r.dataset.k](); };
 }
-// Rising / falling over the past week (Raider.IO's weekly history, census.json's prev): the share now against the share
-// at the end of the week before last (7 to 13 days ago; see sync_census.last_week), for the region, ruleset, levels
-// and faction picked. Shown only for a move of 0.2 points
-// or more, and never when either week has under 1,000 characters (a small sample's shares jump around).
+// Rising / falling over the past 7 days (census.json's prev): the share now against the share in the copy taken 7 days
+// earlier (else 6 to 8 days, else Raider.IO's latest weekly count at least 7 days old; see sync_census.py), for the
+// region, ruleset, levels and faction picked. Shown only for a move of 0.2 points or more, and never when either copy
+// has under 1,000 characters (a small sample's shares jump around).
 const MV_MIN = 0.2, MV_N = 1000;
 const lastWeek = (lv) => (C.prev[lv] || {})[S.rules ? S.region + '|' + S.rules : S.region];
-const weekTxt = (w) => { const t = new Date(Date.UTC(...w.split('-').map(Number).map((v, i) => i === 1 ? v - 1 : v)) + 6 * 864e5); return `Week ending ${MONTHS[t.getUTCMonth()]} ${t.getUTCDate()}`; };
+const day = (s) => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };   // a date as a number, for spans in days
+const dateTxt = (s) => { const t = new Date(day(s)); return `${MONTHS[t.getUTCMonth()]} ${t.getUTCDate()}`; };
+const agoTxt = (s) => { const n = Math.round((day(C.date) - day(s)) / 864e5); return `${dateTxt(s)} (${n} day${n === 1 ? '' : 's'} ago)`; };
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-// {html, row}: the arrow after the bar's share, and a tooltip row with last week's share ('' and null when none)
-function move(now, nowTot, was, wasTot, week) {
-  if (!week || nowTot < MV_N || wasTot < MV_N) return { html: '', row: null };
+// {html, row}: the arrow after the bar's share, and a tooltip row with the earlier copy's share ('' and null when none)
+function move(now, nowTot, was, wasTot, date) {
+  if (!date || nowTot < MV_N || wasTot < MV_N) return { html: '', row: null };
   const a = pct(now, nowTot), b = pct(was, wasTot), dv = Math.round((a - b) * 10) / 10;
-  const row = [weekTxt(week), pctTxt(b)];
+  const row = [agoTxt(date), pctTxt(b)];
   if (Math.abs(dv) < MV_MIN) return { html: '', row };
-  return { html: `<span class="mv ${dv > 0 ? 'up' : 'down'}" aria-label="${dv > 0 ? 'up' : 'down'} ${Math.abs(dv).toFixed(1)} points over the past week">${dv > 0 ? '▲' : '▼'}${Math.abs(dv).toFixed(1)}</span>`, row };
+  return { html: `<span class="mv ${dv > 0 ? 'up' : 'down'}" aria-label="${dv > 0 ? 'up' : 'down'} ${Math.abs(dv).toFixed(1)} points over the past 7 days">${dv > 0 ? '▲' : '▼'}${Math.abs(dv).toFixed(1)}</span>`, row };
 }
 // An open breakdown's title: the list's name (back to it), then the picked class or race, which opens a menu of all of
 // them in their colours to switch to another (as the Sims page's spec picker). items: [{idx, img, name, color}]
@@ -451,7 +473,7 @@ function draw() {
     title($('czClassHead'), 'Classes', count(total, S.level.cls));
     const P = lastWeek(S.level.cls), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
     rank($('czClass'), CLASSES.map((name, j) => {
-      const tr = argmax(g[j]), mv = move(classTot[j], total, pc ? pc[j] : 0, pcTot, pc && P.week);
+      const tr = argmax(g[j]), mv = move(classTot[j], total, pc ? pc[j] : 0, pcTot, pc && P.date);
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
         ...(mv.row ? [mv.row] : []), ['Most played race', g[j][tr] ? `${RACES[tr]} (${pctTxt(pct(g[j][tr], classTot[j]))})` : '–']]);
       return { key: 'c' + j, name, color: CLASS_COLOR[name], nameColor: CLASS_COLOR[name], img: classImg(j), n: classTot[j], mv: mv.html,
@@ -473,7 +495,7 @@ function draw() {
     title($('czRaceHead'), 'Races', count(total, S.level.race));
     const P = lastWeek(S.level.race), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
     rank($('czRace'), RACES.map((name, i) => {
-      const col = g.map((row) => row[i]), tc = argmax(col), mv = move(raceTot[i], total, pr ? pr[i] : 0, prTot, pr && P.week);
+      const col = g.map((row) => row[i]), tc = argmax(col), mv = move(raceTot[i], total, pr ? pr[i] : 0, prTot, pr && P.date);
       tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
         ...(mv.row ? [mv.row] : []), ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
       return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i], mv: mv.html, onClick: () => show('race', i) };
@@ -510,7 +532,85 @@ function draw() {
 
   ({ g, raceTot, classTot, total } = view(S.level.table));
   table(g, raceTot, classTot, total);
+
+  title($('czGraphHead'), 'Over Time', sel.length ? `<span class="cz-count">(${sel.join('-')})</span>` : '');
+  segs($('czGView'), [['fac', 'Factions'], ['cls', 'Classes'], ['race', 'Races']], S.gview, (v) => { S.gview = v; draw(); });
+  segs($('czGMeasure'), [['n', 'Characters'], ['pct', 'Share']], S.gmeasure, (v) => { S.gmeasure = v; draw(); });
+  graph();
 }
+
+// The Over Time graph. Its points: Raider.IO's weekly counts (census_history.json's weeks, dated by the Sunday each
+// week ends) and the site's own daily copies (days; a day in both is the copy's), each [Alliance's classes (9),
+// Horde's classes (9), races (10)] per level and key. Lines: the factions (all, Alliance, Horde), the classes or the
+// races, for the region, ruleset and faction picked; as characters or as each line's share of the pick.
+const H = window.__CENSUS_HIST || { weeks: {}, days: {} };
+const POINTS = [...new Set([...Object.keys(H.weeks), ...Object.keys(H.days)])].sort()
+  .map((d) => ({ date: d, daily: !!H.days[d], data: H.days[d] || H.weeks[d] }));
+const sum = (a) => a.reduce((x, y) => x + y, 0);
+function series() {
+  const key = S.rules ? S.region + '|' + S.rules : S.region, f = S.faction, share = S.gmeasure === 'pct';
+  const pts = POINTS.map((p) => ({ ...p, v: (p.data[S.level.graph] || {})[key] })).filter((p) => p.v);
+  const line = (name, color, val) => ({ name, color, vals: pts.map((p) => val(p.v)) });
+  let out;
+  if (S.gview === 'fac') {
+    const A = (v) => sum(v.slice(0, 9)), Ho = (v) => sum(v.slice(9, 18)), T = (v) => A(v) + Ho(v);
+    if (share) out = (f ? [f] : ['Alliance', 'Horde']).map((n) => line(n, FAC_COLOR[n], (v) => pct(n === 'Alliance' ? A(v) : Ho(v), T(v))));
+    else out = f ? [line(f, FAC_COLOR[f], f === 'Alliance' ? A : Ho)]
+      : [line('All', '#e2b23c', T), line('Alliance', FAC_COLOR.Alliance, A), line('Horde', FAC_COLOR.Horde, Ho)];
+  } else if (S.gview === 'cls') {
+    const cl = (v, j) => f === 'Alliance' ? v[j] : f === 'Horde' ? v[9 + j] : v[j] + v[9 + j];
+    out = CLASSES.map((c, j) => line(c, CLASS_COLOR[c], (v) => share ? pct(cl(v, j), sum(CLASSES.map((_, k) => cl(v, k)))) : cl(v, j)));
+  } else {
+    const on = RACES.map((_, i) => raceOn(i));
+    out = RACES.map((r, i) => ({ r, i })).filter(({ i }) => on[i]).map(({ r, i }) => line(r, FAC_COLOR[FACTION(i)], (v) => share ? pct(v[18 + i], sum(v.slice(18).filter((_, k) => on[k]))) : v[18 + i]));
+    // two lines per faction share its colour: the races are told apart by a dash pattern, in the legend too
+    const seen = {}; out.forEach((s, k) => { const fc = FACTION(RACES.indexOf(s.name)); seen[fc] = (seen[fc] || 0) + 1; s.dash = ['', '6 3', '2 3', '9 3 2 3', '1 5'][seen[fc] - 1]; });
+  }
+  return { pts, lines: out, share };
+}
+// a round step for about n gridlines between lo and hi
+const niceStep = (span, n) => { const raw = span / n, p = 10 ** Math.floor(Math.log10(raw)); return [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || 10 * p; };
+const big = (v) => v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0).replace(/\.0$/, '') + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'K' : String(Math.round(v));
+function graph() {
+  const el = $('czGraph'), W = el.clientWidth, Ht = el.clientHeight;
+  if (!W) return;
+  const { pts, lines, share } = series();
+  const legend = $('czLegend');
+  if (!pts.length) { el.innerHTML = '<p class="cz-empty">No history for this pick yet.</p>'; legend.innerHTML = ''; return; }
+  const all = lines.flatMap((l) => l.vals);
+  let lo = share ? Math.min(...all) : 0, hi = Math.max(...all);
+  if (hi === lo) { hi += share ? 1 : 1; lo = share ? Math.max(0, lo - 1) : 0; }
+  const step = niceStep(hi - lo, 4);
+  lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+  const L = share ? 40 : 46, R = 12, T = 8, B = 22, iw = W - L - R, ih = Ht - T - B;
+  const t0 = day(pts[0].date), t1 = day(pts[pts.length - 1].date);
+  const x = (k) => L + (t1 > t0 ? (day(pts[k].date) - t0) / (t1 - t0) * iw : iw / 2), y = (v) => T + ih - (v - lo) / (hi - lo) * ih;
+  let svg = '';
+  for (let v = lo; v <= hi + step / 2; v += step) svg += `<line class="gl" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"></line><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${share ? +v.toFixed(1) + '%' : big(v)}</text>`;
+  // date labels: about one per 90px, always the first and last
+  const every = Math.max(1, Math.ceil(pts.length / Math.max(2, Math.floor(iw / 90))));
+  pts.forEach((p, k) => { if (k % every === 0 || k === pts.length - 1) { if (k !== pts.length - 1 && pts.length - 1 - k < every && x(pts.length - 1) - x(k) < 60) return; svg += `<text x="${x(k)}" y="${Ht - 6}" text-anchor="middle">${dateTxt(p.date)}</text>`; } });
+  for (const l of lines) {
+    const c = soft(l.color);
+    svg += `<polyline class="ln" points="${l.vals.map((v, k) => `${x(k).toFixed(1)},${y(v).toFixed(1)}`).join(' ')}" style="stroke:${c}"${l.dash ? ` stroke-dasharray="${l.dash}"` : ''}></polyline>`;
+    svg += l.vals.map((v, k) => `<circle cx="${x(k).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${pts.length > 30 ? 1.5 : 2.5}" style="fill:${c}"></circle>`).join('');
+  }
+  svg += `<line class="guide" id="czGuide" x1="0" x2="0" y1="${T}" y2="${T + ih}" visibility="hidden"></line><rect x="${L}" y="0" width="${iw}" height="${Ht}" fill="transparent" data-tip="g"></rect>`;
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Characters over time">${svg}</svg>`;
+  legend.innerHTML = lines.map((l) => `<span><i style="background:${l.dash ? `repeating-linear-gradient(90deg, ${soft(l.color)} 0 ${l.dash.split(' ')[0]}px, transparent 0 ${l.dash.split(' ').slice(0, 2).reduce((a, b) => +a + +b)}px)` : soft(l.color)}"></i><span style="color:${l.color === '#e2b23c' ? l.color : CLASS_COLOR[l.name] || FAC_TEXT[l.name] || FAC_TEXT[FACTION(RACES.indexOf(l.name))]}">${l.name}</span></span>`).join('');
+  // hovering: the nearest point's date, a guide line, and every line's value there, biggest first
+  const guide = el.querySelector('#czGuide'), rect = el.querySelector('rect');
+  rect.onmousemove = (e) => {
+    const bx = e.clientX - el.getBoundingClientRect().left;
+    let k = 0; pts.forEach((_, j) => { if (Math.abs(x(j) - bx) < Math.abs(x(k) - bx)) k = j; });
+    guide.setAttribute('x1', x(k)); guide.setAttribute('x2', x(k)); guide.setAttribute('visibility', 'visible');
+    const rows = lines.map((l) => [l, l.vals[k]]).sort((a, b) => b[1] - a[1]);
+    tips.g = `<div class="h">${dateTxt(pts[k].date)} <span style="font-weight:400;font-size:12px;color:#bbb">${pts[k].daily ? 'daily copy' : "Raider.IO's weekly count"}</span></div>`
+      + rows.map(([l, v]) => `<div class="row"><span style="color:${CLASS_COLOR[l.name] || FAC_TEXT[l.name] || (RACES.includes(l.name) ? FAC_TEXT[FACTION(RACES.indexOf(l.name))] : '#e2b23c')}">${l.name}</span><b>${share ? pctTxt(v) : fmt(v)}</b></div>`).join('');
+  };
+  rect.onmouseleave = () => guide.setAttribute('visibility', 'hidden');
+}
+new ResizeObserver(() => graph()).observe($('czGraph'));
 
 // The race x class table, as the Sims page's "DPS by Race and Spec": each cell shaded by where it sits in its column
 // (palest to darkest blue), the column's biggest in bold with a gold mark. A class's header sorts the races by it
