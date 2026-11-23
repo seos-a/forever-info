@@ -574,7 +574,7 @@ img[src*="race_bloodelf_male_tbc"]{transform:scaleX(-1)}
 @media (min-width:821px){
   .frame{padding-bottom:30px;min-height:calc(100vh / .684)}   /* border-box, so this includes the padding */
   .main{align-self:stretch;display:flex;flex-direction:column}
-  .main>.launch{margin-top:auto}
+  .main>.launch,.main>.launch[hidden]~.foot{margin-top:auto}   /* the countdown is hidden since launch: the footer itself goes to the bottom */
 }
 /* Wide screens: the talent area sits in the middle of the page and the sidebar hangs off its left side. An empty
    right column as wide as the sidebar (plus the gap) keeps the middle column centered; the goblin (placed against
