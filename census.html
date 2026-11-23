@@ -309,12 +309,14 @@ document.head.appendChild(t);})();
 <script>
 (() => {
 const C = window.__CENSUS;
-const RACES = C.races, CLASSES = C.classes;
+// Raider.IO calls the Skyborne races High Order and Windshaper; the page names them by faction, as the main and Sims pages do
+const RACE_NAME = { 'High Order Skyborne': 'Alliance Skyborne', 'Windshaper Skyborne': 'Horde Skyborne' };
+const RACES = C.races.map((r) => RACE_NAME[r] || r), CLASSES = C.classes;
 const FACTION = (i) => i < 5 ? 'Alliance' : 'Horde';
 const RACE_ICON = ['race_human_male', 'race_dwarf_male', 'race_nightelf_female', 'race_gnome_female', 'race_bloodelf_male_tbc',
   'race_orc_male', 'race_scourge_male', 'race_tauren_male', 'race_troll_male', 'race_bloodelf_female_skyborne'];
 // the race's plural, for "Of Night Elves"
-const RACE_PL = ['Humans', 'Dwarves', 'Night Elves', 'Gnomes', 'High Order Skyborne', 'Orcs', 'Undead', 'Tauren', 'Trolls', 'Windshaper Skyborne'];
+const RACE_PL = ['Humans', 'Dwarves', 'Night Elves', 'Gnomes', 'Alliance Skyborne', 'Orcs', 'Undead', 'Tauren', 'Trolls', 'Horde Skyborne'];
 // WoW class colours (as the Sims page); bars and headers soften them toward the text colour, as its specColor
 const CLASS_COLOR = { Druid: '#FF7C0A', Hunter: '#AAD372', Mage: '#3FC7EB', Paladin: '#F48CBA', Priest: '#FFFFFF', Rogue: '#FFF468', Shaman: '#0070DD', Warlock: '#8788EE', Warrior: '#C69B6D' };
 const soft = (c) => `color-mix(in srgb, ${c} 85%, var(--color-fg))`;
