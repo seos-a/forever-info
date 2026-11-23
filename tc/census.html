@@ -183,7 +183,6 @@
   .cz-graph.zoomed { cursor: grab; }
   .cz-graph.zoomed:active { cursor: grabbing; }
   .cz-gtools { display: flex; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
-  .cz-zoom button { font-size: 14px; line-height: 16px; padding: 1px 10px; }
   /* the scrollbar while zoomed: the thumb is the dates in view */
   .cz-gbar { position: relative; height: 8px; margin: 2px 0 0 46px; border-radius: 4px; background: color-mix(in srgb, var(--color-fg) 8%, transparent); cursor: pointer; touch-action: none; }
   .cz-gbar[hidden] { display: none; }
@@ -253,7 +252,7 @@
 
   <section class="cz-card" aria-label="Over time">
     <div class="cz-cardhead"><div id="czGraphHead"></div><div class="cz-gsegs"><div class="cz-seg" id="czGView" role="group" aria-label="Lines"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
-    <div class="cz-gtools"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div><div class="cz-seg cz-zoom" id="czGZoom" role="group" aria-label="Zoom"></div></div>
+    <div class="cz-gtools"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div></div>
     <div class="cz-graph" id="czGraph"></div>
     <div class="cz-gbar" id="czGBar" hidden><i></i></div>
     <div class="cz-legend" id="czLegend"></div>
@@ -265,7 +264,7 @@
       <p><b>Where the numbers come from</b>The <a href="https://forever.raider.io/population" target="_blank" rel="noopener">Raider.IO</a> WoW Forever census. Characters below level 10 aren't included. Raider.IO only knows the characters it has come across, mostly through guild rosters: characters outside a guild, or ones it hasn't looked up, can be missing.</p>
       <p><b>Weekly change</b>Green and red arrows show how much a class's or race's share has changed in the past 7 days: this copy of the census against the one taken 7 days earlier (hover a bar to see its date). If no copy was taken that day, the nearest one 6 to 8 days earlier is used, or failing that Raider.IO's own weekly count, which it takes each Sunday. Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
       <p><b>Updates</b>By hand about once a day, not live (Raider.IO updates its census every hour). The date in the bottom-left corner is when this copy was taken.</p>
-      <p><b>Over time</b>The graph's points are Raider.IO's weekly counts (one each Sunday, as its week ends) and, from Nov 19, this site's daily copies. Share shows each line's part of all characters in the pick, which compares classes or races as the game grows. Pick a time range, or zoom with − and +, a pinch or Ctrl + scroll; once zoomed in, drag the graph or the bar under it to move along.</p>
+      <p><b>Over time</b>The graph's points are Raider.IO's weekly counts (one each Sunday, as its week ends) and, from Nov 19, this site's daily copies. Share shows each line's part of all characters in the pick, which compares classes or races as the game grows. Pick a time range, or zoom by scrolling over the graph (pinch on a phone); once zoomed in, drag the graph or the bar under it to move along.</p>
       <p><b>Notes</b>Counts in-game characters, not real-life players. <span id="czLevels"></span></p>
     </div>
   </section>
@@ -585,7 +584,7 @@ const niceStep = (span, n) => { const raw = span / n, p = 10 ** Math.floor(Math.
 const big = (v) => v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0).replace(/\.0$/, '') + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'K' : String(Math.round(v));
 const DAY = 864e5, MIN_SPAN = 3 * DAY;   // zoomed in at most to three days
 // The dates in view: GW = [from, to] (ms), null for all of it. A range button (7D, 1M, 3M, 1Y) shows the last that many
-// days; zooming (the - / + buttons, a pinch, Ctrl + scroll) and dragging change GW and unpress them. A range stays
+// days; zooming (scrolling over the graph, a pinch) and dragging change GW and unpress them. A range stays
 // greyed out until the history is longer than it. Not kept in the link.
 const RANGES = [['7', '7D'], ['30', '1M'], ['90', '3M'], ['365', '1Y'], ['all', 'All']];
 let GW = null, G = null;   // G: the last drawing's layout, for the pointer handlers
@@ -619,8 +618,6 @@ function graph() {
   }
   const [a, b] = GW || dom;
   segs($('czGRange'), RANGES, S.grange, (v) => { S.grange = v; graph(); }, (v) => v !== 'all' && full <= +v * DAY);
-  segs($('czGZoom'), [['out', '−'], ['in', '+']], '', (v) => zoomBy(v === 'in' ? 0.5 : 2), (v) => v === 'in' ? full <= MIN_SPAN || (GW && GW[1] - GW[0] <= MIN_SPAN) : !GW);
-  $('czGZoom').querySelectorAll('button').forEach((bt) => bt.setAttribute('aria-label', bt.dataset.v === 'in' ? 'Zoom in' : 'Zoom out'));
   // the points in view, and one each side so the lines run on to the edges
   const tk = pts.map((p) => day(p.date));
   let i0 = tk.findIndex((t) => t >= a), i1 = tk.length - 1 - [...tk].reverse().findIndex((t) => t <= b);
@@ -680,8 +677,9 @@ function hover(clientX) {
     + rows.map(([l, v]) => `<div class="row"><span style="color:${lineColor(l)}">${l.name}</span><b>${G.share ? pctTxt(v) : fmt(v)}</b></div>`).join('');
 }
 // Pointer handling on the graph's box (it outlives each redraw): one finger or the mouse drags the dates in view sideways
-// once zoomed, two fingers pinch to zoom; vertical swipes still scroll the page (touch-action: pan-y). Ctrl + scroll
-// (and a laptop's pinch, which arrives as one) zooms at the pointer; a sideways scroll pans.
+// once zoomed, two fingers pinch to zoom; vertical swipes still scroll the page (touch-action: pan-y). The scroll wheel
+// (and a laptop's pinch, which arrives as Ctrl + scroll) zooms at the pointer, and never scrolls the page while over the
+// graph, even fully zoomed in or out; a sideways scroll pans.
 {
   const el = $('czGraph'), ptr = new Map();
   let drag = null, pinch = null;
@@ -707,8 +705,10 @@ function hover(clientX) {
   el.addEventListener('pointerleave', () => { const g = el.querySelector('#czGuide'); if (g) g.setAttribute('visibility', 'hidden'); });
   el.addEventListener('wheel', (e) => {
     if (!G) return;
-    if (e.ctrlKey) { e.preventDefault(); zoomBy(Math.exp(e.deltaY * 0.01), tAt(e.clientX)); }
-    else if (GW && Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); const dt = e.deltaX / G.iw * (GW[1] - GW[0]); S.grange = ''; setWin([GW[0] + dt, GW[1] + dt]); }
+    e.preventDefault();
+    const px = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1, dx = e.deltaX * px, dy = e.deltaY * px;
+    if (Math.abs(dx) > Math.abs(dy)) { if (GW) { const dt = dx / G.iw * (GW[1] - GW[0]); S.grange = ''; setWin([GW[0] + dt, GW[1] + dt]); } }
+    else if (dy) zoomBy(Math.exp(Math.max(-1, Math.min(1, dy * (e.ctrlKey ? 0.01 : 0.002)))), tAt(e.clientX));   // a wheel notch (100px) about 1.2x
   }, { passive: false });
   // the scrollbar: drag the thumb, or click the track to centre the view there
   const bar = $('czGBar');

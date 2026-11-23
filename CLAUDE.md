@@ -113,7 +113,7 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     Sunday each week ends; Raider.IO labels a week by its Monday but stores the total at its end), each
     `{date: {level: {key: [Alliance's classes, Horde's classes, races]}}}`; it feeds the arrows and the "Over Time" graph (Factions /
     Classes / Races, Characters / Share, its own All / 60 Only switch, `graph60` in a link; time ranges 7D / 1M / 3M / 1Y / All, each
-    greyed out until the history is longer; zoom with - / +, a pinch or Ctrl + scroll, then drag or use the scrollbar under it). Framed like the Sims page (`experiment.CSS`); `build.py` writes
+    greyed out until the history is longer; zoom by scrolling over the graph (which never scrolls the page) or a pinch, then drag or use the scrollbar under it). Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, a region,
     a ruleset, a faction, `60` for level 60 only in every box, or `classes60` / `races60` / `factions60` / `table60` / `graph60` for one box: each box has its own All / 60 Only switch)
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)
