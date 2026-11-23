@@ -555,6 +555,9 @@ const H = window.__CENSUS_HIST || { weeks: {}, days: {} };
 const POINTS = [...new Set([...Object.keys(H.weeks), ...Object.keys(H.days)])].sort()
   .map((d) => ({ date: d, daily: !!H.days[d], data: H.days[d] || H.weeks[d] }));
 const sum = (a) => a.reduce((x, y) => x + y, 0);
+// each race's line colour, in RACES' order (Human, Dwarf, Night Elf, Gnome, Alliance Skyborne, Orc, Undead, Tauren,
+// Troll, Horde Skyborne): ten hues far enough apart to tell the lines apart on the dark box
+const RACE_COLOR = ['#4f8ff7', '#ff8c1a', '#b07cf0', '#f07cc0', '#4fd8e8', '#62cc4e', '#aab4c0', '#b5835a', '#e8dc4a', '#f0504a'];
 function series() {
   const key = S.rules ? S.region + '|' + S.rules : S.region, f = S.faction, share = S.gmeasure === 'pct';
   const pts = POINTS.map((p) => ({ ...p, v: (p.data[S.level.graph] || {})[key] })).filter((p) => p.v);
@@ -570,9 +573,7 @@ function series() {
     out = CLASSES.map((c, j) => [c, j]).sort((p, q) => p[0].localeCompare(q[0])).map(([c, j]) => line(c, CLASS_COLOR[c], (v) => share ? pct(cl(v, j), sum(CLASSES.map((_, k) => cl(v, k)))) : cl(v, j)));
   } else {
     const on = RACES.map((_, i) => raceOn(i));
-    out = RACES.map((r, i) => ({ r, i })).filter(({ i }) => on[i]).map(({ r, i }) => line(r, FAC_COLOR[FACTION(i)], (v) => share ? pct(v[18 + i], sum(v.slice(18).filter((_, k) => on[k]))) : v[18 + i]));
-    // two lines per faction share its colour: the races are told apart by a dash pattern, in the legend too
-    const seen = {}; out.forEach((s, k) => { const fc = FACTION(RACES.indexOf(s.name)); seen[fc] = (seen[fc] || 0) + 1; s.dash = ['', '6 3', '2 3', '9 3 2 3', '1 5'][seen[fc] - 1]; });
+    out = RACES.map((r, i) => ({ r, i })).filter(({ i }) => on[i]).map(({ r, i }) => line(r, RACE_COLOR[i], (v) => share ? pct(v[18 + i], sum(v.slice(18).filter((_, k) => on[k]))) : v[18 + i]));
   }
   return { pts, lines: out, share };
 }
@@ -585,7 +586,7 @@ const DAY = 864e5, MIN_SPAN = 3 * DAY;   // zoomed in at most to three days
 // greyed out until the history is longer than it. Not kept in the link.
 const RANGES = [['7', '7D'], ['30', '1M'], ['90', '3M'], ['365', '1Y'], ['all', 'All']];
 let GW = null, G = null;   // G: the last drawing's layout, for the pointer handlers
-const lineColor = (l) => CLASS_COLOR[l.name] || FAC_TEXT[l.name] || (RACES.includes(l.name) ? FAC_TEXT[FACTION(RACES.indexOf(l.name))] : '#e2b23c');
+const lineColor = (l) => CLASS_COLOR[l.name] || FAC_TEXT[l.name] || (RACES.includes(l.name) ? RACE_COLOR[RACES.indexOf(l.name)] : '#e2b23c');
 function setWin(w) {
   if (!G) return;
   const [dlo, dhi] = G.dom, full = dhi - dlo;
