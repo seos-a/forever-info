@@ -253,7 +253,6 @@ document.head.appendChild(t);})();
   .cz-graph { touch-action: pan-y; user-select: none; }   /* sideways drags and pinches are the graph's, vertical swipes the page's */
   .cz-graph.zoomed { cursor: grab; }
   .cz-graph.zoomed:active { cursor: grabbing; }
-  .cz-gtools { display: flex; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
   /* the scrollbar while zoomed: the thumb is the dates in view */
   .cz-gbar { position: relative; height: 8px; margin: 2px 0 0 46px; border-radius: 4px; background: color-mix(in srgb, var(--color-fg) 8%, transparent); cursor: pointer; touch-action: none; }
   .cz-gbar[hidden] { display: none; }
@@ -322,8 +321,7 @@ document.head.appendChild(t);})();
   </section>
 
   <section class="cz-card" aria-label="Over time">
-    <div class="cz-cardhead"><div id="czGraphHead"></div><div class="cz-gsegs"><div class="cz-seg" id="czGView" role="group" aria-label="Lines"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
-    <div class="cz-gtools"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div></div>
+    <div class="cz-cardhead"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div><div class="cz-gsegs"><div class="cz-seg" id="czGView" role="group" aria-label="Lines"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
     <div class="cz-graph" id="czGraph"></div>
     <div class="cz-gbar" id="czGBar" hidden><i></i></div>
     <div class="cz-legend" id="czLegend"></div>
@@ -615,7 +613,6 @@ function draw() {
   ({ g, raceTot, classTot, total } = view(S.level.table));
   table(g, raceTot, classTot, total);
 
-  title($('czGraphHead'), 'Over Time', sel.length ? `<span class="cz-count">(${sel.join('-')})</span>` : '');
   segs($('czGView'), [['fac', 'Factions'], ['cls', 'Classes'], ['race', 'Races']], S.gview, (v) => { S.gview = v; draw(); });
   segs($('czGMeasure'), [['n', 'Characters'], ['pct', 'Share']], S.gmeasure, (v) => { S.gmeasure = v; draw(); });
   graph();
@@ -641,7 +638,7 @@ function series() {
       : [line('All', '#e2b23c', T), line('Alliance', FAC_COLOR.Alliance, A), line('Horde', FAC_COLOR.Horde, Ho)];
   } else if (S.gview === 'cls') {
     const cl = (v, j) => f === 'Alliance' ? v[j] : f === 'Horde' ? v[9 + j] : v[j] + v[9 + j];
-    out = CLASSES.map((c, j) => line(c, CLASS_COLOR[c], (v) => share ? pct(cl(v, j), sum(CLASSES.map((_, k) => cl(v, k)))) : cl(v, j)));
+    out = CLASSES.map((c, j) => [c, j]).sort((p, q) => p[0].localeCompare(q[0])).map(([c, j]) => line(c, CLASS_COLOR[c], (v) => share ? pct(cl(v, j), sum(CLASSES.map((_, k) => cl(v, k)))) : cl(v, j)));
   } else {
     const on = RACES.map((_, i) => raceOn(i));
     out = RACES.map((r, i) => ({ r, i })).filter(({ i }) => on[i]).map(({ r, i }) => line(r, FAC_COLOR[FACTION(i)], (v) => share ? pct(v[18 + i], sum(v.slice(18).filter((_, k) => on[k]))) : v[18 + i]));
