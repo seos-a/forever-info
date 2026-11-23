@@ -766,10 +766,10 @@ document.head.appendChild(t);})();
   .lx-regear.on { color: var(--color-fg); }
   /* the Racial Bonus "Below zero" note: each race's explanation on its own line */
   .lx-gnext { display: block; margin-top: .6em; }
-  /* the DPS by Race and Spec box has no title: its arrow, then the measure buttons on the left (as the Census page's
+  /* the race x spec tables (DPS, healing, tanks) have no title: its arrow, then the measure buttons on the left (as the Census page's
      table), the target and fight-length switches on the right */
-  #matrix .rr-cardhead > .rr-title { flex: none; }
-  #matrix .rr-cardhead > .lx-metric { margin-right: auto; }
+  #matrix .rr-cardhead > .rr-title, #t-matrix .rr-cardhead > .rr-title, #h-matrix .hr-cardhead > .hr-title { flex: none; }
+  #matrix .rr-cardhead > .lx-metric, #t-matrix .rr-cardhead > .lx-metric, #h-matrix .hr-cardhead > .lx-metric { margin-right: auto; }
   /* titles and switches the size of the Census page's: 15px titles on a 24px line, small 11px buttons */
   .rr-cardhead h2, .hr-cardhead h2 { font-size: var(--cds-font-size-heading); line-height: 24px; }
   .rr-seg, .hr-seg { border-radius: 6px; }
@@ -923,13 +923,13 @@ document.head.appendChild(t);})();
     <p class="hr-note lx-sitfoot" hidden></p>
   </section>
 
-  <section class="hr-card" id="h-matrix">
-    <div class="hr-cardhead"><h2>HPS by Race and Spec</h2>
+  <section class="hr-card" id="h-matrix" data-label="HPS by Race and Spec">
+    <div class="hr-cardhead">
+      <div class="hr-seg lx-metric" role="group" aria-label="Measure">
+        <button type="button" data-v="pct">% of best</button><button type="button" data-v="gain">Gain over no racials</button><button type="button" data-v="manaEnd">Mana left at end</button>
+      </div>
       <div class="hr-tools">
         <div class="hr-seg lx-fight" data-p="matrixFight" role="group" aria-label="Fight length"></div>
-        <div class="hr-seg lx-metric" role="group" aria-label="Measure">
-          <button type="button" data-v="pct">% of best</button><button type="button" data-v="gain">Gain over no racials</button><button type="button" data-v="manaEnd">Mana left at end</button>
-        </div>
       </div>
     </div>
     <div class="hr-scroll"><table class="lx-matrix" data-source="healMatrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
@@ -1020,13 +1020,13 @@ document.head.appendChild(t);})();
     <div class="rr-vgrip lx-cmpgrip" role="separator" aria-orientation="horizontal" aria-label="Resize the box" tabindex="0" title="Drag to make the box taller or shorter; double-click to reset"></div>
   </section>
 
-  <section class="rr-card" id="t-matrix">
-    <div class="rr-cardhead"><h2>Tank Results by Race and Spec</h2>
+  <section class="rr-card" id="t-matrix" data-label="Tank Results by Race and Spec">
+    <div class="rr-cardhead">
+      <div class="rr-seg lx-metric" role="group" aria-label="Measure">
+        <button type="button" data-v="pct">% of best</button><button type="button" data-v="gain">Gain over no racials</button><button type="button" data-v="gapDps">Behind best</button>
+      </div>
       <div class="rr-tools">
         <div class="rr-seg lx-fight" data-p="matrixFight" role="group" aria-label="Fight length"></div>
-        <div class="rr-seg lx-metric" role="group" aria-label="Measure">
-          <button type="button" data-v="pct">% of best</button><button type="button" data-v="gain">Gain over no racials</button><button type="button" data-v="gapDps">Behind best</button>
-        </div>
       </div>
     </div>
     <div class="rr-scroll"><table class="lx-matrix" data-source="tankMatrix" data-row-key="key"><thead></thead><tbody></tbody></table></div>
