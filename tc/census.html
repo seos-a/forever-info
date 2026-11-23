@@ -143,6 +143,7 @@
   .cz th.t { text-align: left; left: 0; z-index: 3; }   /* the Race heading stays put over the race column */
   .cz th button { font: inherit; color: var(--color-fg-muted); background: none; border: 0; padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); cursor: pointer; width: 100%; text-align: inherit; white-space: nowrap; }
   .cz th button:hover, .cz th[aria-sort] button { filter: brightness(1.25); }
+  .cz th.t button { padding-left: calc(var(--cds-pad-sm) * var(--mz, 1) - 1.5px); }   /* "Race" starts at the race portraits' outer rim, not 1.5px in from it */
   .cz th.t button:hover, .cz th.t[aria-sort] button { color: var(--color-fg); filter: none; }
   .cz th[aria-sort="ascending"] button::after { content: " ▲"; font-size: .7em; }
   .cz th[aria-sort="descending"] button::after { content: " ▼"; font-size: .7em; }
@@ -427,10 +428,10 @@ function draw() {
   };
   // the region, ruleset and faction picked, in the order they're picked in game
   const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1], S.faction].filter(Boolean);
-  // what follows a box's title: the picks and the box's level, then the count: "(NA-PvP-Alliance-Level 60) 473,962", and
-  // "small sample" when under 1,000, where shares jump around
-  const count = (n, lv) => {
-    const w = [...sel, lv === '60' && 'Level 60'].filter(Boolean).join('-');
+  // what follows a box's title: the picks, then the count: "(NA-PvP-Alliance) 473,962" (the box's level shows on its own
+  // All / 60 Only switch), and "small sample" when under 1,000, where shares jump around
+  const count = (n) => {
+    const w = sel.join('-');
     return `<span class="cz-count">${w ? `(${w}) ` : ''}${fmt(n)}${n && n < 1000 ? ' · <span class="cz-small">small sample</span>' : ''}</span>`;
   };
 
