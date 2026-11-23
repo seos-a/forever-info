@@ -250,6 +250,16 @@ document.head.appendChild(t);})();
   .cz-graph .gl { stroke: var(--cds-chart-grid); stroke-width: 1; }
   .cz-graph text { fill: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
   .cz-graph .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .cz-graph { touch-action: pan-y; user-select: none; }   /* sideways drags and pinches are the graph's, vertical swipes the page's */
+  .cz-graph.zoomed { cursor: grab; }
+  .cz-graph.zoomed:active { cursor: grabbing; }
+  .cz-gtools { display: flex; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); }
+  .cz-zoom button { font-size: 14px; line-height: 16px; padding: 1px 10px; }
+  /* the scrollbar while zoomed: the thumb is the dates in view */
+  .cz-gbar { position: relative; height: 8px; margin: 2px 0 0 46px; border-radius: 4px; background: color-mix(in srgb, var(--color-fg) 8%, transparent); cursor: pointer; touch-action: none; }
+  .cz-gbar[hidden] { display: none; }
+  .cz-gbar i { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: color-mix(in srgb, var(--color-fg) 40%, transparent); cursor: grab; min-width: 12px; }
+  .cz-gbar i:hover { background: color-mix(in srgb, var(--color-fg) 55%, transparent); }
   .cz-graph .guide { stroke: color-mix(in srgb, var(--color-fg) 45%, transparent); stroke-width: 1; }
   .cz-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--cds-font-size-caption); }
   .cz-legend span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
@@ -314,7 +324,9 @@ document.head.appendChild(t);})();
 
   <section class="cz-card" aria-label="Over time">
     <div class="cz-cardhead"><div id="czGraphHead"></div><div class="cz-gsegs"><div class="cz-seg" id="czGView" role="group" aria-label="Lines"></div><div class="cz-seg" id="czGMeasure" role="group" aria-label="Show"></div><div class="cz-seg cz-lvl" data-box="graph" role="group" aria-label="Levels"></div></div></div>
+    <div class="cz-gtools"><div class="cz-seg" id="czGRange" role="group" aria-label="Dates"></div><div class="cz-seg cz-zoom" id="czGZoom" role="group" aria-label="Zoom"></div></div>
     <div class="cz-graph" id="czGraph"></div>
+    <div class="cz-gbar" id="czGBar" hidden><i></i></div>
     <div class="cz-legend" id="czLegend"></div>
   </section>
 
@@ -324,7 +336,7 @@ document.head.appendChild(t);})();
       <p><b>Where the numbers come from</b>The <a href="https://forever.raider.io/population" target="_blank" rel="noopener">Raider.IO</a> WoW Forever census. Characters below level 10 aren't included. Raider.IO only knows the characters it has come across, mostly through guild rosters: characters outside a guild, or ones it hasn't looked up, can be missing.</p>
       <p><b>Weekly change</b>Green and red arrows show how much a class's or race's share has changed in the past 7 days: this copy of the census against the one taken 7 days earlier (hover a bar to see its date). If no copy was taken that day, the nearest one 6 to 8 days earlier is used, or failing that Raider.IO's own weekly count, which it takes each Sunday. Moves under 0.2 points aren't shown, nor any in a selection of fewer than 1,000 characters, as small samples can swing a lot from week to week.</p>
       <p><b>Updates</b>By hand about once a day, not live (Raider.IO updates its census every hour). The date in the bottom-left corner is when this copy was taken.</p>
-      <p><b>Over time</b>The graph's points are Raider.IO's weekly counts (one each Sunday, as its week ends) and, from Nov 19, this site's daily copies. Share shows each line's part of all characters in the pick, which compares classes or races as the game grows.</p>
+      <p><b>Over time</b>The graph's points are Raider.IO's weekly counts (one each Sunday, as its week ends) and, from Nov 19, this site's daily copies. Share shows each line's part of all characters in the pick, which compares classes or races as the game grows. Pick a time range, or zoom with − and +, a pinch or Ctrl + scroll; once zoomed in, drag the graph or the bar under it to move along.</p>
       <p><b>Notes</b>Counts in-game characters, not real-life players. <span id="czLevels"></span></p>
     </div>
   </section>
@@ -363,7 +375,7 @@ const $ = (id) => document.getElementById(id);
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
 // as on the Sims page, a reload starts on the full lists.
 const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60'], ['graph', 'graph60']];
-const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'fac', gmeasure: 'n' };
+const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'fac', gmeasure: 'n', grange: 'all' };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
   // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
   if (t === '60') { for (const b in S.level) S.level[b] = '60'; continue; }
@@ -642,44 +654,146 @@ function series() {
 // a round step for about n gridlines between lo and hi
 const niceStep = (span, n) => { const raw = span / n, p = 10 ** Math.floor(Math.log10(raw)); return [1, 2, 2.5, 5, 10].map((m) => m * p).find((s) => s >= raw) || 10 * p; };
 const big = (v) => v >= 1e6 ? (v / 1e6).toFixed(v % 1e6 ? 1 : 0).replace(/\.0$/, '') + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'K' : String(Math.round(v));
+const DAY = 864e5, MIN_SPAN = 3 * DAY;   // zoomed in at most to three days
+// The dates in view: GW = [from, to] (ms), null for all of it. A range button (7D, 1M, 3M, 1Y) shows the last that many
+// days; zooming (the - / + buttons, a pinch, Ctrl + scroll) and dragging change GW and unpress them. A range stays
+// greyed out until the history is longer than it. Not kept in the link.
+const RANGES = [['7', '7D'], ['30', '1M'], ['90', '3M'], ['365', '1Y'], ['all', 'All']];
+let GW = null, G = null;   // G: the last drawing's layout, for the pointer handlers
+const lineColor = (l) => CLASS_COLOR[l.name] || FAC_TEXT[l.name] || (RACES.includes(l.name) ? FAC_TEXT[FACTION(RACES.indexOf(l.name))] : '#e2b23c');
+function setWin(w) {
+  if (!G) return;
+  const [dlo, dhi] = G.dom, full = dhi - dlo;
+  if (!w || w[1] - w[0] >= full) { GW = null; } else {
+    const s = Math.max(Math.min(MIN_SPAN, full), w[1] - w[0]), a = Math.max(dlo, Math.min(w[0], dhi - s));
+    GW = [a, a + s];
+  }
+  graph();
+}
+function zoomBy(f, at) {
+  if (!G) return;
+  const [a, b] = GW || G.dom, c = at == null ? (a + b) / 2 : at;
+  S.grange = ''; setWin([c - (c - a) * f, c + (b - c) * f]);
+  if (!GW) S.grange = 'all', graph();
+}
 function graph() {
-  const el = $('czGraph'), W = el.clientWidth, Ht = el.clientHeight;
+  const el = $('czGraph'), W = el.clientWidth, Ht = el.clientHeight, legend = $('czLegend'), bar = $('czGBar');
   if (!W) return;
   const { pts, lines, share } = series();
-  const legend = $('czLegend');
-  if (!pts.length) { el.innerHTML = '<p class="cz-empty">No history for this pick yet.</p>'; legend.innerHTML = ''; return; }
-  const all = lines.flatMap((l) => l.vals);
-  let lo = share ? Math.min(...all) : 0, hi = Math.max(...all);
-  if (hi === lo) { hi += share ? 1 : 1; lo = share ? Math.max(0, lo - 1) : 0; }
+  if (!pts.length) { el.innerHTML = '<p class="cz-empty">No history for this pick yet.</p>'; legend.innerHTML = ''; bar.hidden = true; G = null; return; }
+  const dom = [day(pts[0].date), day(pts[pts.length - 1].date)], full = dom[1] - dom[0];
+  // a range button picked: the last that many days, or everything
+  if (S.grange === 'all') GW = null;
+  else if (S.grange) GW = full > +S.grange * DAY ? [dom[1] - +S.grange * DAY, dom[1]] : (S.grange = 'all', null);
+  if (GW && (GW[0] < dom[0] || GW[1] > dom[1] || GW[1] - GW[0] >= full)) {   // the pick changed under a zoom: keep it inside the history
+    const s = Math.min(GW[1] - GW[0], full); GW = s >= full ? null : [Math.max(dom[0], Math.min(GW[0], dom[1] - s)), 0]; if (GW) GW[1] = GW[0] + s;
+  }
+  const [a, b] = GW || dom;
+  segs($('czGRange'), RANGES, S.grange, (v) => { S.grange = v; graph(); }, (v) => v !== 'all' && full <= +v * DAY);
+  segs($('czGZoom'), [['out', '−'], ['in', '+']], '', (v) => zoomBy(v === 'in' ? 0.5 : 2), (v) => v === 'in' ? full <= MIN_SPAN || (GW && GW[1] - GW[0] <= MIN_SPAN) : !GW);
+  $('czGZoom').querySelectorAll('button').forEach((bt) => bt.setAttribute('aria-label', bt.dataset.v === 'in' ? 'Zoom in' : 'Zoom out'));
+  // the points in view, and one each side so the lines run on to the edges
+  const tk = pts.map((p) => day(p.date));
+  let i0 = tk.findIndex((t) => t >= a), i1 = tk.length - 1 - [...tk].reverse().findIndex((t) => t <= b);
+  if (i0 < 0) i0 = tk.length - 1;
+  const inView = i1 >= i0 ? [...Array(i1 - i0 + 1).keys()].map((k) => k + i0) : [Math.max(0, i1), Math.min(tk.length - 1, i0)];
+  const drawn = [...new Set([Math.max(0, inView[0] - 1), ...inView, Math.min(tk.length - 1, inView[inView.length - 1] + 1)])];
+  // the scale fits the points in view (and where the lines cross the edges)
+  const L = share ? 40 : 46, R = 12, T = 8, B = 22, iw = W - L - R, ih = Ht - T - B;
+  const xt = (t) => L + (b > a ? (t - a) / (b - a) * iw : iw / 2);
+  const edge = (l, t) => { const k = tk.findIndex((u) => u >= t); if (k <= 0) return l.vals[Math.max(0, k)]; return l.vals[k - 1] + (l.vals[k] - l.vals[k - 1]) * (t - tk[k - 1]) / (tk[k] - tk[k - 1]); };
+  const vis = lines.flatMap((l) => [...inView.map((k) => l.vals[k]), ...(GW ? [edge(l, a), edge(l, b)] : [])]);
+  let lo = share ? Math.min(...vis) : 0, hi = Math.max(...vis);
+  if (GW && !share) lo = Math.min(...vis);   // zoomed in on counts: no need to start at 0
+  if (hi === lo) { hi += 1; lo = Math.max(0, lo - 1); }
   const step = niceStep(hi - lo, 4);
   lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
-  const L = share ? 40 : 46, R = 12, T = 8, B = 22, iw = W - L - R, ih = Ht - T - B;
-  const t0 = day(pts[0].date), t1 = day(pts[pts.length - 1].date);
-  const x = (k) => L + (t1 > t0 ? (day(pts[k].date) - t0) / (t1 - t0) * iw : iw / 2), y = (v) => T + ih - (v - lo) / (hi - lo) * ih;
-  let svg = '';
+  const y = (v) => T + ih - (v - lo) / (hi - lo) * ih;
+  let svg = `<defs><clipPath id="czClip"><rect x="${L - 3}" y="${T - 4}" width="${iw + 6}" height="${ih + 8}"></rect></clipPath></defs>`;
   for (let v = lo; v <= hi + step / 2; v += step) svg += `<line class="gl" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"></line><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${share ? +v.toFixed(1) + '%' : big(v)}</text>`;
-  // date labels: about one per 90px, always the first and last
-  const every = Math.max(1, Math.ceil(pts.length / Math.max(2, Math.floor(iw / 90))));
-  pts.forEach((p, k) => { if (k % every === 0 || k === pts.length - 1) { if (k !== pts.length - 1 && pts.length - 1 - k < every && x(pts.length - 1) - x(k) < 60) return; svg += `<text x="${x(k)}" y="${Ht - 6}" text-anchor="middle">${dateTxt(p.date)}</text>`; } });
+  // date labels: a round number of days apart (or months), at least 70px apart
+  const span = (b - a) / DAY, per = iw / Math.max(span, 1);
+  const dstep = [1, 2, 3, 7, 14].find((s) => s * per >= 70);
+  const ticks = [];
+  if (dstep) { for (let t = Math.ceil(a / DAY / dstep) * dstep * DAY; t <= b; t += dstep * DAY) ticks.push(t); }
+  else {
+    const mstep = [1, 2, 3, 6, 12].find((s) => s * 30 * per >= 70) || 12, d0 = new Date(a);
+    for (let m = d0.getUTCFullYear() * 12 + d0.getUTCMonth() + 1; ; m += 1) { const t = Date.UTC(Math.floor(m / 12), m % 12, 1); if (t > b) break; if (m % mstep === 0) ticks.push(t); }
+  }
+  for (const t of ticks) {
+    const d = new Date(t), lab = d.getUTCDate() === 1 && d.getUTCMonth() === 0 ? String(d.getUTCFullYear()) : `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+    svg += `<text x="${xt(t)}" y="${Ht - 6}" text-anchor="${xt(t) < L + 15 ? 'start' : xt(t) > W - R - 15 ? 'end' : 'middle'}">${lab}</text>`;
+  }
+  svg += '<g clip-path="url(#czClip)">';
+  const rDot = inView.length > 30 ? 1.5 : 2.5;
   for (const l of lines) {
     const c = soft(l.color);
-    svg += `<polyline class="ln" points="${l.vals.map((v, k) => `${x(k).toFixed(1)},${y(v).toFixed(1)}`).join(' ')}" style="stroke:${c}"${l.dash ? ` stroke-dasharray="${l.dash}"` : ''}></polyline>`;
-    svg += l.vals.map((v, k) => `<circle cx="${x(k).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${pts.length > 30 ? 1.5 : 2.5}" style="fill:${c}"></circle>`).join('');
+    svg += `<polyline class="ln" points="${drawn.map((k) => `${xt(tk[k]).toFixed(1)},${y(l.vals[k]).toFixed(1)}`).join(' ')}" style="stroke:${c}"${l.dash ? ` stroke-dasharray="${l.dash}"` : ''}></polyline>`;
+    svg += inView.map((k) => `<circle cx="${xt(tk[k]).toFixed(1)}" cy="${y(l.vals[k]).toFixed(1)}" r="${rDot}" style="fill:${c}"></circle>`).join('');
   }
-  svg += `<line class="guide" id="czGuide" x1="0" x2="0" y1="${T}" y2="${T + ih}" visibility="hidden"></line><rect x="${L}" y="0" width="${iw}" height="${Ht}" fill="transparent" data-tip="g"></rect>`;
+  svg += `</g><line class="guide" id="czGuide" x1="0" x2="0" y1="${T}" y2="${T + ih}" visibility="hidden"></line><rect class="hit" x="${L}" y="0" width="${iw}" height="${Ht}" fill="transparent" data-tip="g"></rect>`;
   el.innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Characters over time">${svg}</svg>`;
-  legend.innerHTML = lines.map((l) => `<span><i style="background:${l.dash ? `repeating-linear-gradient(90deg, ${soft(l.color)} 0 ${l.dash.split(' ')[0]}px, transparent 0 ${l.dash.split(' ').slice(0, 2).reduce((a, b) => +a + +b)}px)` : soft(l.color)}"></i><span style="color:${l.color === '#e2b23c' ? l.color : CLASS_COLOR[l.name] || FAC_TEXT[l.name] || FAC_TEXT[FACTION(RACES.indexOf(l.name))]}">${l.name}</span></span>`).join('');
-  // hovering: the nearest point's date, a guide line, and every line's value there, biggest first
-  const guide = el.querySelector('#czGuide'), rect = el.querySelector('rect');
-  rect.onmousemove = (e) => {
-    const bx = e.clientX - el.getBoundingClientRect().left;
-    let k = 0; pts.forEach((_, j) => { if (Math.abs(x(j) - bx) < Math.abs(x(k) - bx)) k = j; });
-    guide.setAttribute('x1', x(k)); guide.setAttribute('x2', x(k)); guide.setAttribute('visibility', 'visible');
-    const rows = lines.map((l) => [l, l.vals[k]]).sort((a, b) => b[1] - a[1]);
-    tips.g = `<div class="h">${dateTxt(pts[k].date)} <span style="font-weight:400;font-size:12px;color:#bbb">${pts[k].daily ? 'daily copy' : "Raider.IO's weekly count"}</span></div>`
-      + rows.map(([l, v]) => `<div class="row"><span style="color:${CLASS_COLOR[l.name] || FAC_TEXT[l.name] || (RACES.includes(l.name) ? FAC_TEXT[FACTION(RACES.indexOf(l.name))] : '#e2b23c')}">${l.name}</span><b>${share ? pctTxt(v) : fmt(v)}</b></div>`).join('');
-  };
-  rect.onmouseleave = () => guide.setAttribute('visibility', 'hidden');
+  el.classList.toggle('zoomed', !!GW);
+  legend.innerHTML = lines.map((l) => `<span><i style="background:${l.dash ? `repeating-linear-gradient(90deg, ${soft(l.color)} 0 ${l.dash.split(' ')[0]}px, transparent 0 ${l.dash.split(' ').slice(0, 2).reduce((p, q) => +p + +q)}px)` : soft(l.color)}"></i><span style="color:${lineColor(l)}">${l.name}</span></span>`).join('');
+  // the scrollbar under the graph while zoomed: the thumb is the part in view
+  bar.hidden = !GW;
+  if (GW) { const th = bar.firstElementChild; th.style.left = (a - dom[0]) / full * 100 + '%'; th.style.width = (b - a) / full * 100 + '%'; }
+  G = { dom, a, b, L, iw, tk, inView, lines, share, pts, xt };
+}
+// hovering: the nearest point in view, a guide line, and every line's value there, biggest first
+function hover(clientX) {
+  if (!G) return;
+  const el = $('czGraph'), bx = clientX - el.getBoundingClientRect().left, guide = el.querySelector('#czGuide');
+  let k = G.inView[0]; for (const j of G.inView) if (Math.abs(G.xt(G.tk[j]) - bx) < Math.abs(G.xt(G.tk[k]) - bx)) k = j;
+  guide.setAttribute('x1', G.xt(G.tk[k])); guide.setAttribute('x2', G.xt(G.tk[k])); guide.setAttribute('visibility', 'visible');
+  const rows = G.lines.map((l) => [l, l.vals[k]]).sort((p, q) => q[1] - p[1]);
+  tips.g = `<div class="h">${dateTxt(G.pts[k].date)} <span style="font-weight:400;font-size:12px;color:#bbb">${G.pts[k].daily ? 'daily copy' : "Raider.IO's weekly count"}</span></div>`
+    + rows.map(([l, v]) => `<div class="row"><span style="color:${lineColor(l)}">${l.name}</span><b>${G.share ? pctTxt(v) : fmt(v)}</b></div>`).join('');
+}
+// Pointer handling on the graph's box (it outlives each redraw): one finger or the mouse drags the dates in view sideways
+// once zoomed, two fingers pinch to zoom; vertical swipes still scroll the page (touch-action: pan-y). Ctrl + scroll
+// (and a laptop's pinch, which arrives as one) zooms at the pointer; a sideways scroll pans.
+{
+  const el = $('czGraph'), ptr = new Map();
+  let drag = null, pinch = null;
+  const tAt = (clientX) => G.a + (clientX - el.getBoundingClientRect().left - G.L) / G.iw * (G.b - G.a);
+  el.addEventListener('pointerdown', (e) => {
+    if (!G) return;
+    ptr.set(e.pointerId, e.clientX);
+    if (ptr.size === 2) { const [p, q] = [...ptr.values()]; pinch = { d: Math.abs(p - q) || 1, w: [G.a, G.b], c: tAt((p + q) / 2) }; drag = null; }
+    else if (GW) { drag = { x: e.clientX, w: GW.slice() }; el.setPointerCapture(e.pointerId); }
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (ptr.has(e.pointerId)) ptr.set(e.pointerId, e.clientX);
+    if (pinch && ptr.size === 2) {
+      const [p, q] = [...ptr.values()], f = pinch.d / (Math.abs(p - q) || 1), [a, b] = pinch.w, c = pinch.c;
+      S.grange = ''; setWin([c - (c - a) * f, c + (b - c) * f]); if (!GW) { S.grange = 'all'; graph(); }
+    } else if (drag) {
+      const dt = (drag.x - e.clientX) / G.iw * (drag.w[1] - drag.w[0]);
+      S.grange = ''; setWin([drag.w[0] + dt, drag.w[1] + dt]); tip.hidden = true;
+    } else if (e.pointerType === 'mouse' || ptr.size === 1) hover(e.clientX);
+  });
+  const up = (e) => { ptr.delete(e.pointerId); if (ptr.size < 2) pinch = null; if (!ptr.size) drag = null; };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  el.addEventListener('pointerleave', () => { const g = el.querySelector('#czGuide'); if (g) g.setAttribute('visibility', 'hidden'); });
+  el.addEventListener('wheel', (e) => {
+    if (!G) return;
+    if (e.ctrlKey) { e.preventDefault(); zoomBy(Math.exp(e.deltaY * 0.01), tAt(e.clientX)); }
+    else if (GW && Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); const dt = e.deltaX / G.iw * (GW[1] - GW[0]); S.grange = ''; setWin([GW[0] + dt, GW[1] + dt]); }
+  }, { passive: false });
+  // the scrollbar: drag the thumb, or click the track to centre the view there
+  const bar = $('czGBar');
+  let bdrag = null;
+  bar.addEventListener('pointerdown', (e) => {
+    if (!G || !GW) return;
+    const r = bar.getBoundingClientRect(), full = G.dom[1] - G.dom[0];
+    if (e.target === bar.firstElementChild) bdrag = { x: e.clientX, w: GW.slice(), per: full / r.width };
+    else { const c = G.dom[0] + (e.clientX - r.left) / r.width * full, s = GW[1] - GW[0]; S.grange = ''; setWin([c - s / 2, c + s / 2]); bdrag = { x: e.clientX, w: GW ? GW.slice() : null, per: full / r.width }; }
+    bar.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  bar.addEventListener('pointermove', (e) => { if (!bdrag || !bdrag.w) return; const dt = (e.clientX - bdrag.x) * bdrag.per; S.grange = ''; setWin([bdrag.w[0] + dt, bdrag.w[1] + dt]); });
+  const bup = () => { bdrag = null; };
+  bar.addEventListener('pointerup', bup); bar.addEventListener('pointercancel', bup);
 }
 new ResizeObserver(() => graph()).observe($('czGraph'));
 
