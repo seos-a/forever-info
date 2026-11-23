@@ -371,7 +371,7 @@ const $ = (id) => document.getElementById(id);
 // The filters live in the address (/census?eu,pvp,horde), so a link or a reload keeps them. An open breakdown doesn't:
 // as on the Sims page, a reload starts on the full lists.
 const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60'], ['graph', 'graph60']];
-const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'fac', gmeasure: 'n', grange: 'all' };
+const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'cls', gmeasure: 'n', grange: 'all' };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
   // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
   if (t === '60') { for (const b in S.level) S.level[b] = '60'; continue; }
@@ -612,7 +612,7 @@ function draw() {
   ({ g, raceTot, classTot, total } = view(S.level.table));
   table(g, raceTot, classTot, total);
 
-  segs($('czGView'), [['fac', 'Factions'], ['cls', 'Classes'], ['race', 'Races']], S.gview, (v) => { S.gview = v; draw(); });
+  segs($('czGView'), [['cls', 'Classes'], ['race', 'Races'], ['fac', 'Factions']], S.gview, (v) => { S.gview = v; draw(); });
   segs($('czGMeasure'), [['n', 'Characters'], ['pct', 'Share']], S.gmeasure, (v) => { S.gmeasure = v; draw(); });
   graph();
 }
