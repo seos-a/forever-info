@@ -116,13 +116,15 @@ document.head.appendChild(t);})();
   @media (max-width: 600px) { .cz-card { padding: 10px; } }
 
   /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
-  .cz-crumbs { display: flex; align-items: center; font-size: 16px; font-weight: var(--cds-font-weight-medium); line-height: 24px; }   /* every part on one centre line, the All / 60 Only switch's */
+  .cz-crumbs { display: flex; flex-wrap: wrap; column-gap: .35em; align-items: center; font-size: 16px; font-weight: var(--cds-font-weight-medium); line-height: 24px; }   /* every part on one centre line, the All / 60 Only switch's */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-root { color: var(--color-fg); }
   .cz-count { color: var(--color-fg-muted); font-weight: 400; margin-left: .35em; white-space: pre; }   /* "(NA-PvP-Alliance) 473,962" after the title */
   .cz-crumb:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; position: relative; top: -.06em; }
-  .cz-crumbs img { width: 1em; height: 1em; border-radius: 3px; margin-right: .4em; flex: none; }   /* as tall as the text */
+  /* the row's gap spaces its parts (gone where a phone wraps the count to a second line, so it starts flush) */
+  .cz-crumbs > .cz-count, .cz-crumbs > .cz-crumbsep { margin-left: 0; margin-right: 0; }
+  .cz-crumbs img { width: .85em; height: .85em; border-radius: 3px; margin-right: .35em; flex: none; }   /* a little under the text's height */
   /* the picked class or race: a button opening a menu of the others (the Sims page's .rr-pick and .rr-menu) */
   .cz-pickwrap { position: relative; display: flex; }
   .cz-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
@@ -379,19 +381,19 @@ const $ = (id) => document.getElementById(id);
 // as on the Sims page, a reload starts on the full lists.
 const LV_TOKENS = [['cls', 'classes60'], ['race', 'races60'], ['bal', 'factions60'], ['table', 'table60'], ['graph', 'graph60']];
 const GVIEWS = [['cls', 'Class'], ['race', 'Race'], ['fac', 'Faction']];   // the graph's lines, picked in its title
-const S = { region: 'all', rules: '', faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'cls', gmeasure: 'n', grange: 'all' };
+const S = { regions: [], rules: [], faction: '', level: { cls: 'all', race: 'all', bal: 'all', table: 'all', graph: 'all' }, cls: -1, race: -1, metric: 'col', sort: null, sortDir: 'desc', colRace: -1, gview: 'cls', gmeasure: 'n', grange: 'all' };
 for (const t of location.search.slice(1).toLowerCase().split(/[,&+]/).filter(Boolean)) {
   // each box has its own All / 60 Only switch: "60" in the link puts all three at level 60, "classes60" one box
   if (t === '60') { for (const b in S.level) S.level[b] = '60'; continue; }
   const lb = LV_TOKENS.find(([, tok]) => tok === t); if (lb) { S.level[lb[0]] = '60'; continue; }
-  if (REGIONS.some(([k]) => k === t && k !== 'all')) { S.region = t; continue; }
-  const ru = RULES.find((r) => r[2] === t && r[0]); if (ru) { S.rules = ru[0]; continue; }
+  if (REGIONS.some(([k]) => k === t && k !== 'all')) { if (!S.regions.includes(t)) S.regions.push(t); continue; }
+  const ru = RULES.find((r) => r[2] === t && r[0]); if (ru) { if (!S.rules.includes(ru[0])) S.rules.push(ru[0]); continue; }
   if (t === 'alliance' || t === 'horde') S.faction = t[0].toUpperCase() + t.slice(1);
 }
 const link = () => {
   const parts = [];
-  if (S.region !== 'all') parts.push(S.region);
-  if (S.rules) parts.push(RULES.find((r) => r[0] === S.rules)[2]);
+  parts.push(...REGIONS.map(([k]) => k).filter((k) => S.regions.includes(k)));
+  parts.push(...RULES.filter((r) => S.rules.includes(r[0])).map((r) => r[2]));
   if (S.faction) parts.push(S.faction.toLowerCase());
   if (Object.values(S.level).every((v) => v === '60')) parts.push('60');
   else for (const [b, tok] of LV_TOKENS) if (S.level[b] === '60') parts.push(tok);
@@ -416,9 +418,19 @@ const hide = (box) => {
 addEventListener('popstate', () => { const box = open.pop(); if (box) { S[box] = -1; draw(); } });
 
 const has = (region, rules) => !!C.counts[rules ? region + '|' + rules : region];
+// Several regions can be picked at once: their counts add up. None, or all four, is every region (census.json's "all").
+const REG_ALL = REGIONS.length - 1;
+const regs = () => (S.regions.length && S.regions.length < REG_ALL ? S.regions : ['all']);
+// Rulesets too: none, or all four, is every realm (the region's own total; its rulesets' counts add up to a few more in NA).
+const RUL_ALL = RULES.length - 1;
+const rulesOn = () => (S.rules.length && S.rules.length < RUL_ALL ? S.rules : ['']);
+// the census.json keys to add up: each picked region with each picked ruleset it has (Korea and Taiwan have no Roleplay realms)
+const keys = () => regs().flatMap((r) => rulesOn().map((u) => (u ? r + '|' + u : r))).filter((k) => C.counts[k]);
+const hasAny = (rules) => regs().some((r) => has(r, rules));   // a ruleset greyed out when no picked region has it
+const addUp = (a, b) => (Array.isArray(a) ? a.map((x, i) => addUp(x, b[i])) : a + b);   // numbers, or arrays of them at any depth
 const raceOn = (i) => !S.faction || FACTION(i) === S.faction;
 // the counts in view, [class][race], with the other faction's races zeroed
-const counts = (lv) => (lv === '60' ? C.counts60 : C.counts)[S.rules ? S.region + '|' + S.rules : S.region];   // all levels (10-60) or level 60 only
+const counts = (lv) => keys().map((k) => (lv === '60' ? C.counts60 : C.counts)[k]).reduce(addUp);   // all levels (10-60) or level 60 only
 const grid = (lv) => counts(lv).map((row) => row.map((n, i) => raceOn(i) ? n : 0));
 // which race / class combinations exist at all (any count anywhere)
 const EXISTS = CLASSES.map((_, j) => RACES.map((_, i) => C.counts.all[j][i] > 0));
@@ -478,7 +490,12 @@ function rank(el, items, sum) {
 // region, ruleset, levels and faction picked. Shown only for a move of 0.2 points or more, and never when either copy
 // has under 1,000 characters (a small sample's shares jump around).
 const MV_MIN = 0.2, MV_N = 1000;
-const lastWeek = (lv) => (C.prev[lv] || {})[S.rules ? S.region + '|' + S.rules : S.region];
+const lastWeek = (lv) => {
+  const ps = keys().map((k) => (C.prev[lv] || {})[k]);
+  if (ps.some((p) => !p)) return undefined;
+  // several regions: their copies added up, dated by the oldest
+  return ps.reduce((a, b) => { const o = { date: a.date < b.date ? a.date : b.date }; for (const f in a) if (f !== 'date') o[f] = addUp(a[f], b[f]); return o; });
+};
 const day = (s) => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };   // a date as a number, for spans in days
 const dateTxt = (s) => { const t = new Date(day(s)); return `${MONTHS[t.getUTCMonth()]} ${t.getUTCDate()}`; };
 const agoTxt = (s) => { const n = Math.round((day(C.date) - day(s)) / 864e5); return `${dateTxt(s)} (${n} day${n === 1 ? '' : 's'} ago)`; };
@@ -526,16 +543,17 @@ document.addEventListener('keydown', (e) => {
 const fitSegs = () => document.querySelectorAll('.cz-segl span').forEach((el) => { el.classList.remove('cut'); el.classList.toggle('cut', el.scrollWidth > el.clientWidth); });
 addEventListener('resize', fitSegs);
 function draw() {
-  if (!has(S.region, S.rules)) S.rules = '';
+  S.rules = S.rules.filter(hasAny);
   if (S.race >= 0 && !raceOn(S.race)) { S.race = -1; const k = open.indexOf('race'); if (k >= 0) open.splice(k, 1); }
   if (S.colRace >= 0 && !raceOn(S.colRace)) S.colRace = -1;
   history.replaceState(history.state, '', link());
   // the Methods and Caveats note on levels, for the region and ruleset picked (both factions)
-  const [lt, l60, lmed] = C.levels[S.rules ? S.region + '|' + S.rules : S.region];
-  $('czLevels').textContent = `${(l60 / lt * 100).toFixed(1)}% of all characters are currently level 60, and the median level is ${lmed}.`;
-  document.querySelectorAll('#czRegion button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.region));
+  // (the median level of several regions isn't in the data, so it's left out then)
+  const lv = keys().map((k) => C.levels[k]), lt = lv.reduce((a, v) => a + v[0], 0), l60 = lv.reduce((a, v) => a + v[1], 0);
+  $('czLevels').textContent = `${(l60 / lt * 100).toFixed(1)}% of all characters are currently level 60` + (lv.length === 1 ? `, and the median level is ${lv[0][2]}.` : '.');
+  document.querySelectorAll('#czRegion button').forEach((b) => b.setAttribute('aria-pressed', S.regions.includes(b.dataset.v)));
   // the ruleset icons (the realm list's own: Normal, PvP, Roleplay, Roleplay PvP), as the flags; greyed where the region has none
-  document.querySelectorAll('#czRules button').forEach((b) => { b.setAttribute('aria-pressed', b.dataset.v === S.rules); b.disabled = !has(S.region, b.dataset.v); });
+  document.querySelectorAll('#czRules button').forEach((b) => { b.setAttribute('aria-pressed', S.rules.includes(b.dataset.v)); b.disabled = !hasAny(b.dataset.v); });
   segs($('czMetric'), METRICS, S.metric, (v) => { S.metric = v; draw(); });
   document.querySelectorAll('.cz-lvl').forEach((el) => segs(el, [['all', 'All'], ['60', '60 Only']], S.level[el.dataset.box], (v) => { S.level[el.dataset.box] = v; draw(); }));
   document.querySelectorAll('#czFaction button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === S.faction));
@@ -546,7 +564,7 @@ function draw() {
     return { g, raceTot, classTot, total: raceTot.reduce((a, b) => a + b, 0) };
   };
   // the region, ruleset and faction picked, in the order they're picked in game
-  const sel = [S.region !== 'all' && { us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' }[S.region], S.rules && RULES.find((r) => r[0] === S.rules)[1], S.faction].filter(Boolean);
+  const sel = [regs()[0] !== 'all' && regs().map((r) => ({ us: 'NA', eu: 'EU', kr: 'KR', tw: 'TW' })[r]).join('+'), rulesOn()[0] && RULES.filter((r) => S.rules.includes(r[0])).map((r) => r[1]).join('+'), S.faction].filter(Boolean);
   // what follows a box's title: the picks, then the count: "(NA-PvP-Alliance) 473,962" (the box's level shows on its own
   // All / 60 Only switch), and "small sample" when under 1,000, where shares jump around
   const count = (n) => {
@@ -653,8 +671,9 @@ const sum = (a) => a.reduce((x, y) => x + y, 0);
 // Troll, Horde Skyborne): ten hues far enough apart to tell the lines apart on the dark box
 const RACE_COLOR = ['#4f8ff7', '#ff8c1a', '#b07cf0', '#f07cc0', '#4fd8e8', '#62cc4e', '#aab4c0', '#b5835a', '#e8dc4a', '#f0504a'];
 function series() {
-  const key = S.rules ? S.region + '|' + S.rules : S.region, f = S.faction, share = S.gmeasure === 'pct';
-  const pts = (POINTS || []).map((p) => ({ ...p, v: (p.data[S.level.graph] || {})[key] })).filter((p) => p.v);
+  const ks = keys(), f = S.faction, share = S.gmeasure === 'pct';
+  // a point counts only when every picked region has it; several regions' points are added up
+  const pts = (POINTS || []).map((p) => { const d = p.data[S.level.graph] || {}, vs = ks.map((k) => d[k]); return { ...p, v: vs.every(Boolean) ? vs.reduce(addUp) : null }; }).filter((p) => p.v);
   const line = (name, color, val) => ({ name, color, vals: pts.map((p) => val(p.v)) });
   let out;
   if (S.gview === 'fac') {
@@ -890,8 +909,8 @@ $('czNotesCard').querySelector('.cz-fold').onclick = (e) => {
 document.addEventListener('click', (e) => {
   // the crests, the flags and the ruleset icons: pick one to show only it, pick it again for all
   const f = e.target.closest('#czFaction button'); if (f) { S.faction = S.faction === f.dataset.v ? '' : f.dataset.v; draw(); return; }
-  const r = e.target.closest('#czRegion button'); if (r) { S.region = S.region === r.dataset.v ? 'all' : r.dataset.v; draw(); return; }
-  const u = e.target.closest('#czRules button'); if (u && !u.disabled) { S.rules = S.rules === u.dataset.v ? '' : u.dataset.v; draw(); }
+  const r = e.target.closest('#czRegion button'); if (r) { const v = r.dataset.v, k = S.regions.indexOf(v); if (k >= 0) S.regions.splice(k, 1); else S.regions.push(v); S.regions.sort((a, b) => REGIONS.findIndex(([x]) => x === a) - REGIONS.findIndex(([x]) => x === b)); draw(); return; }
+  const u = e.target.closest('#czRules button'); if (u && !u.disabled) { const v = u.dataset.v, k = S.rules.indexOf(v); if (k >= 0) S.rules.splice(k, 1); else S.rules.push(v); S.rules.sort((a, b) => RULES.findIndex((r) => r[0] === a) - RULES.findIndex((r) => r[0] === b)); draw(); }
 });
 draw();
 })();
