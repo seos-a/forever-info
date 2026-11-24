@@ -704,7 +704,7 @@ function drawSpecCompare(p, items, up, unit, onPick) {
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
-  const bh = 22, gap = 4, iz = 20, W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
+  const bh = 20, gap = 4, iz = 20, W = Math.max(280, box.clientWidth), H = items.length * (bh + gap) + 22;
   const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
   const probe = svg.append('text').attr('class', 'lab');
   const textW = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };

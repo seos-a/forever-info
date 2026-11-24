@@ -29,7 +29,7 @@
 
   .cz-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: 6px; overflow: hidden; }
   /* small, about as tall as the box titles beside them */
-  .cz-seg button { font: inherit; font-size: 12px; line-height: 17px; padding: 1px 8px; background: var(--color-bg); color: var(--color-fg);
+  .cz-seg button { font: inherit; font-size: 11px; line-height: 16px; padding: 1px 8px; background: var(--color-bg); color: var(--color-fg);
     border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
   .cz-seg button:last-child { border-right: 0; }
   .cz-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
@@ -45,7 +45,7 @@
   @media (max-width: 600px) { .cz-card { padding: 10px; } }
 
   /* an open breakdown's breadcrumb: "Classes › Paladin", the first part going back to the whole list */
-  .cz-crumbs { display: flex; flex-wrap: wrap; column-gap: .35em; align-items: center; font-size: 16px; font-weight: var(--cds-font-weight-medium); line-height: 24px; }   /* every part on one centre line, the All / 60 Only switch's */
+  .cz-crumbs { display: flex; flex-wrap: wrap; column-gap: .35em; align-items: center; font-size: 15px; font-weight: var(--cds-font-weight-medium); line-height: 24px; }   /* every part on one centre line, the All / 60 Only switch's */
   .cz-crumb { font: inherit; border: 0; background: none; padding: 0; color: var(--color-fg-muted); cursor: pointer; }
   .cz-root { color: var(--color-fg); }
   .cz-count { color: var(--color-fg-muted); font-weight: 400; margin-left: .35em; white-space: pre; }   /* "(NA-PvP-Alliance) 473,962" after the title */
@@ -74,25 +74,25 @@
   /* the ranking charts: the name column (icon and name), then the bar column with its gridlines and axis; each bar is
      followed by its share in bold, the character count, and (the classes) the most played race. The longest bar leaves
      --lab of room for that label. */
-  .cz-rank { --name: 11rem; --lab: 8rem; position: relative; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+  .cz-rank { --name: 11rem; --lab: 8rem; position: relative; display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
   .cz-rank.cz-hastop { --lab: 17rem; }   /* the classes' bars also carry the most played race */
   .cz-grid { position: absolute; top: 0; bottom: 0; left: var(--name); right: 0; pointer-events: none; }
   .cz-grid i { position: absolute; top: 0; bottom: 20px; width: 1px; background: var(--cds-chart-grid); }
   .cz-grid span { position: absolute; bottom: 0; transform: translateX(-50%); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; line-height: 14px; }
-  .cz-row { font: inherit; position: relative; display: grid; grid-template-columns: var(--name) minmax(0, 1fr); align-items: center; height: 26px; padding: 0; border: 0;
+  .cz-row { font: inherit; position: relative; display: grid; grid-template-columns: var(--name) minmax(0, 1fr); align-items: center; height: 24px; padding: 0; border: 0;
     background: none; color: var(--color-fg); text-align: left; white-space: nowrap; }
   button.cz-row { cursor: pointer; }
   button.cz-row:hover .bar > i { filter: brightness(1.12); }
   button.cz-row:hover .nm b { text-decoration: underline; text-underline-offset: 2px; }
   .cz-row .nm { display: flex; align-items: center; gap: 8px; min-width: 0; padding-right: 10px; }
-  .cz-row .nm img { width: 22px; height: 22px; border-radius: 3px; flex: none; }
+  .cz-row .nm img { width: 20px; height: 20px; border-radius: 3px; flex: none; }
   .cz-row .nm b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
   .cz-row .bar { display: flex; align-items: center; gap: 7px; height: 100%; min-width: 0; }
   .cz-row .bar > i { flex: none; height: 100%; border-radius: 3px; min-width: 2px; }
   .cz-row .p { font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
   .cz-row .c { color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
   .cz-row .top { display: inline-flex; align-items: center; gap: 6px; color: var(--color-fg-muted); }
-  .cz-row .top img { width: 22px; height: 22px; border-radius: 4px; }
+  .cz-row .top img { width: 20px; height: 20px; border-radius: 4px; }
   .cz-row.dim { opacity: .45; }
   /* rising / falling over the past week (or a little more): a green or red triangle and the change in points, after the share */
   .cz-rank.cz-hasmv { --mvw: 3.2rem; }   /* room for it, only when some bar has one */
@@ -118,11 +118,11 @@
   .cz-balbar i { height: 100%; transition: width .25s; }
   .cz-balbar i.seg { box-shadow: inset -1px 0 #0009; }   /* one class's share of the picked faction */
   /* each class's share under its slice, white as the bars' own shares; hidden (fitSegs) where the slice is too narrow for it */
-  .cz-segl { grid-column: 2; display: flex; margin-top: -12px; color: #fff; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }   /* as the class bars' own shares (.cz-row .p) */
+  .cz-segl { grid-column: 2; display: flex; margin-top: -12px; color: #fff; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }   /* as the class bars' own shares (.cz-row .p) */
   .cz-segl span { flex: none; text-align: center; overflow: hidden; white-space: nowrap; padding: 0 2px; box-sizing: border-box; }
   .cz-segl span.cut { visibility: hidden; }
   .cz-balbar b { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #000c; transition: left .25s; }
-  .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: calc(13px * var(--mz, 1)); margin-top: -8px; font-variant-numeric: tabular-nums; }
+  .cz-ballab { grid-column: 2; display: flex; justify-content: space-between; font-size: calc(12px * var(--mz, 1)); margin-top: -8px; font-variant-numeric: tabular-nums; }
   .cz-ballab b { font-weight: var(--cds-font-weight-medium); }   /* as the table's class names, which they match in size */
   .cz-ballab span { display: flex; gap: .45em; align-items: baseline; color: #fff; }   /* the faction's name in its colour, its share and count in white */
   .cz-ballab em { font-style: normal; }
@@ -146,7 +146,7 @@
   /* the race x class table: the Sims page's .lx-matrix. Its text and cells grow to fill the box (--mz, up to 1.15 times,
      as matrix_fit.js) */
   .cz-scroll { overflow: auto; max-width: 100%; }
-  .cz table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: calc(13px * var(--mz, 1)); font-variant-numeric: tabular-nums; }
+  .cz table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: calc(12px * var(--mz, 1)); font-variant-numeric: tabular-nums; }
   .cz th { position: sticky; top: 0; background: var(--color-panel); text-align: center; font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; z-index: 1; }
   .cz th.t { text-align: left; left: 0; z-index: 3; }   /* the Race heading stays put over the race column */
   .cz th button { font: inherit; color: var(--color-fg-muted); background: none; border: 0; padding: calc(var(--cds-pad-xs) * var(--mz, 1)) calc(var(--cds-pad-sm) * var(--mz, 1)); cursor: pointer; width: 100%; text-align: inherit; white-space: nowrap; }
@@ -202,7 +202,7 @@
   @media (max-width: 600px) { .cz-graph { height: 220px; } }
 
   /* the Methods and Caveats box: the Sims page's notes card, its arrow folding it down to its title */
-  .cz h2 { font-size: 16px; font-weight: var(--cds-font-weight-medium); margin: 0; line-height: 24px; }   /* the size of the other boxes' titles */
+  .cz h2 { font-size: 15px; font-weight: var(--cds-font-weight-medium); margin: 0; line-height: 24px; }   /* the size of the other boxes' titles */
   .cz-card.collapsed { padding-top: 10px; padding-bottom: 10px; }   /* folded down to its title: a shorter box */
   .cz-title { display: flex; align-items: center; gap: var(--cds-gap-xs); }
   .cz-fold { flex: none; width: 1.5rem; height: 1.5rem; display: inline-grid; place-items: center; padding: 0; border: 0; border-radius: var(--cds-radius); background: none; color: var(--color-fg-muted); cursor: pointer; }
