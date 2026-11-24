@@ -185,8 +185,6 @@
   .cz-list td.nm img + img { margin-right: .55em; }
   .cz-list td.rk { color: var(--color-fg-muted); width: 1%; }
   .cz-list th.rk { left: auto; }
-  .cz-list td.hi { color: #4ec46a; }
-  .cz-list td.lo { color: #f0605a; }
   .cz-list td.zero { color: var(--color-fg-muted); }
   .cz-list tr.dim td:not(.nm) { opacity: .45; }
 
@@ -291,7 +289,6 @@
     <div class="cz-cardhead"><div class="cz-title"><button type="button" class="cz-fold" aria-expanded="false" aria-label="Expand Every Race and Class"></button><h2>Every Race and Class</h2><span id="czListCount"></span></div>
       <div class="cz-ltools"><input id="czListQ" type="search" placeholder="Search race or class" aria-label="Search race or class"><div class="cz-seg cz-lvl" data-box="list" role="group" aria-label="Levels"></div></div></div>
     <div class="cz-scroll tall"><table class="cz-list" id="czList"><thead></thead><tbody></tbody></table></div>
-    <p class="cz-note" id="czListNote"></p>
   </section>
 
   <section class="cz-card collapsed" id="czNotesCard">
@@ -866,22 +863,18 @@ new ResizeObserver(fit).observe(wrap);
 
 // Every Race and Class: one row per race and class that exists, for the region, ruleset and faction picked, at the box's
 // own levels. Ranked by characters (the rank stays when the rows are searched or sorted by another column). Columns:
-// characters, share of everyone, of the class, of the race, how many of them are level 60 (at All levels only), and
-// vs. expected: the race's share of the class ÷ its share of the races that can be that class (1.00× is as expected;
-// against every race instead, nearly every pair came out above 1, as most races can't be most classes). A column's header sorts by it, again to flip, a third time back to rank.
-const LCOLS = [['rk', '#'], ['name', 'Race and Class'], ['n', 'Characters'], ['all', '% of all'], ['cls', '% of class'], ['race', '% of race'], ['l60', 'Level 60'], ['exp', 'Vs. expected']];
+// characters, share of everyone, of the class, of the race, and how many of them are level 60 (at All levels only).
+// A column's header sorts by it, again to flip, a third time back to rank.
+const LCOLS = [['rk', '#'], ['name', 'Race and Class'], ['n', 'Characters'], ['all', '% of all'], ['cls', '% of class'], ['race', '% of race'], ['l60', 'Level 60']];
 function list(g, raceTot, classTot, total) {
   const all = grid('all'), at60 = grid('60'), showL60 = S.level.list !== '60';
   const rows = [];
-  CLASSES.forEach((c, j) => {
-    const can = RACES.reduce((a, _, k) => a + (EXISTS[j][k] && raceOn(k) ? raceTot[k] : 0), 0);   // characters of the races that can be this class
-    RACES.forEach((r, i) => {
-      if (!EXISTS[j][i] || !raceOn(i)) return;
-      const n = g[j][i];
-      rows.push({ i, j, n, name: `${r} ${c}`, all: pct(n, total), cls: pct(n, classTot[j]), race: pct(n, raceTot[i]),
-        l60: all[j][i] ? pct(at60[j][i], all[j][i]) : -1, exp: n && classTot[j] && can ? (n / classTot[j]) / (raceTot[i] / can) : -1 });
-    });
-  });
+  CLASSES.forEach((c, j) => RACES.forEach((r, i) => {
+    if (!EXISTS[j][i] || !raceOn(i)) return;
+    const n = g[j][i];
+    rows.push({ i, j, n, name: `${r} ${c}`, all: pct(n, total), cls: pct(n, classTot[j]), race: pct(n, raceTot[i]),
+      l60: all[j][i] ? pct(at60[j][i], all[j][i]) : -1 });
+  }));
   rows.sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
   rows.forEach((d, k) => { d.rk = k + 1; });
   const words = S.lq.toLowerCase().split(/\s+/).filter(Boolean);
@@ -896,12 +889,11 @@ function list(g, raceTot, classTot, total) {
   $('czList').tHead.innerHTML = '<tr>' + cols.map(([c, t]) => `<th class="${c === 'name' ? 't' : c === 'rk' ? 'rk' : ''}"${sortAttr(c)}><button type="button" data-sort="${c}">${t}</button></th>`).join('') + '</tr>';
   const p = (v) => (v < 0 ? '–' : pctTxt(v));
   $('czList').tBodies[0].innerHTML = shown.length ? shown.map((d) => {
-    const ex = d.exp < 0 ? '<td class="zero">–</td>' : `<td class="${d.exp >= 1.2 ? 'hi' : d.exp <= 1 / 1.2 ? 'lo' : ''}">${d.exp.toFixed(2)}×</td>`;
     return `<tr${d.n ? '' : ' class="dim"'}><td class="rk">${d.rk}</td>`
       + `<td class="nm">${raceImg(d.i)}${classImg(d.j)}<span style="color:${FAC_TEXT[FACTION(d.i)]}">${RACES[d.i]}</span> <span style="color:${soft(CLASS_COLOR[CLASSES[d.j]])}">${CLASSES[d.j]}</span></td>`
       + `<td${d.n ? '' : ' class="zero"'}>${fmt(d.n)}</td>`
       + `<td style="background:color-mix(in srgb, var(--accent) ${Math.round(4 + (maxAll ? d.all / maxAll : 0) * 36)}%, transparent)">${pctTxt(d.all)}</td>`
-      + `<td>${pctTxt(d.cls)}</td><td>${pctTxt(d.race)}</td>` + (showL60 ? `<td>${p(d.l60)}</td>` : '') + ex + '</tr>';
+      + `<td>${pctTxt(d.cls)}</td><td>${pctTxt(d.race)}</td>` + (showL60 ? `<td>${p(d.l60)}</td>` : '') + '</tr>';
   }).join('') : `<tr><td class="zero" colspan="${cols.length}" style="text-align:left">No race and class matches “${S.lq.replace(/[<>&"]/g, '')}”.</td></tr>`;
   $('czList').tHead.onclick = (e) => {
     const b = e.target.closest('[data-sort]'); if (!b) return;
@@ -912,8 +904,6 @@ function list(g, raceTot, classTot, total) {
     else { S.lsort = 'n'; S.ldir = 'desc'; }   // a third click: back to the ranking
     draw();
   };
-  $('czListNote').textContent = "Vs. expected: the race's share of the class against its share of all the races that can be that class (1.00× is as expected; green 1.20× and over, red under 0.83×)."
-    + ' Click a column to sort by it.';
 }
 $('czListQ').addEventListener('input', (e) => { S.lq = e.target.value.trim(); draw(); });
 
