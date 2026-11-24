@@ -111,13 +111,15 @@ file (~830 KB): do not hand-edit it. Make changes in `tc/` and rebuild.
     automatically. Refreshed daily (from Nov 23, 2026). `census_history.json` (written by `sync_census.py`, embedded in the page) keeps
     the counts over time: `days`, one entry per refresh date (all kept), and `weeks`, Raider.IO's weekly history (dated by the
     Sunday each week ends; Raider.IO labels a week by its Monday but stores the total at its end), each
-    `{date: {level: {key: [Alliance's classes, Horde's classes, races]}}}`; it feeds the arrows and the "Over Time" graph. The graph's
+    `{date: {level: {key: [Alliance's classes, Horde's classes, races]}}}`, plus `pairs`, each refresh's full race x class counts
+    for the last 14 days only (`PAIR_DAYS`; Raider.IO's weekly history has none), copied into `prev` as `pairs` for the Every Race and Class
+    list's 7-day change column (shown only when a refresh 6 to 8 days back has them); it feeds the arrows and the "Over Time" graph. The graph's
     points aren't in the page: `build.py` writes `web/census-history.json` (`census.history()`: every point of the last 90 days, one a
     week before that), published next to `census.html` and loaded once the page shows (Factions /
     Classes / Races, Characters / Share, its own All / 60 Only switch, `graph60` in a link; time ranges 7D / 1M / 3M / 1Y / All, each
     greyed out until the history is longer; zoom by scrolling over the graph (which never scrolls the page) or a pinch, then drag or use the scrollbar under it).
     Under the race x class table, "Every Race and Class" (folded at first, like the Sims page's "Sim Results by Build"): one row per
-    race and class, ranked by characters, searchable and sortable, with % of all / class / race and the share at level 60. Framed like the Sims page (`experiment.CSS`); `build.py` writes
+    race and class, ranked by characters, searchable and sortable, with % of all / class / race, the share at level 60 and the 7-day change in % of all. Framed like the Sims page (`experiment.CSS`); `build.py` writes
     `web/census.html`. Links pick filters: `/census?mage,eu,pvp,horde,60` (a class, a race slug such as `nightelf`, one or more regions (`us,eu`: their counts are added up),
     one or more rulesets (`pvp,rppvp`, the same), a faction, `60` for level 60 only in every box, or `classes60` / `races60` / `factions60` / `table60` / `list60` / `graph60` for one box: each box has its own All / 60 Only switch)
   - `bg.jpg`: page background, embedded as base64 (`bg.orig.jpg` and `bg_source.png` are originals)

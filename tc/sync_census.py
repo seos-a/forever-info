@@ -13,7 +13,8 @@ browser, as their own page does it. Nothing runs on a schedule.
 
 census.json gets each region|ruleset's race x class counts (`factionBalance`), `counts60` the same at level 60, `prev` the
 class and race counts 7 days before this refresh, for the page's rising / falling arrows (per level (all, 60) and key,
-{date, classes, races, alliance, horde}; the last two are the classes within each faction): from census_history.json's
+{date, classes, races, alliance, horde, pairs}; alliance and horde are the classes within each faction, pairs the race x
+class counts, for the Every Race and Class list's weekly change, when that day's are kept: see `pairs` below): from census_history.json's
 refresh of exactly 7 days earlier, else the nearest one 6 to 8 days earlier, else Raider.IO's latest weekly count at
 least 7 days old; `levels` from `classLevels` (per key
 [characters, at level 60, median level: the level by which half are counted]) and the snapshot's date (Raider.IO's
@@ -23,7 +24,9 @@ census_history.json keeps the counts over time, for those arrows and the page's 
 refresh date (a second refresh the same day replaces it; all kept: census.py thins what goes into the page), and `weeks`, Raider.IO's own weekly history (one count per week, taken as its week closes: Raider.IO dates a week
 by its Monday, stored here by its Sunday, the day it ends; the live current week is left out). Each is
 {date: {level: {key: [Alliance's classes (9), Horde's classes (9), races (10)]}}}, classes and races in census.json's
-order.
+order. `pairs` holds each refresh's full race x class counts ({date: {level: {key: [class][race]}}}), only for the last
+PAIR_DAYS days (all the weekly change needs; a year of them would be several MB). Raider.IO's weekly history has no
+race x class counts, so a pair's weekly change needs a refresh of 6 to 8 days earlier.
 """
 import json, os, sys
 from datetime import datetime, timedelta, timezone
@@ -62,6 +65,7 @@ def shape(stats, races, classes, check=True):
 
 
 HISTORY = 'census_history.json'
+PAIR_DAYS = 14   # how long each refresh's race x class counts are kept in census_history.json
 
 
 def weekly(weeks, key, ids, today):
@@ -83,17 +87,21 @@ def summary(grid):
     return [sum(r[:5]) for r in grid] + [sum(r[5:]) for r in grid] + [sum(r[i] for r in grid) for i in range(len(grid[0]))]
 
 
-def prev_entry(date, s):
-    """census.json's prev entry from a history summary"""
+def prev_entry(date, s, pairs=None):
+    """census.json's prev entry from a history summary (and that day's race x class counts, when kept)"""
     a, h = s[:9], s[9:18]
-    return {'date': date, 'classes': [x + y for x, y in zip(a, h)], 'races': s[18:], 'alliance': a, 'horde': h}
+    e = {'date': date, 'classes': [x + y for x, y in zip(a, h)], 'races': s[18:], 'alliance': a, 'horde': h}
+    if pairs:
+        e['pairs'] = pairs
+    return e
 
 
 def write_history(hist, path=HISTORY):
     """census_history.json: one line per date, level and key, so a refresh's diff is short"""
     J = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
     lines = ['{', f' "_about": {J(hist["_about"])},']
-    for part in ('weeks', 'days'):
+    parts = [p for p in ('weeks', 'days', 'pairs') if p in hist]
+    for part in parts:
         lines.append(f' {J(part)}: {{')
         dates = sorted(hist[part])
         for di, date in enumerate(dates):
@@ -105,7 +113,7 @@ def write_history(hist, path=HISTORY):
                 lines += [f'    {J(k)}: {J(v)}' + (',' if ki < len(items) - 1 else '') for ki, (k, v) in enumerate(items)]
                 lines.append('   }' + (',' if li < len(lvls) - 1 else ''))
             lines.append('  }' + (',' if di < len(dates) - 1 else ''))
-        lines.append(' }' + (',' if part == 'weeks' else ''))
+        lines.append(' }' + (',' if part != parts[-1] else ''))
     lines.append('}')
     open(path, 'w', encoding='utf-8', newline='\n').write('\n'.join(lines) + '\n')
 
@@ -187,6 +195,10 @@ def main():
     hist = json.load(open(HISTORY, encoding='utf-8')) if os.path.exists(HISTORY) else {'_about': '', 'weeks': {}, 'days': {}}
     hist['weeks'].update(weeks)
     hist['days'][today.isoformat()] = {'all': {k: summary(v) for k, v in counts.items()}, '60': {k: summary(v) for k, v in counts60.items()}}
+    pairs = hist.setdefault('pairs', {})
+    pairs[today.isoformat()] = {'all': counts, '60': counts60}
+    for date in [x for x in pairs if (today - datetime.strptime(x, '%Y-%m-%d').date()).days > PAIR_DAYS]:
+        del pairs[date]
     # the arrows' comparison: the refresh 7 days back, else 8, else 6, else Raider.IO's latest week ended 7+ days back
     prev, used = {'all': {}, '60': {}}, {}
     for lvl in prev:
@@ -195,7 +207,7 @@ def main():
                 date = (today - timedelta(days=back)).isoformat()
                 s = hist['days'].get(date, {}).get(lvl, {}).get(key)
                 if s:
-                    prev[lvl][key] = prev_entry(date, s)
+                    prev[lvl][key] = prev_entry(date, s, pairs.get(date, {}).get(lvl, {}).get(key))
                     break
             else:
                 ok = [w for w in sorted(hist['weeks']) if (today - datetime.strptime(w, '%Y-%m-%d').date()).days >= 7 and key in hist['weeks'][w][lvl]]
@@ -208,8 +220,9 @@ def main():
         print('--dry: census.json and census_history.json not written')
         return
     hist['_about'] = ("The Population Census page's counts over time, for its weekly arrows and its Over Time graph. days: one entry per refresh date (sync_census.py; all kept, census.py thins the page's copy); "
-                      "weeks: Raider.IO's weekly history, dated by the Sunday each week ends. Each: {{date: {{level (all, 60): {{key: [Alliance's classes, "
-                      "Horde's classes, races]}}}, in census.json's class and race order.")
+                      "weeks: Raider.IO's weekly history, dated by the Sunday each week ends. Each: {date: {level (all, 60): {key: [Alliance's classes, "
+                      "Horde's classes, races]}}}, in census.json's class and race order. pairs: each refresh's race x class counts {date: {level: {key: [class][race]}}}, the last "
+                      + str(PAIR_DAYS) + " days only, for the Every Race and Class list's weekly change.")
     write_history(hist)
     d.update(date=today.isoformat(), counts=counts, counts60=counts60, prev=prev, levels=levels)
     write(d)
