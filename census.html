@@ -124,7 +124,6 @@ document.head.appendChild(t);})();
   .cz-crumbsep { color: var(--color-fg-muted); margin: 0 .35em; font-weight: 400; font-size: 1.4em; line-height: 1; position: relative; top: -.06em; }
   /* the row's gap spaces its parts (gone where a phone wraps the count to a second line, so it starts flush) */
   .cz-crumbs > .cz-count, .cz-crumbs > .cz-crumbsep { margin-left: 0; margin-right: 0; }
-  .cz-crumbs img { width: .85em; height: .85em; border-radius: 3px; margin-right: .35em; flex: none; }   /* a little under the text's height */
   /* the picked class or race: a button opening a menu of the others (the Sims page's .rr-pick and .rr-menu) */
   .cz-pickwrap { position: relative; display: flex; }
   .cz-pick { font: inherit; display: inline-flex; align-items: center; padding: 0 .3em; margin: 0 -.3em; border: 0; border-radius: var(--cds-radius); background: none; cursor: pointer; }
@@ -513,7 +512,7 @@ function move(now, nowTot, was, wasTot, date) {
 const crumbs = (head, box, root, items, cur, count) => {
   const it = items.find((d) => d.idx === cur);
   head.innerHTML = `<div class="cz-crumbs"><button type="button" class="cz-crumb">${root}</button><span class="cz-crumbsep" aria-hidden="true">›</span>`
-    + `<span class="cz-pickwrap"><button type="button" class="cz-pick" aria-haspopup="menu" aria-expanded="false">${it.img}<span style="color:${it.color}">${it.name}</span></button></span>${count}</div>`;
+    + `<span class="cz-pickwrap"><button type="button" class="cz-pick" aria-haspopup="menu" aria-expanded="false"><span style="color:${it.color}">${it.name}</span></button></span>${count}</div>`;
   head.querySelector('.cz-crumb').onclick = () => hide(box);
   const pick = head.querySelector('.cz-pick'), wrap = pick.parentElement;
   pick.onclick = (e) => {
