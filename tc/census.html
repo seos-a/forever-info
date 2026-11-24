@@ -910,9 +910,7 @@ function list(g, raceTot, classTot, total) {
     else { S.lsort = 'n'; S.ldir = 'desc'; }   // a third click: back to the ranking
     draw();
   };
-  $('czListNote').textContent = 'Ranked by characters. % of class: how much of the class plays this race; % of race: how much of the race plays this class.'
-    + (showL60 ? ' Level 60: how many of these characters are level 60.' : '')
-    + " Vs. expected: the race's share of the class against its share of all the races that can be that class (1.00× is as expected; green 1.20× and over, red under 0.83×)."
+  $('czListNote').textContent = "Vs. expected: the race's share of the class against its share of all the races that can be that class (1.00× is as expected; green 1.20× and over, red under 0.83×)."
     + ' Click a column to sort by it.';
 }
 $('czListQ').addEventListener('input', (e) => { S.lq = e.target.value.trim(); draw(); });
