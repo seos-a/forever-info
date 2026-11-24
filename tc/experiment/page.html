@@ -2236,9 +2236,9 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
-  // Rows are 26 px bars with 4 px gaps (the Census page's rows), spread out to CMP_MIN_H when that is taller (the Tanks tab, whose three
+  // Rows are 22 px bars with 4 px gaps (the box as tall as it was with 20 px bars and 6 px gaps), spread out to CMP_MIN_H when that is taller (the Tanks tab, whose three
   // bars would otherwise be much shorter than a tank's ability breakdown, which is drawn at this box's height).
-  let bh = 26, gap = 4;
+  let bh = 22, gap = 4;
   const minH = Math.max(CMP_MIN_H(), cmpUserH);
   if (items.length * (bh + gap) + 22 < minH) { const slot = (minH - 22) / items.length; bh = Math.min(cmpUserH ? 64 : 40, slot * 0.7); gap = slot - bh; }
   // Icons grow with the bars (the Tanks tab's three bars are spread taller), as the healers' do, up to 30 px.
@@ -3778,9 +3778,9 @@ function drawSpecCompare(p, items, up, unit, onPick, note) {
   if (!items.length) return;
   items.sort((a, b) => (up ? b.top - a.top : a.top - b.top));
   const fmt = (v) => fx(v, unit === 'TMI' ? 2 : unit === 'HPS' ? 0 : 1);
-  // Rows are 26 px bars with 4 px gaps (the Census page's rows), spread out to CMP_MIN_H when that is taller (the Tanks tab, whose three
+  // Rows are 22 px bars with 4 px gaps (the box as tall as it was with 20 px bars and 6 px gaps), spread out to CMP_MIN_H when that is taller (the Tanks tab, whose three
   // bars would otherwise be much shorter than a tank's ability breakdown, which is drawn at this box's height).
-  let bh = 26, gap = 4;
+  let bh = 22, gap = 4;
   const minH = Math.max(CMP_MIN_H(), cmpUserH);
   if (items.length * (bh + gap) + 22 < minH) { const slot = (minH - 22) / items.length; bh = Math.min(cmpUserH ? 64 : 40, slot * 0.7); gap = slot - bh; }
   // Icons grow with the bars (the Tanks tab's three bars are spread taller), as the healers' do, up to 30 px.
