@@ -941,7 +941,7 @@ new ResizeObserver(fit).observe(wrap);
 // characters, share of everyone, of the class, of the race, and
 // the weekly change: % of all now against the copy 7 days back (6 to 8; census.json's prev.pairs, which only the site's
 // own daily copies have, not Raider.IO's weekly counts: no column without one), as the class and race bars' arrows but
-// to two decimals, since a pair's share is small. A column's header sorts by it, again to flip, a third time back to rank.
+// to two decimals, since a pair's share is small. A column's header sorts by it; clicking it again flips it, every time.
 const LCOLS = [['rk', '#'], ['name', 'Race and Class'], ['n', 'Characters'], ['all', '% of all'], ['cls', '% of class'], ['race', '% of race'], ['mv', '7-day change']];
 function list(g, raceTot, classTot, total) {
   const P = lastWeek(S.level.list), was = P && P.pairs && P.pairs.map((row) => row.map((n, i) => raceOn(i) ? n : 0));
@@ -979,8 +979,7 @@ function list(g, raceTot, classTot, total) {
     let c = b.dataset.sort; if (c === 'rk') c = 'n';   // the rank is the characters' order
     const first = c === 'name' ? 'asc' : 'desc';
     if (S.lsort !== c) { S.lsort = c; S.ldir = first; }
-    else if (S.ldir === first) S.ldir = first === 'asc' ? 'desc' : 'asc';
-    else { S.lsort = 'n'; S.ldir = 'desc'; }   // a third click: back to the ranking
+    else S.ldir = S.ldir === 'asc' ? 'desc' : 'asc';   // the same column again flips it, every time (only another column changes the sort)
     draw();
   };
 }
