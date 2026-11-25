@@ -803,7 +803,7 @@ new ResizeObserver(() => graph()).observe($('czGraph'));
 
 // The race x class table, as the Sims page's "DPS by Race and Spec": each cell shaded by where it sits in its column
 // (palest to darkest blue), the column's biggest in bold with a gold mark. A class's header sorts the races by it
-// (again to flip, a third time for the usual order); a race orders the classes by its own numbers, biggest first.
+// (again to flip, every time; before any is clicked the races are in the usual order, most played first); a race orders the classes by its own numbers, biggest first.
 function table(g, raceTot, classTot, total) {
   const val = (j, i) => {
     const n = g[j][i];
@@ -840,8 +840,7 @@ function table(g, raceTot, classTot, total) {
     const b = e.target.closest('[data-sort]'); if (!b) return;
     const k = b.dataset.sort === 'race' || b.dataset.sort === 'all' ? b.dataset.sort : +b.dataset.sort;
     if (S.sort !== k) { S.sort = k; S.sortDir = k === 'race' ? 'asc' : 'desc'; }
-    else if (S.sortDir === (k === 'race' ? 'asc' : 'desc')) S.sortDir = k === 'race' ? 'desc' : 'asc';
-    else S.sort = null;   // a third click: back to the usual order (most played race first)
+    else S.sortDir = S.sortDir === 'asc' ? 'desc' : 'asc';   // the same column again flips it, every time (only another column changes the sort)
     draw();
   };
   const pick = (td) => { const i = +td.dataset.race; S.colRace = S.colRace === i ? -1 : i; draw(); };
