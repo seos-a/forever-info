@@ -867,13 +867,12 @@ new ResizeObserver(fit).observe(wrap);
 
 // Every Race and Class: one row per race and class that exists, for the region, ruleset and faction picked, at the box's
 // own levels. Ranked by characters (the rank stays when the rows are searched or sorted by another column). Columns:
-// characters, share of everyone, of the class, of the race, how many of them are level 60 (at All levels only), and
+// characters, share of everyone, of the class, of the race, and
 // the weekly change: % of all now against the copy 7 days back (6 to 8; census.json's prev.pairs, which only the site's
 // own daily copies have, not Raider.IO's weekly counts: no column without one), as the class and race bars' arrows but
 // to two decimals, since a pair's share is small. A column's header sorts by it, again to flip, a third time back to rank.
-const LCOLS = [['rk', '#'], ['name', 'Race and Class'], ['n', 'Characters'], ['all', '% of all'], ['cls', '% of class'], ['race', '% of race'], ['l60', 'Level 60'], ['mv', '7-day change']];
+const LCOLS = [['rk', '#'], ['name', 'Race and Class'], ['n', 'Characters'], ['all', '% of all'], ['cls', '% of class'], ['race', '% of race'], ['mv', '7-day change']];
 function list(g, raceTot, classTot, total) {
-  const all = grid('all'), at60 = grid('60'), showL60 = S.level.list !== '60';
   const P = lastWeek(S.level.list), was = P && P.pairs && P.pairs.map((row) => row.map((n, i) => raceOn(i) ? n : 0));
   const wasTot = was ? was.reduce((a, row) => a + row.reduce((x, y) => x + y, 0), 0) : 0, showMv = !!was && total >= MV_N && wasTot >= MV_N;
   const rows = [];
@@ -881,7 +880,7 @@ function list(g, raceTot, classTot, total) {
     if (!EXISTS[j][i] || !raceOn(i)) return;
     const n = g[j][i];
     rows.push({ i, j, n, name: `${r} ${c}`, all: pct(n, total), cls: pct(n, classTot[j]), race: pct(n, raceTot[i]),
-      l60: all[j][i] ? pct(at60[j][i], all[j][i]) : -1, mv: showMv ? Math.round((pct(n, total) - pct(was[j][i], wasTot)) * 100) / 100 : 0 });
+      mv: showMv ? Math.round((pct(n, total) - pct(was[j][i], wasTot)) * 100) / 100 : 0 });
   }));
   rows.sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
   rows.forEach((d, k) => { d.rk = k + 1; });
@@ -892,17 +891,16 @@ function list(g, raceTot, classTot, total) {
   else if (k !== 'rk' && k !== 'n') shown.sort((a, b) => (a[k] - b[k]) * dir || a.rk - b.rk);
   else if (S.ldir === 'asc') shown.reverse();
   const maxAll = Math.max(0, ...rows.map((d) => d.all));
-  const cols = LCOLS.filter(([c]) => (c !== 'l60' || showL60) && (c !== 'mv' || showMv));
+  const cols = LCOLS.filter(([c]) => c !== 'mv' || showMv);
   if (showMv) tips.lmv = `<div class="h">7-day change</div>` + tipRows([['% of all since', agoTxt(P.date)]]);
   const sortAttr = (c) => S.lsort === c ? ` aria-sort="${S.ldir === 'asc' ? 'ascending' : 'descending'}"` : '';
   $('czList').tHead.innerHTML = '<tr>' + cols.map(([c, t]) => `<th class="${c === 'name' ? 't' : c === 'rk' ? 'rk' : ''}"${sortAttr(c)}${c === 'mv' ? ' data-tip="lmv"' : ''}><button type="button" data-sort="${c}">${t}</button></th>`).join('') + '</tr>';
-  const p = (v) => (v < 0 ? '–' : pctTxt(v));
   $('czList').tBodies[0].innerHTML = shown.length ? shown.map((d) => {
     return `<tr${d.n ? '' : ' class="dim"'}><td class="rk">${d.rk}</td>`
       + `<td class="nm">${raceImg(d.i)}${classImg(d.j)}<span style="color:${FAC_TEXT[FACTION(d.i)]}">${RACES[d.i]}</span> <span style="color:${soft(CLASS_COLOR[CLASSES[d.j]])}">${CLASSES[d.j]}</span></td>`
       + `<td${d.n ? '' : ' class="zero"'}>${fmt(d.n)}</td>`
       + `<td style="background:color-mix(in srgb, var(--accent) ${Math.round(4 + (maxAll ? d.all / maxAll : 0) * 36)}%, transparent)">${pctTxt(d.all)}</td>`
-      + `<td>${pctTxt(d.cls)}</td><td>${pctTxt(d.race)}</td>` + (showL60 ? `<td>${p(d.l60)}</td>` : '')
+      + `<td>${pctTxt(d.cls)}</td><td>${pctTxt(d.race)}</td>`
       + (showMv ? (d.mv ? `<td class="mv ${d.mv > 0 ? 'up' : 'down'}">${d.mv > 0 ? '▲' : '▼'}${Math.abs(d.mv).toFixed(2)}</td>` : '<td class="zero">0.00</td>') : '') + '</tr>';
   }).join('') : `<tr><td class="zero" colspan="${cols.length}" style="text-align:left">No race and class matches “${S.lq.replace(/[<>&"]/g, '')}”.</td></tr>`;
   $('czList').tHead.onclick = (e) => {
