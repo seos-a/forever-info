@@ -1927,9 +1927,12 @@ function gainOutliers(rows) {
 function drawGains(p, rows) {
   const box = $('.lx-gains');
   box.replaceChildren();
+  // Phones: no grid lines, a scale fitted to this view's races (not the one shared by every spec) and no Dwarf note.
+  // (The page's phone width, not the chart's: two charts side by side are as narrow on a desktop.)
+  const narrow = matchMedia('(max-width: 600px)').matches;
   const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight && (r.targets || 1) === p.targets).sort((a, b) => b.gain - a.gain);
   // Explain each race that lands below "no racials" in this view, and Dwarf's hit past the hit cap; hidden when neither applies.
-  const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote'), dwarf = tradeLine(p, plain, below.length ? 'lx-gnext' : null);
+  const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote'), dwarf = narrow ? null : tradeLine(p, plain, below.length ? 'lx-gnext' : null);
   note.hidden = !below.length && !dwarf;
   const parts = below.length ? [el('b', null, 'Below zero: '), ...[...new Set(below.map((r) => belowNote(p, r.race)))].map((t, i) => (i ? el('span', 'lx-gnext', t) : t))] : [];
   if (dwarf) parts.push(dwarf);
@@ -1953,7 +1956,7 @@ function drawGains(p, rows) {
   // shown, except a spec far out of line with the rest (Combat: Gnome +7.87% at 2 targets, no other spec past ~4%):
   // it gets a scale of its own rather than squeezing every other spec's bars.
   const own = gainOutliers(rows.filter((r) => r.scope === p.faction));
-  const all = rows.filter((r) => r.scope === p.faction && (own.has(p.spec) ? r.spec === p.spec : !own.has(r.spec))).concat(list).map((r) => r.gain);
+  const all = (narrow ? list : rows.filter((r) => r.scope === p.faction && (own.has(p.spec) ? r.spec === p.spec : !own.has(r.spec))).concat(list)).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
@@ -1973,11 +1976,11 @@ function drawGains(p, rows) {
   const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
   const render = (x) => {
     const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
-    grid.selectAll('line').data(whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
-    // A label at every whole percent only where they fit; on phones every 2nd, 5th or 10th (at least 28px apart),
-    // with the 0% line labelled too.
+    grid.selectAll('line').data(narrow ? [] : whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
+    // A label at every whole percent where they fit, else every 2nd, 5th or 10th (at least 28px apart), with the 0%
+    // line labelled too; phones always label 0% (they have no grid lines).
     const ppu = Math.abs(x(1) - x(0)), step = [1, 2, 5, 10, 20, 50].find((s) => s * ppu >= 28) || 100;
-    const labels = step > 1 ? d3.range(Math.ceil(d0 / step) * step, d1 + 1e-9, step) : whole;
+    const labels = step > 1 || narrow ? d3.range(Math.ceil(d0 / step) * step, d1 + 1e-9, step) : whole;
     grid.selectAll('text').data(labels).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
@@ -4966,10 +4969,13 @@ function drawGains(p, rows, keepNote) {
   gainArgs = [p, rows];
   const box = $('.lx-gains');
   box.replaceChildren();
+  // Phones: no grid lines, a scale fitted to this view's races (not the one shared by every spec) and no Dwarf note.
+  // (The page's phone width, not the chart's: two charts side by side are as narrow on a desktop.)
+  const narrow = matchMedia('(max-width: 600px)').matches;
   const plain = rows.filter((r) => r.scope === p.faction && r.spec === p.spec && r.fight === p.fight && (r.targets || 1) === p.targets).sort((a, b) => b.gain - a.gain);
   // Explain each race that lands below "no racials" in this view, and Dwarf's hit on Prot Warrior; hidden when neither applies.
   const below = plain.filter((r) => r.gain < 0), note = $('.lx-gainnote');
-  const dwarf = hasRegear(p) && plain.some((r) => r.race === 'Dwarf');
+  const dwarf = !narrow && hasRegear(p) && plain.some((r) => r.race === 'Dwarf');
   if (!dwarf) regearOn = regearLock = false;
   note.hidden = !below.length && !dwarf;
   if (!keepNote) {
@@ -4993,7 +4999,7 @@ function drawGains(p, rows, keepNote) {
   const vprobe = svg.append('text').text('+0.00%');
   const vw = vprobe.node().getComputedTextLength() + 8; vprobe.remove();
   // One scale for every spec, fight length and target count at this faction, so a 1% bar is the same width whichever is shown.
-  const all = rows.filter((r) => r.scope === p.faction).concat(list).map((r) => r.gain);
+  const all = (narrow ? list : rows.filter((r) => r.scope === p.faction).concat(list)).map((r) => r.gain);
   const lo = Math.min(0, ...all), hi = Math.max(0, ...all);
   const x0 = d3.scaleLinear([lo, hi], [ml + (lo < 0 ? vw : 0), W - vw]).nice();
   const yOf = (i) => i * (bh + gap) + 4;
@@ -5013,11 +5019,11 @@ function drawGains(p, rows, keepNote) {
   const zero = plot.append('line').attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--color-fg)').attr('stroke-opacity', 0.75).attr('stroke-width', 2);
   const render = (x) => {
     const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
-    grid.selectAll('line').data(whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
-    // A label at every whole percent only where they fit; on phones every 2nd, 5th or 10th (at least 28px apart),
-    // with the 0% line labelled too.
+    grid.selectAll('line').data(narrow ? [] : whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
+    // A label at every whole percent where they fit, else every 2nd, 5th or 10th (at least 28px apart), with the 0%
+    // line labelled too; phones always label 0% (they have no grid lines).
     const ppu = Math.abs(x(1) - x(0)), step = [1, 2, 5, 10, 20, 50].find((s) => s * ppu >= 28) || 100;
-    const labels = step > 1 ? d3.range(Math.ceil(d0 / step) * step, d1 + 1e-9, step) : whole;
+    const labels = step > 1 || narrow ? d3.range(Math.ceil(d0 / step) * step, d1 + 1e-9, step) : whole;
     grid.selectAll('text').data(labels).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
