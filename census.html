@@ -498,10 +498,15 @@ function rank(el, items, sum) {
   const shown = items.filter((d) => d.ok !== false).sort((a, b) => b.n - a.n);
   if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
   const maxPct = Math.max(...shown.map((d) => pct(d.n, sum)));
-  // the axis: a round step giving about four to six gridlines
+  // the axis: a round step giving about four to six gridlines, running to the first step past the longest bar so the
+  // gridlines always reach beyond the data
   const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
-  const ticks = []; for (let t = 0; t <= maxPct + 1e-9; t += step) ticks.push(t);
-  const x = (v) => `calc((100% - var(--lab) - var(--mvw, 0rem)) * ${(v / maxPct).toFixed(4)})`;
+  const axisMax = Math.min(100, Math.ceil(maxPct / step - 1e-9) * step) || step;
+  const ticks = []; for (let t = 0; t <= axisMax + 1e-9; t += step) ticks.push(t);
+  // the plot as wide as leaves the longest bar --lab of room for its label (as when the axis ended at that bar), short of
+  // the box's edge by room for the last tick's label
+  const plot = `min(100% - 1.2rem, (100% - var(--lab) - var(--mvw, 0rem)) * ${(axisMax / maxPct).toFixed(4)})`;
+  const x = (v) => `calc(${plot} * ${(v / axisMax).toFixed(4)})`;
   el.classList.toggle('cz-hastop', shown.some((d) => d.top));
   el.classList.toggle('cz-hasmv', shown.some((d) => d.mv));   // more room for the bar's label when it names the top pick (a class, not an inline
   // style, so the phone widths' smaller room still applies)
