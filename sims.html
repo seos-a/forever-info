@@ -1974,7 +1974,11 @@ function drawGains(p, rows) {
   const render = (x) => {
     const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
     grid.selectAll('line').data(whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
-    grid.selectAll('text').data(whole).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
+    // A label at every whole percent only where they fit; on phones every 2nd, 5th or 10th (at least 28px apart),
+    // with the 0% line labelled too.
+    const ppu = Math.abs(x(1) - x(0)), step = [1, 2, 5, 10, 20, 50].find((s) => s * ppu >= 28) || 100;
+    const labels = step > 1 ? d3.range(Math.ceil(d0 / step) * step, d1 + 1e-9, step) : whole;
+    grid.selectAll('text').data(labels).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
     hits.attr('x', (r) => Math.min(x(0), x(r.gain)) - 2).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))) + 4);
@@ -5010,7 +5014,11 @@ function drawGains(p, rows, keepNote) {
   const render = (x) => {
     const [d0, d1] = x.domain(), whole = d3.range(Math.ceil(d0), Math.floor(d1) + 1).filter((t) => t !== 0);
     grid.selectAll('line').data(whole).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 16).attr('stroke', 'var(--cds-chart-grid)');
-    grid.selectAll('text').data(whole).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
+    // A label at every whole percent only where they fit; on phones every 2nd, 5th or 10th (at least 28px apart),
+    // with the 0% line labelled too.
+    const ppu = Math.abs(x(1) - x(0)), step = [1, 2, 5, 10, 20, 50].find((s) => s * ppu >= 28) || 100;
+    const labels = step > 1 ? d3.range(Math.ceil(d0 / step) * step, d1 + 1e-9, step) : whole;
+    grid.selectAll('text').data(labels).join('text').attr('x', x).attr('y', H - 3).attr('text-anchor', 'middle').attr('fill', 'var(--color-fg-muted)').attr('font-size', 10).text((t) => sign(t, 0) + '%');
     bars.attr('x', (r) => Math.min(x(0), x(r.gain))).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))));
     vals.attr('x', (r) => (r.gain < 0 ? x(r.gain) - 4 : x(r.gain) + 4));
     hits.attr('x', (r) => Math.min(x(0), x(r.gain)) - 2).attr('width', (r) => Math.max(1, Math.abs(x(r.gain) - x(0))) + 4);
