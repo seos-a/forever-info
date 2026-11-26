@@ -755,12 +755,13 @@ img[src*="race_bloodelf_male_tbc"]{transform:scaleX(-1)}
 /* the logo has no BETA! sticker (art/banner_title_nobeta.png, 980 px of the old 1073 px banner): the same letter size and place */
 .site-banner .logo-m{width:calc(var(--bw) * 980 / 1073)}
 .site-banner .tagline{left:51.6%}
-@media (max-width:820px){.site-banner{transform:none!important}.site-banner .tagline{left:47.1%}}
+/* phones too: the letters (with their purple shadow) are centred at 51.6% of the image, so that point is the screen's centre */
+@media (max-width:820px){.site-banner{transform:translateX(-1.6%)!important}}
 .tagline{position:absolute;left:47.1%;top:81%;transform:translateX(-50%);white-space:nowrap;line-height:1.2;
   font-family:"TagCourier","Courier New",monospace;font-weight:700;font-size:calc(var(--bw) * .0264);color:#96ff3c;
   text-shadow:-2px -2px 0 #000,2px -2px 0 #000,-2px 2px 0 #000,2px 2px 0 #000,0 -2px 0 #000,0 2px 0 #000,-2px 0 0 #000,2px 0 0 #000,4px 4px 0 #6e148c,3px 3px 0 #6e148c}
 .tagline .tw{display:inline-block}
-@media (max-width:820px){.site-banner{--bw:min(560px,calc(100vw - 24px));position:relative;left:auto;transform:translateX(2.9%);margin:8px auto 0;width:max-content;max-width:100%}
+@media (max-width:820px){.site-banner{--bw:min(560px,calc(100vw - 24px));position:relative;left:auto;margin:8px auto 0;width:max-content;max-width:100%}
   .tagline{font-size:max(10.5px,calc(var(--bw) * .0264));text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 -1px 0 #000,0 1px 0 #000,-1px 0 0 #000,1px 0 0 #000,2px 2px 0 #6e148c}}
 /* Collapsible talent order */
 .ord-tog{width:100%;justify-content:center;cursor:pointer;font:inherit;font-family:var(--display);font-weight:700;letter-spacing:.04em;font-size:15px;color:var(--steel-text)}
