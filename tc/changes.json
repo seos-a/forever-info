@@ -1,6 +1,175 @@
 {
  "updates": [
   {
+   "date": "2026-11-26",
+   "version": "1.60.1",
+   "build": "71091",
+   "classes": {
+    "druid": [
+     [
+      "other",
+      "Starlight Wrath",
+      "spell_nature_abolishmagic",
+      "Balance talent · reworded",
+      "Renamed from Improved Wrath. Reduces the cast time of your Wrath {*and Starfire spells*} by 0.5 sec and {*the*} Mana cost {*of your Wrath spell*} by 50%.",
+      "Reduces the cast time of your Wrath {~spell~} by 0.5 sec and {~its~} Mana cost by 50%.",
+      [
+       [
+        5,
+        "Renamed from Improved Wrath. Reduces the cast time of your Wrath {*and Starfire spells*} by 0.5 sec and {*the*} Mana cost {*of your Wrath spell*} by 50%.",
+        "Reduces the cast time of your Wrath {~spell~} by 0.5 sec and {~its~} Mana cost by 50%."
+       ],
+       [
+        4,
+        "Renamed from Improved Wrath. Reduces the cast time of your Wrath {*and Starfire spells*} by 0.4 sec and {*the*} Mana cost {*of your Wrath spell*} by 40%.",
+        "Reduces the cast time of your Wrath {~spell~} by 0.4 sec and {~its~} Mana cost by 40%."
+       ],
+       [
+        3,
+        "Renamed from Improved Wrath. Reduces the cast time of your Wrath {*and Starfire spells*} by 0.3 sec and {*the*} Mana cost {*of your Wrath spell*} by 30%.",
+        "Reduces the cast time of your Wrath {~spell~} by 0.3 sec and {~its~} Mana cost by 30%."
+       ],
+       [
+        2,
+        "Renamed from Improved Wrath. Reduces the cast time of your Wrath {*and Starfire spells*} by 0.2 sec and {*the*} Mana cost {*of your Wrath spell*} by 20%.",
+        "Reduces the cast time of your Wrath {~spell~} by 0.2 sec and {~its~} Mana cost by 20%."
+       ],
+       [
+        1,
+        "Renamed from Improved Wrath. Reduces the cast time of your Wrath {*and Starfire spells*} by 0.1 sec and {*the*} Mana cost {*of your Wrath spell*} by 10%.",
+        "Reduces the cast time of your Wrath {~spell~} by 0.1 sec and {~its~} Mana cost by 10%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Moon and Stars",
+      "spell_nature_starfall",
+      "Balance talent · reworked",
+      "Renamed from Improved Moonfire. Increases the damage and critical strike chance of your Moonfire spell by 10% {*and gives your Starfire spell a 100% chance not to lose casting time from taking damage*}.",
+      "Increases the damage and critical strike chance of your Moonfire spell by 10%.",
+      [
+       [
+        2,
+        "Renamed from Improved Moonfire. Increases the damage and critical strike chance of your Moonfire spell by 10% {*and gives your Starfire spell a 100% chance not to lose casting time from taking damage*}.",
+        "Increases the damage and critical strike chance of your Moonfire spell by 10%."
+       ],
+       [
+        1,
+        "Renamed from Improved Moonfire. Increases the damage and critical strike chance of your Moonfire spell by 5% {*and gives your Starfire spell a 50% chance not to lose casting time from taking damage*}.",
+        "Increases the damage and critical strike chance of your Moonfire spell by 5%."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Improved Starfire",
+      "spell_arcane_starfire",
+      "Balance talent · reworked",
+      "{*Your*} Starfire {*spell*} has a 15% chance to stun its target for 3 sec. Now has 2 ranks (was 5).",
+      "{~Reduces the cast time of~} Starfire {~by 0.5 sec and Starfire~} has a 15% chance to stun its target for 3 sec."
+     ],
+     [
+      "other",
+      "Eclipse",
+      "ability_druid_eclipse",
+      "Balance talent · reworked",
+      "{*Increases the critical strike chance of your Wrath spell by 20%, and your*} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.50 sec. Stores up to 4 charges. Lasts 15 sec.",
+      "{~Your~} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.50 sec. Stores up to 4 charges. Lasts 15 sec.",
+      [
+       [
+        3,
+        "{*Increases the critical strike chance of your Wrath spell by 20%, and your*} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.50 sec. Stores up to 4 charges. Lasts 15 sec.",
+        "{~Your~} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.50 sec. Stores up to 4 charges. Lasts 15 sec."
+       ],
+       [
+        2,
+        "{*Increases the critical strike chance of your Wrath spell by 13%, and your*} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.33 sec. Stores up to 4 charges. Lasts 15 sec.",
+        "{~Your~} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.33 sec. Stores up to 4 charges. Lasts 15 sec."
+       ],
+       [
+        1,
+        "{*Increases the critical strike chance of your Wrath spell by 7%, and your*} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.17 sec. Stores up to 4 charges. Lasts 15 sec.",
+        "{~Your~} Wrath spell reduces the cast time of your next 2 Starfire spells by 0.17 sec. Stores up to 4 charges. Lasts 15 sec."
+       ]
+      ]
+     ],
+     [
+      "other",
+      "Dreamstate",
+      "ability_druid_dreamstate",
+      "Balance talent · new",
+      "New talent: When you cast Innervate on a target other than yourself, you gain 100% of the effect as well."
+     ],
+     [
+      "other",
+      "Moonkin Form",
+      "spell_nature_forceofnature",
+      "Balance talent · reworked",
+      "Shapeshift into Moonkin Form, increasing {*Arcane and Nature damage done by 10%,*} Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party or raid members within 45 yards have their Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "Shapeshift into Moonkin Form, increasing Omen of Clarity's chance to trigger by 100%, Armor contribution from items by 360%, and all party or raid members within 45 yards have their Critical Strike chance increased by 3%. Also protects the caster from Polymorph effects and prevents the use of healing spells.\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
+     ],
+     [
+      "other",
+      "Moonfury",
+      "spell_nature_moonglow",
+      "Balance talent · removed",
+      "Removed from the talent tree.",
+      "Increases the damage done by your Arcane and Nature spells by 10%."
+     ],
+     [
+      "other",
+      "Hurricane",
+      "spell_nature_cyclone",
+      "Spell · reworded",
+      "Creates a violent storm in the target area causing 134 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10. Druid must channel to maintain the spell.",
+      "Creates a violent storm in the target area causing 134 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10 {~sec~}. Druid must channel to maintain the spell.",
+      [
+       [
+        3,
+        "Creates a violent storm in the target area causing 134 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10. Druid must channel to maintain the spell.",
+        "Creates a violent storm in the target area causing 134 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10 {~sec~}. Druid must channel to maintain the spell."
+       ],
+       [
+        2,
+        "Creates a violent storm in the target area causing 99 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10. Druid must channel to maintain the spell.",
+        "Creates a violent storm in the target area causing 99 Nature damage to enemies every 1 sec, and increasing the time between attacks by 20%. Lasts 10 {~sec~}. Druid must channel to maintain the spell."
+       ],
+       [
+        1,
+        "Creates a violent storm in the target area causing 69 Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 20%. Lasts 10. Druid must channel to maintain the spell.",
+        "Creates a violent storm in the target area causing 69 Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 20%. Lasts 10 {~sec~}. Druid must channel to maintain the spell."
+       ]
+      ]
+     ]
+    ],
+    "paladin": [
+     [
+      "other",
+      "Oath of Light",
+      "spell_holy_greaterblessingoflight",
+      "Holy talent · reworked",
+      "Swear an Oath to protect target ally for {*1 hour*}, increasing the healing of your Holy Light on them by up to 0, your Flash of Light by up to 0, and your Holy Shock by up to 0. Only one Oath of Light may be sworn by the Paladin at any one time.",
+      "Swear an Oath to protect target ally for {~5 min~}, increasing the healing of your Holy Light on them by up to 0, your Flash of Light by up to 0, and your Holy Shock by up to 0. Only one Oath of Light may be sworn by the Paladin at any one time."
+     ]
+    ],
+    "warlock": [
+     [
+      "other",
+      "Intensity",
+      "spell_fire_lavaspawn",
+      "Destruction talent",
+      "Now also affects Incinerate.†",
+      ""
+     ]
+    ]
+   },
+   "client": [
+    "1.60.1.71037",
+    "1.60.1.71139"
+   ]
+  },
+  {
    "date": "2026-11-22",
    "version": "1.60.1",
    "build": "71037",
