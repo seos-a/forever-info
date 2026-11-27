@@ -702,6 +702,9 @@ document.head.appendChild(t);})();
   /* the race/spec tables keep their Race column in view when scrolled sideways */
   .rr .lx-matrix td:first-child, .hr .lx-matrix td:first-child { position: sticky; left: 0; z-index: 1; background: var(--color-panel); }
   .rr .lx-matrix th:first-child, .hr .lx-matrix th:first-child { left: 0; z-index: 2; }
+  /* touch screens draw the scrollbar over a table's last row, where the pinned first column (above the cells) hid it as it
+     slid past: a strip under the table for it to run in (as on the Census page) */
+  @media (hover: none), (max-width: 760px) { .rr-scroll, .hr-scroll, .tl-scroll, .tl-tablewrap { padding-bottom: 8px; } }
   /* the race/spec tables: each race's portrait with a faction-coloured border in place of the dot (scales with the table) */
   .lx-matrix td.lx-raceface::before { display: none; }
   .lx-matrix td.lx-raceface img { width: 1.5em; height: 1.5em; vertical-align: middle; margin: -.2em .5em -.2em 1px; }
