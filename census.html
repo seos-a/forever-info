@@ -493,11 +493,16 @@ document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
   tips[b.dataset.tip] = `<div class="h">${b.getAttribute('aria-label').replace(/ Ruleset$/, '')}</div>`;   // the server type alone: "Roleplay PvP"
 });
 
-// a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}
-function rank(el, items, sum) {
+// a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}.
+// share (optional, from scale()): one scale for two boxes, {maxPct, mv}, so their gridlines line up
+const scale = (...boxes) => {
+  const sh = boxes.map(([, items, sum]) => items.filter((d) => d.ok !== false));
+  return { maxPct: Math.max(0, ...boxes.map(([, , sum], k) => sum ? Math.max(0, ...sh[k].map((d) => pct(d.n, sum))) : 0)), mv: sh.some((it) => it.some((d) => d.mv)) };
+};
+function rank(el, items, sum, share) {
   const shown = items.filter((d) => d.ok !== false).sort((a, b) => b.n - a.n);
   if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
-  const maxPct = Math.max(...shown.map((d) => pct(d.n, sum)));
+  const maxPct = share && share.maxPct ? share.maxPct : Math.max(...shown.map((d) => pct(d.n, sum)));
   // the axis: a round step giving about four to six gridlines, running to the first step past the longest bar so the
   // gridlines always reach beyond the data
   const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
@@ -508,7 +513,7 @@ function rank(el, items, sum) {
   const plot = `min(100% - 1.2rem, (100% - var(--lab) - var(--mvw, 0rem)) * ${(axisMax / maxPct).toFixed(4)})`;
   const x = (v) => `calc(${plot} * ${(v / axisMax).toFixed(4)})`;
   el.classList.toggle('cz-hastop', shown.some((d) => d.top));
-  el.classList.toggle('cz-hasmv', shown.some((d) => d.mv));   // more room for the bar's label when it names the top pick (a class, not an inline
+  el.classList.toggle('cz-hasmv', share ? share.mv : shown.some((d) => d.mv));   // more room for the bar's label when it names the top pick (a class, not an inline
   // style, so the phone widths' smaller room still applies)
   el.innerHTML = '<div class="cz-grid">' + ticks.map((t) => `<i style="left:${x(t)}"></i><span style="left:${x(t)}">${t}%</span>`).join('') + '</div>'
     + shown.map((d) => {
@@ -608,26 +613,27 @@ function draw() {
     return `<span class="cz-count">${w ? `(${w}) ` : ''}${fmt(n)}${n && n < 1000 ? ' · <span class="cz-small">small sample</span>' : ''}</span>`;
   };
 
-  // the classes box: every class, or one class's races
+  // the classes box: every class, or one class's races (drawn once both boxes are worked out, see below)
+  let cBox, rBox;
   let { g, raceTot, classTot, total } = view(S.level.cls);
   if (S.cls < 0) {
     title($('czClassHead'), 'Classes', count(total, S.level.cls));
     const P = lastWeek(S.level.cls), pc = P && (S.faction ? P[S.faction.toLowerCase()] : P.classes), pcTot = pc ? pc.reduce((a, b) => a + b, 0) : 0;
-    rank($('czClass'), CLASSES.map((name, j) => {
+    cBox = [$('czClass'), CLASSES.map((name, j) => {
       const tr = argmax(g[j]), mv = move(classTot[j], total, pc ? pc[j] : 0, pcTot, pc && P.date);
       tips['c' + j] = `<div class="h" style="color:${CLASS_COLOR[name]}">${name}</div>` + tipRows([['Characters', fmt(classTot[j])], ['Share', pctTxt(pct(classTot[j], total))],
         ...(mv.row ? [mv.row] : []), ['Most played race', g[j][tr] ? `${RACES[tr]} (${pctTxt(pct(g[j][tr], classTot[j]))})` : '–']]);
       return { key: 'c' + j, name, color: CLASS_COLOR[name], nameColor: CLASS_COLOR[name], img: classImg(j), n: classTot[j], mv: mv.html,
         onClick: () => show('cls', j) };
-    }), total);
+    }), total];
   } else {
     const j = S.cls, name = CLASSES[j];
     crumbs($('czClassHead'), 'cls', 'Classes', CLASSES.map((c, k) => ({ idx: k, img: classImg(k), name: c, color: CLASS_COLOR[c] })), j, count(classTot[j], S.level.cls));
-    rank($('czClass'), RACES.map((rname, i) => {
+    cBox = [$('czClass'), RACES.map((rname, i) => {
       tips['cr' + i] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${rname}</span> <span style="color:${CLASS_COLOR[name]}">${name}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${name}s`, pctTxt(pct(g[j][i], classTot[j]))], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))]]);
       return { key: 'cr' + i, name: rname, ok: raceOn(i) && EXISTS[j][i], color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: g[j][i] };
-    }), classTot[j]);
+    }), classTot[j]];
   }
 
   // the races box: every race, or one race's classes
@@ -635,21 +641,26 @@ function draw() {
   if (S.race < 0) {
     title($('czRaceHead'), 'Races', count(total, S.level.race));
     const P = lastWeek(S.level.race), pr = P && P.races.map((n, i) => raceOn(i) ? n : 0), prTot = pr ? pr.reduce((a, b) => a + b, 0) : 0;   // a faction picked: its races' shares among themselves
-    rank($('czRace'), RACES.map((name, i) => {
+    rBox = [$('czRace'), RACES.map((name, i) => {
       const col = g.map((row) => row[i]), tc = argmax(col), mv = move(raceTot[i], total, pr ? pr[i] : 0, prTot, pr && P.date);
       tips['r' + i] = `<div class="h" style="color:${FAC_TEXT[FACTION(i)]}">${name}</div>` + tipRows([['Characters', fmt(raceTot[i])], ['Share', pctTxt(pct(raceTot[i], total))],
         ...(mv.row ? [mv.row] : []), ['Most played class', col[tc] ? `${CLASSES[tc]} (${pctTxt(pct(col[tc], raceTot[i]))})` : '–']]);
       return { key: 'r' + i, name, ok: raceOn(i), color: FAC_COLOR[FACTION(i)], img: raceImg(i), n: raceTot[i], mv: mv.html, onClick: () => show('race', i) };
-    }), total);
+    }), total];
   } else {
     const i = S.race, name = RACES[i];
     crumbs($('czRaceHead'), 'race', 'Races', RACES.map((r, k) => ({ idx: k, img: raceImg(k), name: r, color: FAC_TEXT[FACTION(k)] })).filter((d) => raceOn(d.idx)), i, count(raceTot[i], S.level.race));
-    rank($('czRace'), CLASSES.map((cname, j) => {
+    rBox = [$('czRace'), CLASSES.map((cname, j) => {
       tips['rc' + j] = `<div class="h"><span style="color:${FAC_TEXT[FACTION(i)]}">${name}</span> <span style="color:${CLASS_COLOR[cname]}">${cname}</span></div>`
         + tipRows([['Characters', fmt(g[j][i])], [`Of ${RACE_PL[i]}`, pctTxt(pct(g[j][i], raceTot[i]))], [`Of ${cname}s`, pctTxt(pct(g[j][i], classTot[j]))]]);
       return { key: 'rc' + j, name: cname, nameColor: CLASS_COLOR[cname], ok: EXISTS[j][i], color: CLASS_COLOR[cname], img: classImg(j), n: g[j][i] };
-    }), raceTot[i]);
+    }), raceTot[i]];
   }
+
+  // the two whole lists share one scale, so their gridlines line up; a class's races or a race's classes (shares within
+  // that class or race) keeps its own
+  const share = S.cls < 0 && S.race < 0 ? scale(cBox, rBox) : null;
+  rank(...cBox, share); rank(...rBox, share);
 
   // the faction balance at the box's levels (the region and ruleset apply): both factions, or once a faction is picked
   // (the split already seen), that faction's bar split by class, largest first
