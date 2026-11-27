@@ -424,18 +424,28 @@ document.querySelectorAll('.cz-top button[data-tip]').forEach((b) => {
 
 // a ranking chart: items {key, name, nameColor, color (bar), img, n, top (the label's most played race or class), onClick}.
 // share (optional, from scale()): one scale for two boxes, {maxPct, mv}, so their gridlines line up
+// the axis: a round step giving about four to six gridlines, running to the first step past the longest bar so the
+// gridlines always reach beyond the data
+const axis = (maxPct) => {
+  const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
+  return { step, max: Math.min(100, Math.ceil(maxPct / step - 1e-9) * step) || step };
+};
+// Two boxes share a scale only when their own axes already end on the same line (both to 20%, say): then the longer
+// bar sets the width for both and the gridlines line up. When they differ (a faction picked: a race can be 37% of
+// Horde, while no class passes 15%) each box keeps its own, so the shorter one's bars aren't squeezed.
 const scale = (...boxes) => {
-  const sh = boxes.map(([, items, sum]) => items.filter((d) => d.ok !== false));
-  return { maxPct: Math.max(0, ...boxes.map(([, , sum], k) => sum ? Math.max(0, ...sh[k].map((d) => pct(d.n, sum))) : 0)), mv: sh.some((it) => it.some((d) => d.mv)) };
+  const sh = boxes.map(([, items]) => items.filter((d) => d.ok !== false));
+  const tops = boxes.map(([, , sum], k) => sum ? Math.max(0, ...sh[k].map((d) => pct(d.n, sum))) : 0);
+  if (tops.some((t) => !t)) return null;
+  const ax = tops.map(axis);
+  if (ax.some((a) => a.max !== ax[0].max || a.step !== ax[0].step)) return null;
+  return { maxPct: Math.max(...tops), mv: sh.some((it) => it.some((d) => d.mv)) };
 };
 function rank(el, items, sum, share) {
   const shown = items.filter((d) => d.ok !== false).sort((a, b) => b.n - a.n);
   if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
   const maxPct = share && share.maxPct ? share.maxPct : Math.max(...shown.map((d) => pct(d.n, sum)));
-  // the axis: a round step giving about four to six gridlines, running to the first step past the longest bar so the
-  // gridlines always reach beyond the data
-  const step = [1, 2, 5, 10, 20, 25, 50].find((s) => maxPct / s <= 6) || 50;
-  const axisMax = Math.min(100, Math.ceil(maxPct / step - 1e-9) * step) || step;
+  const { step, max: axisMax } = axis(maxPct);
   const ticks = []; for (let t = 0; t <= axisMax + 1e-9; t += step) ticks.push(t);
   // the plot as wide as leaves the longest bar --lab of room for its label (as when the axis ended at that bar), short of
   // the box's edge by room for the last tick's label
@@ -586,8 +596,8 @@ function draw() {
     }), raceTot[i]];
   }
 
-  // the two whole lists share one scale, so their gridlines line up; a class's races or a race's classes (shares within
-  // that class or race) keeps its own
+  // the two whole lists share one scale when their axes match (see scale()); a class's races or a race's classes (shares
+  // within that class or race) keeps its own
   const share = S.cls < 0 && S.race < 0 ? scale(cBox, rBox) : null;
   rank(...cBox, share); rank(...rBox, share);
 
