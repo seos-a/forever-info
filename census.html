@@ -219,6 +219,9 @@ document.head.appendChild(t);})();
   /* the race x class table: the Sims page's .lx-matrix. Its text and cells grow to fill the box (--mz, up to 1.15 times,
      as matrix_fit.js) */
   .cz-scroll { overflow: auto; max-width: 100%; }
+  /* touch screens draw the scrollbar over the table's last row, where the pinned race column (above the cells) hid it as it
+     slid past: a strip under the table for it to run in */
+  @media (hover: none), (max-width: 760px) { .cz-scroll { padding-bottom: 8px; } }
   .cz table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: calc(12px * var(--mz, 1)); font-variant-numeric: tabular-nums; }
   .cz th { position: sticky; top: 0; background: var(--color-panel); text-align: center; font-weight: var(--cds-font-weight-medium); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; z-index: 1; }
   .cz th.t { text-align: left; left: 0; z-index: 3; }   /* the Race heading stays put over the race column */
