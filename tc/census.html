@@ -23,6 +23,8 @@
   .cz-fac button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 3px; }
   .cz-fac button:disabled { filter: grayscale(1) brightness(.45); cursor: default; }   /* a ruleset the region has no realms of (Korea, Taiwan: no RP) */
   /* each group (regions, factions, rulesets) in a small panel, styled as the page's cards */
+  /* phones: the filters wrap (regions and rulesets, then the factions below), each line centred */
+  @media (max-width: 760px) { .cz-top { justify-content: center; } }
   .cz-top > .cz-fac { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 6px; }
   @media (max-width: 600px) { .cz-fac button { width: 28px; height: 28px; } }
   /* the region buttons (first in the row) are the crests' buttons around each region's square flag (images/flags, drawn by art/flags.py) */
@@ -446,7 +448,9 @@ function rank(el, items, sum, share) {
   if (!shown.length || !sum) { el.innerHTML = '<p class="cz-empty">No characters for this pick.</p>'; el.onclick = null; return; }
   const maxPct = share && share.maxPct ? share.maxPct : Math.max(...shown.map((d) => pct(d.n, sum)));
   const { step, max: axisMax } = axis(maxPct);
-  const ticks = []; for (let t = 0; t <= axisMax + 1e-9; t += step) ticks.push(t);
+  // gridlines past the axis's end too, at the same spacing (up to 100%): fitTicks() keeps those whose label fits in the box,
+  // so the lines run across the whole chart rather than stopping at the step past the longest bar
+  const ticks = []; for (let t = 0; t <= 100 + 1e-9; t += step) ticks.push(t);
   // the plot as wide as leaves the longest bar --lab of room for its label (as when the axis ended at that bar), short of
   // the box's edge by room for the last tick's label
   const plot = `min(100% - 1.2rem, (100% - var(--lab) - var(--mvw, 0rem)) * ${(axisMax / maxPct).toFixed(4)})`;
@@ -463,7 +467,19 @@ function rank(el, items, sum, share) {
     }).join('') + '<div class="cz-axis"></div>';
   const click = Object.fromEntries(shown.filter((d) => d.onClick).map((d) => [d.key, d.onClick]));
   el.onclick = (e) => { const r = e.target.closest('button.cz-row'); if (r && click[r.dataset.k]) click[r.dataset.k](); };
+  fitTicks(el);
 }
+// show a chart's gridlines (and their labels) only while the label fits inside the box; run again when the width changes
+function fitTicks(el) {
+  const g = el.querySelector('.cz-grid'); if (!g) return;
+  const right = g.getBoundingClientRect().right;
+  if (!right) return;   // not laid out yet
+  g.querySelectorAll('span').forEach((sp) => {
+    sp.style.display = sp.previousElementSibling.style.display = '';   // (display, not visibility: a hidden label past the edge would still widen the page)
+    if (sp.getBoundingClientRect().right > right + 0.5) sp.style.display = sp.previousElementSibling.style.display = 'none';
+  });
+}
+addEventListener('resize', () => document.querySelectorAll('.cz-rank').forEach(fitTicks));
 // Rising / falling over the past 7 days (census.json's prev): the share now against the share in the copy taken 7 days
 // earlier (else 6 to 8 days, else Raider.IO's latest weekly count at least 7 days old; see sync_census.py), for the
 // region, ruleset, levels and faction picked. Shown only for a move of 0.2 points or more, and never when either copy
