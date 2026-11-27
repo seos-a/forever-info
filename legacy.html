@@ -177,6 +177,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,.cls:focus-visible
   user-select:none;-webkit-user-select:none;display:grid;place-items:center;font-family:var(--font);
   box-shadow:0 0 0 2px #000000b8,0 2px 5px #000c;transition:transform .08s,box-shadow .12s}
 .tal .mono{font-size:11px;color:#bbb}
+/* touch screens: a long press on an icon shows its tooltip (see buildTrees), not the phone's own image preview / save menu
+   or a text selection */
+body.touch img,body.touch .tal{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 /* As WoW draws a talent: (1) the icon, corners clipped; (2) a dark shadow edge a little larger than everything; (3) on top,
    a thin outline: the silver rim while locked, a glowing green line when available, gold when maxed. */
 .tal .ic{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:cover;border-radius:3px;corner-shape:bevel;object-view-box:inset(2%)}   /* crop the dark edge baked into WoW's icon art (like ElvUI's icon zoom) */
@@ -1573,8 +1576,17 @@ function buildTrees(m=cur,host=$("trees")){
       if(t){
         const b=document.createElement("button"); b.type="button"; b.className="tal"+(t.nyi?" nyi":""); t.el=b;
         b.innerHTML=`<span class="mono">${mono(t.name)}</span><img class="ic" src="${IMG(t.icon)}" alt="" decoding="sync" onerror="this.remove()"><span class="rk"></span><span class="minus" aria-hidden="true">−</span>`;
-        b.addEventListener("click",e=>{ if(e.shiftKey || e.target.closest(".minus")) remove(t); else add(t); if(!canHover) showTip(t,true); });
-        b.addEventListener("contextmenu",e=>{ e.preventDefault(); remove(t); });
+        b.addEventListener("click",e=>{ if(Date.now()-b._lp<1000) return;   // the tap ending a long press: tooltip only
+          if(e.shiftKey || e.target.closest(".minus")) remove(t); else add(t); if(!canHover) showTip(t,true); });
+        // touch screens: holding a talent (half a second, without moving) shows its tooltip and leaves its points alone.
+        // Android also sends a long press as a right-click (contextmenu), which on a mouse unlearns a rank
+        b._lp=0;
+        if(!canHover){ let timer=0, x0=0, y0=0;
+          const hold=()=>{ b._lp=Date.now(); showTip(t,true); };
+          b.addEventListener("touchstart",e=>{ clearTimeout(timer); x0=e.touches[0].clientX; y0=e.touches[0].clientY; timer=setTimeout(hold,450); },{passive:true});
+          b.addEventListener("touchmove",e=>{ if(Math.hypot(e.touches[0].clientX-x0,e.touches[0].clientY-y0)>10) clearTimeout(timer); },{passive:true});
+          ["touchend","touchcancel"].forEach(ev=>b.addEventListener(ev,()=>clearTimeout(timer),{passive:true})); }
+        b.addEventListener("contextmenu",e=>{ e.preventDefault(); if(!canHover){ if(Date.now()-b._lp>1000){ b._lp=Date.now(); showTip(t,true); } return; } remove(t); });
         b.addEventListener("mouseenter",()=>showTip(t));
         b.addEventListener("mouseleave",()=>{ if(canHover) hideTip(); });
         b.addEventListener("mousemove",()=>{ if(canHover&&$("tip").hidden) showTip(t); });   // scrolling hides the tooltip; bring it back once the mouse moves again
