@@ -397,8 +397,15 @@ body.touch .tip .hint{display:none}
 .sb-top{display:flex;justify-content:flex-end;margin:-6px 0 12px}
 .sb-pager{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-weight:700;font-size:13px;color:#1a1008}
 .sb-pager[hidden]{display:flex;visibility:hidden}
-.sb-arrow{width:28px;height:28px;padding:0;border:1px solid #000;border-radius:3px;cursor:pointer;color:#ffd100;font-size:12px;background:linear-gradient(180deg,#5a4220,#2a1a08);box-shadow:inset 0 0 0 1px #c9a24c,0 2px 3px #0008;text-shadow:1px 1px 0 #000}
-.sb-arrow:disabled{opacity:.35;cursor:default}
+/* page buttons drawn like WoW's spellbook arrows: dark square, bevelled steel rim, gold triangle (grey when there's no page that way).
+   The triangle is drawn, not a character: phones show the B6 character as a "play button" emoji */
+.sb-arrow{position:relative;width:28px;height:28px;padding:0;border:2px solid;border-color:#c4c4c4 #6a6a6a #3e3e3e #9c9c9c;border-radius:6px;cursor:pointer;font-size:0;background:radial-gradient(circle at 50% 38%,#303030,#070707 72%);box-shadow:0 0 0 1px #000,inset 0 0 0 1px #000,inset 0 2px 4px #000c,0 2px 3px #0009}
+.sb-arrow::before{content:"";position:absolute;inset:0;margin:auto;width:9px;height:13px;transform:translateX(1px);background:linear-gradient(180deg,#fff27a,#ffd100 45%,#c88a00);clip-path:polygon(0 0,100% 50%,0 100%)}
+.sb-arrow[aria-label^="Prev"]::before{transform:translateX(-1px);clip-path:polygon(100% 0,0 50%,100% 100%)}
+.sb-arrow:disabled{opacity:1;cursor:default}
+.sb-arrow:disabled::before{background:linear-gradient(180deg,#9a9a9a,#6c6c6c 50%,#4a4a4a)}
+.sb-arrow:not(:disabled):hover{filter:brightness(1.25)}
+.sb-arrow:not(:disabled):active{border-color:#3e3e3e #9c9c9c #c4c4c4 #6a6a6a}
 .sb-foot{display:flex;justify-content:flex-end;margin-top:14px}
 .sb-ranks{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#ffd100;text-shadow:1px 1px 0 #000,0 0 2px #0009;cursor:pointer;user-select:none}
 .sb-ranks input{appearance:none;-webkit-appearance:none;width:16px;height:16px;margin:0;border:1px solid #000;border-radius:2px;background:linear-gradient(180deg,#3b2614,#1c1007);box-shadow:0 0 0 1px #c9a24c;display:grid;place-items:center;cursor:pointer}
@@ -1394,7 +1401,7 @@ document.head.appendChild(t);})();
       <div class="sb-wrap" id="sbWrap" hidden>
         <section class="card wood sb-book">
           <div class="hdr" id="sbHead">Spellbook</div>
-          <div class="parch sb-page"><div class="sb-top"><label class="sb-ranks" id="sbRanksLbl"><input type="checkbox" id="sbRanks"> Show All Spell Ranks</label></div><div class="sb-grid" id="sbGrid"></div><div class="sb-pager" id="sbPager"><button type="button" class="sb-arrow" id="sbPrev" aria-label="Previous page">&#9664;</button><span id="sbPageNo">Page 1</span><button type="button" class="sb-arrow" id="sbNext" aria-label="Next page">&#9654;</button></div></div>
+          <div class="parch sb-page"><div class="sb-top"><label class="sb-ranks" id="sbRanksLbl"><input type="checkbox" id="sbRanks"> Show All Spell Ranks</label></div><div class="sb-grid" id="sbGrid"></div><div class="sb-pager" id="sbPager"><button type="button" class="sb-arrow" id="sbPrev" aria-label="Previous page"></button><span id="sbPageNo">Page 1</span><button type="button" class="sb-arrow" id="sbNext" aria-label="Next page"></button></div></div>
         </section>
         <nav class="sb-tabs" id="sbTabs" aria-label="Spellbook tabs"></nav>
       </div>
@@ -1705,7 +1712,7 @@ function renderOrder(m=cur,ol=$("order"),empty=$("orderEmpty")){
   const first=paged?m.ordPage*PER:0, last=paged?first+PER:Infinity;
   let pg=ol.parentElement.querySelector(".ord-pager");
   if(!pg){ pg=document.createElement("div"); pg.className="sb-pager ord-pager";
-    pg.innerHTML=`<button type="button" class="sb-arrow" data-d="-1" aria-label="Previous page">&#9664;</button><span></span><button type="button" class="sb-arrow" data-d="1" aria-label="Next page">&#9654;</button>`;
+    pg.innerHTML=`<button type="button" class="sb-arrow" data-d="-1" aria-label="Previous page"></button><span></span><button type="button" class="sb-arrow" data-d="1" aria-label="Next page"></button>`;
     ol.after(pg);
     pg.addEventListener("click",e=>{ const b=e.target.closest("[data-d]"); if(!b) return; const a=pg._args; a[0].ordPage+=+b.dataset.d; renderOrder(...a); }); }
   pg._args=[m,ol,empty]; pg.style.display=paged&&pages>1?"":"none";
